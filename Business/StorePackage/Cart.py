@@ -5,7 +5,7 @@ from interfaces import ICart
 class Cart(implements(ICart)):
 
     def __int__(self):
-        self.bags = dict()  # storeId : Bag
+        self.__bags = dict()  # storeId : Bag
 
     def getAllBags(self):
         pass

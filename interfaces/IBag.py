@@ -6,19 +6,19 @@ class IBag(Interface):
     def isEmpty(self):
         pass
 
-    def addProduct(self, productId, quantity):
+    def addProduct(self, product, quantity):
         pass
 
     def removeProduct(self, productId):
         pass
 
-    def removeProductQuantity(self, productId, quantity):
+    def removeProductQuantity(self, product, quantity):
         pass
 
     def getProducts(self):
         pass
 
-    def getProductQuantity(self, productId):
+    def getProductQuantity(self, product):
         pass
 
     def calcSum(self):

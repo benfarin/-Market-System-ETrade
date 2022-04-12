@@ -5,15 +5,15 @@ from interfaces import IStore
 class Store(implements(IStore)):
 
     def __init__(self, storeId, storeName, founderId):
-        self.id = storeId
-        self.name = storeName
-        self.founderId = founderId
-        self.owners = dict()    # ownerId : User
-        self.managers = dict()  # managerId : User
-        self.products = dict()  # productId : Product
-        self.transactions = dict()  # transactionId : Transaction
-        self.discountPolicy = None
-        self.discounts = dict()  # discountType/Id : Discount
+        self.__id = storeId
+        self.__name = storeName
+        self.__founderId = founderId
+        self.__owners = {}    # ownerId : User
+        self.__managers = {}  # managerId : User
+        self.__products = {}  # productId : Product
+        self.__transactions = {}  # transactionId : Transaction
+        self.__discountPolicy = None
+        self.__discounts = {}  # discountType/Id : Discount
 
     def getStoreId(self):
         pass
