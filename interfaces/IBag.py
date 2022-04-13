@@ -12,7 +12,7 @@ class IBag(Interface):
     def removeProduct(self, productId):
         pass
 
-    def removeProductQuantity(self, product, quantity):
+    def removeProductQuantity(self, productId, quantity):
         pass
 
     def getProducts(self):

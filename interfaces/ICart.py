@@ -9,13 +9,13 @@ class ICart(Interface):
     def getAllBags(self):
         pass
 
-    def getBag(self, bagId):
+    def getBag(self, storeId):
         pass
 
-    def addBag(self, storeId, bag):
+    def addBag(self, storeId):
         pass
 
-    def removeBag(self, bagId):
+    def removeBag(self, storeId):
         pass
 
     def updateBag(self, bag):
