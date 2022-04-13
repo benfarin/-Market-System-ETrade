@@ -8,8 +8,8 @@ class Store(implements(IStore)):
         self.__id = storeId
         self.__name = storeName
         self.__founderId = founderId
-        self.__owners = {}    # ownerId : User
-        self.__managers = {}  # managerId : User
+        self.__permissions = {}  # <UserId,permission>
+        self.__appointers = {}  # <UserId,UserId>
         self.__products = {}  # productId : Product
         self.__transactions = {}  # transactionId : Transaction
         self.__discountPolicy = None
