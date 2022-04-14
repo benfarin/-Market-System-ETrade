@@ -1,5 +1,5 @@
 from interface import implements
-import IMarketBridge
+from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
 
 
@@ -18,6 +18,9 @@ class MarketProxyBridge(implements(IMarketBridge)):
 
     def add_product(self, id, name, price, category):
         if self._real_subject is None:
-            return False
+            if price >= 0:
+                return True
+            else:
+                return False
         else:
             return self._real_subject.add_product(id, name, price, category)

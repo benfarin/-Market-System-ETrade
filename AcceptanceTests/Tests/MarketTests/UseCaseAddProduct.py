@@ -8,10 +8,10 @@ class MyTestCase(unittest.TestCase):
         self.proxy = MarketProxyBridge(None)
 
     def test_addProductPositive(self):
-        self.assertEqual(self.proxy.addProduct(0, "testProduct", 10, "testCategory"), True)
+        self.assertEqual(self.proxy.add_product(0, "testProduct", 10, "testCategory"), True)
 
     def test_addProductNegative(self):
-        self.assertEqual(self.proxy.addProduct(0, "testProduct2", -20, "testCategory"), False)
+        self.assertEqual(self.proxy.add_product(0, "testProduct2", -20, "testCategory"), False)
 
 
 if __name__ == '__main__':
