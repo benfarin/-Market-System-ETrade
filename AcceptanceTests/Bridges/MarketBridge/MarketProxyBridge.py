@@ -15,3 +15,9 @@ class MarketProxyBridge(implements(IMarketBridge)):
 
     def check_access(self) -> bool:
         return self._real_subject is not None
+
+    def add_product(self, id, name, price, category):
+        if self._real_subject is None:
+            return False
+        else:
+            return self._real_subject.add_product(id, name, price, category)
