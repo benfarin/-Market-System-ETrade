@@ -1,9 +1,8 @@
 import unittest
-import pytest
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 
 
-class MyTestCase(unittest.TestCase):
+class UseCaseAddProduct(unittest.TestCase):
     def setUp(self):
         self.proxy = MarketProxyBridge(None)
 
