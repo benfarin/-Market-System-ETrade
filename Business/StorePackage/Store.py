@@ -16,10 +16,10 @@ class Store(implements(IStore)):
         self.__discounts = {}  # discountType/Id : Discount
 
     def getStoreId(self):
-        pass
+        return self.__id
 
-    def getStoreFounder(self):
-        pass
+    def getStoreFounderId(self):
+        return self.__founderId
 
     def getStoreOwners(self):
         pass
@@ -28,13 +28,35 @@ class Store(implements(IStore)):
         pass
 
     def addProduct(self, userId, product):
-        pass
+        try:
+            self.__checkPermissions(userId, "add product")
+            self.__products[product.getProductId()] = product
+            return True
+        except:
+            return False
 
-    def removeProduct(self, userId, product):
-        pass
+    def removeProduct(self, userId, productId):
+        try:
+            self.__checkPermissions(userId, "remove product")
+            self.__products.pop(productId)
+            return True
+        except:
+            return False
 
     def updateProduct(self, userId, productId, newProduct):
-        pass
+        try:
+            self.__checkPermissions(userId, "update product")
+            self.__products[productId] = newProduct
+            return True
+        except:
+            return False
+
+    def __checkPermissions(self, userId, line):
+        permissions = self.__permissions[userId]
+        if permissions is None:
+            raise Exception("User ", userId, " doesn't have any permissions is store:", self.__id)
+        if not permissions.hasPremission_AddProduct():
+            raise Exception("User ", userId, " doesn't have the permission - ", line, " in  store:", self.__id)
 
     def addRole(self, assignerId, assigneeId, ruleId):
         pass

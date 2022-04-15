@@ -3,6 +3,9 @@ from interface import Interface
 
 class ICart(Interface):
 
+    def getUserId(self):
+        pass
+
     def isEmpty(self):
         pass
 

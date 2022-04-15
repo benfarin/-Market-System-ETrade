@@ -6,7 +6,7 @@ class IStore(Interface):
     def getStoreId(self):
         pass
 
-    def getStoreFounder(self):
+    def getStoreFounderId(self):
         pass
 
     def getStoreOwners(self):
@@ -18,7 +18,7 @@ class IStore(Interface):
     def addProduct(self, userId, product):
         pass
 
-    def removeProduct(self, userId, product):
+    def removeProduct(self, userId, productId):
         pass
 
     def updateProduct(self, userId, productId, newProduct):

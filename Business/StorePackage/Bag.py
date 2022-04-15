@@ -57,3 +57,4 @@ class Bag(implements(IBag)):
         for p in self.__products.keys():
             s += p.getProductPrice() * self.__products[p]
         return s
+

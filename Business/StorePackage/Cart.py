@@ -6,8 +6,11 @@ from Business.StorePackage.Bag import Bag
 class Cart(implements(ICart)):
 
     def __init__(self, userId):
-        self.userId = userId
+        self.__userId = userId
         self.__bags = dict()  # storeId : Bag
+
+    def getUserId(self):
+        return self.__userId
 
     def getAllBags(self):
         return self.__bags
@@ -27,7 +30,7 @@ class Cart(implements(ICart)):
 
     def removeBag(self, storeId):
         if self.__bags.get(storeId) is not None:
-            self.__bags[storeId] = None
+            self.__bags.pop(storeId)
             return True
         else:
             return False
