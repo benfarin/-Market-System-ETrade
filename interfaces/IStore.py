@@ -24,7 +24,7 @@ class IStore(Interface):
     def updateProduct(self, userId, productId, newProduct):
         pass
 
-    def addRole(self, assignerId, assigneeId, ruleId):
+    def addRole(self, assignerId, assigneeId, role):
         pass
 
     def addDiscount(self, userId, Discount):
