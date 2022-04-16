@@ -15,6 +15,9 @@ class Product:
     def getProductPrice(self):
         return self.__price
 
+    def setProductPrice(self, price):
+        self.__price = price
+
     def getProductCategory(self):
         return self.__category
 
