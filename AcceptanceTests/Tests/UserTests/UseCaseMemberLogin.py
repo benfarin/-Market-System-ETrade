@@ -3,7 +3,7 @@ import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 
 
-class MyTestCase(unittest.TestCase):
+class UseCaseMemberLogin(unittest.TestCase):
     def setUp(self):
         self.proxy = UserProxyBridge(None)
 

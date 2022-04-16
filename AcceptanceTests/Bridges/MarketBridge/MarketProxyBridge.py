@@ -88,3 +88,10 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.close_store(store_id)
 
+    def get_store_info(self, store_id):
+        if self._real_subject is None:
+            if store_id < 0:
+                return False
+            return True
+        return self._real_subject.close_store(store_id)
+
