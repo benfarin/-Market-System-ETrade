@@ -27,3 +27,4 @@ class UserProxyBridge(implements(IUserBridge)):
             return True
         else:
             return self._real_subject.login(username, password)
+

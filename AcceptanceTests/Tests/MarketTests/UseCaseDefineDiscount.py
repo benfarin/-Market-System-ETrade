@@ -10,7 +10,7 @@ class UseCaseDefineDiscount(unittest.TestCase):
         self.proxyMarket.add_store(0, "testStore")
 
     def test_defineDiscountPositive(self):
-        self.assertEqual(self.proxyMarket.define_discount(0, 20), True)
+        self.assertEqual(self.proxyMarket.discount_store(0, 20), True)
 
     def test_defineDiscountNegative(self):
         # store doesn't exist

@@ -67,19 +67,19 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.define_purchase(id, purchase)
 
-    def define_discount(self, id, discount):
+    def discount_store(self, id, discount):
         if self._real_subject is None:
             if discount < 0:
                 return False
             return True
-        return self._real_subject.define_purchase(id, discount)
+        return self._real_subject.discount_store(id, discount)
 
     def discount_prod(self, store_id, prod_id, discount):
         if self._real_subject is None:
             if discount < 0 or store_id < 0 or prod_id < 0:
                 return False
             return True
-        return self._real_subject.define_purchase(store_id, prod_id , discount)
+        return self._real_subject.discount_prod(store_id, prod_id , discount)
 
     def close_store(self, store_id):
         if self._real_subject is None:
@@ -93,5 +93,39 @@ class MarketProxyBridge(implements(IMarketBridge)):
             if store_id < 0:
                 return False
             return True
-        return self._real_subject.close_store(store_id)
+        return self._real_subject.get_store_info(store_id)
 
+    def edit_purchase(self, store_id, new_purchase):
+        if self._real_subject is None:
+            if new_purchase is None:
+                return False
+            return True
+        return self._real_subject.edit_purchase(store_id, new_purchase)
+
+    def edit_discount(self, store_id, new_discount):
+        if self._real_subject is None:
+            if new_discount < 0:
+                return False
+            return True
+        return self._real_subject.edit_discount(store_id, new_discount)
+
+    def appoint_store_owner(self, store_id, user_id):
+        if self._real_subject is None:
+            if store_id < 0 or user_id < 0:
+                return False
+            return True
+        return self._real_subject.appoint_store_owner(store_id, user_id)
+
+    def appoint_store_manager(self, store_id, user_id):
+        if self._real_subject is None:
+            if store_id < 0 or user_id < 0:
+                return False
+            return True
+        return self._real_subject.appoint_store_manager(store_id, user_id)
+
+    def add_manager_option(self, store_id, user_id, option):
+        if self._real_subject is None:
+            if store_id < 0 or user_id < 0:
+                return False
+            return True
+        return self._real_subject.appoint_store_manager(store_id, user_id, option)
