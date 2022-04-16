@@ -1,6 +1,5 @@
 from interface import implements
 from interfaces import IStore
-import numpy as np
 
 
 class Store(implements(IStore)):
