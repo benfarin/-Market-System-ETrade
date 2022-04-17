@@ -9,12 +9,12 @@ class Market(IMarket):
         self.__stores : Dict[int,IStore] = {} # <id,Store> should check how to initial all the stores into dictionary
         self.__activeUsers : Dict[str,User] = {} # <name,User> should check how to initial all the activeStores into dictionary
         self.__membersFromCart : Dict[str, Member] ={}  # <name,Icart> should check how to initial all the stores into dictionary
-
+        self.__history = {} #need be replace by instance 
     def getStoreByName(self,store_name:str):
         store_collection = []
         for store in self.__stores:
             name : Dict[str]=store.getStoreName(store_name)
-            if(name==store_name) :
+            if(name == store_name) :
                 store_collection.append(store)
         return  store_collection
 
