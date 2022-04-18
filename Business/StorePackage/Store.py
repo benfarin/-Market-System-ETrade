@@ -19,7 +19,7 @@ class Store(implements(IStore)):
         self.__owners = []  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__transactions = {}  # transactionId : Transaction
+        self.__transactions = []  # Transaction
 
         self.__permissions = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
@@ -200,13 +200,13 @@ class Store(implements(IStore)):
         pass
 
     def addTransaction(self, transaction):
-        pass
+        self.__transactions.append(transaction)
 
     def removeTransaction(self, transaction):
-        pass
+        self.__transactions.remove(transaction)
 
     def getStoreTransactionHistory(self):
-        pass
+        return self.__transactions
 
     def getProductsByName(self, productName):
         toReturnProducts = []
@@ -250,9 +250,8 @@ class Store(implements(IStore)):
         self.__numOfRatings += 1
 
     def addProductToBag(self, productId, quantity):
-        # need to add thread
         if productId not in self.__products:
-            raise Exception()
+            raise Exception("product: ", productId, "cannot be added because he is not in store: ", self.__id)
         if self.__productsQuantity[productId] < quantity:
             return False
         else:
@@ -260,7 +259,6 @@ class Store(implements(IStore)):
             return True
 
     def removeProductFromBag(self, productId, quantity):
-        # need to add thread
         if productId not in self.__products:
-            raise Exception()
+            raise Exception("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         self.__productsQuantity[productId] += quantity
