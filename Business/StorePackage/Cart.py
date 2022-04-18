@@ -1,13 +1,13 @@
 from interface import implements
 from interfaces.ICart import ICart
 from Business.StorePackage.Bag import Bag
-
+from typing import Dict
 
 class Cart(implements(ICart)):
 
     def __init__(self, userId):
         self.__userId = userId
-        self.__bags = dict()  # storeId : Bag
+        self.__bags : Dict[int,Bag] = {}  # storeId : Bag
 
     def getUserId(self):
         return self.__userId

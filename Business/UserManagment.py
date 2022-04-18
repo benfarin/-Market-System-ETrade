@@ -54,3 +54,15 @@ class UserManagment:
                 raise Exception("problem with password")
         except Exception as e:
             return e
+    def checkOnlineUser(self,userName):
+        if (self.__market.getActiveUsers().get(userName)):
+           return True
+        else:
+           return False
+
+    def saveProducts(self,userName,store):
+        if (self.checkOnlineUser(userName)):
+            self.__market.getActiveUsers().get(userName).getShoppingCart().addBag(store.getStoreId())
+
+
+
