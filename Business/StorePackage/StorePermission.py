@@ -49,3 +49,21 @@ class StorePermission:
 
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
+
+    def printPermission(self):
+        permission = " permissions:"
+        if self.__stockManagement:
+            permission += "\n\tstock management"
+        if self.__appointManager:
+            permission += "\n\tappoint manager"
+        if self.__appointOwner:
+            permission += "\n\tappoint owner"
+        if self.__changePermission:
+            permission += "\n\tchange permission"
+        if self.__closeStore:
+            permission += "\n\tclose store"
+        if self.__rolesInformation:
+            permission += "\n\troles information"
+        if self.__purchaseHistoryInformation:
+            permission += "\n\tpurchase history information"
+        return permission

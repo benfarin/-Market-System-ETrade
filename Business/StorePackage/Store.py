@@ -6,13 +6,14 @@ from typing import Dict, List
 
 class Store(implements(IStore)):
 
-    def __init__(self, storeId, storeName, founderId):
-        # need to add address and bank account
+    def __init__(self, storeId, storeName, founderId, bankAccount, address):
         self.__id = storeId
         self.__name = storeName
+        self.__founderId = founderId
+        self.__bankAccount = bankAccount
+        self.__address = address
         self.__rating = 0
         self.__numOfRatings = 0
-        self.__founderId = founderId
         self.__appointers: Dict[int, List] = {}  # UserId : UserId list
         self.__managers = []  # userId
         self.__owners = []  # userId
@@ -29,6 +30,12 @@ class Store(implements(IStore)):
 
     def getStoreFounderId(self):
         return self.__founderId
+
+    def getStoreBankAccount(self):
+        return self.__bankAccount
+
+    def getStoreAddress(self):
+        return self.__address
 
     def getStoreOwners(self):
         return self.__owners
@@ -84,7 +91,7 @@ class Store(implements(IStore)):
         # next version need to add parameter for removing.
         permissions = self.__permissions[assignerId]
         if permissions is None:
-            raise Exception("User ", assignerId, " doesn't have any permissions is store:", self.__id)
+            raise Exception("User ", assignerId, " doesn't have any permissions is store: ", self.__id)
         if not permissions.hasPermission_ChangePermission():
             raise Exception("User ", assignerId, "cannot change permission in store: ", self.__id)
         if assigneeId not in self.__appointers[assignerId]:
@@ -115,28 +122,45 @@ class Store(implements(IStore)):
     def __checkPermissions_ChangeStock(self, userId, line):
         permissions = self.__permissions[userId]
         if permissions is None:
-            raise Exception("User ", userId, " doesn't have any permissions is store:", self.__name)
+            raise Exception("User ", userId, " doesn't have any permissions is store: ", self.__name)
         if not permissions.hasPermission_StockManagement():
-            raise Exception("User ", userId, " doesn't have the permission - ", line, " in  store:", self.__name)
+            raise Exception("User ", userId, " doesn't have the permission - ", line, " in store: ", self.__name)
 
     def appointManagerToStore(self, assignerId, assigneeId):
         permissions = self.__permissions[assignerId]
         if permissions is None:
             raise Exception("User ", assignerId, " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_AppointManager():
-            raise Exception("User ", assignerId, " doesn't have the permission - appoint manager in  store:",
+            raise Exception("User ", assignerId, " doesn't have the permission - appoint manager in store: ",
                             self.__name)
+        if assignerId not in self.__owners:
+            raise Exception("User ", assignerId, "cannot add manager to store: ", self.__name,
+                            "because he is not a store owner")
+        # this constrains is also covert the constrains that for each manager there is 1 assigner
+        if assigneeId in self.__managers:
+            raise Exception("User ", assigneeId, "is all ready a manger in store: ", self.__name)
+
         self.__managers.append(assigneeId)
         self.__appointers[assigneeId].append(assigneeId)
-        self.__permissions[assigneeId] = StorePermission()
+
+        permission = StorePermission()
+        permission.setPermission_PurchaseHistoryInformation(True)
+        self.__permissions[assigneeId] = permission
 
     def appointOwnerToStore(self, assignerId, assigneeId):
         permissions = self.__permissions[assignerId]
         if permissions is None:
             raise Exception("User ", assignerId, " doesn't have any permissions is store:", self.__id)
         if not permissions.hasPermission_AppointOwner():
-            raise Exception("User ", assignerId, " doesn't have the permission - appoint owner in  store:",
+            raise Exception("User ", assignerId, " doesn't have the permission - appoint owner in store: ",
                             self.__name)
+        if assignerId not in self.__owners:
+            raise Exception("User ", assignerId, "cannot add manager to store: ", self.__name,
+                            "because he is not a store owner")
+        # this constrains is also covert the constrains that for each owner there is 1 assigner
+        if assigneeId in self.__owners:
+            raise Exception("User ", assigneeId, "is all ready a owner in store: ", self.__name)
+
         self.__owners.append(assigneeId)
         self.__appointers[assignerId].append(assigneeId)
 
@@ -149,6 +173,24 @@ class Store(implements(IStore)):
         ownerPermissions.setPermission_PurchaseHistoryInformation(True)
         self.__permissions[assigneeId] = ownerPermissions
 
+    def getRolesInformation(self, userId):
+        permissions = self.__permissions[userId]
+        if permissions is None:
+            raise Exception("User ", userId, " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_RolesInformation():
+            raise Exception("User ", userId, " doesn't have the permission - get roles information in store: ",
+                            self.__name)
+        info = "info for store: " + self.__name + ":"
+        for manager in self.__managers:
+            permission = self.__permissions[manager.getId()]
+            info += "\n\tmanagerId:" + manager.getId() + permission.printPermission() + "\n"
+        for owner in self.__owners:
+            permission = self.__permissions[owner.getId()]
+            info += "\n\tmanagerId:" + owner.getId() + permission.printPermission() + "\n"
+
+    def getPurchaseHistoryInformation(self):
+        pass
+
     def addTransaction(self, transaction):
         pass
 
@@ -157,47 +199,6 @@ class Store(implements(IStore)):
 
     def getStoreTransactionHistory(self):
         pass
-
-    def editPermission(self, assignerId, assigneeId):
-        pass
-
-    def getProductsByName(self, productName):
-        toReturnProducts = []
-        for product in self.__products.keys():
-            if product.getProductName() == productName:
-                toReturnProducts.append(product)
-        return toReturnProducts
-
-    def getProductsByKeyword(self, productName):
-        pass
-
-    def getProductsByCategory(self, productCategory):
-        toReturnProducts = []
-        for product in self.__products.keys():
-            if product.getProductCategory() == productCategory:
-                toReturnProducts.append(product)
-        return toReturnProducts
-
-    def getProductsByPriceRange(self, minPrice, maxPrice):
-        toReturnProducts = []
-        for product in self.__products.keys():
-            price = product.getProductPrice()
-            if minPrice <= price <= maxPrice:
-                toReturnProducts.append(product)
-        return toReturnProducts
-
-    def getProductsByMinRating(self, minRating):
-        toReturnProducts = []
-        for product in self.__products.keys():
-            if minRating <= product.getProductRating():
-                toReturnProducts.append(product)
-        return toReturnProducts
-
-    def getProductRating(self, productId):
-        self.__products[productId].getProductRating()
-
-    def setProductRating(self, productId, rating):
-        self.__products[productId].getProductRating(rating)
 
     def getStoreRating(self):
         return self.__rating
