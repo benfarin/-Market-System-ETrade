@@ -13,11 +13,15 @@ class Member(User):
         self.__address = address #type address class
         self.__bank = bank # type bank
 
-    def addComment(self, productID, comment):
-        pass
 
+    def setLoggedIn(self,state):
+        self.__isLoggedIn = state
     def addProductRating(self, productID, rating):
         pass
+    def getPassword(self):
+        return self.__password
+    def getUserName(self):
+        return self.__userName
 
     def addStoreRating(self, storeID, rating):
         pass

@@ -47,3 +47,36 @@ class IStore(Interface):
 
     def editPermission(self, assignerId, assigneeId):
         pass
+
+    def getProductsByName(self, productName):
+        pass
+
+    def getProductsByKeyword(self, productName):
+        pass
+
+    def getProductsByCategory(self, productCategory):
+        pass
+
+    def getProductsByPriceRange(self, minPrice, maxPrice):
+        pass
+
+    def getProductsByMinRating(self, minRating):
+        pass
+
+    def getProductRating(self, productId):
+        pass
+
+    def setProductRating(self, productId, rating):
+        pass
+
+    def getStoreRating(self):
+        pass
+
+    def setStoreRating(self, rating):
+        pass
+
+    def addProductToBag(self, productId, quantity):
+        pass
+
+    def removeProductFromBag(self, productId, quantity):
+        pass

@@ -5,11 +5,18 @@ import uuid
 class User:
     def __init__(self):
         self._shoppingCart = Cart()
-        self.__id = uuid.uuid4() # unique id
+        self.__id = str(uuid.uuid4()) # unique id
 
+
+    def getUserID(self):
+        return self.__id
+
+    def getShoppingCart(self):
+        return self._shoppingCart
 
     def getShopingCartProducts(self):
         return self.__shoppingCart.getAllProduct()
+
     def editProductInStoreBag(self, store, product, quantity): #store Istore ,Product Iproduct , quantity int
         storeBag = self.__shoppingCart.getBag(store) #have to check
         storeBag.editProduct(product, quantity)

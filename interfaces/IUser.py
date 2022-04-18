@@ -24,3 +24,6 @@ class IUser(Interface):
 
    def purchase_Product(self, bankAccount, phone, address ): # bank - is bank object , address - object of address
       pass
+
+   def getShoppingCart(self):
+      pass
