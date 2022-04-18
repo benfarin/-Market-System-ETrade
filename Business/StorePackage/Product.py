@@ -5,6 +5,8 @@ class Product:
         self.__name = name
         self.__price = price
         self.__category = category  # String
+        self.__rating = 0
+        self.__numOfRating = 0
 
     def getProductId(self):
         return self.__id
@@ -20,5 +22,14 @@ class Product:
 
     def getProductCategory(self):
         return self.__category
+
+    def getProductRating(self):
+        return self.__rating
+
+    def setProductRating(self, rating):
+        if rating <= 0 or rating >= 5:
+            raise Exception("not a valid rating")
+        self.__rating = (self.__numOfRating * self.__rating + rating) / (self.__numOfRating + 1)
+        self.__numOfRating += 1
 
 

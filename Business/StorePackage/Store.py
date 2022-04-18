@@ -7,6 +7,8 @@ class Store(implements(IStore)):
     def __init__(self, storeId, storeName, founderId):
         self.__id = storeId
         self.__name = storeName
+        self.__rating = 0
+        self.__numOfRating = 0
         self.__founderId = founderId
         self.__permissions = {}  # UserId : Permission
         self.__appointers = {int: []}  # UserId : UserId list
@@ -14,8 +16,6 @@ class Store(implements(IStore)):
         self.__owners = []  # userId
         self.__products = {}  # productId : Product
         self.__transactions = {}  # transactionId : Transaction
-        self.__discountPolicy = None
-        self.__discounts = {}  # discountType/Id : Discount
 
     def getStoreId(self):
         return self.__id
@@ -95,15 +95,6 @@ class Store(implements(IStore)):
             raise Exception("no such role")
         self.__appointers[assignerId].remove(assigneeId)
 
-    def addDiscount(self, userId, Discount):
-        pass
-
-    def removeDiscount(self, userId, Discount):
-        pass
-
-    def updateDiscount(self, userId, discountId, newDiscount):
-        pass
-
     def addTransaction(self, transaction):
         pass
 
@@ -115,3 +106,50 @@ class Store(implements(IStore)):
 
     def editPermission(self, assignerId, assigneeId):
         pass
+
+    def getProductsByName(self, productName):
+        toReturnProducts = []
+        for product in self.__products.keys():
+            if product.getProductName() == productName:
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductsByKeyword(self, productName):
+        pass
+
+    def getProductsByCategory(self, productCategory):
+        toReturnProducts = []
+        for product in self.__products.keys():
+            if product.getProductCategory() == productCategory:
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductsByPriceRange(self, minPrice, maxPrice):
+        toReturnProducts = []
+        for product in self.__products.keys():
+            price = product.getProductPrice()
+            if minPrice <= price <= maxPrice:
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductsByMinRating(self, minRating):
+        toReturnProducts = []
+        for product in self.__products.keys():
+            if minRating <= product.getProductRating():
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductRating(self, productId):
+        self.__products[productId].getProductRating()
+
+    def setProductRating(self, productId, rating):
+        self.__products[productId].getProductRating(rating)
+
+    def getStoreRating(self):
+        return self.__rating
+
+    def setStoreRating(self, rating):
+        if rating <= 0 or rating >= 5:
+            raise Exception("not a valid rating")
+        self.__rating = (self.__numOfRating * self.__rating + rating) / (self.__numOfRating + 1)
+        self.__numOfRating += 1
