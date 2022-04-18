@@ -3,6 +3,7 @@ from interfaces.ICart import ICart
 from  interfaces import IMarket
 from Business.UserPackage.User import User
 from Business.UserPackage.Member import Member
+from Business.StorePackage.Product import Product
 from typing import Dict
 class Market(IMarket):
     def __init__(self):
@@ -24,7 +25,12 @@ class Market(IMarket):
     def getProductByCatagory(self,catagory):
         pass
 
-    def getProductByName(self,catagory):
+    def getProductsByName(self,nameProduct):
+        productsInStores:Dict[IStore,Product]={}
+        keys= self.__stores.keys()
+        for i in len(keys):
+            products_list_per_Store = self.__stores.get(i).get
+
         pass
 
     def getProductByCatagory(self,catagory):
