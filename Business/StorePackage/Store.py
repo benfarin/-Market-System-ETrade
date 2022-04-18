@@ -18,6 +18,7 @@ class Store(implements(IStore)):
         self.__managers = []  # userId
         self.__owners = []  # userId
         self.__products = {}  # productId : Product
+        self.__productsQuantity = {}  # productId : quantity
         self.__transactions = {}  # transactionId : Transaction
 
         self.__permissions = {founderId: StorePermission()}  # UserId : storePermission
@@ -102,6 +103,13 @@ class Store(implements(IStore)):
         try:
             self.__checkPermissions_ChangeStock(userId, "add product")
             self.__products[product.getProductId()] = product
+        except Exception as e:
+            raise Exception(e)
+
+    def addProductQuantity(self, userId, productId, quantity):
+        try:
+            self.__checkPermissions_ChangeStock(userId, "add product")
+            self.__productsQuantity[productId] += quantity
         except Exception as e:
             raise Exception(e)
 
@@ -200,6 +208,38 @@ class Store(implements(IStore)):
     def getStoreTransactionHistory(self):
         pass
 
+    def getProductsByName(self, productName):
+        toReturnProducts = []
+        for product in self.__products.values():
+            if product.getProductName() == productName:
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductsByKeyword(self, productName):
+        pass
+
+    def getProductsByCategory(self, productCategory):
+        toReturnProducts = []
+        for product in self.__products.values():
+            if product.getProductCategory() == productCategory:
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductsByPriceRange(self, minPrice, maxPrice):
+        toReturnProducts = []
+        for product in self.__products.values():
+            price = product.getProductPrice()
+            if minPrice <= price <= maxPrice:
+                toReturnProducts.append(product)
+        return toReturnProducts
+
+    def getProductsByMinRating(self, minRating):
+        toReturnProducts = []
+        for product in self.__products.values():
+            if minRating <= product.getProductRating():
+                toReturnProducts.append(product)
+        return toReturnProducts
+
     def getStoreRating(self):
         return self.__rating
 
@@ -208,3 +248,19 @@ class Store(implements(IStore)):
             raise Exception("not a valid rating")
         self.__rating = (self.__numOfRatings * self.__rating + rating) / (self.__numOfRatings + 1)
         self.__numOfRatings += 1
+
+    def addProductToBag(self, productId, quantity):
+        # need to add thread
+        if productId not in self.__products:
+            raise Exception()
+        if self.__productsQuantity[productId] < quantity:
+            return False
+        else:
+            self.__productsQuantity[productId] -= quantity
+            return True
+
+    def removeProductFromBag(self, productId, quantity):
+        # need to add thread
+        if productId not in self.__products:
+            raise Exception()
+        self.__productsQuantity[productId] += quantity
