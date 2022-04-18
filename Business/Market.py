@@ -9,7 +9,7 @@ class Market(IMarket):
         self.__stores : Dict[int,IStore] = {} # <id,Store> should check how to initial all the stores into dictionary
         self.__activeUsers : Dict[str,User] = {} # <name,User> should check how to initial all the activeStores into dictionary
         self.__membersFromCart : Dict[str, Member] ={}  # <name,Icart> should check how to initial all the stores into dictionary
-        self.__history = {} #need be replace by instance 
+        self.__history = {} #need be replace by instance
     def getStoreByName(self,store_name:str):
         store_collection = []
         for store in self.__stores:
@@ -22,13 +22,23 @@ class Market(IMarket):
     def getStoreById(self,id_store): #maybe should be private
         return self.__stores.get(id_store)
     def getProductByCatagory(self,catagory):
-        pass
+        product_collection =[]
+        for store in self.__stores:
+            product_collection.append(store.getProductByCatagory(catagory))
+        return  product_collection
 
-    def getProductByName(self,catagory):
-        pass
 
-    def getProductByCatagory(self,catagory):
-        pass
+    def getProductByName(self,name):
+        product_collection = []
+        for store in self.__stores:
+            product_collection.append(store.getProductByName(name))
+        return product_collection
+
+    def getProductByKeyWord(self, keyword):
+        product_collection = []
+        for store in self.__stores:
+            product_collection.append(store.getProductByKeyWord(keyword))
+        return product_collection
 
     def getUserByName(self,userName):
         return self.__activeUsers.get(userName)
