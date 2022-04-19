@@ -85,18 +85,6 @@ class MarketManage(implements(IMarket)):
                 return True
         return False
 
-    def addProductRating(self,memberName , productID, rating):
-        if(self.checkOnlineMember(memberName)):
-            product = self.__products.get(productID)
-            product.setProductRating(rating)
-            return True
-        return False
-
-    def addStoreRating(self,storeID, rating):
-        store = self.__stores.get(storeID)
-        store.setStoreRating(rating)
-
-
     def addProductToCart(self,username,storeID ,product,quantity):
         try:
             if(self.__activeUsers.get(username) ):
@@ -128,6 +116,7 @@ class MarketManage(implements(IMarket)):
 
     def getStoreHistory(self,userName,storeID):
         pass
+
     def removeProductFromCart(self,userName,storeID ,product):
         try:
             if self.__activeUsers.get(userName):

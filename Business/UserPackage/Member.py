@@ -16,10 +16,13 @@ class Member(User):
 
     def setLoggedIn(self,state):
         self.__isLoggedIn = state
+
     def addProductRating(self, productID, rating):
         pass
+
     def getPassword(self):
         return self.__password
+
     def getUserName(self):
         return self.__userName
 
