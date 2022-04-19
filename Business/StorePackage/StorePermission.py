@@ -51,7 +51,7 @@ class StorePermission:
         self.__purchaseHistoryInformation = purchaseHistoryInformation
 
     def printPermission(self):
-        permission = " permissions:"
+        permission = ""
         if self.__stockManagement:
             permission += "\n\tstock management"
         if self.__appointManager:

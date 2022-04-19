@@ -24,18 +24,6 @@ class IStore(Interface):
     def updateProduct(self, userId, productId, newProduct):
         pass
 
-    def addRole(self, assignerId, assigneeId, role):
-        pass
-
-    def addDiscount(self, userId, Discount):
-        pass
-
-    def removeDiscount(self, userId, Discount):
-        pass
-
-    def updateDiscount(self, userId, discountId, newDiscount):
-        pass
-
     def addTransaction(self, transaction):
         pass
 
@@ -43,9 +31,6 @@ class IStore(Interface):
         pass
 
     def getStoreTransactionHistory(self):
-        pass
-
-    def editPermission(self, assignerId, assigneeId):
         pass
 
     def getProductsByName(self, productName):
@@ -61,12 +46,6 @@ class IStore(Interface):
         pass
 
     def getProductsByMinRating(self, minRating):
-        pass
-
-    def getProductRating(self, productId):
-        pass
-
-    def setProductRating(self, productId, rating):
         pass
 
     def getStoreRating(self):

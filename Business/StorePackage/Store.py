@@ -1,5 +1,5 @@
 from interface import implements
-from interfaces import IStore
+from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
 from typing import Dict, List
 
@@ -16,12 +16,12 @@ class Store(implements(IStore)):
         self.__numOfRatings = 0
         self.__appointers: Dict[int, List] = {}  # UserId : UserId list
         self.__managers = []  # userId
-        self.__owners = []  # userId
+        self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
         self.__transactions = []  # Transaction
 
-        self.__permissions = {founderId: StorePermission()}  # UserId : storePermission
+        self.__permissions: Dict[int: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
         self.__permissions[founderId].setPermission_AppointOwner(True)
         self.__permissions[founderId].setPermission_CloseStore(True)
@@ -136,6 +136,8 @@ class Store(implements(IStore)):
 
     def appointManagerToStore(self, assignerId, assigneeId):
         permissions = self.__permissions[assignerId]
+        if assignerId == assigneeId:
+            raise Exception("User: ", assigneeId, " cannot assign himself to manager")
         if permissions is None:
             raise Exception("User ", assignerId, " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_AppointManager():
@@ -147,16 +149,24 @@ class Store(implements(IStore)):
         # this constrains is also covert the constrains that for each manager there is 1 assigner
         if assigneeId in self.__managers:
             raise Exception("User ", assigneeId, "is all ready a manger in store: ", self.__name)
+        # to avoid circularity
+        if self.__appointers.get(assigneeId) is not None and assignerId in self.__appointers.get(assigneeId):
+            raise Exception("User ", assigneeId, "cannot assign manager to hwo made him owner in store: ", self.__name)
 
         self.__managers.append(assigneeId)
-        self.__appointers[assigneeId].append(assigneeId)
+        if self.__appointers.get(assignerId) is None:
+            self.__appointers[assignerId] = [assigneeId]
+        else:
+            self.__appointers[assignerId].append(assigneeId)
 
-        permission = StorePermission()
-        permission.setPermission_PurchaseHistoryInformation(True)
-        self.__permissions[assigneeId] = permission
+        if self.__permissions.get(assigneeId) is None:
+            self.__permissions[assigneeId] = StorePermission()
+        self.__permissions[assigneeId].setPermission_PurchaseHistoryInformation(True)
 
     def appointOwnerToStore(self, assignerId, assigneeId):
         permissions = self.__permissions[assignerId]
+        if assignerId == assigneeId:
+            raise Exception("User: ", assigneeId, " cannot assign himself to manager")
         if permissions is None:
             raise Exception("User ", assignerId, " doesn't have any permissions is store:", self.__id)
         if not permissions.hasPermission_AppointOwner():
@@ -168,18 +178,25 @@ class Store(implements(IStore)):
         # this constrains is also covert the constrains that for each owner there is 1 assigner
         if assigneeId in self.__owners:
             raise Exception("User ", assigneeId, "is all ready a owner in store: ", self.__name)
+            # to avoid circularity
+        if self.__appointers.get(assigneeId) is not None and assignerId in self.__appointers.get(assigneeId):
+            raise Exception("User ", assigneeId, "cannot assign owner to hwo made him manager in store: ", self.__name)
 
         self.__owners.append(assigneeId)
-        self.__appointers[assignerId].append(assigneeId)
 
-        ownerPermissions = StorePermission()
-        ownerPermissions.setPermission_StockManagement(True)
-        ownerPermissions.setPermission_AppointManager(True)
-        ownerPermissions.setPermission_AppointOwner(True)
-        ownerPermissions.setPermission_ChangePermission(True)
-        ownerPermissions.setPermission_RolesInformation(True)
-        ownerPermissions.setPermission_PurchaseHistoryInformation(True)
-        self.__permissions[assigneeId] = ownerPermissions
+        if self.__appointers.get(assignerId) is None:
+            self.__appointers[assignerId] = [assigneeId]
+        else:
+            self.__appointers[assignerId].append(assigneeId)
+
+        if self.__permissions.get(assigneeId) is None:
+            self.__permissions[assigneeId] = StorePermission()
+        self.__permissions[assigneeId].setPermission_StockManagement(True)
+        self.__permissions[assigneeId].setPermission_AppointManager(True)
+        self.__permissions[assigneeId].setPermission_AppointOwner(True)
+        self.__permissions[assigneeId].setPermission_ChangePermission(True)
+        self.__permissions[assigneeId].setPermission_RolesInformation(True)
+        self.__permissions[assigneeId].setPermission_PurchaseHistoryInformation(True)
 
     def getRolesInformation(self, userId):
         permissions = self.__permissions[userId]
@@ -189,12 +206,15 @@ class Store(implements(IStore)):
             raise Exception("User ", userId, " doesn't have the permission - get roles information in store: ",
                             self.__name)
         info = "info for store: " + self.__name + ":"
-        for manager in self.__managers:
-            permission = self.__permissions[manager.getId()]
-            info += "\n\tmanagerId:" + manager.getId() + permission.printPermission() + "\n"
-        for owner in self.__owners:
-            permission = self.__permissions[owner.getId()]
-            info += "\n\tmanagerId:" + owner.getId() + permission.printPermission() + "\n"
+        info += "\n founderId: " + str(self.__founderId) + self.__permissions[self.__founderId].printPermission() + "\n"
+        for ownerId in self.__owners:
+            if ownerId != self.__founderId:
+                permission = self.__permissions[ownerId]
+                info += "\n ownerId: " + str(ownerId) + permission.printPermission() + "\n"
+        for managerId in self.__managers:
+            permission = self.__permissions[managerId]
+            info += "\n managerId: " + str(managerId) + permission.printPermission() + "\n"
+        return info
 
     def getPurchaseHistoryInformation(self):
         pass
