@@ -1,7 +1,7 @@
 from interface import implements
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
-from Business.StorePackage.StoreHistory import StoreHistory
+from Business.Transactions.StoreTransaction import StoreHistory
 from typing import Dict, List
 
 

@@ -1,6 +1,3 @@
-from Business.Transaction import Transaction
-
-
 class StoreHistory:
 
     def __init__(self, storeId, storeName):

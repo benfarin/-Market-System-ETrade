@@ -6,7 +6,7 @@ from Business.StorePackage.Store import Store
 from Business.StorePackage.Cart import Cart
 from interfaces.IStore import IStore
 from interfaces.ICart import ICart
-from Business.Transaction import Transaction
+from Business.Transactions.Transaction import Transaction
 
 
 class MyTestCase(unittest.TestCase):
