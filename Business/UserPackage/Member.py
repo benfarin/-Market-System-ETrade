@@ -28,3 +28,7 @@ class Member(User):
 
     def getMemberHistory(self):
         return self.__userHistory
+
+    def getMemberHistory(self,nameMember):
+        member = self.__membersFromCart.get(self.getUserByName(nameMember))
+        return member.getMemberHistory()
