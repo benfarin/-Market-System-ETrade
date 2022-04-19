@@ -59,3 +59,13 @@ class Cart(implements(ICart)):
             if not bag.isEmpty():
                 return False
         return True
+
+    def addProduct(self,storeID, product , quantity):
+        pass
+
+    def removeProduct(self,storeID,product):
+        pass
+
+    def updateProduct(self,storeID,product,quantity): # quantity can be negative!!!
+        pass
+

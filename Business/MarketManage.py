@@ -136,3 +136,7 @@ class MarketManage(implements(IMarket)):
     def updateCart(self, username, removed_product, addedProducts, products_quantity):
        pass
 
+    def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
+        pass
+    def appointOwnerToStore(self,storeID, assignerID , assigneID):# check if the asssigne he member and assignerID!!
+        pass

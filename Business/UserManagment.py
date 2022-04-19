@@ -10,7 +10,7 @@ class UserManagment:
     def guestLogin(self):
         return self.__market.addGuest()
 
-    def guestLogOut(self, guestID):
+    def guestLogOut(self, guestID): #need to remove cart!
         self.__market.getActiveUsers().pop(guestID)
         return True
 
@@ -26,7 +26,7 @@ class UserManagment:
     def memberLogin(self,userName, password):
         try:
             i : Member = Member(None,None,None,None,None)
-            check=False
+            check = False
             for i in self.__members:
                 if (i.getUserName() == userName):
                     if (self.__market.getActiveUsers().get(i) != None):
