@@ -29,3 +29,12 @@ class ICart(Interface):
 
     def getAllProduct(self):
         pass
+
+    def addProduct(self, storeId, product, quantity):
+        pass
+
+    def removeProduct(self, storeId, productId):
+        pass
+
+    def updateProduct(self, storeId, productId, quantity):
+        pass

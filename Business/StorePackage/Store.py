@@ -1,6 +1,7 @@
 from interface import implements
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
+from Business.StorePackage.StoreHistory import StoreHistory
 from typing import Dict, List
 
 
@@ -12,14 +13,12 @@ class Store(implements(IStore)):
         self.__founderId = founderId
         self.__bankAccount = bankAccount
         self.__address = address
-        self.__rating = 0
-        self.__numOfRatings = 0
         self.__appointers: Dict[int, List] = {}  # UserId : UserId list
         self.__managers = []  # userId
         self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__transactions = []  # Transaction
+        self.__storeHistory = StoreHistory(self.__id)
 
         self.__permissions: Dict[int: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
@@ -220,13 +219,13 @@ class Store(implements(IStore)):
         pass
 
     def addTransaction(self, transaction):
-        self.__transactions.append(transaction)
+        self.__storeHistory.addTransaction(transaction)
 
     def removeTransaction(self, transaction):
-        self.__transactions.remove(transaction)
+        self.__storeHistory.removeTransaction(transaction)
 
     def getStoreTransactionHistory(self):
-        return self.__transactions
+        return self.__storeHistory.getStoreTransactionHistory()
 
     def getProductsByName(self, productName):
         toReturnProducts = []
@@ -259,15 +258,6 @@ class Store(implements(IStore)):
             if minRating <= product.getProductRating():
                 toReturnProducts.append(product)
         return toReturnProducts
-
-    def getStoreRating(self):
-        return self.__rating
-
-    def setStoreRating(self, rating):
-        if rating <= 0 or rating >= 5:
-            raise Exception("not a valid rating")
-        self.__rating = (self.__numOfRatings * self.__rating + rating) / (self.__numOfRatings + 1)
-        self.__numOfRatings += 1
 
     def addProductToBag(self, productId, quantity):
         if productId not in self.__products:

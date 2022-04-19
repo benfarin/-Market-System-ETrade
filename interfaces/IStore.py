@@ -48,12 +48,6 @@ class IStore(Interface):
     def getProductsByMinRating(self, minRating):
         pass
 
-    def getStoreRating(self):
-        pass
-
-    def setStoreRating(self, rating):
-        pass
-
     def addProductToBag(self, productId, quantity):
         pass
 

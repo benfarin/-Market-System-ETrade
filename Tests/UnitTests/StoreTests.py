@@ -11,7 +11,7 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.founderId = 0
-        self.store = Store(0, "kfir store", 0, Bank(), Address())
+        self.store = Store(0, "kfir store", 0, Bank(1, 1), Address("", "", "", 1, 1))
 
         self.user1Id = 1
         self.user2Id = 2

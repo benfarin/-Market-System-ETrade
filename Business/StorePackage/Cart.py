@@ -60,12 +60,12 @@ class Cart(implements(ICart)):
                 return False
         return True
 
-    def addProduct(self,storeID, product , quantity):
-        pass
+    def addProduct(self, storeID, product, quantity):
+        self.getBag(storeID).addProduct(product, quantity)
 
-    def removeProduct(self,storeID,product):
-        pass
+    def removeProduct(self, storeID, product):
+        self.getBag(storeID).removeProduct(product)
 
-    def updateProduct(self,storeID,product,quantity): # quantity can be negative!!!
-        pass
+    def updateProduct(self, storeID, productId, quantity):  # quantity can be negative!!!
+        self.getBag(storeID).updateProduct(productId, quantity)
 
