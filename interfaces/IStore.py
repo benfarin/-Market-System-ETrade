@@ -59,3 +59,12 @@ class IStore(Interface):
 
     def appointOwnerToStore(self, assignerId, assigneeId):
         pass
+
+    def setStockManagementPermission(self, assignerId, assigneeId):
+        pass
+
+    def setAppointManagerPermission(self, assignerId, assigneeId):
+        pass
+
+    def setAppointOwnerPermission(self, assignerId, assigneeId):
+        pass

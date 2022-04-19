@@ -28,11 +28,15 @@ class MarketManage(implements(IMarket)):
             self.__products : Dict [int,Product]  = {}
 
     def checkOnlineMember(self, userName):
-        for key in self.__membersFromCart.keys():
-            if (userName == key):
-                if (self.__activeUsers.get(key)):
-                    return True
-        return False
+            check = False
+            for key in self.__membersFromCart.keys():
+                if (userName == key):
+                    check = True
+                    break
+            if check == False:
+                raise Exception("There no member with the name "+ userName)
+            if (self.__activeUsers.get(key)) == None:
+                raise Exception("The member " + userName + " not online!")
 
     def getStoreByName(self,store_name):
         store_collection = []
@@ -114,8 +118,9 @@ class MarketManage(implements(IMarket)):
         self.__membersFromCart[member.getUserID()] = member.getShoppingCart() # maybe need to remove
         return member
 
-    def getStoreHistory(self,userName,storeID):
-        pass
+    def getStoreHistory(self,userName,storeID): # --------------------------------------------------
+        if (self.__activeUsers.get(userName) != None):
+            self.__stores.get(storeID).getPurchaseHistoryInformation()
 
     def removeProductFromCart(self,userName,storeID ,product):
         try:
@@ -152,3 +157,13 @@ class MarketManage(implements(IMarket)):
                 raise Exception("member with id " + assignerID + " is not online!")
         except Exception as e:
             return e
+
+    def setStockManagerPermission(self,storeID ,assignerName, assigneeName):
+       try:
+           if self.checkOnlineMember(assignerName) != None :
+               self.__stores.get(storeID).setAppointManagerPermission(assignerName,assigneeName)
+       except Exception as e:
+           return e
+
+    def setAppointOwnerPermission(self,storeID ,assignerName, assigneeName):
+        
