@@ -6,6 +6,9 @@ class IBag(Interface):
     def isEmpty(self):
         pass
 
+    def getStoreId(self):
+        pass
+
     def addProduct(self, product, quantity):
         pass
 
@@ -23,3 +26,4 @@ class IBag(Interface):
 
     def calcSum(self):
         pass
+

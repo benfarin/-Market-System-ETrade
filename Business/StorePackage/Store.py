@@ -18,7 +18,7 @@ class Store(implements(IStore)):
         self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__storeHistory = StoreHistory(self.__id)
+        self.__storeHistory = StoreHistory(storeId, storeName)
 
         self.__permissions: Dict[int: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
@@ -43,10 +43,16 @@ class Store(implements(IStore)):
     def getStoreManagers(self):
         return self.__managers
 
+    def getProducts(self):
+        return self.__products
+
+    def getProductQuantity(self):
+        return self.__productsQuantity
+
     def setStockManagementPermission(self, assignerId, assigneeId):
         try:
             self.__haveAllPermissions(assignerId, assigneeId)
-            self.__permissions[assigneeId].setPermission_ChangePermission(True)
+            self.__permissions[assigneeId].setPermission_StockManagement(True)
         except Exception as e:
             raise Exception(e)
 
@@ -98,28 +104,29 @@ class Store(implements(IStore)):
             raise Exception("User ", assignerId, "cannot change the permissions of user: ", assigneeId,
                             " because he didn't assign him")
 
-    def addProduct(self, userId, product):
+    def addProductToStore(self, userId, product):
         try:
             self.__checkPermissions_ChangeStock(userId, "add product")
             self.__products[product.getProductId()] = product
+            self.__productsQuantity[product.getProductId()] = 0
         except Exception as e:
             raise Exception(e)
 
-    def addProductQuantity(self, userId, productId, quantity):
+    def addProductQuantityToStore(self, userId, productId, quantity):
         try:
             self.__checkPermissions_ChangeStock(userId, "add product")
             self.__productsQuantity[productId] += quantity
         except Exception as e:
             raise Exception(e)
 
-    def removeProduct(self, userId, productId):
+    def removeProductFromStore(self, userId, productId):
         try:
             self.__checkPermissions_ChangeStock(userId, "remove product")
             self.__products.pop(productId)
         except Exception as e:
             raise Exception(e)
 
-    def updateProduct(self, userId, productId, newProduct):
+    def updateProductFromStore(self, userId, productId, newProduct):
         try:
             self.__checkPermissions_ChangeStock(userId, "update product")
             self.__products[productId] = newProduct
@@ -197,7 +204,8 @@ class Store(implements(IStore)):
         self.__permissions[assigneeId].setPermission_RolesInformation(True)
         self.__permissions[assigneeId].setPermission_PurchaseHistoryInformation(True)
 
-    def getRolesInformation(self, userId):
+    # print all permission in store
+    def PrintRolesInformation(self, userId):
         permissions = self.__permissions[userId]
         if permissions is None:
             raise Exception("User ", userId, " doesn't have any permissions is store:", self.__name)
@@ -215,8 +223,14 @@ class Store(implements(IStore)):
             info += "\n managerId: " + str(managerId) + permission.printPermission() + "\n"
         return info
 
-    def getPurchaseHistoryInformation(self):
-        pass
+    def getPermissions(self, userId):
+        permissions = self.__permissions[userId]
+        if permissions is None:
+            raise Exception("User ", userId, " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_RolesInformation():
+            raise Exception("User ", userId, " doesn't have the permission - get roles information in store: ",
+                            self.__name)
+        return self.__permissions
 
     def addTransaction(self, transaction):
         self.__storeHistory.addTransaction(transaction)
@@ -224,8 +238,24 @@ class Store(implements(IStore)):
     def removeTransaction(self, transaction):
         self.__storeHistory.removeTransaction(transaction)
 
-    def getStoreTransactionHistory(self):
-        return self.__storeHistory.getStoreTransactionHistory()
+    # print all transactions in store
+    def printPurchaseHistoryInformation(self, userId):
+        permissions = self.__permissions[userId]
+        if permissions is None:
+            raise Exception("User ", userId, " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_RolesInformation():
+            raise Exception("User ", userId, " doesn't have the permission - get roles information in store: ",
+                            self.__name)
+        return self.__storeHistory.getPurchaseHistoryInformation()
+
+    def getTransactionHistory(self, userId):
+        permissions = self.__permissions[userId]
+        if permissions is None:
+            raise Exception("User ", userId, " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_RolesInformation():
+            raise Exception("User ", userId, " doesn't have the permission - get roles information in store: ",
+                            self.__name)
+        return self.__storeHistory.getTransactionHistory()
 
     def getProductsByName(self, productName):
         toReturnProducts = []
@@ -253,6 +283,7 @@ class Store(implements(IStore)):
         return toReturnProducts
 
     def getProductsByMinRating(self, minRating):
+        # can be tested only form market and not throw store.
         toReturnProducts = []
         for product in self.__products.values():
             if minRating <= product.getProductRating():
@@ -260,7 +291,7 @@ class Store(implements(IStore)):
         return toReturnProducts
 
     def addProductToBag(self, productId, quantity):
-        if productId not in self.__products:
+        if productId not in self.__products.keys():
             raise Exception("product: ", productId, "cannot be added because he is not in store: ", self.__id)
         if self.__productsQuantity[productId] < quantity:
             return False
@@ -269,6 +300,6 @@ class Store(implements(IStore)):
             return True
 
     def removeProductFromBag(self, productId, quantity):
-        if productId not in self.__products:
+        if productId not in self.__products.keys():
             raise Exception("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         self.__productsQuantity[productId] += quantity

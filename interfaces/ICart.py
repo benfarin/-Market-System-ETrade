@@ -6,9 +6,6 @@ class ICart(Interface):
     def getUserId(self):
         pass
 
-    def isEmpty(self):
-        pass
-
     def getAllBags(self):
         pass
 
@@ -30,11 +27,14 @@ class ICart(Interface):
     def getAllProduct(self):
         pass
 
+    def isEmpty(self):
+        pass
+
     def addProduct(self, storeId, product, quantity):
         pass
 
     def removeProduct(self, storeId, productId):
         pass
 
-    def updateProduct(self, storeId, productId, quantity):
+    def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
         pass

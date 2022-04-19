@@ -3,6 +3,7 @@ from interfaces.ICart import ICart
 from Business.StorePackage.Bag import Bag
 from typing import Dict
 
+
 class Cart(implements(ICart)):
 
     def __init__(self, userId):
@@ -60,12 +61,12 @@ class Cart(implements(ICart)):
                 return False
         return True
 
-    def addProduct(self, storeID, product, quantity):
-        self.getBag(storeID).addProduct(product, quantity)
+    def addProduct(self, storeId, product, quantity):
+        self.getBag(storeId).addProduct(product, quantity)
 
-    def removeProduct(self, storeID, product):
-        self.getBag(storeID).removeProduct(product)
+    def removeProduct(self, storeId, productId):
+        self.getBag(storeId).removeProduct(productId)
 
-    def updateProduct(self, storeID, productId, quantity):  # quantity can be negative!!!
-        self.getBag(storeID).updateProduct(productId, quantity)
+    def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
+        self.getBag(storeId).updateProduct(productId, quantity)
 

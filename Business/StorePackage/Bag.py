@@ -18,7 +18,6 @@ class Bag(implements(IBag)):
     def addProduct(self, product, quantity):
         if quantity <= 0:
             raise Exception("cannot add negative quantity of product")
-        # check if the product is available
         if self.__products.get(product) is None:
             self.__products[product] = quantity
             return True
@@ -29,9 +28,10 @@ class Bag(implements(IBag)):
     def removeProduct(self, productId):
         for product in self.__products.keys():
             if product.getProductId() == productId:
+                quantity = self.__products[product]
                 self.__products.pop(product)
                 self.__cart.updateBag(self)
-                return True
+                return quantity
         raise Exception("no such product in the Bag")
 
     def updateProduct(self, productId, quantity):
