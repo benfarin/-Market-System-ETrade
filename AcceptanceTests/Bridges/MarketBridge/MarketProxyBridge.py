@@ -95,3 +95,8 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.close_store(store_id)
 
+    def search_product(self, product_name, category, price_min, price_max, product_rating, store_rating):
+        if self._real_subject is None:
+            return True
+        return self._real_subject.search_product(product_name, category, price_min, price_max, product_rating, store_rating)
+
