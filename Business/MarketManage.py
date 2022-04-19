@@ -137,6 +137,18 @@ class MarketManage(implements(IMarket)):
        pass
 
     def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
-        pass
+        try:
+            if (self.__activeUsers.get(assignerID) != None) :
+                self.__stores.get(storeID).appointManagerToStore(assigneID,assigneID)
+            else:
+                raise Exception("member with id "+ assignerID +" is not online!")
+        except Exception as e:
+            return e
     def appointOwnerToStore(self,storeID, assignerID , assigneID):# check if the asssigne he member and assignerID!!
-        pass
+        try:
+            if (self.__activeUsers.get(assignerID) != None):
+                self.__stores.get(storeID).appointOwnerToStore(assigneID, assigneID)
+            else:
+                raise Exception("member with id " + assignerID + " is not online!")
+        except Exception as e:
+            return e

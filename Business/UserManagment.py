@@ -64,5 +64,27 @@ class UserManagment:
         if (self.checkOnlineUser(userName)):
             self.__market.getActiveUsers().get(userName).getShoppingCart().addBag(store.getStoreId())
 
+    def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
+        try:
+            if (self.__members.get(assignerID) != None):
+                if(self.__members.get(assigneID) != None):
+                    self.__market.appointManagerToStore(storeID,assignerID,assigneID)
+                else:
+                    raise Exception("assigne ID "+ assigneID + " is not member!")
+            else:
+                raise Exception("assigne ID "+ assignerID + " is not member!")
+        except Exception as e:
+            return e
+    def appointOwnerToStore(self,storeID, assignerID , assigneID):# check if the asssigne he member and assignerID!!
+        try:
+            if (self.__members.get(assignerID) != None):
+                if (self.__members.get(assigneID) != None):
+                    self.__market.appointOwnerToStore(storeID, assignerID, assigneID)
+                else:
+                    raise Exception("assigne ID " + assigneID + " is not member!")
+            else:
+                raise Exception("assigne ID " + assignerID + " is not member!")
+        except Exception as e:
+            return e
 
 

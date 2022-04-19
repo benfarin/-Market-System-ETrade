@@ -53,3 +53,9 @@ class IStore(Interface):
 
     def removeProductFromBag(self, productId, quantity):
         pass
+
+    def appointManagerToStore(self, assignerId, assigneeId):
+        pass
+
+    def appointOwnerToStore(self, assignerId, assigneeId):
+        pass
