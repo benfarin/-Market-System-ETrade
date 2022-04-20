@@ -1,17 +1,24 @@
 import unittest
-from interfaces.ICart import ICart
-from interfaces.IBag import IBag
-from Business.StorePackage.Bag import Bag
+from unittest.mock import MagicMock
 from Business.StorePackage.Cart import Cart
-from Business.StorePackage.Product import Product
 
 
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.cart: ICart = Cart(0)
-        self.p1 = Product(1, "milk", 10, "1")
-        self.p2 = Product(2, "meat", 20, "1")
+        self.cart = Cart(0)
+
+        self.p1 = MagicMock()
+        self.p1.getProductId = MagicMock()
+        self.p1.getProductId.return_value = 1
+        self.p1.getProductPrice = MagicMock()
+        self.p1.getProductPrice.return_value = 10.0
+
+        self.p2 = MagicMock()
+        self.p2.getProductId = MagicMock()
+        self.p2.getProductId.return_value = 2
+        self.p2.getProductPrice = MagicMock()
+        self.p2.getProductPrice.return_value = 20.0
 
     def test_calcSum(self):
         self.cart.addBag(1)
@@ -40,11 +47,12 @@ class MyTestCase(unittest.TestCase):
         self.cart.updateProduct(2, self.p2.getProductId(), -2)
         self.assertEqual(100.0, self.cart.calcSum())
 
-        bag: IBag = Bag(0, 2)
-        bag.addProduct(self.p1, 10)
-        self.cart.updateBag(bag)
+        bag = MagicMock()
+        bag.getStoreId.return_value = 2
+        bag.calcSum.return_value = 120.0
 
-        self.assertEqual(100.0, self.cart.calcSum())
+        self.cart.updateBag(bag)
+        self.assertEqual(120.0, self.cart.calcSum())
 
 
 if __name__ == '__main__':
