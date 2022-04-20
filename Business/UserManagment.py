@@ -88,58 +88,58 @@ class UserManagment(implements(IUser)):
         if (self.checkOnlineUser(assignerID)):
             self.__market.getActiveUsers().get(assignerID).getShoppingCart().addBag(store.getStoreId())
 
-    def appointManagerToStore(self,storeID, userID , assigneID ): # check if the asssigne he member and assignerID!!
+    def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
         try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.appointManagerToStore(storeID,userID,assigneID)
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.appointManagerToStore(storeID,assignerID,assigneID)
         except Exception as e:
             return e
-    def appointOwnerToStore(self,storeID, userID , assigneID):# check if the asssigne he member and assignerID!!
+    def appointOwnerToStore(self,storeID, assignerID , assigneID):# check if the asssigne he member and assignerID!!
         try:
-            self.checkAssigners(userID,assigneID)
-            self.__market.appointOwnerToStore(storeID, userID, assigneID)
-        except Exception as e:
-            return e
-
-    def setStockManagementPermission(self,storeID, userID, assigneID):
-        try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.setStockManagerPermission(storeID, userID, assigneID)
+            self.checkAssigners(assignerID,assigneID)
+            self.__market.appointOwnerToStore(storeID, assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setAppointManagerPermission(self,storeID ,userID, assigneID):
+    def setStockManagementPermission(self,storeID, assignerID, assigneID):
         try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.setAppointOwnerPermission(storeID, userID, assigneID)
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.setStockManagerPermission(storeID, assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setAppointOwnerPermission(self,storeID ,userID, assigneID):
+    def setAppointManagerPermission(self,storeID ,assignerID, assigneID):
         try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.setAppointOwnerPermission(storeID, userID, assigneID)
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.setAppointOwnerPermission(storeID, assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setChangePermission(self,storeID ,userID, assigneID):
+    def setAppointOwnerPermission(self,storeID ,assignerID, assigneID):
         try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.setChangePermission(storeID, userID, assigneID)
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.setAppointOwnerPermission(storeID, assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setRolesInformationPermission(self,storeID, userID, assigneID):
+    def setChangePermission(self,storeID ,assignerID, assigneID):
         try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.setRolesInformationPermission(storeID, userID, assigneID)
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.setChangePermission(storeID, assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setPurchaseHistoryInformationPermission(self,storeID, userID, assigneID):
+    def setRolesInformationPermission(self,storeID, assignerID, assigneID):
         try:
-            self.checkAssigners(userID, assigneID)
-            self.__market.setPurchaseHistoryInformationPermission(storeID, userID, assigneID)
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.setRolesInformationPermission(storeID, assignerID, assigneID)
+        except Exception as e:
+            return e
+
+    def setPurchaseHistoryInformationPermission(self,storeID, assignerID, assigneID):
+        try:
+            self.checkAssigners(assignerID, assigneID)
+            self.__market.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneID)
         except Exception as e:
             return e
 

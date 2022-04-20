@@ -174,7 +174,7 @@ class MarketManage(implements(IMarket)):
         except Exception as e:
             return e
 
-    def setChangePermission(self,storeID, assignerID, assigneeName):
+    def setChangePermission(self,storeID, assignerID, assigneID):
         try:
             if self.checkOnlineMember(assignerID) != None:
                 self.__stores.get(storeID).setChangePermission(assignerID, assigneID)
