@@ -1,33 +1,58 @@
 import unittest
-from Business.Bank import Bank
-from Business.Address import Address
-from Business.StorePackage.Product import Product
+from unittest.mock import MagicMock
 from Business.StorePackage.Store import Store
-from Business.StorePackage.Cart import Cart
-from interfaces.IStore import IStore
-from interfaces.ICart import ICart
-from Business.Transactions.Transaction import Transaction
 
 
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.founderId = 0
-        self.store: IStore = Store(0, "kfir store", 0, Bank(1, 1), Address("", "", "", 1, 1))
+        self.store = Store(0, "kfir store", 0, MagicMock(), MagicMock())
 
         self.user1Id = 1
         self.user2Id = 2
         self.user3Id = 3
         self.user4Id = 4
 
-        self.cart_user1: ICart = Cart(self.user1Id)
-        self.cart_user1.addBag(0)
-        self.cart_user2: ICart = Cart(self.user2Id)
-        self.cart_user2.addBag(0)
-        self.product1 = Product(0, "milk", 10.0, "dairy")
-        self.product2 = Product(1, "beef", 20.0, "meat")
-        self.product3 = Product(2, "milk", 7.0, "dairy")
-        self.product4 = Product(3, "yogurt", 15.5, "dairy")
+        self.product1 = MagicMock()
+        self.product1.getProductId = MagicMock()
+        self.product1.getProductId.return_value = 0
+        self.product1.getProductName = MagicMock()
+        self.product1.getProductName.return_value = "milk"
+        self.product1.getProductPrice = MagicMock()
+        self.product1.getProductPrice.return_value = 10.0
+        self.product1.category = MagicMock()
+        self.product1.getProductCategory.return_value = "dairy"
+
+        self.product2 = MagicMock()
+        self.product2.getProductId = MagicMock()
+        self.product2.getProductId.return_value = 1
+        self.product2.getProductName = MagicMock()
+        self.product2.getProductName.return_value = "beef"
+        self.product2.getProductPrice = MagicMock()
+        self.product2.getProductPrice.return_value = 20.0
+        self.product2.category = MagicMock()
+        self.product2.getProductCategory.return_value = "meat"
+
+        self.product3 = MagicMock()
+        self.product3.getProductId = MagicMock()
+        self.product3.getProductId.return_value = 2
+        self.product3.getProductName = MagicMock()
+        self.product3.getProductName.return_value = "milk"
+        self.product3.getProductPrice = MagicMock()
+        self.product3.getProductPrice.return_value = 7.0
+        self.product3.category = MagicMock()
+        self.product3.getProductCategory.return_value = "dairy"
+
+        self.product4 = MagicMock()
+        self.product4.getProductId = MagicMock()
+        self.product4.getProductId.return_value = 3
+        self.product4.getProductName = MagicMock()
+        self.product4.getProductName.return_value = "yogurt"
+        self.product4.getProductPrice = MagicMock()
+        self.product4.getProductPrice.return_value = 15.5
+        self.product4.category = MagicMock()
+        self.product4.getProductCategory.return_value = "dairy"
 
         # after the appointers we will get: manager = [user1->user2, founder->user1],
         #                                   owners = [founder, founder -> user1, user1->user3]
@@ -111,23 +136,19 @@ class MyTestCase(unittest.TestCase):
 
     def test_update_product(self):
         self.test_add_product_quantity()
-        newProduct = Product(1, 'milk', 5.0, "dairy")
+
+        newProduct = MagicMock()
+        newProduct.getProductId = MagicMock()
+        newProduct.getProductId.return_value = 2
+        newProduct.getProductName = MagicMock()
+        newProduct.getProductName.return_value = "milk"
+        newProduct.getProductPrice = MagicMock()
+        newProduct.getProductPrice.return_value = 7.0
+        newProduct.category = MagicMock()
+        newProduct.getProductCategory.return_value = "dairy"
+
         self.store.updateProductFromStore(self.user1Id, self.product1.getProductId(), newProduct)
         self.assertEqual(newProduct, self.store.getProducts().get(self.product1.getProductId()))
-
-    def test_print_rolesPermission(self):
-        self.test_appoint_managers()
-        print(self.store.PrintRolesInformation(self.user1Id))
-
-    def test_print_PurchaseHistoryInformation(self):
-        self.test_add_product_quantity()
-        transaction1 = Transaction(1, 2, 0, {self.product1: 2, self.product2: 3}, 80.0)
-        transaction2 = Transaction(2, 2, 0, {self.product1: 3, self.product3: 1}, 37.0)
-        transaction3 = Transaction(2, 4, 0, {self.product1: 3, self.product3: 1}, 37.0)
-        self.store.addTransaction(transaction1)
-        self.store.addTransaction(transaction2)
-        self.store.addTransaction(transaction3)
-        print(self.store.printPurchaseHistoryInformation(self.user1Id))
 
     def test_get_product_by_name(self):
         self.test_add_product_quantity()

@@ -8,7 +8,7 @@ class Cart(implements(ICart)):
 
     def __init__(self, userId):
         self.__userId = userId
-        self.__bags : Dict[int,Bag] = {}  # storeId : Bag
+        self.__bags: Dict[int, Bag] = {}  # storeId : Bag
 
     def getUserId(self):
         return self.__userId
@@ -24,7 +24,7 @@ class Cart(implements(ICart)):
 
     def addBag(self, storeId):
         if self.__bags.get(storeId) is None:
-            self.__bags[storeId] = Bag(self, storeId)
+            self.__bags[storeId] = Bag(storeId)
             return True
         else:
             return False
@@ -69,4 +69,3 @@ class Cart(implements(ICart)):
 
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
         self.getBag(storeId).updateProduct(productId, quantity)
-
