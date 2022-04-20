@@ -25,8 +25,18 @@ class User:
     def getShopingCartProducts(self):
         return self._cart.getAllProduct()
 
+
     def userPurchaseCart(self, bank, phone , address): # bank - Bank , phone - string , address ->Address
         pass
+
+    def updateProductInCart(self, storeId, productId, quantity):
+        self._cart.updateProduct(storeId,productId,quantity)
+    def removeProduct(self, storeId, productId):
+        self._cart.removeProduct(storeId,productId)
+
+    def addProduct(self, storeId, product, quantity):
+        self._cart.addProduct( storeId, product, quantity)
+
 
 
 

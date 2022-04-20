@@ -242,9 +242,7 @@ class MarketManage(implements(IMarket)):
 
     def updateProductFromStore(self, userID, productId, newProduct):
         pass
-    def addProducttoCart(self,userId, storeId, product, quantity):
-        try:
-            self.__activeUsers.get(userId)
+
 
 
 
