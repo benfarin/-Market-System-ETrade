@@ -23,7 +23,6 @@ class MarketManage(implements(IMarket)):
     def __init__(self):
             self.__stores : Dict[int,IStore] = {} # <id,Store> should check how to initial all the stores into dictionary
             self.__activeUsers : Dict[str,User] = {} # <name,User> should check how to initial all the activeStores into dictionary
-            self.__history = {} #need be replace by instance
             self.__products : Dict [int,Product]  = {}
 
     def checkOnlineMember(self, userName):

@@ -2,7 +2,18 @@ from Business.MarketManage import MarketManage
 from interfaces import IMarket
 from typing import Dict
 from Business.UserPackage.Member import Member
-class UserManagment:
+from interface import implements
+from interfaces import IUser
+def singleton_dec(class_):
+    instances = {}
+    def getinstance(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_(*args, **kwargs)
+        return instances[class_]
+    return getinstance
+
+@singleton_dec
+class UserManagment(implements(IUser)):
     def __init__(self):
         self.__market : IMarket = MarketManage()
         self.__members : Dict [str, Member] ={}
