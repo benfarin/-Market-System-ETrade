@@ -111,20 +111,20 @@ class MarketManage(implements(IMarket)):
         if (self.__activeUsers.get(userName) != None):
             self.__stores.get(storeID).getPurchaseHistoryInformation()
 
-    def removeProductFromCart(self,userName,storeID ,product):
+    def removeProductFromCart(self,userID,storeID ,product):
         try:
-            if self.__activeUsers.get(userName):
-                quantity = self.__activeUsers.get(userName).getCart().removeProductFromCart(userName,storeID,product)
+            if self.__activeUsers.get(userID):
+                quantity = self.__activeUsers.get(userID).getCart().removeProductFromCart(userID,storeID,product)
                 self.__stores.get(storeID).removeProductFromBag(product.getProductId(),quantity)
             else:
                 raise Exception ("user not online")
         except Exception as e:
             return e
 
-    def updateProductFromCart(self,userName,storeID,product,quantity):
+    def updateProductFromCart(self,userID,storeID,product,quantity):
         try:
-            if self.__activeUsers.get(userName):
-                self.__activeUsers.get(userName).getCart().updateProduct(storeID, product.getProductId(),quantity)
+            if self.__activeUsers.get(userID):
+                self.__activeUsers.get(userID).getCart().updateProduct(storeID, product.getProductId(),quantity)
                 if quantity > 0 :
                     self.__stores.get(storeID).addProductToBag(product.getProductId(),quantity)
                 else:
@@ -134,10 +134,10 @@ class MarketManage(implements(IMarket)):
         except Exception as e:
             return e
 
-    def ChangeProductQuanInCart(self,userName,storeID,product,quantity):
+    def ChangeProductQuanInCart(self,userID,storeID,product,quantity):
         try:
-            if self.__activeUsers.get(userName):
-                self.__activeUsers.get(userName).getCart().changeProductFromCart(userName, storeID, product,quantity)
+            if self.__activeUsers.get(userID):
+                self.__activeUsers.get(userID).getCart().changeProductFromCart(userID, storeID, product,quantity)
             else:
                 raise Exception("user not online")
         except Exception as e:
