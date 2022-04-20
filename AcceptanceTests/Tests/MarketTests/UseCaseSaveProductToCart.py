@@ -13,16 +13,16 @@ class MyTestCase(unittest.TestCase):
         self.user_proxy.register("TestUser", "TestPassword", "TestPassword", "TestEmail")
 
     def test_add_to_cart_positive1(self):
-        self.assertEqual(self.user_proxy.add_product(0, 0), True)
+        self.assertEqual(self.user_proxy.add_product(0, 0, 10), True)
 
     def test_add_to_cart_negative1(self):
-        self.assertEqual(self.user_proxy.add_product(0, 1), False)
+        self.assertEqual(self.user_proxy.add_product(0, 1, 10), False)
 
     def test_add_to_cart_negative2(self):
-        self.assertEqual(self.user_proxy.add_product(1, 0), False)
+        self.assertEqual(self.user_proxy.add_product(1, 0, 10), False)
 
     def test_add_to_cart_negative3(self):
-        self.assertEqual(self.user_proxy.add_product(-1, 0), False)
+        self.assertEqual(self.user_proxy.add_product(-1, 0, 10), False)
 
     def tearDown(self):
         self.market_proxy.close_store(0)
