@@ -80,11 +80,11 @@ class MarketManage(implements(IMarket)):
                 return storeID
         return False
 
-    def addProductToCart(self,userName ,storeID ,product , quantity):
+    def addProductToCart(self,userID ,storeID ,product , quantity):
         try:
-            if(self.checkOnlineMember(userName) != None):
+            if(self.checkOnlineMember(userID) != None):
                 if (self.__stores.get(storeID).addProductToBag(product.getProductId(),quantity)) :
-                    self.__activeUsers.get(userName).getCart().addProduct(storeID,product,quantity)
+                    self.__activeUsers.get(userID).getCart().addProduct(storeID,product,quantity)
         except Exception as e:
             raise Exception(e)
 
@@ -160,66 +160,66 @@ class MarketManage(implements(IMarket)):
         except Exception as e:
             return e
 
-    def setStockManagerPermission(self,storeID ,assignerName, assigneeName):
+    def setStockManagerPermission(self,storeID ,assignerID, assigneID):
        try:
-           if self.checkOnlineMember(assignerName) != None :
-               self.__stores.get(storeID).setAppointManagerPermission(assignerName,assigneeName)
+           if self.checkOnlineMember(assignerID) != None :
+               self.__stores.get(storeID).setAppointManagerPermission(assignerID,assigneID)
        except Exception as e:
            return e
 
-    def setAppointOwnerPermission(self,storeID ,assignerName, assigneeName):
+    def setAppointOwnerPermission(self,storeID ,assignerID, assigneID):
         try:
-            if self.checkOnlineMember(assignerName) != None:
-                self.__stores.get(storeID).setAppointOwnerPermission(assignerName, assigneeName)
+            if self.checkOnlineMember(assignerID) != None:
+                self.__stores.get(storeID).setAppointOwnerPermission(assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setChangePermission(self,storeID, assignerName, assigneeName):
+    def setChangePermission(self,storeID, assignerID, assigneeName):
         try:
-            if self.checkOnlineMember(assignerName) != None:
-                self.__stores.get(storeID).setChangePermission(assignerName, assigneeName)
+            if self.checkOnlineMember(assignerID) != None:
+                self.__stores.get(storeID).setChangePermission(assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setRolesInformationPermission(self,storeID, assignerName, assigneeName):
+    def setRolesInformationPermission(self,storeID, assignerID, assigneID):
         try:
-            if self.checkOnlineMember(assignerName) != None:
-                self.__stores.get(storeID).setRolesInformationPermission(assignerName, assigneeName)
+            if self.checkOnlineMember(assignerID) != None:
+                self.__stores.get(storeID).setRolesInformationPermission(assignerID, assigneID)
         except Exception as e:
             return e
 
-    def setPurchaseHistoryInformationPermission(self,storeID, assignerName, assigneeName):
+    def setPurchaseHistoryInformationPermission(self,storeID, assignerID, assigneID):
         try:
-            if self.checkOnlineMember(assignerName) != None:
-                self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assignerName, assigneeName)
+            if self.checkOnlineMember(assignerID) != None:
+                self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assignerID, assigneID)
         except Exception as e:
             return e
 
-    def addProductToStore(self,storeID , userName, product):
+    def addProductToStore(self,storeID , userID, product):
         try:
-            if self.checkOnlineMember(userName) != None:
-                self.__stores.get(storeID).addProductToStore(userName, product)
+            if self.checkOnlineMember(userID) != None:
+                self.__stores.get(storeID).addProductToStore(userID, product)
         except Exception as e:
             return e
 
-    def addProductQuantityToStore(self, storeID ,userName,product, quantity):
+    def addProductQuantityToStore(self, storeID ,userID,product, quantity):
         try:
-            if self.checkOnlineMember(userName) != None:
-                self.__stores.get(storeID).addProductQuantityToStore(userName, product.getProductId(),quantity)
+            if self.checkOnlineMember(userID) != None:
+                self.__stores.get(storeID).addProductQuantityToStore(userID, product.getProductId(),quantity)
         except Exception as e:
             return e
 
-    def removeProductFromStore(self,storeID , userName, product):
+    def removeProductFromStore(self,storeID , userID, product):
         try:
-            if self.checkOnlineMember(userName) != None:
-                self.__stores.get(storeID).removeProductFromStore(userName, product.getProductId())
+            if self.checkOnlineMember(userID) != None:
+                self.__stores.get(storeID).removeProductFromStore(userID, product.getProductId())
         except Exception as e:
             return e
 
-    def PrintRolesInformation(self,storeID ,userName):
+    def PrintRolesInformation(self,storeID ,userID):
         try:
-            if self.checkOnlineMember(userName) != None:
-                self.__stores.get(storeID).PrintRolesInformation(userName)
+            if self.checkOnlineMember(userID) != None:
+                self.__stores.get(storeID).PrintRolesInformation(userID)
         except Exception as e:
             return e
 
@@ -235,11 +235,11 @@ class MarketManage(implements(IMarket)):
         except Exception as e:
             return e
 
-    def printPurchaseHistoryInformation(self,storeID ,userName):
+    def printPurchaseHistoryInformation(self,storeID ,userID):
         try:
-            self.__stores.get(storeID).printPurchaseHistoryInformation(userName)
+            self.__stores.get(storeID).printPurchaseHistoryInformation(userID)
         except Exception as e:
             return e
 
-    def updateProductFromStore(self, userId, productId, newProduct):
+    def updateProductFromStore(self, userID, productId, newProduct):
         pass
