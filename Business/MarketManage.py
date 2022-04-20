@@ -28,7 +28,6 @@ class MarketManage(implements(IMarket)):
     def checkOnlineMember(self, userName):
             if (self.__activeUsers.get(userName)) == None:
                 raise Exception("The member " + userName + " not online!")
-
     def getStoreByName(self,store_name):
         store_collection = []
         store_names = self.__stores.keys()
