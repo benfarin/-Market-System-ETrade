@@ -13,21 +13,21 @@ class UserService:
         return self.__userManagment. memberSignUp(userName, password, phone, address, bank , icart)
 
 
-    def memberLogin(self,userName, password):
-        return self.__userManagment.memberLogin(userName, password)
+    def memberLogin(self,userID, password):
+        return self.__userManagment.memberLogin(userID, password)
 
-    def logoutMember(self,userName):
-        return self.__userManagment.logoutMember(userName)
-    def checkPassword(self,userName ,password):
-        return self.__userManagment.checkPassword(userName ,password)
-    def checkOnlineUser(self,userName):
-        return self.__userManagment.checkOnlineUser(userName)
+    def logoutMember(self,userID):
+        return self.__userManagment.logoutMember(userID)
+    def checkPassword(self,userID ,password):
+        return self.__userManagment.checkPassword(userID ,password)
+    def checkOnlineUser(self,userID):
+        return self.__userManagment.checkOnlineUser(userID)
 
     def checkAssigners(self, assignerName, assigneName):
         return self.__userManagmentcheckAssigners( assignerName, assigneName)
 
-    def saveProducts(self,userName,store):
-        return self.__userManagment.saveProducts(userName,store)
+    def saveProducts(self,userID,store):
+        return self.__userManagment.saveProducts(userID,store)
 
     def appointManagerToStore(self,storeID, assignerName , assigneName ): # check if the asssigne he member and assignerID!!
         return self.__userManagment.appointManagerToStore(storeID, assignerName , assigneName)

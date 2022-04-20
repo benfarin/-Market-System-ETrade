@@ -5,14 +5,14 @@ class MarketService:
         self.__market: IMarket = MarketManage()
     def addGuest(self):
         self.__market.addGuest()
-    def addProductToCart(self,username,storeId,product,quantity):
-        return self.__market.addProductToCart(username, storeId, product, quantity)
-    def removeProductFromCart(self,userName,storeID ,product):
-        return self.__market.removeProductFromCart(userName,storeID ,product)
-    def updateProductFromCart(self,userName,storeID,product,quantity):
-       return  self.__market.updateProductFromCart(userName,storeID,product,quantity)
-    def checkOnlineMember(self, userName):
-           return self.__market.checkOnlineMember(userName)
+    def addProductToCart(self,userID,storeId,product,quantity):
+        return self.__market.addProductToCart(userID, storeId, product, quantity)
+    def removeProductFromCart(self,userID,storeID ,product):
+        return self.__market.removeProductFromCart(userID,storeID ,product)
+    def updateProductFromCart(self,userID,storeID,product,quantity):
+       return  self.__market.updateProductFromCart(userID,storeID,product,quantity)
+    def checkOnlineMember(self, userID):
+           return self.__market.checkOnlineMember(userID)
 
     def getStoreByName(self,store_name):
         return self.__market.getStoreByName(store_name)
@@ -32,8 +32,8 @@ class MarketService:
     def getUserByName(self,userName):
         return self.__market.getUserByName(userName)
 
-    def createStore(self,storeName, userName, bankAccount, address):
-        return  self.__market.createStore(storeName, userName, bankAccount, address)
+    def createStore(self,storeName, userID, bankAccount, address):
+        return  self.__market.createStore(storeName, userID, bankAccount, address)
 
     def getStores(self):
         return self.__market.getStores()
@@ -44,20 +44,20 @@ class MarketService:
     def getProducts(self):
         return self.__market.getProducts()
 
-    def addMember(self,userName, password, phone, address, bank):
-         self.__market.addMember(userName, password, phone, address, bank)
+    def addMember(self,userID, password, phone, address, bank):
+         self.__market.addMember(userID, password, phone, address, bank)
 
-    def getStoreHistory(self,userName,storeID): # --------------------------------------------------
-        return self.__market.getStoreHistory(userName,storeID)
+    def getStoreHistory(self,userID,storeID): # --------------------------------------------------
+        return self.__market.getStoreHistory(userID,storeID)
 
-    def removeProductFromCart(self,userName,storeID ,product):
-         self.__market.removeProductFromCart(userName,storeID ,product)
+    def removeProductFromCart(self,userID,storeID ,product):
+         self.__market.removeProductFromCart(userID,storeID ,product)
 
-    def updateProductFromCart(self,userName,storeID,product,quantity):
-        self.__market.updateProductFromCart(userName,storeID,product,quantity)
+    def updateProductFromCart(self,userID,storeID,product,quantity):
+        self.__market.updateProductFromCart(userID,storeID,product,quantity)
 
-    def ChangeProductQuanInCart(self,userName,storeID,product,quantity):
-        return self.__market.ChangeProductQuanInCart(userName,storeID,product,quantity)
+    def ChangeProductQuanInCart(self,userID,storeID,product,quantity):
+        return self.__market.ChangeProductQuanInCart(userID,storeID,product,quantity)
 
     def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
         return self.__market.appointManagerToStore(storeID, assignerID , assigneID )
@@ -79,17 +79,17 @@ class MarketService:
     def setPurchaseHistoryInformationPermission(self,storeID, assignerName, assigneeName):
         return self.__market.setPurchaseHistoryInformationPermission(storeID, assignerName, assigneeName)
 
-    def addProductToStore(self,storeID , userName, product):
-        return self.__market.addProductToStore(storeID , userName, product)
+    def addProductToStore(self,storeID , userID, product):
+        return self.__market.addProductToStore(storeID , userID, product)
 
-    def addProductQuantityToStore(self, storeID ,userName,product, quantity):
-        return self.__market.addProductQuantityToStore(storeID ,userName,product, quantity)
+    def addProductQuantityToStore(self, storeID ,userID,product, quantity):
+        return self.__market.addProductQuantityToStore(storeID ,userID,product, quantity)
 
-    def removeProductFromStore(self,storeID , userName, product):
-        return self.__market.removeProductFromStore(storeID , userName, product)
+    def removeProductFromStore(self,storeID , userID, product):
+        return self.__market.removeProductFromStore(storeID , userID, product)
 
-    def PrintRolesInformation(self,storeID ,userName):
-        return self.__market.PrintRolesInformation(storeID ,userName)
+    def PrintRolesInformation(self,storeID ,userID):
+        return self.__market.PrintRolesInformation(storeID ,userID)
 
     def addTransaction(self,storeID ,transaction):
         return self.__market.addTransaction(storeID ,transaction)
@@ -97,8 +97,8 @@ class MarketService:
     def removeTransaction(self,storeID ,transaction):
         return self.__market.removeTransaction(storeID ,transaction)
 
-    def printPurchaseHistoryInformation(self,storeID ,userName):
-         return self.__market.printPurchaseHistoryInformation(storeID ,userName)
+    def printPurchaseHistoryInformation(self,storeID ,userID):
+         return self.__market.printPurchaseHistoryInformation(storeID ,userID)
 
     def updateProductFromStore(self, userId, productId, newProduct):
         return self.__market.updateProductFromStore(userId, productId, newProduct)
