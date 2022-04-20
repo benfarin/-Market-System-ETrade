@@ -5,8 +5,6 @@ class MarketService:
         self.__market: IMarket = MarketManage()
     def addGuest(self):
         self.__market.addGuest()
-    def removeGuest(self,username): #do we need?
-
     def addProductToCart(self,username,storeId,product,quantity):
         return self.__market.addProductToCart(username, storeId, product, quantity)
     def removeProductFromCart(self,userName,storeID ,product):
