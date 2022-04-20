@@ -64,20 +64,20 @@ class MarketService:
     def appointOwnerToStore(self,storeID, assignerID , assigneID):# check if the asssigne he member and assignerID!!
         return self.__market.appointOwnerToStore(storeID, assignerID , assigneID)
 
-    def setStockManagerPermission(self,storeID ,assignerName, assigneeName):
-       return self.__market.setStockManagerPermission(storeID ,assignerName, assigneeName)
+    def setStockManagerPermission(self,storeID ,assignerID, assigneeID):
+       return self.__market.setStockManagerPermission(storeID ,assignerID, assigneeID)
 
-    def setAppointOwnerPermission(self,storeID ,assignerName, assigneeName):
-        return self.__market.setAppointOwnerPermission(storeID ,assignerName, assigneeName)
+    def setAppointOwnerPermission(self,storeID ,assignerID, assigneeID):
+        return self.__market.setAppointOwnerPermission(storeID ,assignerID, assigneeID)
 
-    def setChangePermission(self,storeID, assignerName, assigneeName):
-        return self.__market.setChangePermission(storeID, assignerName, assigneeName)
+    def setChangePermission(self,storeID, assignerID, assigneeID):
+        return self.__market.setChangePermission(storeID, assignerID, assigneeID)
 
-    def setRolesInformationPermission(self,storeID, assignerName, assigneeName):
-        self.__market.setRolesInformationPermission(storeID, assignerName, assigneeName)
+    def setRolesInformationPermission(self,storeID, assignerID, assigneeID):
+        self.__market.setRolesInformationPermission(storeID, assignerID, assigneID)
 
-    def setPurchaseHistoryInformationPermission(self,storeID, assignerName, assigneeName):
-        return self.__market.setPurchaseHistoryInformationPermission(storeID, assignerName, assigneeName)
+    def setPurchaseHistoryInformationPermission(self,storeID, assignerID, assigneeID):
+        return self.__market.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeID)
 
     def addProductToStore(self,storeID , userID, product):
         return self.__market.addProductToStore(storeID , userID, product)
