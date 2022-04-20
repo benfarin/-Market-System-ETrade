@@ -14,11 +14,13 @@ class UserManagment:
         self.__market.getActiveUsers().pop(guestID)
         return True
 
-    def memberSignUp(self,userName, password, phone, address, bank): #address is an object of "Adress"
+    def memberSignUp(self,userName, password, phone, address, bank , icart): #address is an object of "Adress"
         if(self.__members.get(userName) == None):
             member =  self.__market.addMember(userName, password, phone, address, bank)
             if(member):
                 self.__members[userName] = member
+                if icart != None:
+                    member.setICart(icart)
                 return member
         return None
 
@@ -33,6 +35,7 @@ class UserManagment:
                         self.__market.getActiveUsers()[i] = i
                         check = True
                         i.setLoggedIn(True)
+                        i.setMemberCheck(True)
                     else:
                         raise Exception("member allready login")
             if (check == False):
@@ -44,6 +47,7 @@ class UserManagment:
     def logoutMember(self,userName):
         self.__market.getActiveUsers().pop(userName)
         self.__members.get(userName).setLoggedIn(False)
+        self.__members.get(userName).setMemberCheck(False)
         return self.guestLogin()
 
     def checkPassword(self,userName ,password):
@@ -60,31 +64,73 @@ class UserManagment:
         else:
            return False
 
+    def checkAssigners(self, assignerName, assigneName):
+        try:
+            if (self.__members.get(assignerName) == None):
+                raise Exception("assigner " + assignerName + " name not good!")
+            if (self.__members.get(assigneName) == None):
+                raise Exception("assigne " + assigneName + " name not good!")
+        except Exception as e:
+            return e
+
     def saveProducts(self,userName,store):
         if (self.checkOnlineUser(userName)):
             self.__market.getActiveUsers().get(userName).getShoppingCart().addBag(store.getStoreId())
 
-    def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
+    def appointManagerToStore(self,storeID, assignerName , assigneName ): # check if the asssigne he member and assignerID!!
         try:
-            if (self.__members.get(assignerID) != None):
-                if(self.__members.get(assigneID) != None):
-                    self.__market.appointManagerToStore(storeID,assignerID,assigneID)
-                else:
-                    raise Exception("assigne ID "+ assigneID + " is not member!")
-            else:
-                raise Exception("assigne ID "+ assignerID + " is not member!")
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.appointManagerToStore(storeID,assignerName,assigneName)
         except Exception as e:
             return e
-    def appointOwnerToStore(self,storeID, assignerID , assigneID):# check if the asssigne he member and assignerID!!
+    def appointOwnerToStore(self,storeID, assignerName , assigneName):# check if the asssigne he member and assignerID!!
         try:
-            if (self.__members.get(assignerID) != None):
-                if (self.__members.get(assigneID) != None):
-                    self.__market.appointOwnerToStore(storeID, assignerID, assigneID)
-                else:
-                    raise Exception("assigne ID " + assigneID + " is not member!")
-            else:
-                raise Exception("assigne ID " + assignerID + " is not member!")
+            self.checkAssigners(assignerName,assigneName)
+            self.__market.appointOwnerToStore(storeID, assignerName, assigneName)
         except Exception as e:
             return e
+
+    def setStockManagementPermission(self,storeID, assignerName, assigneName):
+        try:
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.setStockManagerPermission(storeID, assignerName, assigneName)
+        except Exception as e:
+            return e
+
+    def setAppointManagerPermission(self,storeID ,assignerName, assigneName):
+        try:
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.setAppointOwnerPermission(storeID, assignerName, assigneName)
+        except Exception as e:
+            return e
+
+    def setAppointOwnerPermission(self,storeID ,assignerName, assigneName):
+        try:
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.setAppointOwnerPermission(storeID, assignerName, assigneName)
+        except Exception as e:
+            return e
+
+    def setChangePermission(self,storeID ,assignerName, assigneName):
+        try:
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.setChangePermission(storeID, assignerName, assigneName)
+        except Exception as e:
+            return e
+
+    def setRolesInformationPermission(self,storeID, assignerName, assigneName):
+        try:
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.setRolesInformationPermission(storeID, assignerName, assigneName)
+        except Exception as e:
+            return e
+
+    def setPurchaseHistoryInformationPermission(self,storeID, assignerName, assigneName):
+        try:
+            self.checkAssigners(assignerName, assigneName)
+            self.__market.setPurchaseHistoryInformationPermission(storeID, assignerName, assigneName)
+        except Exception as e:
+            return e
+
 
 

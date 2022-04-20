@@ -23,19 +23,11 @@ class MarketManage(implements(IMarket)):
     def __init__(self):
             self.__stores : Dict[int,IStore] = {} # <id,Store> should check how to initial all the stores into dictionary
             self.__activeUsers : Dict[str,User] = {} # <name,User> should check how to initial all the activeStores into dictionary
-            self.__membersFromCart : Dict[str,ICart] ={}  # <name,Icart> should check how to initial all the stores into dictionary
             self.__history = {} #need be replace by instance
             self.__products : Dict [int,Product]  = {}
 
     def checkOnlineMember(self, userName):
-            check = False
-            for key in self.__membersFromCart.keys():
-                if (userName == key):
-                    check = True
-                    break
-            if check == False:
-                raise Exception("There no member with the name "+ userName)
-            if (self.__activeUsers.get(key)) == None:
+            if (self.__activeUsers.get(userName)) == None:
                 raise Exception("The member " + userName + " not online!")
 
     def getStoreByName(self,store_name):
@@ -89,13 +81,12 @@ class MarketManage(implements(IMarket)):
                 return True
         return False
 
-    def addProductToCart(self,username,storeID ,product,quantity):
+    def addProductToCart(self,userName,storeID ,product,quantity):
         try:
-            if(self.__activeUsers.get(username) ):
+            if(self.checkOnlineMember(userName) != None):
                 if (self.__stores.get(storeID).addProductToBag(product.getProductId(),quantity)) :
-                    bag : Bag= self.__membersFromCart.get(username).getBag(storeID)
-                    bag.addProduct(product,quantity)
-        except Exception as e :
+                    self.__activeUsers.get(userName).getCart().addProduct(storeID,product,quantity)
+        except Exception as e:
             raise Exception(e)
 
     def getStores(self):
@@ -115,7 +106,6 @@ class MarketManage(implements(IMarket)):
     def addMember(self,userName, password, phone, address, bank):
         member = Member(userName, password, phone, address, bank)
         self.__activeUsers[member.getUserID()] = member
-        self.__membersFromCart[member.getUserID()] = member.getShoppingCart() # maybe need to remove
         return member
 
     def getStoreHistory(self,userName,storeID): # --------------------------------------------------
@@ -125,21 +115,34 @@ class MarketManage(implements(IMarket)):
     def removeProductFromCart(self,userName,storeID ,product):
         try:
             if self.__activeUsers.get(userName):
-                self.__activeUsers.get(userName).getShoppingCart().removeProductFromCart(userName,storeID,product)
+                quantity = self.__activeUsers.get(userName).getCart().removeProductFromCart(userName,storeID,product)
+                self.__stores.get(storeID).removeProductFromBag(product.getProductId(),quantity)
             else:
                 raise Exception ("user not online")
         except Exception as e:
             return e
-    def ChangeProductQuanInCart(self,userName,storeID,product,quantity):
+
+    def updateProductFromCart(self,userName,storeID,product,quantity):
         try:
             if self.__activeUsers.get(userName):
-                self.__activeUsers.get(userName).getShoppingCart().changeProductFromCart(userName, storeID, product,quantity)
+                self.__activeUsers.get(userName).getCart().updateProduct(storeID, product.getProductId(),quantity)
+                if quantity > 0 :
+                    self.__stores.get(storeID).addProductToBag(product.getProductId(),quantity)
+                else:
+                    self.__stores.get(storeID).removeProductFromBag(product.getProductId(),quantity)
             else:
                 raise Exception("user not online")
         except Exception as e:
             return e
-    def updateCart(self, username, removed_product, addedProducts, products_quantity):
-       pass
+
+    def ChangeProductQuanInCart(self,userName,storeID,product,quantity):
+        try:
+            if self.__activeUsers.get(userName):
+                self.__activeUsers.get(userName).getCart().changeProductFromCart(userName, storeID, product,quantity)
+            else:
+                raise Exception("user not online")
+        except Exception as e:
+            return e
 
     def appointManagerToStore(self,storeID, assignerID , assigneID ): # check if the asssigne he member and assignerID!!
         try:
@@ -166,4 +169,78 @@ class MarketManage(implements(IMarket)):
            return e
 
     def setAppointOwnerPermission(self,storeID ,assignerName, assigneeName):
-        
+        try:
+            if self.checkOnlineMember(assignerName) != None:
+                self.__stores.get(storeID).setAppointOwnerPermission(assignerName, assigneeName)
+        except Exception as e:
+            return e
+
+    def setChangePermission(self,storeID, assignerName, assigneeName):
+        try:
+            if self.checkOnlineMember(assignerName) != None:
+                self.__stores.get(storeID).setChangePermission(assignerName, assigneeName)
+        except Exception as e:
+            return e
+
+    def setRolesInformationPermission(self,storeID, assignerName, assigneeName):
+        try:
+            if self.checkOnlineMember(assignerName) != None:
+                self.__stores.get(storeID).setRolesInformationPermission(assignerName, assigneeName)
+        except Exception as e:
+            return e
+
+    def setPurchaseHistoryInformationPermission(self,storeID, assignerName, assigneeName):
+        try:
+            if self.checkOnlineMember(assignerName) != None:
+                self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assignerName, assigneeName)
+        except Exception as e:
+            return e
+
+    def addProductToStore(self,storeID , userName, product):
+        try:
+            if self.checkOnlineMember(userName) != None:
+                self.__stores.get(storeID).addProductToStore(userName, product)
+        except Exception as e:
+            return e
+
+    def addProductQuantityToStore(self, storeID ,userName,product, quantity):
+        try:
+            if self.checkOnlineMember(userName) != None:
+                self.__stores.get(storeID).addProductQuantityToStore(userName, product.getProductId(),quantity)
+        except Exception as e:
+            return e
+
+    def removeProductFromStore(self,storeID , userName, product):
+        try:
+            if self.checkOnlineMember(userName) != None:
+                self.__stores.get(storeID).removeProductFromStore(userName, product.getProductId())
+        except Exception as e:
+            return e
+
+    def PrintRolesInformation(self,storeID ,userName):
+        try:
+            if self.checkOnlineMember(userName) != None:
+                self.__stores.get(storeID).PrintRolesInformation(userName)
+        except Exception as e:
+            return e
+
+    def addTransaction(self,storeID ,transaction):
+        try:
+            self.__stores.get(storeID).addTransaction(transaction)
+        except Exception as e:
+            return e
+
+    def removeTransaction(self,storeID ,transaction):
+        try:
+            self.__stores.get(storeID).removeTransaction(transaction)
+        except Exception as e:
+            return e
+
+    def printPurchaseHistoryInformation(self,storeID ,userName):
+        try:
+            self.__stores.get(storeID).printPurchaseHistoryInformation(userName)
+        except Exception as e:
+            return e
+
+    def updateProductFromStore(self, userId, productId, newProduct):
+        pass

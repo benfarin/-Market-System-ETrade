@@ -1,7 +1,6 @@
 from Business.UserPackage.User import User
 
 
-
 class Member(User):
     def __init__(self, userName, password, phone, address, bank):
         super().__init__() # extend the constructor of user class
@@ -34,3 +33,4 @@ class Member(User):
     def getMemberHistory(self,nameMember):
         member = self.__membersFromCart.get(self.getUserByName(nameMember))
         return member.getMemberHistory()
+
