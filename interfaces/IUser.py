@@ -2,7 +2,7 @@ from interface import implements, Interface
 class IUser(Interface):
    def guestLogin(self):
       pass
-    def guestLogOut(self, guestID):
+   def guestLogOut(self, guestID):
        pass
 
    def memberSignUp(self, userName, password, phone, address, bank, icart):
