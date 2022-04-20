@@ -23,7 +23,7 @@ class UserService:
     def checkOnlineUser(self,userID):
         return self.__userManagment.checkOnlineUser(userID)
 
-    def checkAssigners(self, assignerID, assigneID):
+        def checkAssigners(self, assignerID, assigneID):
         return self.__userManagmentcheckAssigners( assignerID, assigneID)
 
     def saveProducts(self,userID,store):
