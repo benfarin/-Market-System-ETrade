@@ -1,7 +1,7 @@
 from interfaces.IStore import IStore
 from Business.StorePackage.Store import Store
 from interfaces.ICart import ICart
-from  interfaces import IMarket
+from  interfaces.IMarket import IMarket
 from interface import implements
 from Business.UserPackage.User import User
 from Business.UserPackage.Member import Member
@@ -70,17 +70,17 @@ class MarketManage(implements(IMarket)):
     def getUserByName(self,userName):
         return self.__activeUsers.get(userName)
 
-    def createStore(self,storeName, userName, bankAccount, address):
-        if (self.checkOnlineMember(userName)):
+    def createStore(self,storeName, userID ,bank ,address):
+        if (self.checkOnlineMember(userID)):
             storeID = uuid.uuid4()
-            userID = self.__activeUsers.get(userName)
+            userID = self.__activeUsers.get(userID)
             if(userID != None):
-                newStore = Store(storeID,storeName, userID)
+                newStore = Store(storeID,storeName,userID,bank,address)
                 self.__stores[storeID] = newStore
-                return True
+                return storeID
         return False
 
-    def addProductToCart(self,userName,storeID ,product,quantity):
+    def addProductToCart(self,userName ,storeID ,product , quantity):
         try:
             if(self.checkOnlineMember(userName) != None):
                 if (self.__stores.get(storeID).addProductToBag(product.getProductId(),quantity)) :
