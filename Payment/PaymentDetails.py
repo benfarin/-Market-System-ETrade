@@ -5,4 +5,3 @@ class PaymentDetails:
         self.__recieverBankAccount = recieverBankAccount
         self.__storeID=storeID
         self.__paymentAmount = paymentAmount
-        
