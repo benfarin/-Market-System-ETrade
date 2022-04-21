@@ -5,12 +5,11 @@ from typing import Dict
 
 class Transaction:
 
-    def __init__(self, transactionId, userId, storeId, products, amount):
+    def __init__(self, transactionId, userId, products, amount):
         self.__transactionId = transactionId
         self.__userId = userId
-        self.__storeId = storeId
         self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
-        self.__products: Dict[Product: int] = products
+        self.__products: Dict[int: Dict[Product: int]] = products  # [storeId : [Product: quantity]]
         self.__amount = amount
 
     def __str__(self):
@@ -18,8 +17,10 @@ class Transaction:
         info += "\n\t" + "userId: " + str(self.__userId)
         info += "\n\t" + "date: " + str(self.__date)
         info += "\n\t" + "products: "
-        for product in self.__products.keys():
-            info += "\n\t\tname: " + product.getProductName() + ", price: " + str(product.getProductPrice()) + ", amount: " + str(self.__products[product])
+        for storeId in self.__products.keys():
+            info += "\n\t\tstoreId: " + str(storeId)
+            for product in self.__products[storeId]:
+                info += "\n\t\t\tname: " + product.getProductName() + ", price: " + str(product.getProductPrice()) + ", amount: " + str(self.__products[product])
         info += "\n\ttotal amount: " + str(self.__amount) + "\n"
         return info
 

@@ -1,6 +1,7 @@
 from interface import implements
 from interfaces.ICart import ICart
 from Business.StorePackage.Bag import Bag
+from Business.StorePackage.Product import Product
 from typing import Dict
 
 
@@ -21,13 +22,6 @@ class Cart(implements(ICart)):
             return self.__bags[storeId]
         except:
             raise Exception("storeId does not exists, can't add the bag to the cart")
-
-    def addBag(self, storeId):
-        if self.__bags.get(storeId) is None:
-            self.__bags[storeId] = Bag(storeId)
-            return True
-        else:
-            return False
 
     def removeBag(self, storeId):
         if self.__bags.get(storeId) is not None:
@@ -62,10 +56,29 @@ class Cart(implements(ICart)):
         return True
 
     def addProduct(self, storeId, product, quantity):
+        if self.__bags.get(storeId) is None:
+            self.__bags[storeId] = Bag(storeId)
         self.getBag(storeId).addProduct(product, quantity)
 
     def removeProduct(self, storeId, productId):
-        self.getBag(storeId).removeProduct(productId)
+        quantity = self.getBag(storeId).removeProduct(productId)
+        if self.getBag(storeId).isEmpty():
+            self.removeBag(storeId)
+        return quantity
 
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
+        if self.__bags.get(storeId) is None:
+            raise Exception("can't update a product without a bag to his store")
         self.getBag(storeId).updateProduct(productId, quantity)
+        if self.getBag(storeId).isEmpty():
+            self.removeBag(storeId)
+
+    def cleanCart(self):
+        for bag in self.__bags.values():
+            bag.cleanBag()
+
+    def getAllProducts(self):
+        products: Dict[int, Dict[Product, int]] = {}  # [storeId: [product : quantity]]
+        for bag in self.__bags.values():
+            products.update({bag.getStoreId(): bag.getProducts()})
+        return products

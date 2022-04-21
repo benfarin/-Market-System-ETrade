@@ -27,3 +27,6 @@ class IBag(Interface):
     def calcSum(self):
         pass
 
+    def cleanBag(self):
+        pass
+

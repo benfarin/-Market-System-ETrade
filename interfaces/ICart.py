@@ -12,9 +12,6 @@ class ICart(Interface):
     def getBag(self, storeId):
         pass
 
-    def addBag(self, storeId):
-        pass
-
     def removeBag(self, storeId):
         pass
 
@@ -37,4 +34,7 @@ class ICart(Interface):
         pass
 
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
+        pass
+
+    def cleanCart(self):
         pass

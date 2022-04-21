@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from Business.StorePackage.Cart import Cart
+from Business.StorePackage.Product import Product
 
 
 class MyTestCase(unittest.TestCase):
@@ -21,23 +22,15 @@ class MyTestCase(unittest.TestCase):
         self.p2.getProductPrice.return_value = 20.0
 
     def test_calcSum(self):
-        self.cart.addBag(1)
-        self.cart.addBag(2)
-        self.bag1 = self.cart.getBag(1)
         self.cart.addProduct(1, self.p1, 1)
         self.cart.addProduct(1, self.p2, 2)
-        self.bag2 = self.cart.getBag(1)
         self.cart.addProduct(2, self.p2, 5)
 
         self.assertEqual(150.0, self.cart.calcSum())
 
     def test_all(self):
-        self.cart.addBag(1)
-        self.cart.addBag(2)
-        self.bag1 = self.cart.getBag(1)
         self.cart.addProduct(1, self.p1, 1)
         self.cart.addProduct(1, self.p2, 2)
-        self.bag2 = self.cart.getBag(1)
         self.cart.addProduct(2, self.p2, 5)
 
         self.cart.removeBag(1)

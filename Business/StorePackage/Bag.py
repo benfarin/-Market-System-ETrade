@@ -55,3 +55,6 @@ class Bag(implements(IBag)):
             s += p.getProductPrice() * self.__products[p]
         return s
 
+    def cleanBag(self):
+        self.__products = {}
+
