@@ -27,5 +27,11 @@ class Product:
     def setProductCategory(self, category):
         self.__category = category
 
+    def printForEvents(self):
+        productStr = "\n\t\t\tid: " + str(self.__id)
+        productStr += "\n\t\t\tname: " + self.__name
+        productStr += "\n\t\t\tprice: " + str(self.__price)
+        return productStr + "\n\t\t\tcategory: " + self.__category
+
 
 

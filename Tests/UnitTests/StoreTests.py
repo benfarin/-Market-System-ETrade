@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from Business.StorePackage.Store import Store
-from Business.Transactions.Transaction import Transaction
 
 
 class MyTestCase(unittest.TestCase):
