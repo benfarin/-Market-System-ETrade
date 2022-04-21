@@ -8,7 +8,7 @@ def singleton_dec(class_):
 
 @singleton_dec
 class PaymentSystem(implements(IMarket)):
-    
+
     def CancelPayment(self,paymentId) :
             return generatePaymentId()
 
