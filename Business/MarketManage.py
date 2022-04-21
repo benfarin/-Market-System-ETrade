@@ -243,6 +243,61 @@ class MarketManage(implements(IMarket)):
     def updateProductFromStore(self, userID, productId, newProduct):
         pass
 
+    def removeBag(self,storeID,userID):
+        try:
+            if (self.__activeUsers.get(userID) != None):
+                return self.__activeUsers.get(userID).getCart().removeBag(storeID)
+            else:
+                raise Exception("The user is not online!")
+        except Exception as e:
+            return e
+
+    def updateBag(self,bag,userID):
+        try:
+            if (self.__activeUsers.get(userID) != None):
+                return self.__activeUsers.get(userID).getCart().updateBag(bag)
+            else:
+                raise Exception("The user is not online!")
+        except Exception as e:
+            return e
+
+    def getAllProducts(self,userID):
+        try:
+            if (self.__activeUsers.get(userID) != None):
+                return self.__activeUsers.get(userID).getCart().getAllProduct()
+            else:
+                raise Exception("The user is not online!")
+        except Exception as e:
+            return e
+
+    def isEmpty(self,userID):
+        try:
+            if (self.__activeUsers.get(userID) != None):
+                return self.__activeUsers.get(userID).getCart().isEmpty()
+            else:
+                raise Exception("The user is not online!")
+        except Exception as e:
+            return e
+
+    def calcSum(self,userID):
+        try:
+            if (self.__activeUsers.get(userID) != None):
+                return self.__activeUsers.get(userID).getCart().calcSum()
+            else:
+                raise Exception("The user is not online!")
+        except Exception as e:
+            return e
+
+    def getBag(self, storeId):
+        pass
+
+    def getAllBags(self):
+        pass
+
+
+
+
+
 
 
 

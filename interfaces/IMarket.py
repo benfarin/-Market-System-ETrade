@@ -87,3 +87,20 @@ class IMarket(Interface):
 
     def updateProductFromStore(self, userID, productId, newProduct):
         pass
+
+
+    def removeBag(self, storeID, userID):
+        pass
+
+    def updateBag(self, bag, userID):
+        pass
+
+    def getAllProducts(self, userID):
+        pass
+
+    def isEmpty(self, userID):
+        pass
+
+    def calcSum(self, userID):
+        pass
+

@@ -4,6 +4,7 @@ from typing import Dict
 from Business.UserPackage.Member import Member
 from interface import implements
 from interfaces import IUser
+from Business.UserPackage.SystemManager import SystemManager
 def singleton_dec(class_):
     instances = {}
     def getinstance(*args, **kwargs):
@@ -17,9 +18,18 @@ class UserManagment(implements(IUser)):
     def __init__(self):
         self.__market : IMarket = MarketManage()
         self.__members : Dict [str, Member] ={}
+        self.__systemManager : Dict [str, SystemManager] ={}
+
+
 
     def guestLogin(self):
-        return self.__market.addGuest()
+        try:
+            if (len(self.__systemManager)>0):
+                return self.__market.addGuest()
+            else:
+                raise Exception("There no system manager!")
+        except Exception as e:
+            return e
 
     def guestLogOut(self, guestID): #need to remove cart!
         self.__market.getActiveUsers().pop(guestID)
@@ -38,20 +48,23 @@ class UserManagment(implements(IUser)):
 
     def memberLogin(self,userID, password):
         try:
-            i : Member = Member(None,None,None,None,None)
-            check = False
-            for i in self.__members:
-                if (i.getUserName() == userID):
-                    if (self.__market.getActiveUsers().get(i) != None):
-                        self.__market.getActiveUsers()[i] = i
-                        check = True
-                        i.setLoggedIn(True)
-                        i.setMemberCheck(True)
-                    else:
-                        raise Exception("member allready login")
-            if (check == False):
-                raise Exception("The user ID "+ userID  + " not available!")
-            self.checkPassword(userID,password)
+            if (len(self.__systemManager) > 0):
+                i : Member = Member(None,None,None,None,None)
+                check = False
+                for i in self.__members:
+                    if (i.getUserName() == userID):
+                        if (self.__market.getActiveUsers().get(i) != None):
+                            self.__market.getActiveUsers()[i] = i
+                            check = True
+                            i.setLoggedIn(True)
+                            i.setMemberCheck(True)
+                        else:
+                            raise Exception("member allready login")
+                if (check == False):
+                    raise Exception("The user ID "+ userID  + " not available!")
+                self.checkPassword(userID,password)
+            else:
+                raise Exception("There no system manager!")
         except Exception as e:
             return e
 
