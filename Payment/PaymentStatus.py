@@ -4,5 +4,5 @@ class PaymentStatus:
         self.clientId = clientId
         self.storeId = storeId
         self.status = status
-        
+
 
