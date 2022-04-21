@@ -295,6 +295,15 @@ class MarketManage(implements(IMarket)):
         pass
 
 
+    def purchaseCart(self,userID,bank):
+        pass
+
+
+
+
+
+
+
 
 
 
