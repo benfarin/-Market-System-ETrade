@@ -37,3 +37,9 @@ class UserProxyBridge(implements(IUserBridge)):
         if self.check_access():
             return True
         return self._real_subject.get_cart_info(username)
+
+    def purchase_product(self, username, product_ID, quantity):
+        if self.check_access():
+            return True
+        return self._real_subject.purchase_product(username, product_ID, quantity)
+
