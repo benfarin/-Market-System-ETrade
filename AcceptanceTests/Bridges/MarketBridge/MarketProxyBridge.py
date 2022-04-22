@@ -112,7 +112,8 @@ class MarketProxyBridge(implements(IMarketBridge)):
     def search_product(self, product_name, category, price_min, price_max, product_rating, store_rating):
         if self._real_subject is None:
             return True
-        return self._real_subject.search_product(product_name, category, price_min, price_max, product_rating, store_rating)
+        return self._real_subject.search_product(product_name, category, price_min, price_max,
+                                                 product_rating, store_rating)
 
     def appoint_store_owner(self, store_id, user_id):
         if self._real_subject is None:

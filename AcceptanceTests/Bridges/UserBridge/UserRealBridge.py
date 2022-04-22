@@ -16,3 +16,9 @@ class UserRealBridge(implements(IUserBridge)):
     def login(self, user_id, password):
         return self._user_service.memberLogin(user_id, password)
 
+    def add_product(self, username, product_id, store_id, quantity):
+        return self._user_service.saveProducts(username, product_id, store_id, quantity)
+
+    def purchase_product(self, username, product_ID, quantity):
+        return self._user_service.purchase_product(username, product_ID, quantity)
+

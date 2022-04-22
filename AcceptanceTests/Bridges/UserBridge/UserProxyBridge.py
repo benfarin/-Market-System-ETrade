@@ -34,10 +34,10 @@ class UserProxyBridge(implements(IUserBridge)):
         else:
             return self._real_subject.login(user_id, password)
 
-    def add_product(self, product_id, store_id, quantity):
+    def add_product(self, username, product_id, store_id, quantity):
         if self.check_access():
             return True
-        return self._real_subject.add_product(product_id, store_id, quantity)
+        return self._real_subject.add_product(username, product_id, store_id, quantity)
 
     def get_cart_info(self, username):
         if self.check_access():

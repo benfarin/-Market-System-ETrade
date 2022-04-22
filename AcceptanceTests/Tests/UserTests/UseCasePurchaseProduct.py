@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         self.market_proxy.add_store(0, "Store")
         self.market_proxy.add_product(0, 0, "TestProduct", 10, "Category")
         self.market_proxy.add_product(1, 0, "TestProduct2", 20, "Category")
-        self.user_proxy.add_product(0, 0, 10)
+        self.user_proxy.add_product("User1", 0, 0, 10)
 
     def test_purchase_positive1(self):
         self.assertEqual(self.user_proxy.purchase_product("User1", 0, 5), True)
