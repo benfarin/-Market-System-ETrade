@@ -16,17 +16,23 @@ class UserProxyBridge(implements(IUserBridge)):
     def check_access(self):
         return self._real_subject is None
 
-    def register(self, username, password, confirm_pass, email):
+    def register(self, username, password, phone, address, bank, cart):
         if self.check_access():
             return True
         else:
-            return self._real_subject.register(username, password, confirm_pass, email)
+            return self._real_subject.register(username, password, phone, address, bank, cart)
 
-    def login(self, username, password):
+    def login_guest(self):
         if self.check_access():
             return True
         else:
-            return self._real_subject.login(username, password)
+            return self._real_subject.login()
+
+    def login(self, user_id, password):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.login(user_id, password)
 
     def add_product(self, product_id, store_id, quantity):
         if self.check_access():

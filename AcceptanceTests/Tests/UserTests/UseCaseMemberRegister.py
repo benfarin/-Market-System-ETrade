@@ -8,7 +8,7 @@ class UseCaseMemberRegister(unittest.TestCase):
         self.proxy = UserProxyBridge(None)
 
     def test_register_positive(self):
-        self.assertEqual(self.proxy.register("TestUser", "TestPassword", "TestPassword", "TestEmail"), True)
+        self.assertEqual(self.proxy.register("TestUser", "TestPassword", "0520000000", "Address", 0, None), True)
 
     def test_register_negative(self):
         self.proxy.register("TestUser", "TestPassword", "TestPassword", "TestEmail")
