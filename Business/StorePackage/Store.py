@@ -106,7 +106,7 @@ class Store(implements(IStore)):
 
     def addProductToStore(self, userId, product):
         try:
-            self.__checkPermissions_ChangeStock(userId, "add product")
+            self.__checkPermissions_ChangeStock(userId)
             self.__products[product.getProductId()] = product
             self.__productsQuantity[product.getProductId()] = 0
         except Exception as e:
@@ -114,31 +114,35 @@ class Store(implements(IStore)):
 
     def addProductQuantityToStore(self, userId, productId, quantity):
         try:
-            self.__checkPermissions_ChangeStock(userId, "add product")
+            self.__checkPermissions_ChangeStock(userId)
+            if self.__products[productId] is None:
+                raise Exception("cannot add quantity to a product who doesn't exist, in store: " + self.__name)
             self.__productsQuantity[productId] += quantity
         except Exception as e:
             raise Exception(e)
 
     def removeProductFromStore(self, userId, productId):
         try:
-            self.__checkPermissions_ChangeStock(userId, "remove product")
+            self.__checkPermissions_ChangeStock(userId)
             self.__products.pop(productId)
         except Exception as e:
             raise Exception(e)
 
     def updateProductFromStore(self, userId, productId, newProduct):
         try:
-            self.__checkPermissions_ChangeStock(userId, "update product")
+            self.__checkPermissions_ChangeStock(userId)
+            if self.__products[productId] is None:
+                raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
             self.__products[productId] = newProduct
         except Exception as e:
             raise Exception(e)
 
-    def __checkPermissions_ChangeStock(self, userId, line):
+    def __checkPermissions_ChangeStock(self, userId):
         permissions = self.__permissions[userId]
         if permissions is None:
             raise Exception("User ", userId, " doesn't have any permissions is store: ", self.__name)
         if not permissions.hasPermission_StockManagement():
-            raise Exception("User ", userId, " doesn't have the permission - ", line, " in store: ", self.__name)
+            raise Exception("User ", userId, " doesn't have the permission to change the stock in store: ", self.__name)
 
     def appointManagerToStore(self, assignerId, assigneeId):
         permissions = self.__permissions[assignerId]
