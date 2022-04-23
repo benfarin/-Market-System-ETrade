@@ -12,6 +12,19 @@ class Transaction:
         self.__products: Dict[int: Dict[Product: int]] = products  # [storeId : [Product: quantity]]
         self.__amount = amount
 
+    def getTransactionID(self):
+        return self.__transactionId
+
+    def setTransactionID(self,newTransID):
+        self.__transactionId = newTransID
+
+    def getDate(self):
+        return self.__date
+
+    def getProducts(self):
+        return self.__products
+
+
     def __str__(self):
         info = " transactionId: " + str(self.__transactionId)
         info += "\n\t" + "userId: " + str(self.__userId)
