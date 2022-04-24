@@ -112,6 +112,7 @@ class Store(implements(IStore)):
         except Exception as e:
             raise Exception(e)
 
+
     def addProductQuantityToStore(self, userId, productId, quantity):
         try:
             self.__checkPermissions_ChangeStock(userId)
@@ -269,7 +270,11 @@ class Store(implements(IStore)):
         return toReturnProducts
 
     def getProductsByKeyword(self, productName):
-        pass
+        products = []
+        for product in self.__products:
+            if product.isExistKeyword(keyword):
+                products.append(product)
+        return products
 
     def getProductsByCategory(self, productCategory):
         toReturnProducts = []
