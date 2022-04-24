@@ -72,6 +72,7 @@ class Cart(implements(ICart)):
         self.getBag(storeId).updateProduct(productId, quantity)
         if self.getBag(storeId).isEmpty():
             self.removeBag(storeId)
+        return True
 
     def cleanCart(self):
         for bag in self.__bags.values():

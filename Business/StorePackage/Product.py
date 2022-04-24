@@ -1,6 +1,4 @@
 from typing import Dict
-from typing import String
-from typing import int
 
 class Product:
 
@@ -9,11 +7,11 @@ class Product:
         self.__name = name
         self.__price = price
         self.__category = category  # String
-        self.__keyword : Dict[String,int] = keyword   #the value is integer , may use as a priority at next
+        self.__keyword : Dict[str,int] = keyword   #the value is integer , may use as a priority at next
 
     def removeKeyWord(self,keyword):
-        if self.__keyword.get(storeId) is not None:
-            self.__bags.pop(storeId)
+        if self.__keyword.get(keyword) is not None:
+            self.__keyword.pop(keyword)
             return True
         else:
             return False
@@ -24,11 +22,10 @@ class Product:
             return False
 
     def addKeyWord(self,keyword): #when adding keyword it get it's default value 1
-        if self.__keyword.get(storeId) is None:
+        if self.__keyword.get(keyword) is None:
             self.__keyword[keyword] = 1
             return  True
         return  False
-
 
 
     def getProductId(self):

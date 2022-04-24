@@ -1,10 +1,10 @@
 from interface import Interface
 
+from Business.UserPackage.User import User
+
+
 class IMarket(Interface):
     def addGuest(self):
-        pass
-
-    def checkOnlineMember(self, userName):
         pass
 
     def getStoreByName(self, store_name):
@@ -13,7 +13,7 @@ class IMarket(Interface):
     def getStoreById(self, id_store):
         pass
 
-    def getProductByCatagory(self, catagory):
+    def getProductByCategory(self, category):
         pass
 
     def getProductsByName(self, nameProduct):
@@ -28,52 +28,50 @@ class IMarket(Interface):
     def createStore(self, storeName, userID, bank, address):
         pass
 
-    def addProductToCart(self, userID, storeID, product, quantity):
+    def addProductToCart(self, userID, storeID, productID, quantity):
         pass
 
-    def getStoreHistory(self, userName, storeID):
+    def removeProductFromCart(self,storeID ,userID, productId):
         pass
 
-    def removeProductFromCart(self, userID, storeID, product):
+    def updateProductFromCart(self, userID, storeID, productId, quantity):
         pass
 
-    def updateProductFromCart(self, userID, storeID, product, quantity):
+   # def ChangeProductQuanInCart(self, userID, storeID, product, quantity):
+   #     pass
+
+    def appointManagerToStore(self, storeID, assignerID, assigneeID):
         pass
 
-    def ChangeProductQuanInCart(self, userID, storeID, product, quantity):
+    def appointOwnerToStore(self, storeID, assignerID, assigneeID):
         pass
 
-    def appointManagerToStore(self, storeID, assignerID, assigneID):
+    def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         pass
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneID):
+    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
         pass
 
-    def setStockManagerPermission(self, storeID, assignerID, assigneID):
+    def setChangePermission(self, storeID, assignerID, assigneeID):
         pass
 
-    def setAppointOwnerPermission(self, storeID, assignerID, assigneID):
+    def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
         pass
 
-    def setChangePermission(self, storeID, assignerID, assigneID):
-        pass
-
-    def setRolesInformationPermission(self, storeID, assignerID, assigneID):
-        pass
-
-    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneID):
+    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
         pass
 
     def addProductToStore(self, storeID, userID, product):
         pass
 
-    def addProductQuantityToStore(self, storeID, userID, product, quantity):
+    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
         pass
+
 
     def removeProductFromStore(self, storeID, userID, product):
         pass
 
-    def PrintRolesInformation(self, storeID, userID):
+    def printRolesInformation(self, storeID, userID):
         pass
 
     def addTransaction(self, storeID, transaction):
@@ -85,22 +83,9 @@ class IMarket(Interface):
     def printPurchaseHistoryInformation(self, storeID, userID):
         pass
 
-    def updateProductFromStore(self, userID, productId, newProduct):
+    def updateProductFromStore(self,storeID ,userID, productId, newProduct):
         pass
 
-
-    def removeBag(self, storeID, userID):
-        pass
-
-    def updateBag(self, bag, userID):
-        pass
-
-    def getAllProducts(self, userID):
-        pass
-
-    def isEmpty(self, userID):
-        pass
-
-    def calcSum(self, userID):
+    def addActiveUser(self, user):
         pass
 

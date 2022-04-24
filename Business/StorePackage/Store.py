@@ -24,6 +24,13 @@ class Store(implements(IStore)):
         self.__permissions[founderId].setPermission_AppointManager(True)
         self.__permissions[founderId].setPermission_AppointOwner(True)
         self.__permissions[founderId].setPermission_CloseStore(True)
+        self.__permissions[founderId].setPermission_StockManagement(True)
+        self.__permissions[founderId].setPermission_AppointManager(True)
+        self.__permissions[founderId].setPermission_AppointOwner(True)
+        self.__permissions[founderId].setPermission_ChangePermission(True)
+        self.__permissions[founderId].setPermission_RolesInformation(True)
+        self.__permissions[founderId].setPermission_PurchaseHistoryInformation(True)
+
 
     def getStoreId(self):
         return self.__id
@@ -272,7 +279,7 @@ class Store(implements(IStore)):
     def getProductsByKeyword(self, productName):
         products = []
         for product in self.__products:
-            if product.isExistKeyword(keyword):
+            if product.isExistKeyword(productName):
                 products.append(product)
         return products
 
