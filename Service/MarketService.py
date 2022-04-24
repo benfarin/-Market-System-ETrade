@@ -1,7 +1,6 @@
-from Business.MarketManage import MarketManage
+from Business.Managment.MarketManagment import MarketManage
 from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
-from Service.Events.EventError import EventError
 from interfaces import IMarket
 
 
@@ -46,14 +45,6 @@ class MarketService:
             eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
                                 "product: " + product.printForEvents(), "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
-            return toReturn
-        except Exception as e:
-            return e
-
-    def checkOnlineMember(self, userID):
-        try:
-            toReturn = self.__market.checkOnlineMember(userID)
-            self.__events.addEventLog(EventLog("check online member", "userId: " + str(userID)))
             return toReturn
         except Exception as e:
             return e
@@ -116,45 +107,12 @@ class MarketService:
         except Exception as e:
             return e
 
-    def getStores(self):
-        try:
-            toReturn = self.__market.getStores()
-            self.__events.addEventLog(EventLog("get stores"))
-            return toReturn
-        except Exception as e:
-            return e
-
-    def getActiveUsers(self):
-        try:
-            toReturn = self.__market.getActiveUsers()
-            self.__events.addEventLog(EventLog("get active users"))
-            return toReturn
-        except Exception as e:
-            return e
-
-    def getProducts(self):
-        try:
-            toReturn = self.__market.getProducts()
-            self.__events.addEventLog(EventLog("get products"))
-            return toReturn
-        except Exception as e:
-            return e
-
     def addMember(self, userID, password, phone, address, bank):
         try:
             toReturn = self.__market.addMember(userID, password, phone, address, bank)
             eventLog = EventLog("add member", "userId: " + str(userID), "password: " + password, "phone: " + phone,
                                 "address: " + address.printForEvents(), "bank: " + bank.printForEvents())
             self.__events.addEventLog(eventLog)
-            return toReturn
-        except Exception as e:
-            return e
-
-    def getStoreHistory(self, userID, storeID):  # --------------------------------------------------
-        try:
-            toReturn = self.__market.getStoreHistory(userID, storeID)
-            self.__events.addEventLog(
-                EventLog("get store history", "userId: " + str(userID), "storeId: " + str(storeID)))
             return toReturn
         except Exception as e:
             return e

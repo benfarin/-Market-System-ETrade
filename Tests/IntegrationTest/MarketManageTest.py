@@ -1,6 +1,5 @@
 import unittest
-from Business.MarketManage import MarketManage
-from interfaces.IMarket import IMarket
+from Business.Managment.MarketManagment import MarketManage
 
 
 class MyTestCase(unittest.TestCase):
