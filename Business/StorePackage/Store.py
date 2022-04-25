@@ -31,7 +31,6 @@ class Store(implements(IStore)):
         self.__permissions[founderId].setPermission_RolesInformation(True)
         self.__permissions[founderId].setPermission_PurchaseHistoryInformation(True)
 
-
     def getStoreId(self):
         return self.__id
 
@@ -58,6 +57,8 @@ class Store(implements(IStore)):
 
     def setStockManagementPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_StockManagement(True)
         except Exception as e:
@@ -65,6 +66,8 @@ class Store(implements(IStore)):
 
     def setAppointManagerPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_AppointManager(True)
         except Exception as e:
@@ -72,6 +75,8 @@ class Store(implements(IStore)):
 
     def setAppointOwnerPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__owners:
+                raise Exception("only owner can assign new owners")
             self.__haveAllPermissions(assignerId, assigneeId)
             if assignerId not in self.__owners:
                 raise Exception("only owners can assign owners")
@@ -81,6 +86,8 @@ class Store(implements(IStore)):
 
     def setChangePermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_ChangePermission(True)
         except Exception as e:
@@ -88,6 +95,8 @@ class Store(implements(IStore)):
 
     def setRolesInformationPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_RolesInformation(True)
         except Exception as e:
@@ -95,6 +104,8 @@ class Store(implements(IStore)):
 
     def setPurchaseHistoryInformationPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_PurchaseHistoryInformation(True)
         except Exception as e:
@@ -118,7 +129,6 @@ class Store(implements(IStore)):
             self.__productsQuantity[product.getProductId()] = 0
         except Exception as e:
             raise Exception(e)
-
 
     def addProductQuantityToStore(self, userId, productId, quantity):
         try:
