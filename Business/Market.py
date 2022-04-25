@@ -185,7 +185,7 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID): #HAVE TO CHECK
+    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID): #Tested
         try:
             if self.__checkOnlineUser(assignerID) is not None:
                 self.__stores.get(storeID).setAppointOwnerPermission(assignerID, assigneeID)
@@ -216,7 +216,7 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def addProductToStore(self, storeID, userID, product):
+    def addProductToStore(self, storeID, userID, product): #Tested
         try:
             if self.__checkOnlineUser(userID) is not None:
                 self.__stores.get(storeID).addProductToStore(userID, product)

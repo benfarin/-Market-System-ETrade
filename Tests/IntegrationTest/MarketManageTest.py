@@ -66,8 +66,8 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception,
                          lambda :self.__market.appointOwnerToStore(self.__store3.getStoreId(), self.__member3.getUserID(),
                                                               self.__member1.getUserID()))
-        self.__market.addActiveUser(self.__member3)
-        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member3.getUserID(),self.__member2.getUserID())) # check if the new owner can appoint new manager!
+        self.__market.addActiveUser(self.__member2)
+        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member2.getUserID(),self.__member3.getUserID())) # check if the new owner can appoint new manager!
 
     def test_setStockManagerPermission(self):
         self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
@@ -80,12 +80,12 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception,lambda :self.__market.setStockManagerPermission(self.__store3.getStoreId(),
                                                                              self.__member2.getUserID(),
                                                                              self.__member3.getUserID()))
-        # def test_setAppointOwnerPermission(self):
-        # self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
-        # self.assertTrue(self.__market.setAppointOwnerPermission(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
-        # self.assertRaises(Exception,self.__market.appointOwnerToStore(self.__store3.getStoreId(),self.__member2.getUserID(),self.__member3.getUserID()))
-        # self.__market.addActiveUser(self.__member2)
-        # self.assertRaises(Exception,self.__market.appointOwnerToStore(self.__store3.getStoreId(),self.__member2.getUserID(),self.__member3.getUserID()))
+    def test_setAppointOwnerPermission(self):
+         self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
+         self.assertRaises(Exception,lambda :self.__market.setAppointOwnerPermission(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
+         self.assertRaises(Exception,lambda :self.__market.appointOwnerToStore(self.__store3.getStoreId(),self.__member2.getUserID(),self.__member3.getUserID()))
+         self.__market.addActiveUser(self.__member2)
+         self.assertTrue(self.__market.appointOwnerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member3.getUserID()))
 
     def test_addProductToStore(self):
         self.assertTrue(
