@@ -1,4 +1,5 @@
 import unittest
+import uuid
 from unittest.mock import patch, MagicMock
 from Business.StorePackage.Store import Store
 
@@ -6,13 +7,13 @@ from Business.StorePackage.Store import Store
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.founderId = 0
-        self.store = Store(0, "kfir store", 0, MagicMock(), MagicMock())
+        self.founderId = str(uuid.uuid4())
+        self.store = Store(0, "kfir store", self.founderId, MagicMock(), MagicMock())
 
-        self.user1Id = 1
-        self.user2Id = 2
-        self.user3Id = 3
-        self.user4Id = 4
+        self.user1Id = str(uuid.uuid4())
+        self.user2Id = str(uuid.uuid4())
+        self.user3Id = str(uuid.uuid4())
+        self.user4Id = str(uuid.uuid4())
 
         self.product1 = MagicMock()
         self.product1.getProductId = MagicMock()
@@ -118,8 +119,7 @@ class MyTestCase(unittest.TestCase):
         self.store.addProductToStore(self.user1Id, self.product2)
         self.store.addProductToStore(self.user3Id, self.product3)
         self.store.addProductToStore(self.user3Id, self.product4)
-        self.assertEqual({0: self.product1, 1: self.product2, 2: self.product3, 3: self.product4},
-                         self.store.getProducts())
+        self.assertEqual({0: self.product1, 1: self.product2, 2: self.product3, 3: self.product4},self.store.getProducts())
 
     def test_add_product_quantity(self):
         self.test_add_product()

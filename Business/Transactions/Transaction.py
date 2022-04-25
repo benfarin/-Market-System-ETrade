@@ -15,7 +15,7 @@ class Transaction:
     def getTransactionID(self):
         return self.__transactionId
 
-    def setTransactionID(self,newTransID):
+    def setTransactionID(self, newTransID):
         self.__transactionId = newTransID
 
     def getDate(self):
@@ -23,7 +23,6 @@ class Transaction:
 
     def getProducts(self):
         return self.__products
-
 
     def __str__(self):
         info = " transactionId: " + str(self.__transactionId)
@@ -33,9 +32,7 @@ class Transaction:
         for storeId in self.__products.keys():
             info += "\n\t\tstoreId: " + str(storeId)
             for product in self.__products[storeId]:
-                info += "\n\t\t\tname: " + product.getProductName() + ", price: " + str(product.getProductPrice()) + ", amount: " + str(self.__products[product])
+                info += "\n\t\t\tname: " + product.getProductName() + ", price: " + str(
+                    product.getProductPrice()) + ", amount: " + str(self.__products[product])
         info += "\n\ttotal amount: " + str(self.__amount) + "\n"
         return info
-
-
-

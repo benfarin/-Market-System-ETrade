@@ -1,19 +1,27 @@
-def singleton_dec(class_):
-    instances = {}
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-    return getinstance
+import numpy as np
 
-@singleton_dec
-class PaymentSystem(implements(IMarket)):
 
-    def CancelPayment(self,paymentId) :
-            return generatePaymentId()
+class PaymentSystem:
+    __instance = None
 
-    def generatePaymentId(self):
-            return Guid.NewGuid()
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if PaymentSystem.__instance is None:
+            PaymentSystem()
+        return PaymentSystem.__instance
 
-    def CreatePayment(self,clientId,accountNumber1 ,branch1 , accountNumber2 ,branch2, paymentAmount):
-            return Guid.NewGuid()
+    def __init__(self):
+        if PaymentSystem.__instance is None:
+            PaymentSystem.__instance = self
+
+    def CreatePayment(self, clientId, accountNumber1, branch1, accountNumber2, branch2, paymentAmount):
+        if np.random.random() < 0.25:
+            raise Exception("payment failed")
+        return True
+
+    def CancelPayment(self, paymentId):
+        if paymentId >= 0:
+            return True
+        else:
+            raise Exception("illegal paymentId")

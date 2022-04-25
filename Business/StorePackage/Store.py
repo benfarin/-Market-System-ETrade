@@ -1,9 +1,14 @@
 from interface import implements
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
+<<<<<<< HEAD
 from Business.Transactions.StoreTransaction import StoreHistory
 from Business.StorePackage.Bag import  Bag
+=======
+from Business.Transactions.StoreTransaction import StoreTransaction
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 from typing import Dict, List
+import uuid
 
 
 class Store(implements(IStore)):
@@ -14,17 +19,23 @@ class Store(implements(IStore)):
         self.__founderId = founderId
         self.__bankAccount = bankAccount
         self.__address = address
-        self.__appointers: Dict[int, List] = {}  # UserId : UserId list
+        self.__appointers: Dict[str: List] = {}  # UserId : UserId list
         self.__managers = []  # userId
         self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__storeHistory = StoreHistory(storeId, storeName)
+        self.__transactions = StoreTransaction(storeId, storeName)
 
-        self.__permissions: Dict[int: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
+        self.__permissions: Dict[str: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
         self.__permissions[founderId].setPermission_AppointOwner(True)
         self.__permissions[founderId].setPermission_CloseStore(True)
+        self.__permissions[founderId].setPermission_StockManagement(True)
+        self.__permissions[founderId].setPermission_AppointManager(True)
+        self.__permissions[founderId].setPermission_AppointOwner(True)
+        self.__permissions[founderId].setPermission_ChangePermission(True)
+        self.__permissions[founderId].setPermission_RolesInformation(True)
+        self.__permissions[founderId].setPermission_PurchaseHistoryInformation(True)
 
     def purchase(self,bag : Bag,cliendID,clientPhone,clientAdress,clientBankAccount,payment):
         product_amount= bag.
@@ -55,6 +66,8 @@ class Store(implements(IStore)):
 
     def setStockManagementPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_StockManagement(True)
         except Exception as e:
@@ -62,6 +75,8 @@ class Store(implements(IStore)):
 
     def setAppointManagerPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_AppointManager(True)
         except Exception as e:
@@ -69,6 +84,8 @@ class Store(implements(IStore)):
 
     def setAppointOwnerPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__owners:
+                raise Exception("only owner can assign new owners")
             self.__haveAllPermissions(assignerId, assigneeId)
             if assignerId not in self.__owners:
                 raise Exception("only owners can assign owners")
@@ -78,6 +95,8 @@ class Store(implements(IStore)):
 
     def setChangePermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_ChangePermission(True)
         except Exception as e:
@@ -85,6 +104,8 @@ class Store(implements(IStore)):
 
     def setRolesInformationPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_RolesInformation(True)
         except Exception as e:
@@ -92,6 +113,8 @@ class Store(implements(IStore)):
 
     def setPurchaseHistoryInformationPermission(self, assignerId, assigneeId):
         try:
+            if assigneeId not in self.__managers and assigneeId not in self.__owners:
+                raise Exception("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assignerId, assigneeId)
             self.__permissions[assigneeId].setPermission_PurchaseHistoryInformation(True)
         except Exception as e:
@@ -115,7 +138,6 @@ class Store(implements(IStore)):
             self.__productsQuantity[product.getProductId()] = 0
         except Exception as e:
             raise Exception(e)
-
 
     def addProductQuantityToStore(self, userId, productId, quantity):
         try:
@@ -242,10 +264,13 @@ class Store(implements(IStore)):
         return self.__permissions
 
     def addTransaction(self, transaction):
-        self.__storeHistory.addTransaction(transaction)
+        self.__transactions.addTransaction(transaction)
 
-    def removeTransaction(self, transaction):
-        self.__storeHistory.removeTransaction(transaction)
+    def removeTransaction(self, transactionId):
+        try:
+            self.__transactions.removeTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
 
     # print all transactions in store
     def printPurchaseHistoryInformation(self, userId):
@@ -273,10 +298,10 @@ class Store(implements(IStore)):
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def getProductsByKeyword(self, productName):
+    def getProductsByKeyword(self, keyword):
         products = []
-        for product in self.__products:
-            if product.isExistKeyword(keyword):
+        for product in self.__products.values():
+            if product.isExistsKeyword(keyword):
                 products.append(product)
         return products
 

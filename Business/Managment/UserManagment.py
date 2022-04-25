@@ -7,23 +7,32 @@ from interfaces import IUser
 from Business.UserPackage.SystemManager import SystemManager
 
 
-def singleton_dec(class_):
-    instances = {}
-
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-
-    return getinstance
-
-
-@singleton_dec
 class UserManagment(implements(IUser)):
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if UserManagment.__instance is None:
+            UserManagment()
+        return UserManagment.__instance
+
     def __init__(self):
-        self.__market: IMarket = Market()
+        """ Virtually private constructor. """
+        self.__market: IMarket = Market().getInstance()
         self.__members: Dict[str, Member] = {}
         self.__systemManager: Dict[str, SystemManager] = {}
+        if UserManagment.__instance is None:
+            UserManagment.__instance = self
+
+    def systemManagerSignUp(self,userName, password, phone, address, bank):
+        if self.__members.get(userName) is None:
+            systemManager : SystemManager = SystemManager(userName, password, phone, address, bank)
+            if systemManager:
+                self.__systemManager[userName] = systemManager
+                return systemManager
+        return None
+
 
     def guestLogin(self):
         try:
@@ -32,7 +41,7 @@ class UserManagment(implements(IUser)):
             else:
                 raise Exception("There no system manager!")
         except Exception as e:
-            return e
+            raise Exception(e)
 
     def guestLogOut(self, guestID):  # need to remove cart!
         self.__market.getActiveUsers().pop(guestID)
@@ -40,21 +49,20 @@ class UserManagment(implements(IUser)):
 
     def memberSignUp(self, userName, password, phone, address, bank, icart):  # address is an object of "Adress"
         if self.__members.get(userName) is None:
-            member = self.__market.addMember(userName, password, phone, address, bank)
-            if member:
-                self.__members[userName] = member
-                if icart is not None:
-                    member.setICart(icart)
-                return member
+            member = Member(userName, password, phone, address, bank)
+            self.__members[userName] = member
+            if icart is not None:
+                  member.setICart(icart)
+            return member
         return None
 
-    def memberLogin(self, userID, password):
+    def memberLogin(self, userName, password):
         try:
             if len(self.__systemManager) > 0:
                 i: Member = Member(None, None, None, None, None)
                 check = False
                 for i in self.__members:
-                    if i.getUserName() == userID:
+                    if i.getUserName() == userName:
                         if self.__market.getActiveUsers().get(i) is not None:
                             self.__market.getActiveUsers()[i] = i
                             check = True
@@ -62,13 +70,15 @@ class UserManagment(implements(IUser)):
                             i.setMemberCheck(True)
                         else:
                             raise Exception("member allready login")
+
+
                 if not check:
-                    raise Exception("The user ID " + userID + " not available!")
-                self.checkPassword(userID, password)
+                    raise Exception("The user ID " + userName + " not available!")
+                self.checkPassword(userName, password)
             else:
                 raise Exception("There no system manager!")
         except Exception as e:
-            return e
+            raise Exception(e)
 
     def logoutMember(self, userID):
         self.__market.getActiveUsers().pop(userID)

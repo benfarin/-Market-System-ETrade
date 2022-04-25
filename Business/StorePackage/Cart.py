@@ -43,11 +43,8 @@ class Cart(implements(ICart)):
             s += bag.calcSum()
         return s
 
-    def getAllProduct(self):
-        products = {}
-        for bag in self.__bags.values():
-            products.setdefault(bag.getProducts())
-        return products
+    def calcSumOfBag(self, storeId):
+        return self.__bags.get(storeId).calcSum()
 
     def isEmpty(self):
         for bag in self.__bags.values():
@@ -72,16 +69,18 @@ class Cart(implements(ICart)):
         self.getBag(storeId).updateProduct(productId, quantity)
         if self.getBag(storeId).isEmpty():
             self.removeBag(storeId)
+        return True
 
     def cleanCart(self):
         for bag in self.__bags.values():
             bag.cleanBag()
 
-    def getAllProducts(self):
+    def getAllProductsByStore(self):
         products: Dict[int, Dict[Product, int]] = {}  # [storeId: [product : quantity]]
         for bag in self.__bags.values():
             products.update({bag.getStoreId(): bag.getProducts()})
         return products
+<<<<<<< HEAD
     def checkPolicy(self):
         pass
 
@@ -91,3 +90,11 @@ class Cart(implements(ICart)):
             purchaseStatus =  bag.getStore().p
 
 
+=======
+
+    def getAllProducts(self):
+        products: Dict[Product, int] = {}  # [product : quantity]
+        for bag in self.__bags.values():
+            products.update(bag.getProducts())
+        return products
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab

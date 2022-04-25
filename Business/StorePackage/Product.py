@@ -1,14 +1,14 @@
-from typing import Dict
-from typing import String
-from typing import int
+from typing import List
+
 
 class Product:
 
-    def __init__(self, Id, name, price, category,keyword):
+    def __init__(self, Id, name, price, category, keyword):
         self.__id = Id
         self.__name = name
         self.__price = price
         self.__category = category  # String
+<<<<<<< HEAD
         self.__keyword : Dict[str,int] = keyword   #the value is integer , may use as a priority at next
 
     def removeKeyWord(self,keyword):
@@ -30,6 +30,9 @@ class Product:
         return  False
 
 
+=======
+        self.__keywords: List = keyword
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 
     def getProductId(self):
         return self.__id
@@ -52,11 +55,25 @@ class Product:
     def setProductCategory(self, category):
         self.__category = category
 
+    def addKeyWord(self, keyword):
+        if keyword not in self.__keywords:
+            self.__keywords.append(keyword)
+
+    def removeKeyWord(self, keyword):
+        if keyword not in self.__keywords:
+            raise Exception("cannot remove keyword that doesn't exists")
+        self.__keywords.remove(keyword)
+
+    def isExistsKeyword(self, keyword):
+        return keyword in self.__keywords
+
     def printForEvents(self):
         productStr = "\n\t\t\tid: " + str(self.__id)
         productStr += "\n\t\t\tname: " + self.__name
         productStr += "\n\t\t\tprice: " + str(self.__price)
-        return productStr + "\n\t\t\tcategory: " + self.__category
-
-
+        productStr += "\n\t\t\tcategory: " + self.__category
+        productStr += "\n\t\t\tkeywords: "
+        for keyword in self.__keywords:
+            productStr += "\n\t\t\t\t" + keyword
+        return productStr
 

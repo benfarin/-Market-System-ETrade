@@ -1,4 +1,5 @@
 from Business.Managment.MarketManagment import MarketManage
+from Business.Managment.RoleManagment import RoleManagment
 from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
 from interfaces import IMarket
@@ -6,7 +7,8 @@ from interfaces import IMarket
 
 class MarketService:
     def __init__(self):
-        self.__market: IMarket = MarketManage()
+        self.__marketManage = MarketManage()
+        self.__roleManagment = RoleManagment()
         self.__events = Events()
 
     def getEvents(self):
@@ -14,14 +16,14 @@ class MarketService:
 
     def addGuest(self):
         try:
-            self.__market.addGuest()
+            self.__marketManage.addGuest()
             self.__events.addEventLog(EventLog("add guest"))
         except Exception as e:
             return e  # maybe need to print, need to talk about it
 
     def addProductToCart(self, userID, storeId, product, quantity):
         try:
-            toReturn = self.__market.addProductToCart(userID, storeId, product, quantity)
+            toReturn = self.__marketManage.addProductToCart(userID, storeId, product, quantity)
             eventLog = EventLog("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
                                 "product: " + product.printForEvents(), "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
@@ -31,7 +33,7 @@ class MarketService:
 
     def removeProductFromCart(self, userId, storeId, product):
         try:
-            toReturn = self.__market.removeProductFromCart(userId, storeId, product)
+            toReturn = self.__marketManage.removeProductFromCart(userId, storeId, product)
             eventLog = EventLog("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
                                 "product: " + product.printForEvents())
             self.__events.addEventLog(eventLog)
@@ -41,7 +43,7 @@ class MarketService:
 
     def updateProductFromCart(self, userID, storeID, product, quantity):
         try:
-            toReturn = self.__market.updateProductFromCart(userID, storeID, product, quantity)
+            toReturn = self.__marketManage.updateProductFromCart(userID, storeID, product, quantity)
             eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
                                 "product: " + product.printForEvents(), "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
@@ -49,25 +51,9 @@ class MarketService:
         except Exception as e:
             return e
 
-    def getStoreByName(self, store_name):
-        try:
-            toReturn = self.__market.getStoreByName(store_name)
-            self.__events.addEventLog(EventLog("get store by name", "storeName: " + store_name))
-            return toReturn
-        except Exception as e:
-            return e
-
-    def getStoreById(self, id_store):  # maybe should be private
-        try:
-            toReturn = self.__market.getStoreById(id_store)
-            self.__events.addEventLog(EventLog("get store by Id", "store Id: " + str(id_store)))
-            return toReturn
-        except Exception as e:
-            return e
-
     def getProductByCategory(self, category):
         try:
-            toReturn = self.__market.getProductByCatagory(category)
+            toReturn = self.__marketManage.getProductByCategory(category)
             self.__events.addEventLog(EventLog("get product by category", "category: " + category))
             return toReturn
         except Exception as e:
@@ -75,7 +61,7 @@ class MarketService:
 
     def getProductsByName(self, nameProduct):
         try:
-            toReturn = self.__market.getProductsByName(nameProduct)
+            toReturn = self.__marketManage.getProductsByName(nameProduct)
             self.__events.addEventLog(EventLog("get product by name", "name: " + nameProduct))
             return toReturn
         except Exception as e:
@@ -83,23 +69,15 @@ class MarketService:
 
     def getProductByKeyword(self, keyword):
         try:
-            toReturn = self.__market.getProductByKeyWord(keyword)
+            toReturn = self.__marketManage.getProductByKeyWord(keyword)
             self.__events.addEventLog(EventLog("get product by name", "keyword: " + keyword))
-            return toReturn
-        except Exception as e:
-            return e
-
-    def getUserByName(self, userName):
-        try:
-            toReturn = self.__market.getUserByName(userName)
-            self.__events.addEventLog(EventLog("get user by name", "name: " + userName))
             return toReturn
         except Exception as e:
             return e
 
     def createStore(self, storeName, founderId, bankAccount, address):
         try:
-            toReturn = self.__market.createStore(storeName, founderId, bankAccount, address)
+            toReturn = self.__marketManage.createStore(storeName, founderId, bankAccount, address)
             eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + str(founderId),
                                 "bankAccount: " + bankAccount.printForEvents(), "address: " + address.printForEvents())
             self.__events.addEventLog(eventLog)
@@ -109,7 +87,7 @@ class MarketService:
 
     def addMember(self, userID, password, phone, address, bank):
         try:
-            toReturn = self.__market.addMember(userID, password, phone, address, bank)
+            toReturn = self.__marketManage.addMember(userID, password, phone, address, bank)
             eventLog = EventLog("add member", "userId: " + str(userID), "password: " + password, "phone: " + phone,
                                 "address: " + address.printForEvents(), "bank: " + bank.printForEvents())
             self.__events.addEventLog(eventLog)
@@ -119,7 +97,7 @@ class MarketService:
 
     def ChangeProductQuanInCart(self, userID, storeID, product, quantity):
         try:
-            toReturn = self.__market.ChangeProductQuanInCart(userID, storeID, product, quantity)
+            toReturn = self.__marketManage.ChangeProductQuanInCart(userID, storeID, product, quantity)
             eventLog = EventLog("change product quantity in cart", "userId: " + str(userID), "storeId: " + str(storeID),
                                 "product: " + product.printForEvents(), "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
@@ -129,7 +107,7 @@ class MarketService:
 
     def appointManagerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
         try:
-            toReturn = self.__market.appointManagerToStore(storeID, assignerID, assigneID)
+            toReturn = self.__roleManagment.appointManagerToStore(storeID, assignerID, assigneID)
             eventLog = EventLog("appoint manager to store", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneID))
             self.__events.addEventLog(eventLog)
@@ -139,7 +117,7 @@ class MarketService:
 
     def appointOwnerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
         try:
-            toReturn = self.__market.appointOwnerToStore(storeID, assignerID, assigneID)
+            toReturn = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneID)
             eventLog = EventLog("appoint owner to store", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneID))
             self.__events.addEventLog(eventLog)
@@ -149,7 +127,7 @@ class MarketService:
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         try:
-            toReturn = self.__market.setStockManagerPermission(storeID, assignerID, assigneeID)
+            toReturn = self.__roleManagment.setStockManagerPermission(storeID, assignerID, assigneeID)
             eventLog = EventLog("set stock manager permission", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
@@ -159,7 +137,7 @@ class MarketService:
 
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
         try:
-            toReturn = self.__market.setAppointOwnerPermission(storeID, assignerID, assigneeID)
+            toReturn = self.__roleManagment.setAppointOwnerPermission(storeID, assignerID, assigneeID)
             eventLog = EventLog("set appoint owner permission", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
@@ -169,7 +147,7 @@ class MarketService:
 
     def setChangePermission(self, storeID, assignerID, assigneeID):
         try:
-            toReturn = self.__market.setChangePermission(storeID, assignerID, assigneeID)
+            toReturn = self.__roleManagment.setChangePermission(storeID, assignerID, assigneeID)
             eventLog = EventLog("set change permissions", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
@@ -179,7 +157,7 @@ class MarketService:
 
     def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            toReturn = self.__market.setRolesInformationPermission(storeID, assignerID, assigneeID)
+            toReturn = self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeID)
             eventLog = EventLog("set roles info permission", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
@@ -189,7 +167,7 @@ class MarketService:
 
     def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            toReturn = self.__market.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeID)
+            toReturn = self.__roleManagment.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeID)
             eventLog = EventLog("set purchase history info permission", "storeId: " + str(storeID),
                                 "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
@@ -201,7 +179,7 @@ class MarketService:
     # need to add here all the fields of the product! because someone need to create the product
     def addProductToStore(self, storeID, userID, product):
         try:
-            toReturn = self.__market.addProductToStore(storeID, userID, product)
+            toReturn = self.__roleManagment.addProductToStore(storeID, userID, product)
             eventLog = EventLog("add product to store", "storeId: " + str(storeID), "userId: " + str(userID)
                                 , "product: " + product.printForEvents())
             self.__events.addEventLog(eventLog)
@@ -211,7 +189,7 @@ class MarketService:
 
     def addProductQuantityToStore(self, storeID, userID, product, quantity):
         try:
-            toReturn = self.__market.addProductQuantityToStore(storeID, userID, product, quantity)
+            toReturn = self.__roleManagment.addProductQuantityToStore(storeID, userID, product, quantity)
             eventLog = EventLog("add product quantity to store", "storeId: " + str(storeID), "userId: " + str(userID)
                                 , "product: " + product.printForEvents(), "quantity: " + quantity)
             self.__events.addEventLog(eventLog)
@@ -222,7 +200,7 @@ class MarketService:
     # here we can take only the productId
     def removeProductFromStore(self, storeID, userID, product):
         try:
-            toReturn = self.__market.removeProductFromStore(storeID, userID, product)
+            toReturn = self.__roleManagment.removeProductFromStore(storeID, userID, product)
             eventLog = EventLog("remove product from store", "storeId: " + str(storeID), "userId: " + str(userID)
                                 , "product: " + product.printForEvents())
             self.__events.addEventLog(eventLog)
@@ -238,7 +216,7 @@ class MarketService:
 
     def PrintRolesInformation(self, storeID, userID):
         try:
-            toReturn = self.__market.PrintRolesInformation(storeID, userID)
+            toReturn = self.__roleManagment.PrintRolesInformation(storeID, userID)
             eventLog = EventLog("print roles info", "storeId: " + str(storeID), "userId: " + str(userID))
             self.__events.addEventLog(eventLog)
             return toReturn
@@ -247,7 +225,7 @@ class MarketService:
 
     def printPurchaseHistoryInformation(self, storeID, userID):
         try:
-            toReturn = self.__market.printPurchaseHistoryInformation(storeID, userID)
+            toReturn = self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
             eventLog = EventLog("print purchase history info", "storeId: " + str(storeID), "userId: " + str(userID))
             self.__events.addEventLog(eventLog)
             return toReturn
@@ -256,9 +234,9 @@ class MarketService:
 
     # internal method
     def addTransaction(self, storeID, transaction):
-        return self.__market.addTransaction(storeID, transaction)
+        return self.__roleManagment.addTransaction(storeID, transaction)
 
     # internal method
     def removeTransaction(self, storeID, transaction):
-        return self.__market.removeTransaction(storeID, transaction)
+        return self.__roleManagment.removeTransaction(storeID, transaction)
 

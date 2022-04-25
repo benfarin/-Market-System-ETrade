@@ -1,13 +1,22 @@
 from Business.StorePackage.Cart import Cart
+<<<<<<< HEAD
 from Business.StorePackage.Bag import Bag
 from Payment.PaymentStatus import PaymentStatus
+=======
+from Payment.PaymentStatus import PaymentStatus
+from Business.Transactions.UserTransaction import UserTransaction
+from typing import Dict
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 import uuid
+
+
 class User:
     def __init__(self):
-        self.__id = str(uuid.uuid4()) # unique id
+        self.__id = str(uuid.uuid4())  # unique id
         self._cart = Cart(self.__id)
-        self._memberCheck = False
-
+        self.__memberCheck = False
+        self.__paymentStatus: Dict[int: PaymentStatus] = {}
+        self.__transactions = UserTransaction(self.__id)
 
     def getUserID(self):
         return self.__id
@@ -17,15 +26,17 @@ class User:
 
     def getMemberCheck(self):
         return self.__memberCheck
-    def setICart(self,icart):
-        self._cart=icart
 
-    def setMemberCheck(self,state):
+    def setICart(self, icart):
+        self._cart = icart
+
+    def setMemberCheck(self, state):
         self.__memberCheck = state
 
     def getShopingCartProducts(self):
         return self._cart.getAllProduct()
 
+<<<<<<< HEAD
 
     def userPurchaseCart(self, bank, phone , address): # bank - Bank , phone - string , address ->Address
         if self._cart.isEmpty() or self._cart.checkPolicy() == False :
@@ -36,20 +47,32 @@ class User:
         return purchaseStatus.status
 
 
+=======
+    def userPurchaseCart(self, bank, phone, address):  # bank - Bank , phone - string , address ->Address
+        pass
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 
     def updateProductInCart(self, storeId, productId, quantity):
-        self._cart.updateProduct(storeId,productId,quantity)
+        self._cart.updateProduct(storeId, productId, quantity)
+
     def removeProduct(self, storeId, productId):
-        self._cart.removeProduct(storeId,productId)
+        self._cart.removeProduct(storeId, productId)
 
     def addProduct(self, storeId, product, quantity):
-        self._cart.addProduct( storeId, product, quantity)
+        self._cart.addProduct(storeId, product, quantity)
 
+    def addPaymentStatus(self, paymentStatus):
+        #need to add cancel
+        self.__paymentStatus[paymentStatus.getPaymentId()] = paymentStatus
 
+    def addTransaction(self, transaction):
+        return self.__transactions.addTransaction(transaction)
 
-
-
-
+    def removeTransaction(self, transactionId):
+        try:
+            return self.__transactions.removeTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
 
 
 

@@ -84,7 +84,7 @@ class IStore(Interface):
     def getProductsByName(self, productName):
         pass
 
-    def getProductsByKeyword(self, productName):
+    def getProductsByKeyword(self, keyword):
         pass
 
     def getProductsByCategory(self, productCategory):

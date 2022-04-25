@@ -1,15 +1,20 @@
-class StoreHistory:
+from Business.Transactions.Transaction import Transaction
+from typing import Dict
+
+class StoreTransaction:
 
     def __init__(self, storeId, storeName):
         self.__storeId = storeId
         self.__storeName = storeName
-        self.__transactions = []
+        self.__transactions: Dict[int: Transaction] = {}
 
     def addTransaction(self, transaction):
-        self.__transactions.append(transaction)
+        self.__transactions[transaction.getTransactionID()] = transaction
 
-    def removeTransaction(self, transaction):
-        self.__transactions.remove(transaction)
+    def removeTransaction(self, transactionId):
+        if transactionId not in self.__transactions.keys():
+            raise Exception("cannot remove transaction with wrong transactionId")
+        self.__transactions.pop(transactionId)
 
     def getTransactionHistory(self):
         return self.__transactions
