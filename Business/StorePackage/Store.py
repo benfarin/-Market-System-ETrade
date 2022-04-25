@@ -56,6 +56,14 @@ class Store(implements(IStore)):
     def getProductQuantity(self):
         return self.__productsQuantity
 
+    def getProduct(self, productId):
+        if productId in self.__products:
+            return self.__products[productId]
+        raise Exception("product not in store")
+
+    def hasProduct(self, productId):
+        return productId in self.__products.keys()
+
     def setStockManagementPermission(self, assignerId, assigneeId):
         try:
             if assigneeId not in self.__managers and assigneeId not in self.__owners:
@@ -126,6 +134,8 @@ class Store(implements(IStore)):
     def addProductToStore(self, userId, product):
         try:
             self.__checkPermissions_ChangeStock(userId)
+            if product.getProductId in self.__products.keys():
+                raise Exception("product all ready in store")
             self.__products[product.getProductId()] = product
             self.__productsQuantity[product.getProductId()] = 0
         except Exception as e:
@@ -309,14 +319,6 @@ class Store(implements(IStore)):
         for product in self.__products.values():
             price = product.getProductPrice()
             if minPrice <= price <= maxPrice:
-                toReturnProducts.append(product)
-        return toReturnProducts
-
-    def getProductsByMinRating(self, minRating):
-        # can be tested only form market and not throw store.
-        toReturnProducts = []
-        for product in self.__products.values():
-            if minRating <= product.getProductRating():
                 toReturnProducts.append(product)
         return toReturnProducts
 

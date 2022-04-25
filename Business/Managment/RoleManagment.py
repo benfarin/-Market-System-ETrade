@@ -1,6 +1,6 @@
 from interfaces.IMarket import IMarket
 from Business.Market import Market
-
+from Business.StorePackage.Product import Product
 
 def singleton_dec(class_):
     instances = {}
@@ -18,6 +18,7 @@ class RoleManagment:
 
     def __init__(self):
         self.__market: IMarket = Market()
+        self.productId = 0
 
     def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssignee he member and assignerID!!
         try:
@@ -62,27 +63,30 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def createProduct(self, name, price, category, keywords):
+        return Product(self.__getProductId(), name, price, category, keywords)
+
     def addProductToStore(self, storeID, userID, product):
         try:
             return self.__market.addProductToStore(storeID, userID, product)
         except Exception as e:
             raise Exception(e)
 
-    def updateProductFromStore(self, storeId, userID, productId, newProduct):
+    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
         try:
-            return self.__market.updateProductFromStore(storeId, userID, productId, newProduct)
-        except Exception as e:
-            raise Exception(e)
-
-    def addProductQuantityToStore(self, storeID, userID, product, quantity):
-        try:
-            return self.__market.addProductQuantityToStore(storeID, userID, product, quantity)
+            return self.__market.addProductQuantityToStore(storeID, userID, productId, quantity)
         except Exception as e:
             raise Exception(e)
 
     def removeProductFromStore(self, storeID, userID, product):
         try:
             return self.__market.removeProductFromStore(storeID, userID, product)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductPriceFromStore(self, storeID, userID, productId, newPrice):
+        try:
+            return self.__market.updateProductPriceFromStore(storeID, userID, productId, newPrice)
         except Exception as e:
             raise Exception(e)
 
@@ -98,6 +102,9 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-
+    def __getProductId(self):
+        productId = self.productId
+        self.productId += 1
+        return productId
 
 

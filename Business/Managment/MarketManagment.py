@@ -1,5 +1,7 @@
 from interfaces.IMarket import IMarket
 from Business.Market import Market
+from Business.Bank import Bank
+from Business.Address import Address
 
 
 class MarketManage:
@@ -12,11 +14,11 @@ class MarketManage:
         except Exception as e:
             raise Exception(e)
 
-    def addGuest(self):
-        pass
+    def createBankAcount(self, accountNumber, branch):
+        return Bank(accountNumber, branch)
 
-    def addMember(self, userName, password, phone, address, bank):
-        pass
+    def createAddress(self, country, city, street, apartmentNum, zipCode):
+        return Address(country, city, street, apartmentNum, zipCode)
 
     def addProductToCart(self, userID, storeID, product, quantity):
         try:
@@ -24,33 +26,15 @@ class MarketManage:
         except Exception as e:
             raise Exception(e)
 
-    def removeProductFromCart(self, userID, storeID, product):
+    def removeProductFromCart(self, userID, storeID, productId):
         try:
-            return self.__market.removeProductFromCart(userID, storeID, product)
+            return self.__market.removeProductFromCart(storeID, userID, productId)
         except Exception as e:
             raise Exception(e)
 
-    def updateProductFromCart(self, userID, storeID, product, quantity):
+    def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
-            return self.__market.updateProductFromCart(userID, storeID, product, quantity)
-        except Exception as e:
-            raise Exception(e)
-
-    def ChangeProductQuanInCart(self, userID, storeID, product, quantity):
-        try:
-            return self.__market.ChangeProductQuanInCart(userID, storeID, product, quantity)
-        except Exception as e:
-            raise Exception(e)
-
-    def addTransaction(self, storeID, transaction):
-        try:
-            return self.__market.addTransaction(storeID, transaction)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeTransaction(self, storeID, transaction):
-        try:
-            return self.__market.removeTransaction(storeID, transaction)
+            return self.__market.updateProductFromCart(storeID, userID, productId, quantity)
         except Exception as e:
             raise Exception(e)
 
@@ -69,6 +53,12 @@ class MarketManage:
     def getProductByKeyWord(self, keyword):
         try:
             return self.__market.getProductByKeyWord(keyword)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductPriceRange(self, minPrice, highPrice):
+        try:
+            return self.__market.getProductByPriceRange(self, minPrice, highPrice)
         except Exception as e:
             raise Exception(e)
 

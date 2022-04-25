@@ -29,7 +29,6 @@ class Market(implements(IMarket)):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
         self.__activeUsers: Dict[str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
-        self.__products: Dict[int, Product] = {}
         self.__globalStore = 0
         self._transactionIdCounter = 0
         if Market.__instance is None:
@@ -54,7 +53,6 @@ class Market(implements(IMarket)):
         self.__activeUsers[guest.getUserID()] = guest
         return guest
 
-
     def addActiveUser(self, user):
         try:
             self.__activeUsers[user.getUserID()] = user
@@ -66,11 +64,11 @@ class Market(implements(IMarket)):
     def addProductToCart(self, userID, storeID, productID, quantity):  # Tested
         try:
             if self.__checkOnlineUser(userID) is not None:
-                if self.__products.get(productID) is None:
+                if self.__stores.get(storeID).hasProduct(productID):
                     raise Exception("The product id " + productID + " not in market!")
                 if self.__stores.get(storeID).addProductToBag(productID, quantity):
-                    self.__activeUsers.get(userID).getCart().addProduct(storeID, self.__products.get(productID),
-                                                                        quantity)
+                    product = self.__stores.get(storeID).getProduct(productID)
+                    self.__activeUsers.get(userID).getCart().addProduct(storeID, product, quantity)
                     return True
                 else:
                     raise Exception("The quantity " + quantity + " is not available")
@@ -91,7 +89,7 @@ class Market(implements(IMarket)):
     def updateProductFromCart(self, userID, storeID, productId, quantity):  # UnTested
         try:
             if self.__activeUsers.get(userID):
-                if self.__products.get(productId) is None:
+                if self.__stores.get(storeID).hasProduct(productId):
                     raise Exception("The product id " + productId + " not in market!")
                 if quantity > 0:
                     return self.addProductToCart(userID, storeID, productId, quantity)
@@ -101,27 +99,6 @@ class Market(implements(IMarket)):
                 raise Exception("user not online")
         except Exception as e:
             return e
-
-    #  def ChangeProductQuanInCart(self, userID, storeID, product, quantity):
-    #     try:
-    #        if self.__activeUsers.get(userID):
-    #            self.__activeUsers.get(userID).getCart().changeProductFromCart(userID, storeID, product, quantity)
-    #        else:
-    #            raise Exception("user not online")
-    #    except Exception as e:
-    #        return e
-
-    def addTransaction(self, storeID, transaction):
-        try:
-            self.__stores.get(storeID).addTransaction(transaction)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeTransaction(self, storeID, transaction):
-        try:
-            self.__stores.get(storeID).removeTransaction(transaction)
-        except Exception as e:
-            raise Exception(e)
 
     def getProductByCategory(self, category):
         productsInStores: Dict[IStore, Product] = {}
@@ -150,6 +127,27 @@ class Market(implements(IMarket)):
                 productsInStores[self.__stores.get(i)] = products_list_per_Store
         return productsInStores
 
+    def getProductByPriceRange(self, minPrice, highPrice):
+        productsInStores: Dict[IStore, Product] = {}
+        keys = self.__stores.keys()
+        for i in keys:
+            products_list_per_Store = self.__stores.get(i).getProductsByPriceRange(minPrice, highPrice)
+            if products_list_per_Store is not None:
+                productsInStores[self.__stores.get(i)] = products_list_per_Store
+        return productsInStores
+
+    def addTransaction(self, storeID, transaction):
+        try:
+            self.__stores.get(storeID).addTransaction(transaction)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeTransaction(self, storeID, transaction):
+        try:
+            self.__stores.get(storeID).removeTransaction(transaction)
+        except Exception as e:
+            raise Exception(e)
+
     def purchaseCart(self, userID, bank):
         try:
             if self.__activeUsers.get(userID) is None:
@@ -158,7 +156,7 @@ class Market(implements(IMarket)):
             if cart.isEmpty():
                 raise Exception("cannot purchase an empty cart")
 
-            for storeId in cart.getAllProducts().values():   # pay for each store
+            for storeId in cart.getAllProducts().values():  # pay for each store
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
                 storeAmount = cart.calcSumOfBag(storeId)
                 paymentDetails = PaymentDetails(userID, storeId, bank, storeBank, storeAmount)
@@ -166,11 +164,13 @@ class Market(implements(IMarket)):
                 self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
 
                 products = cart.getAllProductsByStore().get(storeId)
-                self.__stores.get(storeId).addTransaction(Transaction(self.__getTransactionId(), userID, products, storeAmount))
+                self.__stores.get(storeId).addTransaction(
+                    Transaction(self.__getTransactionId(), userID, products, storeAmount))
 
             products = cart.getAllProducts()
             totalAmount = cart.calcSum()
-            self.__activeUsers.get(userID).addTransaction(Transaction(self.__getTransactionId(), userID, products, totalAmount))
+            self.__activeUsers.get(userID).addTransaction(
+                Transaction(self.__getTransactionId(), userID, products, totalAmount))
 
         except Exception as e:
             raise Exception(e)
@@ -241,18 +241,16 @@ class Market(implements(IMarket)):
         try:
             if self.__checkOnlineUser(userID) is not None:
                 self.__stores.get(storeID).addProductToStore(userID, product)
-                if self.__products.get(product.getProductId) is None:
-                    self.__products[product.getProductId()] = product
                 return True
             else:
                 raise Exception("member with id " + userID + " is not online!")
         except Exception as e:
             raise Exception(e)
 
-    def updateProductFromStore(self, storeID, userID, productId, newProduct):
+    def updateProductPriceFromStore(self, storeID, userID, productId, mewPrice):
         try:
             if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).updateProductFromStore(userID, productId, newProduct)
+                self.__stores.get(storeID).updateProductPriceFromStore(userID, productId, mewPrice)
         except Exception as e:
             raise Exception(e)
 
@@ -263,10 +261,10 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def removeProductFromStore(self, storeID, userID, product):
+    def removeProductFromStore(self, storeID, userID, productId):
         try:
             if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).removeProductFromStore(userID, product.getProductId())
+                self.__stores.get(storeID).removeProductFromStore(userID, productId)
         except Exception as e:
             raise Exception(e)
 
@@ -306,9 +304,6 @@ class Market(implements(IMarket)):
 
     def getActiveUsers(self):
         return self.__activeUsers
-
-    def getProducts(self):
-        return self.__products
 
     def __getTransactionId(self):
         tId = self._transactionIdCounter

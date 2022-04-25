@@ -2,7 +2,6 @@ from Business.Managment.MarketManagment import MarketManage
 from Business.Managment.RoleManagment import RoleManagment
 from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
-from interfaces import IMarket
 
 
 class MarketService:
@@ -14,38 +13,43 @@ class MarketService:
     def getEvents(self):
         return self.__events
 
-    def addGuest(self):
+    def createStore(self, storeName, founderId, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         try:
-            self.__marketManage.addGuest()
-            self.__events.addEventLog(EventLog("add guest"))
+            bank = self.__marketManage.createBankAcount(accountNumber, brunch)
+            address = self.__marketManage.createAddress(country, city, street, apartmentNum, zipCode)
+            toReturn = self.__marketManage.createStore(storeName, founderId,bank, address)
+            eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + str(founderId),
+                                "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
+            self.__events.addEventLog(eventLog)
+            return toReturn
         except Exception as e:
-            return e  # maybe need to print, need to talk about it
+            return e
 
-    def addProductToCart(self, userID, storeId, product, quantity):
+    def addProductToCart(self, userID, storeId, productId, quantity):
         try:
-            toReturn = self.__marketManage.addProductToCart(userID, storeId, product, quantity)
+            toReturn = self.__marketManage.addProductToCart(userID, storeId, productId, quantity)
             eventLog = EventLog("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
-                                "product: " + product.printForEvents(), "quantity: " + str(quantity))
+                                "productId: " + productId, "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
             return e
 
-    def removeProductFromCart(self, userId, storeId, product):
+    def removeProductFromCart(self, userId, storeId, productId):
         try:
-            toReturn = self.__marketManage.removeProductFromCart(userId, storeId, product)
+            toReturn = self.__marketManage.removeProductFromCart(userId, storeId, productId)
             eventLog = EventLog("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
-                                "product: " + product.printForEvents())
+                                "productId: " + productId)
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
             return e
 
-    def updateProductFromCart(self, userID, storeID, product, quantity):
+    def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
-            toReturn = self.__marketManage.updateProductFromCart(userID, storeID, product, quantity)
+            toReturn = self.__marketManage.updateProductFromCart(userID, storeID, productId, quantity)
             eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
-                                "product: " + product.printForEvents(), "quantity: " + str(quantity))
+                                "productId: " + productId, "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
@@ -75,31 +79,21 @@ class MarketService:
         except Exception as e:
             return e
 
-    def createStore(self, storeName, founderId, bankAccount, address):
+    def getProductPriceRange(self, minPrice, highPrice):
         try:
-            toReturn = self.__marketManage.createStore(storeName, founderId, bankAccount, address)
-            eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + str(founderId),
-                                "bankAccount: " + bankAccount.printForEvents(), "address: " + address.printForEvents())
-            self.__events.addEventLog(eventLog)
+            toReturn = self.__marketManage.getProductPriceRange(minPrice, highPrice)
+            self.__events.addEventLog(EventLog("get product by price range", "min price: " + minPrice,
+                                               "high price: " + highPrice))
             return toReturn
         except Exception as e:
             return e
 
-    def addMember(self, userID, password, phone, address, bank):
+    def purchaseCart(self, userID, accountNumber, branch):
         try:
-            toReturn = self.__marketManage.addMember(userID, password, phone, address, bank)
-            eventLog = EventLog("add member", "userId: " + str(userID), "password: " + password, "phone: " + phone,
-                                "address: " + address.printForEvents(), "bank: " + bank.printForEvents())
-            self.__events.addEventLog(eventLog)
-            return toReturn
-        except Exception as e:
-            return e
-
-    def ChangeProductQuanInCart(self, userID, storeID, product, quantity):
-        try:
-            toReturn = self.__marketManage.ChangeProductQuanInCart(userID, storeID, product, quantity)
-            eventLog = EventLog("change product quantity in cart", "userId: " + str(userID), "storeId: " + str(storeID),
-                                "product: " + product.printForEvents(), "quantity: " + str(quantity))
+            bank = self.__marketManage.createBankAcount(accountNumber, branch)
+            toReturn = self.__marketManage.purchaseCart(userID, bank)
+            eventLog = EventLog("purchase cart", "userId: " + str(userID), "accountNumber: " + str(accountNumber)
+                                , "branch: " + str(branch))
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
@@ -128,7 +122,8 @@ class MarketService:
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         try:
             toReturn = self.__roleManagment.setStockManagerPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set stock manager permission", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
+            eventLog = EventLog("set stock manager permission", "storeId: " + str(storeID),
+                                "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
             return toReturn
@@ -138,7 +133,8 @@ class MarketService:
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
         try:
             toReturn = self.__roleManagment.setAppointOwnerPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set appoint owner permission", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
+            eventLog = EventLog("set appoint owner permission", "storeId: " + str(storeID),
+                                "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
             return toReturn
@@ -158,7 +154,8 @@ class MarketService:
     def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
         try:
             toReturn = self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set roles info permission", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
+            eventLog = EventLog("set roles info permission", "storeId: " + str(storeID),
+                                "assignerId: " + str(assignerID)
                                 , "assigneeId: " + str(assigneeID))
             self.__events.addEventLog(eventLog)
             return toReturn
@@ -176,9 +173,9 @@ class MarketService:
         except Exception as e:
             return e
 
-    # need to add here all the fields of the product! because someone need to create the product
-    def addProductToStore(self, storeID, userID, product):
+    def addProductToStore(self, storeID, userID, name, price, category, keywords):
         try:
+            product = self.__roleManagment.createProduct(name, price, category, keywords)
             toReturn = self.__roleManagment.addProductToStore(storeID, userID, product)
             eventLog = EventLog("add product to store", "storeId: " + str(storeID), "userId: " + str(userID)
                                 , "product: " + product.printForEvents())
@@ -187,32 +184,35 @@ class MarketService:
         except Exception as e:
             return e
 
-    def addProductQuantityToStore(self, storeID, userID, product, quantity):
+    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
         try:
-            toReturn = self.__roleManagment.addProductQuantityToStore(storeID, userID, product, quantity)
+            toReturn = self.__roleManagment.addProductQuantityToStore(storeID, userID, productId, quantity)
             eventLog = EventLog("add product quantity to store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "product: " + product.printForEvents(), "quantity: " + quantity)
+                                , "productId: " + productId, "quantity: " + quantity)
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
             return e
 
-    # here we can take only the productId
-    def removeProductFromStore(self, storeID, userID, product):
+    def removeProductFromStore(self, storeID, userID, productId):
         try:
-            toReturn = self.__roleManagment.removeProductFromStore(storeID, userID, product)
+            toReturn = self.__roleManagment.removeProductFromStore(storeID, userID, productId)
             eventLog = EventLog("remove product from store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "product: " + product.printForEvents())
+                                , "productId: " + productId)
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
             return e
 
-    # need to add here all the fields of the product! because someone need to create the product
-    # maybe we should only take the new price/name/category
-    def updateProductFromStore(self, userId, productId, newProduct):
-        # not yet implemented
-        pass
+    def updateProductPriceFromStore(self, storeId, userId, productId, newPrice):
+        try:
+            toReturn = self.__roleManagment.updateProductPriceFromStore(storeId, userId, productId, newPrice)
+            eventLog = EventLog("update product price from store", "storeId: " + str(storeId), "userId: " + str(userId),
+                                "productId: " + str(productId), "new price: " + str(newPrice))
+            self.__events.addEventLog(eventLog)
+            return toReturn
+        except Exception as e:
+            return e
 
     def PrintRolesInformation(self, storeID, userID):
         try:
@@ -231,12 +231,3 @@ class MarketService:
             return toReturn
         except Exception as e:
             return e
-
-    # internal method
-    def addTransaction(self, storeID, transaction):
-        return self.__roleManagment.addTransaction(storeID, transaction)
-
-    # internal method
-    def removeTransaction(self, storeID, transaction):
-        return self.__roleManagment.removeTransaction(storeID, transaction)
-
