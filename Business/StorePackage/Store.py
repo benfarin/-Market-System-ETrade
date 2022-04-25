@@ -1,7 +1,12 @@
 from interface import implements
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
+<<<<<<< HEAD
+from Business.Transactions.StoreTransaction import StoreHistory
+from Business.StorePackage.Bag import  Bag
+=======
 from Business.Transactions.StoreTransaction import StoreTransaction
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 from typing import Dict, List
 import uuid
 
@@ -31,6 +36,9 @@ class Store(implements(IStore)):
         self.__permissions[founderId].setPermission_ChangePermission(True)
         self.__permissions[founderId].setPermission_RolesInformation(True)
         self.__permissions[founderId].setPermission_PurchaseHistoryInformation(True)
+
+    def purchase(self,bag : Bag,cliendID,clientPhone,clientAdress,clientBankAccount,payment):
+        product_amount= bag.
 
     def getStoreId(self):
         return self.__id

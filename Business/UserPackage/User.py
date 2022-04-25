@@ -1,7 +1,12 @@
 from Business.StorePackage.Cart import Cart
+<<<<<<< HEAD
+from Business.StorePackage.Bag import Bag
+from Payment.PaymentStatus import PaymentStatus
+=======
 from Payment.PaymentStatus import PaymentStatus
 from Business.Transactions.UserTransaction import UserTransaction
 from typing import Dict
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 import uuid
 
 
@@ -31,8 +36,21 @@ class User:
     def getShopingCartProducts(self):
         return self._cart.getAllProduct()
 
+<<<<<<< HEAD
+
+    def userPurchaseCart(self, bank, phone , address): # bank - Bank , phone - string , address ->Address
+        if self._cart.isEmpty() or self._cart.checkPolicy() == False :
+            return False
+        sum_to_pay = self._cart.calcSum()
+        purchaseStatus : PaymentStatus = self._cart.purchase(self.__id,bank,phone,address,sum_to_pay)
+        #history should added here
+        return purchaseStatus.status
+
+
+=======
     def userPurchaseCart(self, bank, phone, address):  # bank - Bank , phone - string , address ->Address
         pass
+>>>>>>> 467c252b2ec8b4dd444758cfe108d5883b34efab
 
     def updateProductInCart(self, storeId, productId, quantity):
         self._cart.updateProduct(storeId, productId, quantity)
