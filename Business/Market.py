@@ -49,10 +49,6 @@ class Market(implements(IMarket)):
         self.__activeUsers[guest.getUserID()] = guest
         return guest
 
-    def addMember(self, userName, password, phone, address, bank):
-        member = Member(userName, password, phone, address, bank)
-        self.__activeUsers[member.getUserID()] = member
-        return member
 
     def addActiveUser(self,user):
         try:
