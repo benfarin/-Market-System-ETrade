@@ -1,32 +1,33 @@
 from typing import Dict
 
+
 class Product:
 
-    def __init__(self, Id, name, price, category,keyword):
+    def __init__(self, Id, name, price, category, keyword):
         self.__id = Id
         self.__name = name
         self.__price = price
         self.__category = category  # String
-        self.__keyword : Dict[str,int] = keyword   #the value is integer , may use as a priority at next
+        self.__keyword: Dict[str, int] = keyword  # the value is integer , may use as a priority at next
 
-    def removeKeyWord(self,keyword):
+    def removeKeyWord(self, keyword):
         if self.__keyword.get(keyword) is not None:
             self.__keyword.pop(keyword)
             return True
         else:
             return False
-    def isExistKeyword(self,keyword): # return true if the product include the keyword as parameter
+
+    def isExistKeyword(self, keyword):  # return true if the product include the keyword as parameter
         if self.__keyword.get(keyword) is not None:
             return True
         else:
             return False
 
-    def addKeyWord(self,keyword): #when adding keyword it get it's default value 1
+    def addKeyWord(self, keyword):  # when adding keyword it get it's default value 1
         if self.__keyword.get(keyword) is None:
             self.__keyword[keyword] = 1
-            return  True
-        return  False
-
+            return True
+        return False
 
     def getProductId(self):
         return self.__id
@@ -54,6 +55,3 @@ class Product:
         productStr += "\n\t\t\tname: " + self.__name
         productStr += "\n\t\t\tprice: " + str(self.__price)
         return productStr + "\n\t\t\tcategory: " + self.__category
-
-
-

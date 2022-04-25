@@ -3,6 +3,7 @@ from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
 from Business.Transactions.StoreTransaction import StoreHistory
 from typing import Dict, List
+import uuid
 
 
 class Store(implements(IStore)):
@@ -13,14 +14,14 @@ class Store(implements(IStore)):
         self.__founderId = founderId
         self.__bankAccount = bankAccount
         self.__address = address
-        self.__appointers: Dict[int, List] = {}  # UserId : UserId list
+        self.__appointers: Dict[str: List] = {}  # UserId : UserId list
         self.__managers = []  # userId
         self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
         self.__storeHistory = StoreHistory(storeId, storeName)
 
-        self.__permissions: Dict[int: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
+        self.__permissions: Dict[str: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
         self.__permissions[founderId].setPermission_AppointOwner(True)
         self.__permissions[founderId].setPermission_CloseStore(True)
