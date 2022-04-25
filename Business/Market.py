@@ -112,7 +112,7 @@ class Market(implements(IMarket)):
     #    except Exception as e:
     #        return e
 
-    def addTransactioncd(self, storeID, transaction):
+    def addTransaction(self, storeID, transaction):
         try:
             self.__stores.get(storeID).addTransaction(transaction)
         except Exception as e:

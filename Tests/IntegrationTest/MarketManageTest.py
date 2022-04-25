@@ -66,6 +66,7 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception,
                          lambda :self.__market.appointOwnerToStore(self.__store3.getStoreId(), self.__member3.getUserID(),
                                                               self.__member1.getUserID()))
+        self.__market.addActiveUser(self.__member3)
         self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member3.getUserID(),self.__member2.getUserID())) # check if the new owner can appoint new manager!
 
     def test_setStockManagerPermission(self):
