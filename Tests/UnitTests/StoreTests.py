@@ -119,8 +119,7 @@ class MyTestCase(unittest.TestCase):
         self.store.addProductToStore(self.user1Id, self.product2)
         self.store.addProductToStore(self.user3Id, self.product3)
         self.store.addProductToStore(self.user3Id, self.product4)
-        self.assertEqual({0: self.product1, 1: self.product2, 2: self.product3, 3: self.product4},
-                         self.store.getProducts())
+        self.assertEqual({0: self.product1, 1: self.product2, 2: self.product3, 3: self.product4},self.store.getProducts())
 
     def test_add_product_quantity(self):
         self.test_add_product()

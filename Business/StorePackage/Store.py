@@ -1,7 +1,7 @@
 from interface import implements
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
-from Business.Transactions.StoreTransaction import StoreHistory
+from Business.Transactions.StoreTransaction import StoreTransaction
 from typing import Dict, List
 import uuid
 
@@ -19,7 +19,7 @@ class Store(implements(IStore)):
         self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__storeHistory = StoreHistory(storeId, storeName)
+        self.__transactions = StoreTransaction(storeId, storeName)
 
         self.__permissions: Dict[str: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
@@ -256,10 +256,13 @@ class Store(implements(IStore)):
         return self.__permissions
 
     def addTransaction(self, transaction):
-        self.__storeHistory.addTransaction(transaction)
+        self.__transactions.addTransaction(transaction)
 
-    def removeTransaction(self, transaction):
-        self.__storeHistory.removeTransaction(transaction)
+    def removeTransaction(self, transactionId):
+        try:
+            self.__transactions.removeTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
 
     # print all transactions in store
     def printPurchaseHistoryInformation(self, userId):
@@ -287,10 +290,10 @@ class Store(implements(IStore)):
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def getProductsByKeyword(self, productName):
+    def getProductsByKeyword(self, keyword):
         products = []
-        for product in self.__products:
-            if product.isExistKeyword(productName):
+        for product in self.__products.values():
+            if product.isExistsKeyword(keyword):
                 products.append(product)
         return products
 
