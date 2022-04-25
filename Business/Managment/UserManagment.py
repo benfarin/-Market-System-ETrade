@@ -1,3 +1,5 @@
+from Business.Address import Address
+from Business.Bank import Bank
 from Business.Market import Market
 from interfaces import IMarket
 from typing import Dict
@@ -85,3 +87,10 @@ class UserManagment(implements(IUser)):
         self.__members.get(userID).setLoggedIn(False)
         self.__members.get(userID).setMemberCheck(False)
         return self.guestLogin()
+
+    def createBankAcount(self, accountNumber, branch):
+        return Bank(accountNumber, branch)
+
+    def createAddress(self, country, city, street, apartmentNum, zipCode):
+        return Address(country, city, street, apartmentNum, zipCode)
+
