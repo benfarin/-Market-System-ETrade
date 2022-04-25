@@ -8,6 +8,8 @@ class Bag(implements(IBag)):
         self.__storeId = storeId
         self.__products = {}  # product : quantity
 
+    def getStore(self):
+        pass
     def isEmpty(self):
         return len(self.__products) == 0
 

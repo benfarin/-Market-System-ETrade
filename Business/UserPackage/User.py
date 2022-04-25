@@ -1,5 +1,6 @@
 from Business.StorePackage.Cart import Cart
 from Business.StorePackage.Bag import Bag
+from Payment.PaymentStatus import PaymentStatus
 import uuid
 class User:
     def __init__(self):
@@ -27,7 +28,14 @@ class User:
 
 
     def userPurchaseCart(self, bank, phone , address): # bank - Bank , phone - string , address ->Address
-        pass
+        if self._cart.isEmpty() or self._cart.checkPolicy() == False :
+            return False
+        sum_to_pay = self._cart.calcSum()
+        purchaseStatus : PaymentStatus = self._cart.purchase(self.__id,bank,phone,address,sum_to_pay)
+        #history should added here
+        return purchaseStatus.status
+
+
 
     def updateProductInCart(self, storeId, productId, quantity):
         self._cart.updateProduct(storeId,productId,quantity)

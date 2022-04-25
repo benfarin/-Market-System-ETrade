@@ -132,9 +132,12 @@ class Market(implements(IMarket)):
             if products_list_per_Store is not None:
                 productsInStores[self.__stores.get(i)] = products_list_per_Store
         return productsInStores
+    def getUserByUserName(self,username):
+        return self.__activeUsers.get(username)
+    def purchaseCart(self, username, bank,phone,adress):
+        user = self.getUserByUserName(usename)
+        return user.userPurchaseCart(bank,phone,adress)
 
-    def purchaseCart(self, userID, bank):
-        pass
 
     #  action of roles - role managment
     def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssignee he member and assignerID!!

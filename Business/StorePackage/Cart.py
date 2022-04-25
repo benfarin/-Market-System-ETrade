@@ -82,3 +82,12 @@ class Cart(implements(ICart)):
         for bag in self.__bags.values():
             products.update({bag.getStoreId(): bag.getProducts()})
         return products
+    def checkPolicy(self):
+        pass
+
+    def purchase(self,clienID,clientBankAccount,clientphone,clientadress,sumToPay):
+        purchase = {}
+        for bag  in self.__bag:
+            purchaseStatus =  bag.getStore().p
+
+

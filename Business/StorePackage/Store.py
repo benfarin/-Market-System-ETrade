@@ -2,6 +2,7 @@ from interface import implements
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
 from Business.Transactions.StoreTransaction import StoreHistory
+from Business.StorePackage.Bag import  Bag
 from typing import Dict, List
 
 
@@ -24,6 +25,9 @@ class Store(implements(IStore)):
         self.__permissions[founderId].setPermission_AppointManager(True)
         self.__permissions[founderId].setPermission_AppointOwner(True)
         self.__permissions[founderId].setPermission_CloseStore(True)
+
+    def purchase(self,bag : Bag,cliendID,clientPhone,clientAdress,clientBankAccount,payment):
+        product_amount= bag.
 
     def getStoreId(self):
         return self.__id

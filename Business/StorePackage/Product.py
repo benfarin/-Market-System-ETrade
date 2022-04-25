@@ -9,7 +9,7 @@ class Product:
         self.__name = name
         self.__price = price
         self.__category = category  # String
-        self.__keyword : Dict[String,int] = keyword   #the value is integer , may use as a priority at next
+        self.__keyword : Dict[str,int] = keyword   #the value is integer , may use as a priority at next
 
     def removeKeyWord(self,keyword):
         if self.__keyword.get(storeId) is not None:
