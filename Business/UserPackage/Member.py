@@ -21,6 +21,9 @@ class Member(User):
     def getPassword(self):
         return self.__password
 
+    def getBank(self):
+        return self.__bank
+
     def getUserName(self):
         return self.__userName
 

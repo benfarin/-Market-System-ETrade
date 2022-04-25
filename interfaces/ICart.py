@@ -21,9 +21,6 @@ class ICart(Interface):
     def calcSum(self):
         pass
 
-    def getAllProduct(self):
-        pass
-
     def isEmpty(self):
         pass
 

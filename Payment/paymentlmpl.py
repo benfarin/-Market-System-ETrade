@@ -16,7 +16,7 @@ class Paymentlmpl(implements(IPayment)):
         return Paymentlmpl.__instance
 
     def __init__(self):
-        self.__paymentSystem: PaymentSystem = PaymentSystem()
+        self.__paymentSystem: PaymentSystem = PaymentSystem().getInstance()
         self.__messegeError = "error"
         self.__paymentId = 0
         if Paymentlmpl.__instance is None:

@@ -95,6 +95,10 @@ class MyTestCase(unittest.TestCase):
                                                           self.__product1))
 
 
+    def test_purchaseCart(self):
+        self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),
+                                       self.__product1.getProductId(), 7)
+        self.__market.purchaseCart(self.__member1.getUserID(),self.__member1.getBank())
 
 if __name__ == '__main__':
     unittest.main()

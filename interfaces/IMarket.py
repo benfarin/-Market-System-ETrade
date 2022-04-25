@@ -64,7 +64,7 @@ class IMarket(Interface):
     def addProductQuantityToStore(self, storeID, userID, productId, quantity):
         pass
 
-    def removeProductFromStore(self, storeID, userID, product):
+    def removeProductFromStore(self, storeID, userID, productId):
         pass
 
     def printRolesInformation(self, storeID, userID):
@@ -73,15 +73,18 @@ class IMarket(Interface):
     def addTransaction(self, storeID, transaction):
         pass
 
-    def removeTransaction(self, storeID, transaction):
+    def removeTransaction(self, storeID, transactionId):
         pass
 
     def printPurchaseHistoryInformation(self, storeID, userID):
         pass
 
-    def updateProductPriceFromStore(self,storeID ,userID, productId, newProduct):
+    def updateProductPriceFromStore(self, storeID, userID, productId, mewPrice):
         pass
 
     def addActiveUser(self, user):
+        pass
+
+    def purchaseCart(self, userID, bank):
         pass
 

@@ -2,23 +2,23 @@ from interfaces.IMarket import IMarket
 from Business.Market import Market
 from Business.StorePackage.Product import Product
 
-def singleton_dec(class_):
-    instances = {}
+class RoleManagment():
+    __instance = None
 
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-
-    return getinstance
-
-
-@singleton_dec
-class RoleManagment:
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if RoleManagment.__instance is None:
+            RoleManagment()
+        return RoleManagment.__instance
 
     def __init__(self):
+        """ Virtually private constructor. """
         self.__market: IMarket = Market()
         self.productId = 0
+        if RoleManagment.__instance is None:
+            RoleManagment.__instance = self
+
 
     def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssignee he member and assignerID!!
         try:

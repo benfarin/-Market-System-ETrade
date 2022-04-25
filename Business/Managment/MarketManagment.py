@@ -5,8 +5,20 @@ from Business.Address import Address
 
 
 class MarketManage:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if MarketManage.__instance is None:
+            MarketManage()
+        return MarketManage.__instance
+
     def __init__(self):
+        """ Virtually private constructor. """
         self.__market: IMarket = Market()
+        if MarketManage.__instance is None:
+            MarketManage.__instance = self
 
     def createStore(self, storeName, userID, bank, address):
         try:

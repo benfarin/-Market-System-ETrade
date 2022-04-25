@@ -72,7 +72,7 @@ class IStore(Interface):
     def addTransaction(self, transaction):
         pass
 
-    def removeTransaction(self, transaction):
+    def removeTransaction(self, transactionId):
         pass
 
     def printPurchaseHistoryInformation(self, userId):
@@ -91,9 +91,6 @@ class IStore(Interface):
         pass
 
     def getProductsByPriceRange(self, minPrice, maxPrice):
-        pass
-
-    def getProductsByMinRating(self, minRating):
         pass
 
     def addProductToBag(self, productId, quantity):

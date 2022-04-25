@@ -19,7 +19,7 @@ class PaymentDetails:
         return self.__recieverBankAccount
 
     def getstoreID(self):
-        return self.getstoreID()
+        return self.__storeId
 
     def getPaymentAmount(self):
         return self.__paymentAmount

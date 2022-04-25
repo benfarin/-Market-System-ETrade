@@ -64,7 +64,7 @@ class Market(implements(IMarket)):
     def addProductToCart(self, userID, storeID, productID, quantity):  # Tested
         try:
             if self.__checkOnlineUser(userID) is not None:
-                if self.__stores.get(storeID).hasProduct(productID):
+                if self.__stores.get(storeID).hasProduct(productID) is None:
                     raise Exception("The product id " + productID + " not in market!")
                 if self.__stores.get(storeID).addProductToBag(productID, quantity):
                     product = self.__stores.get(storeID).getProduct(productID)
@@ -142,9 +142,9 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def removeTransaction(self, storeID, transaction):
+    def removeTransaction(self, storeID, transactionId):
         try:
-            self.__stores.get(storeID).removeTransaction(transaction)
+            self.__stores.get(storeID).removeTransaction(transactionId)
         except Exception as e:
             raise Exception(e)
 
@@ -156,10 +156,10 @@ class Market(implements(IMarket)):
             if cart.isEmpty():
                 raise Exception("cannot purchase an empty cart")
 
-            for storeId in cart.getAllProducts().values():  # pay for each store
+            for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
                 storeAmount = cart.calcSumOfBag(storeId)
-                paymentDetails = PaymentDetails(userID, storeId, bank, storeBank, storeAmount)
+                paymentDetails = PaymentDetails(userID,bank,storeBank, storeId, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
 
@@ -170,13 +170,14 @@ class Market(implements(IMarket)):
             products = cart.getAllProducts()
             totalAmount = cart.calcSum()
             self.__activeUsers.get(userID).addTransaction(Transaction(self.__getTransactionId(), userID, products, totalAmount))
-
+            return True
             # here need to add delivary
         except Exception as e:
             raise Exception(e)
 
     def cancelPurchaseCart(self, userID, paymentId, transactionId):
         pass
+
 
 
     #  action of roles - role managment
