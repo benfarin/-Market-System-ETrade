@@ -176,7 +176,22 @@ class Market(implements(IMarket)):
             raise Exception(e)
 
     def cancelPurchaseCart(self, userID, paymentId, transactionId):
-        pass
+        try:
+            if self.__activeUsers.get(userID) is None:
+                raise Exception("member with id " + userID + " is not online!")
+            user =self.__activeUsers.get(userID)
+            trans:Transaction = user.getTransactionsById(transactionId)
+            paymentStat = user.getPaymentById(paymentId)
+            if trans is None:
+                raise Exception("transaction  id " + transactionId + " is not good!")
+            if paymentStat is None:
+                raise Exception("payment id " + paymentId + " is not good!")
+
+            for pro in trans.getProducts():
+                for store in pro:
+                    self.addProductQuantityToStore(store,self.__stores[store])
+
+
 
 
 

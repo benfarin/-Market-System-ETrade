@@ -26,7 +26,7 @@ class MyTestCase(unittest.TestCase):
         self.__member3 = Member("gershon", "089717468", "2325", self.__address2, self.__bank2)
         self.__market.addActiveUser(self.__member1)
         self.__store3 : IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,self.__address2)
-        self.__product1 : Product = Product(1,"milk",75,"halavi","ff")
+        self.__product1 : Product = Product(1,"milk",75,"halavi","ff",1)
         self.__market.addProductToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__product1)
         self.__market.addProductQuantityToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__product1.getProductId(),100)
 

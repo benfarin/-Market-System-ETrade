@@ -3,12 +3,16 @@ from typing import List
 
 class Product:
 
-    def __init__(self, Id, name, price, category, keyword):
+    def __init__(self, Id, name, price, category, keyword,storeID):
         self.__id = Id
         self.__name = name
         self.__price = price
         self.__category = category  # String
         self.__keywords: List = keyword
+        self.__storeID = storeID
+
+    def getStoreID(self):
+        return self.__storeID
 
     def getProductId(self):
         return self.__id

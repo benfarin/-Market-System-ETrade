@@ -18,3 +18,6 @@ class UserTransaction:
 
     def getTransactionHistory(self):
         return self.__transactions
+
+    def getTransactionById(self,transactionID):
+        return self.__transactions[transactionID]

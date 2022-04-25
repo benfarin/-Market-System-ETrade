@@ -15,6 +15,18 @@ class User:
         self.__paymentStatus: Dict[int: PaymentStatus] = {}
         self.__transactions = UserTransaction(self.__id)
 
+    def getPaymentStatus(self):
+        return self.__paymentStatus
+
+    def getTransactions(self):
+        return self.__transactions
+
+    def getPaymentById(self, paymentID):
+        return self.__paymentStatus[paymentID]
+
+    def getTransactionsById(self,transactionID):
+        return self.__transactions.getTransactionById(transactionID)
+
     def getUserID(self):
         return self.__id
 
