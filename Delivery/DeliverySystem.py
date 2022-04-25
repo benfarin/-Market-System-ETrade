@@ -7,9 +7,9 @@ class DeliverytSystem:
     @staticmethod
     def getInstance():
         """ Static access method. """
-        if PaymentSystem.__instance is None:
-            PaymentSystem()
-        return PaymentSystem.__instance
+        if DeliverytSystem.__instance is None:
+            DeliverytSystem()
+        return DeliverytSystem.__instance
 
     def __init__(self):
         if DeliverytSystem.__instance is None:

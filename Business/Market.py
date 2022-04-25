@@ -163,17 +163,21 @@ class Market(implements(IMarket)):
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
 
-                products = cart.getAllProductsByStore().get(storeId)
-                self.__stores.get(storeId).addTransaction(
-                    Transaction(self.__getTransactionId(), userID, products, storeAmount))
+                if paymentStatus.getStatus() ==  "payment succeeded":
+                    products = cart.getAllProductsByStore().get(storeId)
+                    self.__stores.get(storeId).addTransaction(Transaction(self.__getTransactionId(), userID, products, storeAmount))
 
             products = cart.getAllProducts()
             totalAmount = cart.calcSum()
-            self.__activeUsers.get(userID).addTransaction(
-                Transaction(self.__getTransactionId(), userID, products, totalAmount))
+            self.__activeUsers.get(userID).addTransaction(Transaction(self.__getTransactionId(), userID, products, totalAmount))
 
+            # here need to add delivary
         except Exception as e:
             raise Exception(e)
+
+    def cancelPurchaseCart(self, userID, paymentId, transactionId):
+        pass
+
 
     #  action of roles - role managment
     def appointManagerToStore(self, storeID, assignerID, assigneeID):  # Tested

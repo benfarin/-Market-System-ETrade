@@ -8,5 +8,8 @@ class PaymentStatus:
     def getPaymentId(self):
         return self.paymentId
 
+    def getStatus(self):
+        return self.status
+
     def setStatus(self, status):
         self.status = status
