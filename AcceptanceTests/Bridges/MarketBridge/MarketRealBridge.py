@@ -11,13 +11,13 @@ class MarketRealBridge(implements(IMarketBridge)):
         print("RealSubject: Handling request.")
 
     def search_product_category(self, category):
-        return self._market_service.getProductByCatagory(category)
+        return self._market_service.getProductByCategory(category)
 
     def search_product_name(self, product_name):
         return self._market_service.getProductByName(product_name)
 
     def search_product_keyWord(self, keyWord):
-        return self._market_service.getProductsByKeyword(keyWord)
+        return self._market_service.getProductByKeyword(keyWord)
 
     def search_product_price_range(self, price_min, price_max):
         return self._market_service.getProductPriceRange(price_min, price_max)
@@ -42,6 +42,9 @@ class MarketRealBridge(implements(IMarketBridge)):
 
     def set_change_perm(self, store_id, assigner_id, assignee_id):
         return self._market_service.setChangePermission(store_id, assigner_id, assignee_id)
+
+    def add_quantity_to_store(self, store_id, user_id, productID, quantity):
+        return self._market_service.addProductQuantityToStore(store_id, user_id, productID, quantity)
 
     def close_store(self, store_id):
         pass

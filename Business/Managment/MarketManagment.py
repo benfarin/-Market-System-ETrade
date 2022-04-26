@@ -16,13 +16,13 @@ class MarketManage:
 
     def __init__(self):
         """ Virtually private constructor. """
-        self.__market: IMarket = Market()
+        self.__market: IMarket = Market().getInstance()
         if MarketManage.__instance is None:
             MarketManage.__instance = self
 
     def createStore(self, storeName, userID, bank, address):
         try:
-            self.__market.createStore(storeName, userID, bank, address)
+            return self.__market.createStore(storeName, userID, bank, address)
         except Exception as e:
             raise Exception(e)
 
@@ -52,7 +52,7 @@ class MarketManage:
 
     def getProductByCategory(self, category):
         try:
-            return self.__market.getProductByCatagory(category)
+            return self.__market.getProductByCategory(category)
         except Exception as e:
             raise Exception(e)
 
@@ -70,7 +70,7 @@ class MarketManage:
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            return self.__market.getProductByPriceRange(self, minPrice, highPrice)
+            return self.__market.getProductByPriceRange(minPrice, highPrice)
         except Exception as e:
             raise Exception(e)
 

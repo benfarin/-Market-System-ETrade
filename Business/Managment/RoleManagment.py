@@ -15,7 +15,7 @@ class RoleManagment():
 
     def __init__(self):
         """ Virtually private constructor. """
-        self.__market: IMarket = Market()
+        self.__market: IMarket = Market().getInstance()
         self.productId = 0
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self

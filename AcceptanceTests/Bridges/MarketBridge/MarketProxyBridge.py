@@ -46,6 +46,11 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.search_product_name(product_name)
 
+    def add_quantity_to_store(self, store_id, user_id, productID, quantity):
+        if self.check_access():
+            return True
+        return self._real_subject.add_quantity_to_store(store_id, user_id, productID, quantity)
+
     def search_product_keyWord(self, key_word):
         if self.check_access():
             return True

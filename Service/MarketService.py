@@ -6,8 +6,8 @@ from Service.Events.EventLog import EventLog
 
 class MarketService:
     def __init__(self):
-        self.__marketManage = MarketManage()
-        self.__roleManagment = RoleManagment()
+        self.__marketManage = MarketManage().getInstance()
+        self.__roleManagment = RoleManagment().getInstance()
         self.__events = Events()
 
     def getEvents(self):
@@ -29,7 +29,7 @@ class MarketService:
         try:
             self.__marketManage.addProductToCart(userID, storeId, productId, quantity)
             eventLog = EventLog("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
-                                "productId: " + productId, "quantity: " + str(quantity))
+                                "productId: " + str(productId), "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -39,7 +39,7 @@ class MarketService:
         try:
             self.__marketManage.removeProductFromCart(userId, storeId, productId)
             eventLog = EventLog("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
-                                "productId: " + productId)
+                                "productId: " + str(productId))
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -49,7 +49,7 @@ class MarketService:
         try:
             self.__marketManage.updateProductFromCart(userID, storeID, productId, quantity)
             eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
-                                "productId: " + productId, "quantity: " + str(quantity))
+                                "productId: " + str(productId), "quantity: " + str(quantity))
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -82,8 +82,8 @@ class MarketService:
     def getProductPriceRange(self, minPrice, highPrice):
         try:
             toReturn = self.__marketManage.getProductPriceRange(minPrice, highPrice)
-            self.__events.addEventLog(EventLog("get product by price range", "min price: " + minPrice,
-                                               "high price: " + highPrice))
+            self.__events.addEventLog(EventLog("get product by price range", "min price: " + str(minPrice),
+                                               "high price: " + str(highPrice)))
             return toReturn
         except Exception as e:
             return e
@@ -196,7 +196,7 @@ class MarketService:
         try:
             self.__roleManagment.addProductQuantityToStore(storeID, userID, productId, quantity)
             eventLog = EventLog("add product quantity to store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "productId: " + productId, "quantity: " + quantity)
+                                , "productId: " + str(productId), "quantity: " + quantity)
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -206,7 +206,7 @@ class MarketService:
         try:
             self.__roleManagment.removeProductFromStore(storeID, userID, productId)
             eventLog = EventLog("remove product from store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "productId: " + productId)
+                                , "productId: " + str(productId))
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:

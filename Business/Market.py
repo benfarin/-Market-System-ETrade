@@ -104,39 +104,39 @@ class Market(implements(IMarket)):
             return e
 
     def getProductByCategory(self, category):
-        productsInStores: Dict[IStore, Product] = {}
+        productsInStores = []
         keys = self.__stores.keys()
         for i in keys:
             products_list_per_Store = self.__stores.get(i).getProductsByCategory(category)
             if products_list_per_Store is not None:
-                productsInStores[self.__stores.get(i)] = products_list_per_Store
+                productsInStores += products_list_per_Store
         return productsInStores
 
     def getProductsByName(self, nameProduct):
-        productsInStores: Dict[IStore, Product] = {}
+        productsInStores = []
         keys = self.__stores.keys()
         for i in keys:
             products_list_per_Store = self.__stores.get(i).getProductsByName(nameProduct)
             if products_list_per_Store is not None:
-                productsInStores[self.__stores.get(i)] = products_list_per_Store
+                productsInStores += products_list_per_Store
         return productsInStores
 
     def getProductByKeyWord(self, keyword):
-        productsInStores: Dict[IStore, Product] = {}
+        productsInStores = []
         keys = self.__stores.keys()
         for i in keys:
             products_list_per_Store = self.__stores.get(i).getProductsByKeyword(keyword)
             if products_list_per_Store is not None:
-                productsInStores[self.__stores.get(i)] = products_list_per_Store
+                productsInStores += products_list_per_Store
         return productsInStores
 
     def getProductByPriceRange(self, minPrice, highPrice):
-        productsInStores: Dict[IStore, Product] = {}
+        productsInStores= []
         keys = self.__stores.keys()
         for i in keys:
             products_list_per_Store = self.__stores.get(i).getProductsByPriceRange(minPrice, highPrice)
             if products_list_per_Store is not None:
-                productsInStores[self.__stores.get(i)] = products_list_per_Store
+                productsInStores += products_list_per_Store
         return productsInStores
 
     def addTransaction(self, storeID, transaction):
