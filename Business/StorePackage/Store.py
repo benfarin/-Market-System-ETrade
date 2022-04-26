@@ -1,4 +1,7 @@
 from interface import implements
+
+from Business.StorePackage.Product import Product
+from interfaces.IProduct import IProduct
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
 from Business.StorePackage.Bag import  Bag
@@ -17,7 +20,7 @@ class Store(implements(IStore)):
         self.__appointers: Dict[str: List] = {}  # UserId : UserId list
         self.__managers = []  # userId
         self.__owners = [self.__founderId]  # userId
-        self.__products = {}  # productId : Product
+        self.__products : Dict [int : IProduct] = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
         self.__transactions :Dict[int: StoreTransaction] = {}
 
@@ -163,6 +166,24 @@ class Store(implements(IStore)):
             if self.__products[productId] is None:
                 raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
             self.__products[productId] = newProduct
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductName(self,userId ,productID, newName):
+        try:
+            if self.__products[productID] is None:
+                raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
+            product : IProduct = self.__products.get(productID)
+            product.setProductName(newName)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductCategory(self, userId, productID, newCategory):
+        try:
+            if self.__products[productID] is None:
+                raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
+            product: IProduct = self.__products.get(productID)
+            product.setProductCategory(newCategory)
         except Exception as e:
             raise Exception(e)
 

@@ -101,3 +101,9 @@ class IStore(Interface):
 
     def removeProductFromBag(self, productId, quantity):
         pass
+
+    def updateProductName(self,userId ,productID, newName):
+        pass
+
+    def updateProductCategory(self,userId ,productID, newCategory):
+        pass

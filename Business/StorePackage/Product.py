@@ -1,7 +1,10 @@
 from typing import List
+from interface import implements
+
+from interfaces.IProduct import IProduct
 
 
-class Product:
+class Product(implements(IProduct)):
 
     def __init__(self, Id, name, price, category, keyword):
         self.__id = Id
@@ -15,6 +18,8 @@ class Product:
 
     def getProductName(self):
         return self.__name
+    def setProductName(self,newName):
+        self.__name = newName
 
     def getProductPrice(self):
         return self.__price
@@ -24,6 +29,9 @@ class Product:
 
     def setProductName(self, name):
         self.__name = name
+
+    def setProductCategory(self,newCategory):
+        self.__category = newCategory
 
     def setProductPrice(self, price):
         self.__price = price

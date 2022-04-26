@@ -379,8 +379,20 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def updateProductName(self,userID,productID,newName):
-        pass
+    def updateProductName(self,userID,storeID,productID,newName):
+        try:
+            if self.__checkOnlineUser(userID) is not None:
+                self.__stores.get(storeID).updateProductName(userID, productID, newName)
+            else:
+                raise Exception("user not logged in!")
+        except Exception as e:
+            raise Exception(e)
 
-    def updateProductCategory(self,userID,productID,newCategory):
-        pass
+    def updateProductCategory(self,userID,storeID,productID,newCategory):
+        try:
+            if self.__checkOnlineUser(userID) is not None:
+                self.__stores.get(storeID).updateProductCategory(userID, productID, newCategory)
+            else:
+                raise Exception("user not logged in!")
+        except Exception as e:
+            raise Exception(e)
