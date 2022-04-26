@@ -137,9 +137,8 @@ class Store(implements(IStore)):
     def addProductToStore(self, userId, product):
         try:
             self.__checkPermissions_ChangeStock(userId)
-            for existed in self.__products.values():
-                if product.getProductName() == existed.getProductName():
-                    raise Exception("Product already exists!")
+            if product.getProductId() in self.__products.keys():
+                raise Exception("Product already exists!")
             self.__products[product.getProductId()] = product
             self.__productsQuantity[product.getProductId()] = 0
         except Exception as e:
