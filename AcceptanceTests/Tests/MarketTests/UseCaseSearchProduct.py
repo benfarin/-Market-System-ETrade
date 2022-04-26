@@ -12,9 +12,9 @@ class UseCaseSearchProduct(unittest.TestCase):
                                              "Ben Gurion", 0, "HaPoalim", None)
         self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                    0, "000000")
-        self.product1 = self.market_proxy.add_product(self.store_id, self.user_id, "Product", 500,
+        self.product1 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
                                                       "Category", ["Test1", "Test2"])
-        self.product2 = self.market_proxy.add_product(self.store_id, self.user_id, "Product2", 10,
+        self.product2 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product2", 10,
                                                       "Category2", ["Test3", "Test4"])
 
     def test_search_by_name(self):

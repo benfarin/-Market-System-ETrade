@@ -12,25 +12,21 @@ class MyTestCase(unittest.TestCase):
                                                 "Ben Gurion", 0, "HaPoalim", None)
         self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                    0, "000000")
-        self.product1 = self.market_proxy.add_product(self.store_id, self.user_id, "Product", 500,
+        self.product1 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
                                                       "Category", ["Test1", "Test2"])
 
     def test_add_to_cart_positive1(self):
-        self.assertEqual(self.user_proxy., True)
+        self.assertEqual(self.user_proxy.add_product_to_cart(self.user_id, self.store_id, self.product1, 10), True)
+        self.assertEqual(self.user_proxy.add_product_to_cart(self.user_id, self.store_id, self.product1, 30), True)
 
     def test_add_to_cart_negative1(self):
-        self.assertEqual(self.user_proxy.add_product("TestUser", 0, 1, 10), False)
+        self.assertEqual(self.user_proxy.add_product_to_cart(self.user_id, self.store_id, -50, 10), False)
 
     def test_add_to_cart_negative2(self):
-        self.assertEqual(self.user_proxy.add_product("TestUser", 1, 0, 10), False)
+        self.assertEqual(self.user_proxy.add_product_to_cart(self.user_id, -50, self.product1, 10), False)
 
     def test_add_to_cart_negative3(self):
-        self.assertEqual(self.user_proxy.add_product("TestUser", -1, 0, 10), False)
-
-    def tearDown(self):
-        self.market_proxy.close_store(0)
-        self.market_proxy.remove_product(0, 0)
-        self.user_proxy.delete_user("TestUser", "TestPassword")
+        self.assertEqual(self.user_proxy.add_product_to_cart(self.user_id, self.store_id, self.product1, 2500), False)
 
 
 if __name__ == '__main__':
