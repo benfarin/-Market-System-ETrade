@@ -1,11 +1,14 @@
 import unittest
 
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
+from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
+from Service.MarketService import MarketService
+from Service.UserService import UserService
 
 
 class UseCaseMemberLogout(unittest.TestCase):
     def setUp(self):
-        self.user_proxy = UserProxyBridge(None)
+        self.user_proxy = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
         self.user_id = self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                                 "Ben Gurion", 0, "HaPoalim", None)
 

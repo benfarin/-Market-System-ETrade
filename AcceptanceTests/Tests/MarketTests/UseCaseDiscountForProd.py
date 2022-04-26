@@ -1,11 +1,12 @@
 import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
+from Service.MarketService import MarketService
 
 
 class UseCaseDiscountForProd(unittest.TestCase):
     def setUp(self):
-        self.proxy = MarketProxyBridge(None)
+        self.proxy = MarketProxyBridge(MarketService())
 
     # def test_discountProdPositive(self):
     #     self.assertEqual(self.proxy.discount_prod(0, 0, 20), True)

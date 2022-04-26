@@ -1,5 +1,5 @@
 from interface import implements
-import IUserBridge
+from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
 from AcceptanceTests.Bridges.UserBridge import UserRealBridge
 
 
@@ -28,7 +28,7 @@ class UserProxyBridge(implements(IUserBridge)):
         if self.check_access():
             return True
         else:
-            return self._real_subject.login_member()
+            return self._real_subject.login_guest()
 
     def login_member(self, user_id, password):
         if self.check_access():

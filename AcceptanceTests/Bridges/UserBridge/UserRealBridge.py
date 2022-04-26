@@ -1,5 +1,9 @@
 from interface import implements
-import IUserBridge
+
+from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
+from Service.MarketService import MarketService
+from Service.UserService import UserService
+from interface import implements
 
 
 class UserRealBridge(implements(IUserBridge)):
@@ -7,8 +11,14 @@ class UserRealBridge(implements(IUserBridge)):
         self._user_service = user_service
         self._market_service = market_service
 
+    def request(self) -> bool:
+        if self.check_access():
+            self._real_subject.request()
+        else:
+            return True
+
     def login_guest(self):
-        return self._user_service.login_member()
+        return self._user_service.guestLogin()
 
     def register(self, username, password, phone, account_number, branch, country,
                  city, street, apartment_num, bank, ICart):
@@ -29,4 +39,6 @@ class UserRealBridge(implements(IUserBridge)):
 
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         return self._market_service.createStore(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
+
+
 

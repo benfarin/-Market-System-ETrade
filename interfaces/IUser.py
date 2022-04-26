@@ -18,7 +18,7 @@ class IUser(Interface):
    def memberLogin(self, userName, password):
       pass
 
-   def logoutMember(self, userID):
+   def logoutMember(self, userName):
       pass
 
    def systemManagerSignUp(self, userName, password, phone, address, bank):

@@ -1,14 +1,17 @@
 import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
+from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
+from Service.MarketService import MarketService
+from Service.UserService import UserService
 
 
 class UseCaseAppointStoreManager(unittest.TestCase):
     # use-case 4.6
 
     def setUp(self):
-        self.proxy_market = MarketProxyBridge(None)
-        self.proxy_user = UserProxyBridge(None)
+        self.proxy_market = MarketProxyBridge(MarketService())
+        self.proxy_user = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
 
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.owner_id = self.proxy_user.register("testUser", "1243", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank", None)

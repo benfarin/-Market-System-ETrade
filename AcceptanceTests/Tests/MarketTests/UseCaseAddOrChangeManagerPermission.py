@@ -1,14 +1,17 @@
 import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
+from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
+from Service.MarketService import MarketService
+from Service.UserService import UserService
 
 
 class UseCaseAddOrChangeManagerPermission(unittest.TestCase):
     # use-case 5.1 actions according to permissions
 
     def setUp(self):
-        self.proxy_market = MarketProxyBridge(None)
-        self.proxy_user = UserProxyBridge(None)
+        self.proxy_market = MarketProxyBridge(MarketService())
+        self.proxy_user = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
         self.proxy_user.open_store("testStore", 0, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000)
 
     def test_addManagerOptionPositive(self):

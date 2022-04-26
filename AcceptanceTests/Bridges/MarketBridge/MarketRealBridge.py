@@ -1,5 +1,6 @@
 from interface import implements
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
+from Service.MarketService import MarketService
 
 
 class MarketRealBridge(implements(IMarketBridge)):
