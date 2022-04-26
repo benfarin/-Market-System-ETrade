@@ -8,19 +8,18 @@ class UseCaseMemberRegister(unittest.TestCase):
         self.proxy = UserProxyBridge(None)
 
     def test_register_positive(self):
-        self.assertEqual(self.proxy.register("TestUser", "TestPassword", "0520000000", "Address", 0, None), True)
+        self.assertEqual(self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                             "Ben Gurion", 0, "HaPoalim", None), True)
 
     def test_register_negative(self):
-        self.proxy.register("TestUser", "TestPassword", "TestPassword", "TestEmail")
-        self.assertEqual(self.proxy.register("TestUser", "TestPassword2", "TestPassword2", "TestEmail2"), False)
+        self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva", "Ben Gurion", 0,
+                            "HaPoalim", None)
+        self.assertEqual(self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                             "Ben Gurion", 0, "HaPoalim", None), False)
 
     def test_register_negative2(self):
-        self.proxy.register("TestUser", "TestPassword", "TestPassword", "TestEmail")
-        self.assertEqual(self.proxy.register("TestUser2", "TestPassword2", "TestPassword2", "TestEmail"), False)
-
-    def test_register_negative3(self):
-        self.proxy.register("TestUser", "TestPassword", "TestPassword", "TestEmail")
-        self.assertEqual(self.proxy.register("TestUser2", "TestPassword", "TestPassword2", "TestEmail2"), False)
+        self.assertEqual(self.proxy.register("user2", "", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                             "Ben Gurion", 0, "HaPoalim", None), False)
 
 
 if __name__ == '__main__':

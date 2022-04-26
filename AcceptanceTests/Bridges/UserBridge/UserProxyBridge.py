@@ -51,3 +51,9 @@ class UserProxyBridge(implements(IUserBridge)):
             return True
         else:
             return self._real_subject.logout_member(user_id)
+
+    def open_store(self, store_name, founder_id, account_num, branch, country, city, street, appartment_num, zip_code):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.open_store(store_name, founder_id, account_num, branch, country, city, street, appartment_num, zip_code)
