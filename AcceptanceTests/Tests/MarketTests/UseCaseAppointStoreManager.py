@@ -39,5 +39,13 @@ class UseCaseAppointStoreManager(unittest.TestCase):
     def test_AppointStoreManagerNoNewManager(self):
         self.assertRaises(Exception, self.proxy_market.appoint_store_manager(self.store_id, self.owner_id, -1))
 
+    def test_AppointStoreManagerTwice(self):
+        # user was already appointed
+        self.proxy_market.appoint_store_manager(self.store_id, self.owner_id, self.manager_id)
+        self.assertRaises(Exception, self.proxy_market.appoint_store_manager(self.store_id, self.owner_id, self.manager_id))
+
+    def test_AppointStoreManagerNoPermission(self):
+        self.assertRaises(Exception, self.proxy_market.appoint_store_manager(self.store_id, self.manager_id, self.manager_id))
+
 if __name__ == '__main__':
     unittest.main()
