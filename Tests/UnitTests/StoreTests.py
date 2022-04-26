@@ -134,22 +134,6 @@ class MyTestCase(unittest.TestCase):
         self.store.removeProductFromStore(self.user1Id, self.product1.getProductId())
         self.assertIsNone(self.store.getProducts().get(self.product1.getProductId()))
 
-    def test_update_product(self):
-        self.test_add_product_quantity()
-
-        newProduct = MagicMock()
-        newProduct.getProductId = MagicMock()
-        newProduct.getProductId.return_value = 2
-        newProduct.getProductName = MagicMock()
-        newProduct.getProductName.return_value = "milk"
-        newProduct.getProductPrice = MagicMock()
-        newProduct.getProductPrice.return_value = 7.0
-        newProduct.category = MagicMock()
-        newProduct.getProductCategory.return_value = "dairy"
-
-        self.store.updateProductFromStore(self.user1Id, self.product1.getProductId(), newProduct)
-        self.assertEqual(newProduct, self.store.getProducts().get(self.product1.getProductId()))
-
     def test_get_product_by_name(self):
         self.test_add_product_quantity()
         self.assertEqual([self.product1, self.product3], self.store.getProductsByName("milk"))

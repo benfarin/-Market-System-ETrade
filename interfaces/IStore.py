@@ -54,9 +54,6 @@ class IStore(Interface):
     def removeProductFromStore(self, userId, productId):
         pass
 
-    def updateProductFromStore(self, userId, productId, newProduct):
-        pass
-
     def appointManagerToStore(self, assignerId, assigneeId):
         pass
 
@@ -102,8 +99,11 @@ class IStore(Interface):
     def removeProductFromBag(self, productId, quantity):
         pass
 
-    def updateProductName(self,userId ,productID, newName):
+    def updateProductPrice(self, userId, productId, newPrice):
         pass
 
-    def updateProductCategory(self,userId ,productID, newCategory):
+    def updateProductName(self, userId, productId, newName):
+        pass
+
+    def updateProductCategory(self, userId, productId, newCategory):
         pass

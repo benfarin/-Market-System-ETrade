@@ -18,8 +18,6 @@ class Product(implements(IProduct)):
 
     def getProductName(self):
         return self.__name
-    def setProductName(self,newName):
-        self.__name = newName
 
     def getProductPrice(self):
         return self.__price
@@ -29,9 +27,6 @@ class Product(implements(IProduct)):
 
     def setProductName(self, name):
         self.__name = name
-
-    def setProductCategory(self,newCategory):
-        self.__category = newCategory
 
     def setProductPrice(self, price):
         self.__price = price

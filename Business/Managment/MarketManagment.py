@@ -79,3 +79,9 @@ class MarketManage:
             return self.__market.purchaseCart(userID, bank)
         except Exception as e:
             raise Exception(e)
+
+    def getCart(self, userID):
+        try:
+            return self.getCart(userID)
+        except Exception as e:
+            raise Exception(e)

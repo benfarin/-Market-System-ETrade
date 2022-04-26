@@ -17,11 +17,11 @@ class MarketService:
         try:
             bank = self.__marketManage.createBankAcount(accountNumber, brunch)
             address = self.__marketManage.createAddress(country, city, street, apartmentNum, zipCode)
-            self.__marketManage.createStore(storeName, founderId,bank, address)
+            toReturn = self.__marketManage.createStore(storeName, founderId,bank, address)
             eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + str(founderId),
                                 "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
             self.__events.addEventLog(eventLog)
-            return True
+            return toReturn
         except Exception as e:
             return e
 
@@ -96,6 +96,14 @@ class MarketService:
                                 , "branch: " + str(branch))
             self.__events.addEventLog(eventLog)
             return True
+        except Exception as e:
+            return e
+
+    def getCart(self, userID):
+        try:
+            toReturn = self.__marketManage.getCart(userID,)
+            self.__events.addEventLog(EventLog("get cart", "userId: " + str(userID)))
+            return toReturn
         except Exception as e:
             return e
 
@@ -204,16 +212,6 @@ class MarketService:
         except Exception as e:
             return e
 
-    def updateProductPriceFromStore(self, storeId, userId, productId, newPrice):
-        try:
-            self.__roleManagment.updateProductPriceFromStore(storeId, userId, productId, newPrice)
-            eventLog = EventLog("update product price from store", "storeId: " + str(storeId), "userId: " + str(userId),
-                                "productId: " + str(productId), "new price: " + str(newPrice))
-            self.__events.addEventLog(eventLog)
-            return True
-        except Exception as e:
-            return e
-
     def PrintRolesInformation(self, storeID, userID):
         try:
             self.__roleManagment.PrintRolesInformation(storeID, userID)
@@ -227,6 +225,36 @@ class MarketService:
         try:
             self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
             eventLog = EventLog("print purchase history info", "storeId: " + str(storeID), "userId: " + str(userID))
+            self.__events.addEventLog(eventLog)
+            return True
+        except Exception as e:
+            return e
+
+    def updateProductPrice(self, storeID, userID, productId, newPrice):
+        try:
+            self.__roleManagment.updateProductPrice(storeID, userID, productId, newPrice)
+            eventLog = EventLog("update product price", "storeId: " + str(storeID), "userId: " + str(userID),
+                                "productId: " + str(productId), "new price: " + str(newPrice))
+            self.__events.addEventLog(eventLog)
+            return True
+        except Exception as e:
+            return e
+
+    def updateProductName(self, userID, storeID, productID, newName):
+        try:
+            self.__roleManagment.updateProductPrice(storeID, userID, productID, newName)
+            eventLog = EventLog("update product name", "storeId: " + str(storeID), "userId: " + str(userID),
+                                "productId: " + str(productID), "new price: " + str(newName))
+            self.__events.addEventLog(eventLog)
+            return True
+        except Exception as e:
+            return e
+
+    def updateProductCategory(self, userID, storeID, productID, newCategory):
+        try:
+            self.__roleManagment.updateProductPrice(storeID, userID, productID, newCategory)
+            eventLog = EventLog("update product category", "storeId: " + str(storeID), "userId: " + str(userID),
+                                "productId: " + str(productID), "new price: " + str(newCategory))
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:

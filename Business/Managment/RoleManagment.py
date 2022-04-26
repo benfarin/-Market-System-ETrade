@@ -2,6 +2,7 @@ from interfaces.IMarket import IMarket
 from Business.Market import Market
 from Business.StorePackage.Product import Product
 
+
 class RoleManagment():
     __instance = None
 
@@ -19,8 +20,8 @@ class RoleManagment():
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
-
-    def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssignee he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID,
+                              assigneeID):  # check if the asssignee he member and assignerID!!
         try:
             return self.__market.appointManagerToStore(storeID, assignerID, assigneeID)
         except Exception as e:
@@ -34,8 +35,7 @@ class RoleManagment():
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         try:
-            if self.checkOnlineMember(assignerID) is not None:
-                self.__stores.get(storeID).setAppointManagerPermission(assignerID, assigneeID)
+            return self.setStockManagerPermission(storeID, assignerID, assigneeID)
         except Exception as e:
             return e
 
@@ -68,8 +68,8 @@ class RoleManagment():
 
     def addProductToStore(self, storeID, userID, product):
         try:
-             self.__market.addProductToStore(storeID, userID, product)
-             return product.getProductId()
+            self.__market.addProductToStore(storeID, userID, product)
+            return product.getProductId()
         except Exception as e:
             raise Exception(e)
 
@@ -85,9 +85,21 @@ class RoleManagment():
         except Exception as e:
             raise Exception(e)
 
-    def updateProductPriceFromStore(self, storeID, userID, productId, newPrice):
+    def updateProductPrice(self, storeID, userID, productId, newPrice):
         try:
             return self.__market.updateProductPriceFromStore(storeID, userID, productId, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductName(self, userID, storeID, productID, newName):
+        try:
+            return self.__market.updateProductPriceFromStore(storeID, userID, productID, newName)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductCategory(self, userID, storeID, productID, newCategory):
+        try:
+            return self.__market.updateProductPriceFromStore(storeID, userID, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 
@@ -107,6 +119,3 @@ class RoleManagment():
         productId = self.productId
         self.productId += 1
         return productId
-
-
-

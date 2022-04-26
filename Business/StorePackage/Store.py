@@ -4,7 +4,7 @@ from Business.StorePackage.Product import Product
 from interfaces.IProduct import IProduct
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
-from Business.StorePackage.Bag import  Bag
+from Business.StorePackage.Bag import Bag
 from Business.Transactions.StoreTransaction import StoreTransaction
 from typing import Dict, List
 
@@ -20,9 +20,9 @@ class Store(implements(IStore)):
         self.__appointers: Dict[str: List] = {}  # UserId : UserId list
         self.__managers = []  # userId
         self.__owners = [self.__founderId]  # userId
-        self.__products : Dict [int : IProduct] = {}  # productId : Product
+        self.__products: Dict[int: IProduct] = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__transactions :Dict[int: StoreTransaction] = {}
+        self.__transactions: Dict[int: StoreTransaction] = {}
 
         self.__permissions: Dict[str: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
@@ -160,30 +160,30 @@ class Store(implements(IStore)):
         except Exception as e:
             raise Exception(e)
 
-    def updateProductFromStore(self, userId, productId, newProduct):
+    def updateProductPrice(self, userId, productId, newPrice):
         try:
             self.__checkPermissions_ChangeStock(userId)
             if self.__products[productId] is None:
                 raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
-            self.__products[productId] = newProduct
+            self.__products.get(productId).setProductPrice(newPrice)
         except Exception as e:
             raise Exception(e)
 
-    def updateProductName(self,userId ,productID, newName):
+    def updateProductName(self, userId, productId, newName):
         try:
-            if self.__products[productID] is None:
+            self.__checkPermissions_ChangeStock(userId)
+            if self.__products[productId] is None:
                 raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
-            product : IProduct = self.__products.get(productID)
-            product.setProductName(newName)
+            self.__products.get(newName).setProductPrice(newName)
         except Exception as e:
             raise Exception(e)
 
-    def updateProductCategory(self, userId, productID, newCategory):
+    def updateProductCategory(self, userId, productId, newCategory):
         try:
-            if self.__products[productID] is None:
+            self.__checkPermissions_ChangeStock(userId)
+            if self.__products[productId] is None:
                 raise Exception("cannot update to a product who doesn't exist, in store: " + self.__name)
-            product: IProduct = self.__products.get(productID)
-            product.setProductCategory(newCategory)
+            self.__products.get(productId).setProductCategory(newCategory)
         except Exception as e:
             raise Exception(e)
 

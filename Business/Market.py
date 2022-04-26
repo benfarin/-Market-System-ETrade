@@ -42,7 +42,7 @@ class Market(implements(IMarket)):
         else:
             return True
 
-    def createStore(self, storeName, userID, bank, address): #change test!
+    def createStore(self, storeName, userID, bank, address):  # change test!
         if self.__checkOnlineUser(userID):
             storeID = self.__globalStore + 1
             self.__globalStore += 1
@@ -102,6 +102,7 @@ class Market(implements(IMarket)):
                 raise Exception("user not online")
         except Exception as e:
             return e
+
     def getProductByCategory(self, category):
         productsInStores: Dict[IStore, Product] = {}
         keys = self.__stores.keys()
@@ -177,13 +178,16 @@ class Market(implements(IMarket)):
 
                     self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
                     transactionId = self.__getTransactionId()
-                    storeTransaction: StoreTransaction = StoreTransaction(storeId, transactionId, paymentStatus.getPaymentId(), productsInStore, storeAmount)
+                    storeTransaction: StoreTransaction = StoreTransaction(storeId, transactionId,
+                                                                          paymentStatus.getPaymentId(), productsInStore,
+                                                                          storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
                     storeTransactions[storeId] = storeTransaction
                 else:
                     storeFailed.append(storeId)
 
-            self.__activeUsers.get(userID).addTransaction(UserTransaction(userID, self.__getTransactionId(), storeTransactions, paymentStatuses))
+            self.__activeUsers.get(userID).addTransaction(
+                UserTransaction(userID, self.__getTransactionId(), storeTransactions, paymentStatuses))
             if len(storeFailed) == 0:
                 return True
             else:
@@ -351,7 +355,7 @@ class Market(implements(IMarket)):
         self._transactionIdCounter += 1
         return tId
 
-    def removeStore(self,storeID,userID):
+    def removeStore(self, storeID, userID):
         try:
             if self.__activeUsers.get(userID) is None:
                 raise Exception("member with id " + userID + " is not online!")
@@ -362,16 +366,15 @@ class Market(implements(IMarket)):
             self.__stores.pop(storeID)
             return "Store removed succesfully!"
         except Exception as e:
-            return  e
+            return e
 
-    def loginUpdates(self,userID): # we need to check if all the store exist if not we remove all the products from the user that get in the systsem!
+    def loginUpdates(self,
+                     userID):  # we need to check if all the store exist if not we remove all the products from the user that get in the systsem!
         for storeID in self.__activeUsers.get(userID).getCart():
             if self.__stores.get(storeID) == None:
                 self.__activeUsers.get(userID).getCart().removeBag(storeID)
 
-
-
-    def getCart(self,userID):
+    def getCart(self, userID):
         try:
             if self.__activeUsers.get(userID) is None:
                 raise Exception("member with id " + userID + " is not online!")
@@ -379,7 +382,7 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def updateProductName(self,userID,storeID,productID,newName):
+    def updateProductName(self, userID, storeID, productID, newName):
         try:
             if self.__checkOnlineUser(userID) is not None:
                 self.__stores.get(storeID).updateProductName(userID, productID, newName)
@@ -388,7 +391,7 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def updateProductCategory(self,userID,storeID,productID,newCategory):
+    def updateProductCategory(self, userID, storeID, productID, newCategory):
         try:
             if self.__checkOnlineUser(userID) is not None:
                 self.__stores.get(storeID).updateProductCategory(userID, productID, newCategory)
