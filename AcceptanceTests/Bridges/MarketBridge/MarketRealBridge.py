@@ -20,7 +20,7 @@ class MarketRealBridge(implements(IMarketBridge)):
         return self._market_service.getProductsByKeyword(keyWord)
 
     def search_product_price_range(self, price_min, price_max):
-            return self._market_service.getProductPriceRange(price_min, price_max)
+        return self._market_service.getProductPriceRange(price_min, price_max)
 
     def add_product_to_store(self, store_id, user_id, name, price, category, key_words):
         return self._market_service.addProductToStore(store_id, user_id, name, price, category, key_words)

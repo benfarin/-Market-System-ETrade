@@ -1,6 +1,7 @@
 import unittest
 
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
+from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from Service.MarketService import MarketService
@@ -9,10 +10,11 @@ from Service.UserService import UserService
 
 class UseCaseSearchProduct(unittest.TestCase):
     def setUp(self):
-        self.market_proxy = MarketProxyBridge(MarketService())
+        self.market_proxy = MarketProxyBridge(MarketRealBridge(MarketService()))
         self.user_proxy = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
         self.user_id = self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                              "Ben Gurion", 0, "HaPoalim", None)
+        self.user_proxy.login_member("user1", "1234")
         self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                    0, "000000")
         self.product1 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
@@ -21,8 +23,8 @@ class UseCaseSearchProduct(unittest.TestCase):
                                                       "Category2", ["Test3", "Test4"])
 
     def test_search_by_name(self):
-        self.assertEqual(self.market_proxy.search_product_name("Product"), True)
-        self.assertEqual(self.market_proxy.search_product_name("Product2"), True)
+        self.assertEqual(self.market_proxy.search_product_name("Product"), [self.product1])
+        self.assertEqual(self.market_proxy.search_product_name("Product2"), [self.product2])
 
     def test_search_by_category(self):
         self.assertEqual(self.market_proxy.search_product_category("Category2"), True)

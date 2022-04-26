@@ -57,34 +57,34 @@ class MarketService:
 
     def getProductByCategory(self, category):
         try:
-            self.__marketManage.getProductByCategory(category)
+            toReturn = self.__marketManage.getProductByCategory(category)
             self.__events.addEventLog(EventLog("get product by category", "category: " + category))
-            return True
+            return toReturn
         except Exception as e:
             return e
 
-    def getProductsByName(self, nameProduct):
+    def getProductByName(self, nameProduct):
         try:
-            self.__marketManage.getProductsByName(nameProduct)
+            toReturn = self.__marketManage.getProductsByName(nameProduct)
             self.__events.addEventLog(EventLog("get product by name", "name: " + nameProduct))
-            return True
+            return toReturn
         except Exception as e:
             return e
 
     def getProductByKeyword(self, keyword):
         try:
-            self.__marketManage.getProductByKeyWord(keyword)
+            toReturn = self.__marketManage.getProductByKeyWord(keyword)
             self.__events.addEventLog(EventLog("get product by name", "keyword: " + keyword))
-            return True
+            return toReturn
         except Exception as e:
             return e
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            self.__marketManage.getProductPriceRange(minPrice, highPrice)
+            toReturn = self.__marketManage.getProductPriceRange(minPrice, highPrice)
             self.__events.addEventLog(EventLog("get product by price range", "min price: " + minPrice,
                                                "high price: " + highPrice))
-            return True
+            return toReturn
         except Exception as e:
             return e
 
@@ -188,7 +188,7 @@ class MarketService:
             eventLog = EventLog("add product to store", "storeId: " + str(storeID), "userId: " + str(userID)
                                 , "product: " + product.printForEvents())
             self.__events.addEventLog(eventLog)
-            return True
+            return product
         except Exception as e:
             return e
 

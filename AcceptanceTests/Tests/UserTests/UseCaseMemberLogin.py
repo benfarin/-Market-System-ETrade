@@ -15,17 +15,13 @@ class UseCaseMemberLogin(unittest.TestCase):
                                       "Ben Gurion", 0, 1, None)
 
     def test_login_positive(self):
-      self.assertTrue(self.proxy.login_member("user1", "1234"),True)
+        self.assertTrue(self.proxy.login_member("user1", "1234"),True)
 
     def test_login_negative1(self):
-        self.assertEqual(self.proxy.login_member("user2", "PasswordTest"), False)
+        self.assertRaises(Exception, self.proxy.login_member("user2", "PasswordTest"))
 
     def test_login_negative2(self):
-        self.assertEqual(self.proxy.login_member(self.id, "PasswordTest"), False)
-
-    def test_login_negative3(self):
-        self.proxy.login_member(self.id, "1234")
-        self.assertEqual(self.proxy.login(self.id, "1234"), False)
+        self.assertRaises(Exception, self.proxy.login_member("user1", "PasswordTest"))
 
 
 if __name__ == '__main__':
