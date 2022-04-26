@@ -214,19 +214,19 @@ class MarketService:
 
     def PrintRolesInformation(self, storeID, userID):
         try:
-            self.__roleManagment.PrintRolesInformation(storeID, userID)
+            toReturn = self.__roleManagment.PrintRolesInformation(storeID, userID)
             eventLog = EventLog("print roles info", "storeId: " + str(storeID), "userId: " + str(userID))
             self.__events.addEventLog(eventLog)
-            return True
+            return toReturn
         except Exception as e:
             return e
 
     def printPurchaseHistoryInformation(self, storeID, userID):
         try:
-            self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
+            toReturn = self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
             eventLog = EventLog("print purchase history info", "storeId: " + str(storeID), "userId: " + str(userID))
             self.__events.addEventLog(eventLog)
-            return True
+            return toReturn
         except Exception as e:
             return e
 

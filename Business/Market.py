@@ -316,7 +316,7 @@ class Market(implements(IMarket)):
     def printRolesInformation(self, storeID, userID):
         try:
             if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).PrintRolesInformation(userID)
+                return self.__stores.get(storeID).PrintRolesInformation(userID)
         except Exception as e:
             raise Exception(e)
 

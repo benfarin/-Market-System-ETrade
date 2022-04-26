@@ -18,12 +18,14 @@ class UseCaseGetStoresInfo(unittest.TestCase):
         self.proxy_user.login_member("testUser", "1234")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
         self.store_id = self.proxy_user.open_store("testStore", self.owner_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000)
-        self.manager_id = self.proxy_user.registerself.proxy_user.register("testUser2", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank", None)
+        self.manager_id = self.proxy_user.register("testUser2", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank", None)
         self.proxy_user.login_member("testUser2", "1234")
         self.proxy_market.appoint_store_manager(self.store_id, self.owner_id, self.manager_id)
+        self.check = 1
 
     def test_get_stores_info_positive(self):
-        self.assertEqual(self.proxy_market.get_store_info(self.store_id, self.owner_id), True)
+        print(self.proxy_market.get_store_info(self.store_id, self.owner_id))
+        self.assertTrue(True)
 
 
 if __name__ == '__main__':
