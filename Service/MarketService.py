@@ -175,7 +175,7 @@ class MarketService:
 
     def addProductToStore(self, storeID, userID, name, price, category, keywords):
         try:
-            product = self.__roleManagment.createProduct(name, price, category, keywords,storeID)
+            product = self.__roleManagment.createProduct(name, price, category, keywords)
             self.__roleManagment.addProductToStore(storeID, userID, product)
             eventLog = EventLog("add product to store", "storeId: " + str(storeID), "userId: " + str(userID)
                                 , "product: " + product.printForEvents())

@@ -13,7 +13,7 @@ class User:
         self._cart = Cart(self.__id)
         self.__memberCheck = False
         self.__paymentStatus: Dict[int: PaymentStatus] = {}
-        self.__transactions = UserTransaction(self.__id)
+        self.__transactions: Dict[int: UserTransaction] = {}
 
     def getPaymentStatus(self):
         return self.__paymentStatus
@@ -21,11 +21,23 @@ class User:
     def getTransactions(self):
         return self.__transactions
 
+    def addTransaction(self, userTransaction: UserTransaction):
+        self.__transactions[userTransaction.getUserTransactionId()] = userTransaction
+
+    def removeTransaction(self, transactionId):
+        self.__transactions.pop(transactionId)
+
+    def getTransaction(self, transactionId):
+        return self.__transactions[transactionId]
+
     def getPaymentById(self, paymentID):
         return self.__paymentStatus[paymentID]
 
-    def getTransactionsById(self,transactionID):
-        return self.__transactions.getTransactionById(transactionID)
+    def addPaymentStatus(self, paymentStatus):
+        self.__paymentStatus[paymentStatus.getPaymentId()] = paymentStatus
+
+    def removePaymentStatus(self, paymentStatusId):
+        self.__paymentStatus.pop(paymentStatusId)
 
     def getUserID(self):
         return self.__id
@@ -53,15 +65,3 @@ class User:
 
     def addProduct(self, storeId, product, quantity):
         self._cart.addProduct(storeId, product, quantity)
-
-    def addPaymentStatus(self, paymentStatus):
-        self.__paymentStatus[paymentStatus.getPaymentId()] = paymentStatus
-
-    def addTransaction(self, transaction):
-        return self.__transactions.addTransaction(transaction)
-
-    def removeTransaction(self, transactionId):
-        try:
-            return self.__transactions.removeTransaction(transactionId)
-        except Exception as e:
-            raise Exception(e)

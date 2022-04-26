@@ -1,23 +1,20 @@
-
-from Business.Transactions.Transaction import Transaction
+from Business.Transactions.StoreTransaction import StoreTransaction
 from typing import Dict
 
 
 class UserTransaction:
-    def __init__(self, userID):
+    def __init__(self, userID, transactionId, storeTransactions, paymentsStatus):
         self.__userID = userID
-        self.__transactions: Dict[int: Transaction] = {}
+        self.__transactionId = transactionId
+        self.__storeTransactions: Dict[int: StoreTransaction] = storeTransactions
+        self.__paymentStatus = paymentsStatus
 
-    def addTransaction(self, transaction):
-        self.__transactions[transaction.getTransactionID()] = transaction
+    def getUserTransactionId(self):
+        return self.__transactionId
 
-    def removeTransaction(self, transactionId):
-        if transactionId not in self.__transactions.keys():
-            raise Exception("cannot remove transaction with wrong transactionId")
-        self.__transactions.pop(transactionId)
+    def getStoreTransactions(self):
+        return self.__storeTransactions
 
-    def getTransactionHistory(self):
-        return self.__transactions
+    def getPaymentStatus(self):
+        return self.__paymentStatus
 
-    def getTransactionById(self,transactionID):
-        return self.__transactions[transactionID]

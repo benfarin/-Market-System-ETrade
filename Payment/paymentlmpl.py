@@ -44,6 +44,8 @@ class Paymentlmpl(implements(IPayment)):
         except Exception:
             paymentStatus.status("cancel payment failed")
 
+
+
     def __getPaymentId(self):
         paymentId = self.__paymentId
         self.__paymentId += 1

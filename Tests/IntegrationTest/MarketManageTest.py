@@ -25,80 +25,112 @@ class MyTestCase(unittest.TestCase):
         self.__member2 = Member("shimshon", "089751479", "34934", self.__address2, self.__bank2)
         self.__member3 = Member("gershon", "089717468", "2325", self.__address2, self.__bank2)
         self.__market.addActiveUser(self.__member1)
-        self.__store3 : IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,self.__address2)
-        self.__product1 : Product = Product(1,"milk",75,"halavi","ff",1)
-        self.__market.addProductToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__product1)
-        self.__market.addProductQuantityToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__product1.getProductId(),100)
-
+        self.__store3: IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
+                                                          self.__address2)
+        self.__product1: Product = Product(1, "milk", 75, "halavi", "ff", 1)
+        self.__market.addProductToStore(self.__store3.getStoreId(), self.__member1.getUserID(), self.__product1)
+        self.__market.addProductQuantityToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
+                                                self.__product1.getProductId(), 100)
 
     def test_addActiveUser(self):
         self.assertTrue(self.__market.addActiveUser(self.__member1))
 
     def test_createStore(self):
         self.__market.addActiveUser(self.__member1)
-        store1 : IStore = self.__market.createStore("foot-locker",self.__member1.getUserID(),self.__bank1,self.__address2)
-        store2 : IStore = self.__market.getStoreById(store1.getStoreId())
+        store1: IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
+                                                   self.__address2)
+        store2: IStore = self.__market.getStoreById(store1.getStoreId())
         storeID = store2.getStoreId()
-        self.assertEqual( storeID, store1.getStoreId())
+        self.assertEqual(storeID, store1.getStoreId())
 
     def test_addProductToCart(self):
         # store initial with 100 products!
-        self.assertTrue(self.__market.addProductToCart(self.__member1.getUserID(),self.__store3.getStoreId(),self.__product1.getProductId(),7))
-        self.assertRaises(Exception, lambda: self.__market.addProductToCart(self.__member1.getUserID(),self.__store3.getStoreId(),self.__product1.getProductId(),100))
+        self.assertTrue(self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),
+                                                       self.__product1.getProductId(), 7))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),
+                                                                 self.__product1.getProductId(), 100))
 
     def test_removeProductFromCart(self):
         self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),
                                        self.__product1.getProductId(), 7)
-        self.assertTrue(self.__market.removeProductFromCart(self.__store3.getStoreId(),self.__member1.getUserID(),self.__product1.getProductId()))
+        self.assertTrue(self.__market.removeProductFromCart(self.__store3.getStoreId(), self.__member1.getUserID(),
+                                                            self.__product1.getProductId()))
 
     def test_updateProductFromCart(self):
         self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),
                                        self.__product1.getProductId(), 7)
-        self.assertTrue(self.__market.updateProductFromCart(self.__member1.getUserID(),self.__store3.getStoreId(),self.__product1.getProductId(),99))
+        self.assertTrue(self.__market.updateProductFromCart(self.__member1.getUserID(), self.__store3.getStoreId(),
+                                                            self.__product1.getProductId(), 99))
         pass
+
     def test_appointManagerToStore(self):
-        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
-        self.assertRaises(Exception,lambda :self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member3.getUserID(),self.__member1.getUserID()))
+        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
+                                                            self.__member2.getUserID()))
+        self.assertRaises(Exception, lambda: self.__market.appointManagerToStore(self.__store3.getStoreId(),
+                                                                                 self.__member3.getUserID(),
+                                                                                 self.__member1.getUserID()))
 
     def test_appointOwnerToStore(self):
         self.assertTrue(self.__market.appointOwnerToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
-                                                            self.__member2.getUserID()))
+                                                          self.__member2.getUserID()))
         self.assertRaises(Exception,
-                         lambda :self.__market.appointOwnerToStore(self.__store3.getStoreId(), self.__member3.getUserID(),
-                                                              self.__member1.getUserID()))
+                          lambda: self.__market.appointOwnerToStore(self.__store3.getStoreId(),
+                                                                    self.__member3.getUserID(),
+                                                                    self.__member1.getUserID()))
         self.__market.addActiveUser(self.__member2)
-        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member2.getUserID(),self.__member3.getUserID())) # check if the new owner can appoint new manager!
+        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(), self.__member2.getUserID(),
+                                                            self.__member3.getUserID()))  # check if the new owner can appoint new manager!
 
     def test_setStockManagerPermission(self):
-        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
+        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
+                                                            self.__member2.getUserID()))
 
         self.assertTrue(self.__market.setStockManagerPermission(self.__store3.getStoreId(), self.__member1.getUserID(),
-                                                          self.__member2.getUserID()))
-        self.assertRaises(Exception,lambda : self.__market.setStockManagerPermission(self.__store3.getStoreId(), self.__member2.getUserID(),
-                                                                self.__member3.getUserID()))
+                                                                self.__member2.getUserID()))
+        self.assertRaises(Exception, lambda: self.__market.setStockManagerPermission(self.__store3.getStoreId(),
+                                                                                     self.__member2.getUserID(),
+                                                                                     self.__member3.getUserID()))
         self.__market.addActiveUser(self.__member2)
-        self.assertRaises(Exception,lambda :self.__market.setStockManagerPermission(self.__store3.getStoreId(),
-                                                                             self.__member2.getUserID(),
-                                                                             self.__member3.getUserID()))
+        self.assertRaises(Exception, lambda: self.__market.setStockManagerPermission(self.__store3.getStoreId(),
+                                                                                     self.__member2.getUserID(),
+                                                                                     self.__member3.getUserID()))
+
     def test_setAppointOwnerPermission(self):
-         self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
-         self.assertRaises(Exception,lambda :self.__market.setAppointOwnerPermission(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member2.getUserID()))
-         self.assertRaises(Exception,lambda :self.__market.appointOwnerToStore(self.__store3.getStoreId(),self.__member2.getUserID(),self.__member3.getUserID()))
-         self.__market.addActiveUser(self.__member2)
-         self.assertTrue(self.__market.appointOwnerToStore(self.__store3.getStoreId(),self.__member1.getUserID(),self.__member3.getUserID()))
+        self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
+                                                            self.__member2.getUserID()))
+        self.assertRaises(Exception, lambda: self.__market.setAppointOwnerPermission(self.__store3.getStoreId(),
+                                                                                     self.__member1.getUserID(),
+                                                                                     self.__member2.getUserID()))
+        self.assertRaises(Exception, lambda: self.__market.appointOwnerToStore(self.__store3.getStoreId(),
+                                                                               self.__member2.getUserID(),
+                                                                               self.__member3.getUserID()))
+        self.__market.addActiveUser(self.__member2)
+        self.assertTrue(self.__market.appointOwnerToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
+                                                          self.__member3.getUserID()))
 
     def test_addProductToStore(self):
         self.assertTrue(
             self.__market.addProductToStore(self.__store3.getStoreId(), self.__member1.getUserID(), self.__product1))
         self.assertRaises(Exception,
-                         lambda :self.__market.addProductToStore(self.__store3.getStoreId(), self.__member2.getUserID(),
-                                                          self.__product1))
-
+                          lambda: self.__market.addProductToStore(self.__store3.getStoreId(),
+                                                                  self.__member2.getUserID(),
+                                                                  self.__product1))
 
     def test_purchaseCart(self):
-        self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),
-                                       self.__product1.getProductId(), 7)
-        self.__market.purchaseCart(self.__member1.getUserID(),self.__member1.getBank())
+        self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),self.__product1.getProductId(), 7)
+        self.assertTrue(self.__market.purchaseCart(self.__member1.getUserID(), self.__member1.getBank()))
+
+    def test_cancelCart(self):
+        self.__market.addProductToCart(self.__member1.getUserID(), self.__store3.getStoreId(),self.__product1.getProductId(), 7)
+        print(self.__store3.getProductQuantity())
+        self.assertTrue(self.__market.purchaseCart(self.__member1.getUserID(), self.__member1.getBank()))
+        print(self.__store3.getProductQuantity())
+        self.__market.cancelPurchaseCart(self.__member1.getUserID(), 1)
+        print(self.__store3.getProductQuantity())
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

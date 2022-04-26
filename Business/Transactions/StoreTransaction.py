@@ -1,27 +1,30 @@
-from Business.Transactions.Transaction import Transaction
 from typing import Dict
+import datetime
+
 
 class StoreTransaction:
 
-    def __init__(self, storeId, storeName):
+    def __init__(self, storeId, transactionId, paymentId, products, amount):
         self.__storeId = storeId
-        self.__storeName = storeName
-        self.__transactions: Dict[int: Transaction] = {}
+        self.__transactionId = transactionId
+        self.__payemntId = paymentId
+        self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
+        self.__products = products
+        self.__amount = amount
 
-    def addTransaction(self, transaction):
-        self.__transactions[transaction.getTransactionID()] = transaction
+    def getTransactionID(self):
+        return self.__transactionId
 
-    def removeTransaction(self, transactionId):
-        if transactionId not in self.__transactions.keys():
-            raise Exception("cannot remove transaction with wrong transactionId")
-        self.__transactions.pop(transactionId)
-
-    def getTransactionHistory(self):
-        return self.__transactions
+    def getProduts(self):
+        return self.__products
 
     def getPurchaseHistoryInformation(self):
-        info = "purchase history for store: " + self.__storeName + " ,storeId: " + str(self.__storeId) + " :\n"
-        for transaction in self.__transactions:
-            info += transaction.__str__() + "\n"
+        info = " transactionId: " + str(self.__transactionId)
+        info += "\n\tpaymentId: " + self.__payemntId
+        info += "\n\tdate: " + str(self.__date)
+        info += "\n\tproducts: "
+        for product in self.__products.keys():
+            info += "\n\t\t\tname: " + product.getProductName() + ", price: " + str(
+                product.getProductPrice()) + ", amount: " + str(self.__products[product])
+        info += "\n\ttotal amount: " + str(self.__amount) + "\n"
         return info
-

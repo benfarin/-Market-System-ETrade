@@ -19,7 +19,7 @@ class Store(implements(IStore)):
         self.__owners = [self.__founderId]  # userId
         self.__products = {}  # productId : Product
         self.__productsQuantity = {}  # productId : quantity
-        self.__transactions = StoreTransaction(storeId, storeName)
+        self.__transactions :Dict[int: StoreTransaction] = {}
 
         self.__permissions: Dict[str: StorePermission] = {founderId: StorePermission()}  # UserId : storePermission
         self.__permissions[founderId].setPermission_AppointManager(True)
@@ -266,13 +266,16 @@ class Store(implements(IStore)):
         return self.__permissions
 
     def addTransaction(self, transaction):
-        self.__transactions.addTransaction(transaction)
+        self.__transactions[transaction.getTransactionID()] = transaction
 
     def removeTransaction(self, transactionId):
         try:
-            self.__transactions.removeTransaction(transactionId)
+            self.__transactions.pop(transactionId)
         except Exception as e:
             raise Exception(e)
+
+    def getTransaction(self, transactionId):
+        self.__transactions.get(transactionId)
 
     # print all transactions in store
     def printPurchaseHistoryInformation(self, userId):
@@ -282,7 +285,10 @@ class Store(implements(IStore)):
         if not permissions.hasPermission_RolesInformation():
             raise Exception("User ", userId, " doesn't have the permission - get roles information in store: ",
                             self.__name)
-        return self.__storeHistory.getPurchaseHistoryInformation()
+        info = "purchase history for store: " + self.__storeName + " ,storeId: " + str(self.__storeId) + " :\n"
+        for storeTransaction in self.__transactions:
+            info += storeTransaction.getPurchaseHistoryInformation() + "\n"
+        return info
 
     def getTransactionHistory(self, userId):
         permissions = self.__permissions[userId]

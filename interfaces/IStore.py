@@ -75,6 +75,9 @@ class IStore(Interface):
     def removeTransaction(self, transactionId):
         pass
 
+    def getTransaction(self, transactionId):
+        pass
+
     def printPurchaseHistoryInformation(self, userId):
         pass
 

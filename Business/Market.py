@@ -10,7 +10,8 @@ from Business.StorePackage.Product import Product
 from Payment.PaymentStatus import PaymentStatus
 from Payment.PaymentDetails import PaymentDetails
 from Payment.paymentlmpl import Paymentlmpl
-from Business.Transactions.Transaction import Transaction
+from Business.Transactions.StoreTransaction import StoreTransaction
+from Business.Transactions.UserTransaction import UserTransaction
 from interface import implements
 from typing import Dict
 
@@ -28,7 +29,8 @@ class Market(implements(IMarket)):
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
-        self.__activeUsers: Dict[str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
+        self.__activeUsers: Dict[
+            str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
         self.__globalStore = 0
         self._transactionIdCounter = 0
         if Market.__instance is None:
@@ -156,44 +158,63 @@ class Market(implements(IMarket)):
             if cart.isEmpty():
                 raise Exception("cannot purchase an empty cart")
 
+            storeFailed = []
+            storeTransactions: Dict[int: StoreTransaction] = {}
+            totalAmount = 0.0
+            paymentStatuses: Dict[int: PaymentStatus] = {}
+
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
                 storeAmount = cart.calcSumOfBag(storeId)
-                paymentDetails = PaymentDetails(userID,bank,storeBank, storeId, storeAmount)
+                totalAmount += storeAmount
+                paymentDetails = PaymentDetails(userID, bank, storeBank, storeId, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
+                paymentStatuses[paymentStatus.getPaymentId()] = paymentStatus
 
-                if paymentStatus.getStatus() ==  "payment succeeded":
-                    products = cart.getAllProductsByStore().get(storeId)
-                    self.__stores.get(storeId).addTransaction(Transaction(self.__getTransactionId(), userID, products, storeAmount))
+                if paymentStatus.getStatus() == "payment succeeded":
+                    productsInStore = cart.getAllProductsByStore()[storeId]
 
-            products = cart.getAllProducts()
-            totalAmount = cart.calcSum()
-            self.__activeUsers.get(userID).addTransaction(Transaction(self.__getTransactionId(), userID, products, totalAmount))
-            return True
+                    self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
+                    transactionId = self.__getTransactionId()
+                    storeTransaction: StoreTransaction = StoreTransaction(storeId, transactionId, paymentStatus.getPaymentId(), productsInStore, storeAmount)
+                    self.__stores.get(storeId).addTransaction(storeTransaction)
+                    storeTransactions[storeId] = storeTransaction
+                else:
+                    storeFailed.append(storeId)
+
+            self.__activeUsers.get(userID).addTransaction(UserTransaction(userID, self.__getTransactionId(), storeTransactions, paymentStatuses))
+            if len(storeFailed) == 0:
+                return True
+            else:
+                raise Exception("failed to pay in stores: " + str(storeFailed))
+
             # here need to add delivary
         except Exception as e:
             raise Exception(e)
 
-    def cancelPurchaseCart(self, userID, paymentId, transactionId):
+    def cancelPurchaseCart(self, userID, transactionId):
         try:
             if self.__activeUsers.get(userID) is None:
                 raise Exception("member with id " + userID + " is not online!")
-            user =self.__activeUsers.get(userID)
-            trans:Transaction = user.getTransactionsById(transactionId)
-            paymentStat = user.getPaymentById(paymentId)
-            if trans is None:
-                raise Exception("transaction  id " + transactionId + " is not good!")
-            if paymentStat is None:
-                raise Exception("payment id " + paymentId + " is not good!")
+            user = self.__activeUsers.get(userID)
+            userTransaction = user.getTransaction(transactionId)
 
-            for pro in trans.getProducts():
-                for store in pro:
-                    self.addProductQuantityToStore(store,self.__stores[store])
+            for storeId in userTransaction.getStoreTransactions().keys():
+                store: Store = self.__stores.get(storeId)
+                storeTransaction: StoreTransaction = userTransaction.getStoreTransactions()[storeId]
 
+                for product in storeTransaction.getProduts().keys():
+                    quantity = storeTransaction.getProduts()[product]
+                    store.addProductQuantityToStore(userID, product.getProductId(), quantity)
 
+                store.removeTransaction(storeTransaction.getTransactionID())
 
+            for paymentStatus in userTransaction.getPaymentStatus():
+                user.removePaymentStatus(paymentStatus)
 
+        except Exception as e:
+            raise Exception(e)
 
     #  action of roles - role managment
     def appointManagerToStore(self, storeID, assignerID, assigneeID):  # Tested
