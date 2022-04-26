@@ -292,10 +292,10 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def updateProductPriceFromStore(self, storeID, userID, productId, mewPrice):
+    def updateProductPrice(self, storeID, userID, productId, mewPrice):
         try:
             if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).updateProductPriceFromStore(userID, productId, mewPrice)
+                self.__stores.get(storeID).updateProductPrice(userID, productId, mewPrice)
         except Exception as e:
             raise Exception(e)
 

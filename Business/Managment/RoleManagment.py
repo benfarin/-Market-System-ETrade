@@ -64,6 +64,10 @@ class RoleManagment():
             raise Exception(e)
 
     def createProduct(self, name, price, category, keywords):
+        if name is None:
+            raise Exception("product name cannot be None")
+        if category is None:
+            raise Exception("product category cannot be None")
         return Product(self.__getProductId(), name, price, category, keywords)
 
     def addProductToStore(self, storeID, userID, product):
@@ -87,13 +91,13 @@ class RoleManagment():
 
     def updateProductPrice(self, storeID, userID, productId, newPrice):
         try:
-            return self.__market.updateProductPriceFromStore(storeID, userID, productId, newPrice)
+            return self.__market.updateProductPrice(storeID, userID, productId, newPrice)
         except Exception as e:
             raise Exception(e)
 
     def updateProductName(self, userID, storeID, productID, newName):
         try:
-            return self.__market.updateProductPriceFromStore(storeID, userID, productID, newName)
+            return self.__market.updateProductPrice(storeID, userID, productID, newName)
         except Exception as e:
             raise Exception(e)
 

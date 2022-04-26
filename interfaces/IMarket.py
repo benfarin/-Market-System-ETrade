@@ -79,7 +79,7 @@ class IMarket(Interface):
     def printPurchaseHistoryInformation(self, storeID, userID):
         pass
 
-    def updateProductPriceFromStore(self, storeID, userID, productId, mewPrice):
+    def updateProductPrice(self, storeID, userID, productId, mewPrice):
         pass
 
     def addActiveUser(self, user):

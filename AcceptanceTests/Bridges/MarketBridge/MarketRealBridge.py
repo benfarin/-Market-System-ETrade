@@ -29,7 +29,7 @@ class MarketRealBridge(implements(IMarketBridge)):
         return self._market_service.removeProductFromStore(store_id, user_id, prod_id)
 
     def edit_product_price(self, store_id, user_id, prod_id, new_price):
-        return self._market_service.editProductPriceFromStore(store_id, user_id, prod_id, new_price)
+        return self._market_service.updateProductPrice(store_id, user_id, prod_id, new_price)
 
     def appoint_store_owner(self, store_id, assigner_id, assignee_id):
         return self._market_service.appointOwnerToStore(store_id, assigner_id, assignee_id)
