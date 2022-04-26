@@ -19,5 +19,5 @@ class Bank:
     def printForEvents(self):
         return "\n\t\t\taccount number: " + str(self.__accountNumber) + "\n\t\t\tbranch: " + str(self.__branch)
 
-    def __str__(self):
-        return "Account Number: " + self.__accountNumber + " branch: " + self.__branch
+    # def __str__(self):
+    #     return "Account Number: " + self.__accountNumber + " branch: " + self.__branch

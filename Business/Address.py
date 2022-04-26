@@ -44,6 +44,6 @@ class Address:
         address += "\n\t\t\tapartment number: " + str(self.__apartmentNum)
         return address + "\n\t\t\tzip code: " + str(self.__zipCode)
 
-    def __str__(self):
-        return "Country: " + self.__country + " city: " + self.__city + " street: " + self.__street + " apartment Number: " \
-               + self.__apartmentNum + " zip code: " + self.__zipCode
+    # def __str__(self):
+    #     return "Country: " + self.__country + " city: " + self.__city + " street: " + self.__street + " apartment Number: " \
+    #            + self.__apartmentNum + " zip code: " + self.__zipCode

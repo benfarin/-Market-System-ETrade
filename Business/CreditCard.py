@@ -31,6 +31,6 @@ class CreditCard:
         return self.__holderID
     def setHolderID(self, holderID):
         self.__holderID = holderID
-    def __str__(self):
-        return " Holder card name: " + self.__holderCardName + " card number: " + self.__cardNumber \
-               +" exp: " + self.__month + "\\" + self.__year + " cvv: " + self.__cvv + " holder ID: " + self.__holderID
+    # def __str__(self):
+    #     return " Holder card name: " + self.__holderCardName + " card number: " + self.__cardNumber \
+    #            +" exp: " + self.__month + "\\" + self.__year + " cvv: " + self.__cvv + " holder ID: " + self.__holderID

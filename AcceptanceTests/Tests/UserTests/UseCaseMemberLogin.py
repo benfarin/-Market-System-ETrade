@@ -15,8 +15,12 @@ class UseCaseMemberLogin(unittest.TestCase):
                                       "Ben Gurion", 0, 1, None)
 
     def test_login_positive(self):
-        self.assertEqual(self.proxy.login_member("user1", "1234"), True)
-
+        try:
+            self.proxy.login_member("user1", "1234")
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+            
     def test_login_negative1(self):
         self.assertEqual(self.proxy.login(-999, "PasswordTest"), False)
 

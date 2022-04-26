@@ -371,8 +371,9 @@ class Market(implements(IMarket)):
 
     def loginUpdates(self,
                      userID):  # we need to check if all the store exist if not we remove all the products from the user that get in the systsem!
-        for storeID in self.__activeUsers.get(userID).getCart():
-            if self.__stores.get(storeID) == None:
+
+        for storeID in self.__activeUsers.get(userID).getCart().getAllBags().keys():
+            if self.__stores.get(storeID) is None:
                 self.__activeUsers.get(userID).getCart().removeBag(storeID)
 
     def getCart(self, userID):

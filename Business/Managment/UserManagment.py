@@ -60,24 +60,20 @@ class UserManagment(implements(IUser)):
     def memberLogin(self, userName, password): #Tested
         try:
             if len(self.__systemManager) > 0:
-                i: User = User()
-                check = False
-                for i in self.__members.values():
-                    if i.getUserName() == userName:
-                        if self.__market.getActiveUsers().get(i.getUserID()) is None:
-                            if i.getPassword() == password:
-                                self.__market.addActiveUser(i)
-                                check = True
-                                i.setLoggedIn(True)
-                                i.setMemberCheck(True)
-                                # self.__market.loginUpdates(i.getUserID())
-                                return i.getUserID()
-                            else:
-                                raise Exception("password not good!")
-                        else:
-                            raise Exception("member allready login")
-                if check == False:
+                i : Member = self.__members.get(userName)
+                if i is None:
                     raise Exception("The user ID " + userName + " not registered!")
+                if self.__market.getActiveUsers().get(i.getUserID()) is None:
+                    if i.getPassword() == password:
+                            self.__market.addActiveUser(i)
+                            i.setLoggedIn(True)
+                            i.setMemberCheck(True)
+                            self.__market.loginUpdates(i.getUserID())
+                            return i.getUserID()
+                    else:
+                            raise Exception("password not good!")
+                else:
+                    raise Exception("member allready login")
             else:
                 raise Exception("There no system manager!")
         except Exception as e:
