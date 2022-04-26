@@ -25,8 +25,9 @@ class MyTestCase(unittest.TestCase):
         self.__member2 = Member("shimshon", "089751479", "34934", self.__address2, self.__bank2)
         self.__member3 = Member("gershon", "089717468", "2325", self.__address2, self.__bank2)
         self.__market.addActiveUser(self.__member1)
-        self.__store3: IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
+        storeID3 =self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
                                                           self.__address2)
+        self.__store3: IStore = self.__market.getStoreById(storeID3)
         self.__product1: Product = Product(1, "milk", 75, "halavi", "ff")
         self.__market.addProductToStore(self.__store3.getStoreId(), self.__member1.getUserID(), self.__product1)
         self.__market.addProductQuantityToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
@@ -37,8 +38,8 @@ class MyTestCase(unittest.TestCase):
 
     def test_createStore(self):
         self.__market.addActiveUser(self.__member1)
-        store1: IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
-                                                   self.__address2)
+        store1: IStore = self.__market.getStoreById(self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
+                                                   self.__address2))
         store2: IStore = self.__market.getStoreById(store1.getStoreId())
         storeID = store2.getStoreId()
         self.assertEqual(storeID, store1.getStoreId())
