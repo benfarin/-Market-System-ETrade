@@ -21,10 +21,10 @@ class MarketRealBridge(implements(IMarketBridge)):
     def search_product_price_range(self, price_min, price_max):
             return self._market_service.getProductPriceRange(price_min, price_max)
 
-    def add_product(self, store_id, user_id, name, price, category, keyWords):
-        return self._market_service.addProductToStore(store_id, user_id, name, price, category, keyWords)
+    def add_product_to_store(self, store_id, user_id, name, price, category, key_words):
+        return self._market_service.addProductToStore(store_id, user_id, name, price, category, key_words)
 
-    def remove_product(self, store_id, user_id, prod_id):
+    def remove_product_from_store(self, store_id, user_id, prod_id):
         return self._market_service.removeProductFromStore(store_id, user_id, prod_id)
 
     def edit_product_price(self, store_id, user_id, prod_id, new_price):

@@ -16,33 +16,72 @@ class MarketProxyBridge(implements(IMarketBridge)):
     def check_access(self) -> bool:
         return self._real_subject is not None
 
-    def add_product(self, store_id, user_id, name, price, category, keyWords):
-        if self._real_subject is None:
+    def add_product_to_store(self, store_id, user_id, name, price, category, key_words):
+        if self.check_access():
             return True
         else:
-            return self._real_subject.add_product_to_cart(store_id, user_id, name, price, category, keyWords)
+            return self._real_subject.add_product_to_store(store_id, user_id, name, price, category, key_words)
 
-    def add_store(self, store_id, name):
-        if self._real_subject is None:
-            if name is None or store_id < 0:
+    def remove_product_from_store(self, store_id, user_id, prod_id):
+        if self.check_access():
+            if store_id < 0 or prod_id < 0 or prod_id < 0:
                 return False
             return True
-        else:
-            return self._real_subject.add_store(store_id, name)
-
-    def remove_product(self, store_id, user_id, prod_id):
-        if self._real_subject is None:
-            if store_id < 0 or prod_id < 0:
-                return False
-            return True
-        return self._real_subject.remove_product(store_id, user_id, prod_id)
+        return self._real_subject.remove_product_from_store(store_id, user_id, prod_id)
 
     def edit_product_price(self, store_id, user_id, prod_id, new_price):
-        if self._real_subject is None:
+        if self.check_access():
             if new_price < 0 or store_id < 0 or prod_id < 0:
                 return False
             return True
         return self._real_subject.edit_product_price(store_id, user_id, prod_id, new_price)
+
+    def search_product_category(self, category):
+        if self.check_access():
+            return True
+        return self._real_subject.search_product_category(category)
+
+    def search_product_name(self, product_name):
+        if self.check_access():
+            return True
+        return self._real_subject.search_product_name(product_name)
+
+    def search_product_keyWord(self, key_word):
+        if self.check_access():
+            return True
+        return self._real_subject.search_product_keyWord(key_word)
+
+    def search_product_price_range(self, price_min, price_max):
+        if self.check_access():
+            return True
+        return self._real_subject.search_product_price_range(price_min, price_max)
+
+    def appoint_store_owner(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.appoint_store_owner(store_id, assigner_id, assignee_id)
+
+    def appoint_store_manager(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.appoint_store_manager(store_id, assigner_id, assignee_id)
+
+    def set_stock_manager_perm(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.set_stock_manager_perm(store_id, assigner_id, assignee_id)
+
+    def set_change_perm(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.set_change_perm(store_id, assigner_id, assignee_id)
+
+    def close_store(self, store_id):
+        if self.check_access():
+            if store_id < 0:
+                return False
+            return True
+        return self._real_subject.close_store(store_id)
 
     # def edit_product_name(self, store_id, prod_id, new_name):
     #     if self._real_subject is None:
@@ -79,13 +118,6 @@ class MarketProxyBridge(implements(IMarketBridge)):
     #         return True
     #     return self._real_subject.discount_prod(store_id, prod_id , discount)
 
-    def close_store(self, store_id):
-        if self._real_subject is None:
-            if store_id < 0:
-                return False
-            return True
-        return self._real_subject.close_store(store_id)
-
     # def get_store_info(self, store_id):
     #     if self._real_subject is None:
     #         if store_id < 0:
@@ -106,40 +138,6 @@ class MarketProxyBridge(implements(IMarketBridge)):
     #             return False
     #         return True
     #     return self._real_subject.edit_discount(store_id, new_discount)
-
-    def search_product_category(self, category):
-        if self.check_access():
-            return True
-        return self._real_subject.search_product_category(category)
-
-    def search_product_name(self, product_name):
-        return self._real_subject.search_product_name(product_name)
-
-    def search_product_keyWord(self, keyWord):
-        return self._real_subject.search_product_keyWord(keyWord)
-
-    def search_product_price_range(self, price_min, price_max):
-        return self._real_subject.search_product_price_range(price_min, price_max)
-
-    def appoint_store_owner(self, store_id, assigner_id, assignee_id):
-        if self.check_access():
-            return True
-        return self._real_subject.appoint_store_owner(store_id, assigner_id, assignee_id)
-
-    def appoint_store_manager(self, store_id, assigner_id, assignee_id):
-        if self.check_access():
-            return True
-        return self._real_subject.appoint_store_manager(store_id, assigner_id, assignee_id)
-
-    def set_stock_manager_perm(self, store_id, assigner_id, assignee_id):
-        if self.check_access():
-            return True
-        return self._real_subject.set_stock_manager_perm(store_id, assigner_id, assignee_id)
-
-    def set_change_perm(self, store_id, assigner_id, assignee_id):
-        if self.check_access():
-            return True
-        return self._real_subject.set_change_perm(store_id, assigner_id, assignee_id)
 
     # def get_cart_info(self, username):
     #     if self.check_access():

@@ -36,10 +36,10 @@ class UserProxyBridge(implements(IUserBridge)):
         else:
             return self._real_subject.login_member(user_id, password)
 
-    def add_product(self, user_id, store_id, product_id, quantity):
+    def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         if self.check_access():
             return True
-        return self._real_subject.add_product_to_cart(user_id, store_id, product_id, quantity)
+        return self._real_subject.add_product_to_store(user_id, store_id, product_id, quantity)
 
     def purchase_product(self, user_id, account_num, branch):
         if self.check_access():
@@ -52,8 +52,7 @@ class UserProxyBridge(implements(IUserBridge)):
         else:
             return self._real_subject.logout_member(user_id)
 
-    def open_store(self, store_name, founder_id, account_num, branch, country, city, street, appartment_num, zip_code):
+    def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         if self.check_access():
             return True
-        else:
-            return self._real_subject.open_store(store_name, founder_id, account_num, branch, country, city, street, appartment_num, zip_code)
+        return self._real_subject.open_store(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
