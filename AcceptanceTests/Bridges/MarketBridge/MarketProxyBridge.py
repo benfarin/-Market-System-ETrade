@@ -16,13 +16,11 @@ class MarketProxyBridge(implements(IMarketBridge)):
     def check_access(self) -> bool:
         return self._real_subject is not None
 
-    def add_product(self, prod_id, store_id, name, price, category):
+    def add_product(self, store_id, user_id, name, price, category, keyWords):
         if self._real_subject is None:
-            if price < 0 or store_id < 0 or prod_id < 0:
-                return False
             return True
         else:
-            return self._real_subject.add_product(prod_id, store_id, name, price, category)
+            return self._real_subject.add_product_to_cart(store_id, user_id, name, price, category, keyWords)
 
     def add_store(self, store_id, name):
         if self._real_subject is None:
@@ -32,54 +30,54 @@ class MarketProxyBridge(implements(IMarketBridge)):
         else:
             return self._real_subject.add_store(store_id, name)
 
-    def remove_product(self, store_id, prod_id):
+    def remove_product(self, store_id, user_id, prod_id):
         if self._real_subject is None:
             if store_id < 0 or prod_id < 0:
                 return False
             return True
-        return self._real_subject.remove_product(store_id, prod_id)
+        return self._real_subject.remove_product(store_id, user_id, prod_id)
 
-    def edit_product_price(self, store_id, prod_id , new_price):
+    def edit_product_price(self, store_id, user_id, prod_id, new_price):
         if self._real_subject is None:
             if new_price < 0 or store_id < 0 or prod_id < 0:
                 return False
             return True
-        return self._real_subject.edit_product_price(store_id, prod_id ,new_price)
+        return self._real_subject.edit_product_price(store_id, user_id, prod_id, new_price)
 
-    def edit_product_name(self, store_id, prod_id, new_name):
-        if self._real_subject is None:
-            if new_name is None or store_id < 0 or prod_id < 0:
-                return False
-            return True
-        return self._real_subject.edit_product_name(store_id, prod_id, new_name)
+    # def edit_product_name(self, store_id, prod_id, new_name):
+    #     if self._real_subject is None:
+    #         if new_name is None or store_id < 0 or prod_id < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.edit_product_name(store_id, prod_id, new_name)
+    #
+    # def edit_product_category(self, store_id, prod_id, new_category):
+    #     if self._real_subject is None:
+    #         if new_category is None or store_id < 0 or prod_id < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.edit_product_category(store_id, prod_id, new_category)
 
-    def edit_product_category(self, store_id, prod_id, new_category):
-        if self._real_subject is None:
-            if new_category is None or store_id < 0 or prod_id < 0:
-                return False
-            return True
-        return self._real_subject.edit_product_category(store_id, prod_id, new_category)
-
-    def define_purchase(self, store_id, purchase):
-        if self._real_subject is None:
-            if purchase is None or store_id < 0:
-                return False
-            return True
-        return self._real_subject.define_purchase(id, purchase)
-
-    def discount_store(self, id, discount):
-        if self._real_subject is None:
-            if discount < 0:
-                return False
-            return True
-        return self._real_subject.discount_store(id, discount)
-
-    def discount_prod(self, store_id, prod_id, discount):
-        if self._real_subject is None:
-            if discount < 0 or store_id < 0 or prod_id < 0:
-                return False
-            return True
-        return self._real_subject.discount_prod(store_id, prod_id , discount)
+    # def define_purchase(self, store_id, purchase):
+    #     if self._real_subject is None:
+    #         if purchase is None or store_id < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.define_purchase(id, purchase)
+    #
+    # def discount_store(self, id, discount):
+    #     if self._real_subject is None:
+    #         if discount < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.discount_store(id, discount)
+    #
+    # def discount_prod(self, store_id, prod_id, discount):
+    #     if self._real_subject is None:
+    #         if discount < 0 or store_id < 0 or prod_id < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.discount_prod(store_id, prod_id , discount)
 
     def close_store(self, store_id):
         if self._real_subject is None:
@@ -88,50 +86,62 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.close_store(store_id)
 
-    def get_store_info(self, store_id):
-        if self._real_subject is None:
-            if store_id < 0:
-                return False
-            return True
-        return self._real_subject.get_store_info(store_id)
+    # def get_store_info(self, store_id):
+    #     if self._real_subject is None:
+    #         if store_id < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.get_store_info(store_id)
 
-    def edit_purchase(self, store_id, new_purchase):
-        if self._real_subject is None:
-            if new_purchase is None:
-                return False
-            return True
-        return self._real_subject.edit_purchase(store_id, new_purchase)
+    # def edit_purchase(self, store_id, new_purchase):
+    #     if self._real_subject is None:
+    #         if new_purchase is None:
+    #             return False
+    #         return True
+    #     return self._real_subject.edit_purchase(store_id, new_purchase)
+    #
+    # def edit_discount(self, store_id, new_discount):
+    #     if self._real_subject is None:
+    #         if new_discount < 0:
+    #             return False
+    #         return True
+    #     return self._real_subject.edit_discount(store_id, new_discount)
 
-    def edit_discount(self, store_id, new_discount):
-        if self._real_subject is None:
-            if new_discount < 0:
-                return False
+    def search_product_category(self, category):
+        if self.check_access():
             return True
-        return self._real_subject.edit_discount(store_id, new_discount)
+        return self._real_subject.search_product_category(category)
 
-    def search_product(self, product_name, category, price_min, price_max, product_rating, store_rating):
-        if self._real_subject is None:
-            return True
-        return self._real_subject.search_product(product_name, category, price_min, price_max,
-                                                 product_rating, store_rating)
+    def search_product_name(self, product_name):
+        return self._real_subject.search_product_name(product_name)
 
-    def appoint_store_owner(self, store_id, user_id):
-        if self._real_subject is None:
-            if store_id < 0 or user_id < 0:
-                return False
-            return True
-        return self._real_subject.appoint_store_owner(store_id, user_id)
+    def search_product_keyWord(self, keyWord):
+        return self._real_subject.search_product_keyWord(keyWord)
 
-    def appoint_store_manager(self, store_id, user_id):
-        if self._real_subject is None:
-            if store_id < 0 or user_id < 0:
-                return False
-            return True
-        return self._real_subject.appoint_store_manager(store_id, user_id)
+    def search_product_price_range(self, price_min, price_max):
+        return self._real_subject.search_product_price_range(price_min, price_max)
 
-    def add_manager_option(self, store_id, user_id, option):
-        if self._real_subject is None:
-            if store_id < 0 or user_id < 0:
-                return False
+    def appoint_store_owner(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
             return True
-        return self._real_subject.appoint_store_manager(store_id, user_id, option)
+        return self._real_subject.appoint_store_owner(store_id, assigner_id, assignee_id)
+
+    def appoint_store_manager(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.appoint_store_manager(store_id, assigner_id, assignee_id)
+
+    def set_stock_manager_perm(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.set_stock_manager_perm(store_id, assigner_id, assignee_id)
+
+    def set_change_perm(self, store_id, assigner_id, assignee_id):
+        if self.check_access():
+            return True
+        return self._real_subject.set_change_perm(store_id, assigner_id, assignee_id)
+
+    # def get_cart_info(self, username):
+    #     if self.check_access():
+    #         return True
+    #     return self._real_subject.get_cart_info(username)

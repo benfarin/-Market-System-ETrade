@@ -4,7 +4,7 @@ from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBr
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 
 
-class MyTestCase(unittest.TestCase):
+class UseCaseGetEditUserCart(unittest.TestCase):
     def setUp(self):
         self.user_proxy = UserProxyBridge(None)
         self.market_proxy = MarketProxyBridge(None)
@@ -16,10 +16,10 @@ class MyTestCase(unittest.TestCase):
         self.user_proxy.add_product(0, 0, 10)
 
     def test_get_cart_info_positive1(self):
-        self.assertEqual(self.user_proxy.get_cart_info("User1"), True)
+        self.assertEqual(self.market_proxy.get_cart_info("User1"), True)
 
     def test_get_cart_info_negative1(self):
-        self.assertEqual(self.user_proxy.get_cart_info("User2"), False)
+        self.assertEqual(self.market_proxy.get_cart_info("User2"), False)
 
     def test_edit_cart_info_positive1(self):
         old_info = self.user_proxy.get_cart_info("User1")

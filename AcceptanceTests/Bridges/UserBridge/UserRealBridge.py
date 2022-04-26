@@ -8,17 +8,25 @@ class UserRealBridge(implements(IUserBridge)):
         self._market_service = market_service
 
     def login_guest(self):
-        return self._user_service.login()
+        return self._user_service.login_member()
 
-    def register(self, username, password, phone, address, bank, cart):
-        return self._user_service.memberSignUp(username, password, phone, address, bank, cart)
+    def register(self, username, password, phone, account_number, branch, country,
+                 city, street, apartment_num, bank, ICart):
+        return self._user_service.memberSignUp(username, password, phone, account_number, branch,
+                                               country, city, street, apartment_num, bank, ICart)
 
-    def login(self, user_id, password):
+    def login_member(self, user_id, password):
         return self._user_service.memberLogin(user_id, password)
 
-    def add_product(self, username, product_id, store_id, quantity):
-        return self._user_service.saveProducts(username, product_id, store_id, quantity)
+    def add_product_to_cart(self, user_id, store_id, product_id, quantity):
+        return self._market_service.addProductToCart(user_id, store_id, product_id, quantity)
 
-    def purchase_product(self, username, product_ID, quantity):
-        return self._user_service.purchase_product(username, product_ID, quantity)
+    def purchase_product(self, user_id, account_num, branch):
+        return self._market_service.purchaseCart(user_id, account_num, branch)
+
+    def logout_member(self, user_id):
+        return self._user_service.logoutMember(user_id)
+
+    def open_store(self, store_name, founder_id, account_num, branch, country, city, street, appartment_num, zip_code):
+        return self._market_service.createStore(store_name, founder_id, account_num, branch, country, city, street, appartment_num, zip_code)
 

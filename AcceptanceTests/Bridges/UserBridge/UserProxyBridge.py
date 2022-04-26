@@ -16,36 +16,38 @@ class UserProxyBridge(implements(IUserBridge)):
     def check_access(self):
         return self._real_subject is None
 
-    def register(self, username, password, phone, address, bank, cart):
+    def register(self, username, password, phone, account_number, branch, country,
+                 city, street, apartment_num, bank, ICart):
         if self.check_access():
             return True
         else:
-            return self._real_subject.register(username, password, phone, address, bank, cart)
+            return self._real_subject.register(username, password, phone, account_number, branch, country,
+                 city, street, apartment_num, bank, ICart)
 
     def login_guest(self):
         if self.check_access():
             return True
         else:
-            return self._real_subject.login()
+            return self._real_subject.login_member()
 
-    def login(self, user_id, password):
+    def login_member(self, user_id, password):
         if self.check_access():
             return True
         else:
-            return self._real_subject.login(user_id, password)
+            return self._real_subject.login_member(user_id, password)
 
-    def add_product(self, username, product_id, store_id, quantity):
+    def add_product(self, user_id, store_id, product_id, quantity):
         if self.check_access():
             return True
-        return self._real_subject.add_product(username, product_id, store_id, quantity)
+        return self._real_subject.add_product_to_cart(user_id, store_id, product_id, quantity)
 
-    def get_cart_info(self, username):
+    def purchase_product(self, user_id, account_num, branch):
         if self.check_access():
             return True
-        return self._real_subject.get_cart_info(username)
+        return self._real_subject.purchase_product(user_id, account_num, branch)
 
-    def purchase_product(self, username, product_ID, quantity):
+    def logout_member(self, user_id):
         if self.check_access():
             return True
-        return self._real_subject.purchase_product(username, product_ID, quantity)
-
+        else:
+            return self._real_subject.logout_member(user_id)
