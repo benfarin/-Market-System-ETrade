@@ -36,10 +36,10 @@ class UserService:
         except Exception as e:
             return e
 
-    def memberLogin(self, userID, password):
+    def memberLogin(self, userName, password):
         try:
-            toReturn = self.__userManagment.memberLogin(userID, password)
-            self.__events.addEventLog(EventLog("member login", "userId: " + str(userID), "password: " + password))
+            toReturn = self.__userManagment.memberLogin(userName, password)
+            self.__events.addEventLog(EventLog("member login", "username: " + userName, "password: " + password))
             return toReturn
         except Exception as e:
             return e

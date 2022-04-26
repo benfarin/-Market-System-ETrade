@@ -1,6 +1,7 @@
 from Business.Address import Address
 from Business.Bank import Bank
 from Business.Market import Market
+from Business.UserPackage.User import User
 from interfaces import IMarket
 from typing import Dict
 from Business.UserPackage.Member import Member
@@ -59,17 +60,17 @@ class UserManagment(implements(IUser)):
     def memberLogin(self, userName, password): #Tested
         try:
             if len(self.__systemManager) > 0:
-                i: Member = Member(None, None, None, None, None)
+                i: User = User()
                 check = False
                 for i in self.__members.values():
                     if i.getUserName() == userName:
                         if self.__market.getActiveUsers().get(i.getUserID()) is None:
                             if i.getPassword() == password:
-                                self.__market.getActiveUsers()[i.getUserID()] = i
+                                self.__market.addActiveUser(i)
                                 check = True
                                 i.setLoggedIn(True)
                                 i.setMemberCheck(True)
-                                self.__market.loginUpdates(i.getUserID())
+                                # self.__market.loginUpdates(i.getUserID())
                                 return i.getUserID()
                             else:
                                 raise Exception("password not good!")

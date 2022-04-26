@@ -355,6 +355,7 @@ class Market(implements(IMarket)):
         self._transactionIdCounter += 1
         return tId
 
+
     def removeStore(self, storeID, userID):
         try:
             if self.__activeUsers.get(userID) is None:

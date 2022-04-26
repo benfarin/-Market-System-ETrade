@@ -21,12 +21,12 @@ class UserRealBridge(implements(IUserBridge)):
         return self._user_service.guestLogin()
 
     def register(self, username, password, phone, account_number, branch, country,
-                 city, street, apartment_num, bank, ICart):
+                 city, street, apartment_num, zip_code, ICart):
         return self._user_service.memberSignUp(username, password, phone, account_number, branch,
-                                               country, city, street, apartment_num, bank, ICart)
+                                               country, city, street, apartment_num, zip_code, ICart)
 
-    def login_member(self, user_id, password):
-        return self._user_service.memberLogin(user_id, password)
+    def login_member(self, user_name, password):
+        return self._user_service.memberLogin(user_name, password)
 
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         return self._market_service.addProductToCart(user_id, store_id, product_id, quantity)
@@ -40,5 +40,6 @@ class UserRealBridge(implements(IUserBridge)):
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         return self._market_service.createStore(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
 
-
+    def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
+        return self._user_service.systemManagerSignUp(userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode)
 

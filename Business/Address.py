@@ -38,9 +38,9 @@ class Address:
         self.__zipCode = zipCode
 
     def printForEvents(self):
-        address = "\n\t\t\tcountry: " + str(self.__country)
-        address += "\n\t\t\tcity: " + str(self.__city)
-        address += "\n\t\t\tstreet: " + str(self.__street)
+        address = "\n\t\t\tcountry: " + self.__country
+        address += "\n\t\t\tcity: " + self.__city
+        address += "\n\t\t\tstreet: " + self.__street
         address += "\n\t\t\tapartment number: " + str(self.__apartmentNum)
         return address + "\n\t\t\tzip code: " + str(self.__zipCode)
 
