@@ -52,8 +52,8 @@ class MarketRealBridge(implements(IMarketBridge)):
     # def close_store(self, store_id):
     #     return self._market_service.
 
-    # def get_store_info(self, store_id):
-    #     pass
+    def get_store_info(self, store_id, user_id):
+        return self._market_service.PrintRolesInformation(store_id, user_id)
 
     # def edit_product_name(self, store_id, prod_id, new_name):
     #     pass
