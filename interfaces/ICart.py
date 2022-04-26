@@ -35,3 +35,6 @@ class ICart(Interface):
 
     def cleanCart(self):
         pass
+
+    def printBags(self):
+        pass

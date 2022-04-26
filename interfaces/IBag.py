@@ -30,3 +30,6 @@ class IBag(Interface):
     def cleanBag(self):
         pass
 
+    def printProducts(self):
+        pass
+

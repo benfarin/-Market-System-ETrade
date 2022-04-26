@@ -94,3 +94,6 @@ class IMarket(Interface):
     def removeStore(self, storeID, userID):
         pass
 
+    def getCart(self, userID):
+        pass
+

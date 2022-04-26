@@ -45,6 +45,7 @@ class Market(implements(IMarket)):
     def createStore(self, storeName, userID, bank, address): #change test!
         if self.__checkOnlineUser(userID):
             storeID = self.__globalStore + 1
+            self.__globalStore += 1
             newStore = Store(storeID, storeName, userID, bank, address)
             self.__stores[storeID] = newStore
             return newStore.getStoreId()
@@ -53,7 +54,7 @@ class Market(implements(IMarket)):
     def addGuest(self):  # ?
         guest = Guest()
         self.__activeUsers[guest.getUserID()] = guest
-        return guest
+        return guest.getUserID()
 
     def addActiveUser(self, user):
         try:
@@ -369,11 +370,17 @@ class Market(implements(IMarket)):
                 self.__activeUsers.get(userID).getCart().removeBag(storeID)
 
 
-    # in all functions in usermanger back the userID!
 
-    def getCart(self,userID): #need to back nice ToString!!!
-        pass
+    def getCart(self,userID):
+        try:
+            if self.__activeUsers.get(userID) is None:
+                raise Exception("member with id " + userID + " is not online!")
+            return self.__activeUsers.get(userID).getCart().printBags()
+        except Exception as e:
+            raise Exception(e)
+
     def updateProductName(self,userID,productID,newName):
         pass
+
     def updateProductCategory(self,userID,productID,newCategory):
         pass

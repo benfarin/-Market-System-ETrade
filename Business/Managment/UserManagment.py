@@ -51,7 +51,7 @@ class UserManagment(implements(IUser)):
             self.__members[userName] = member
             if icart is not None:
                   member.setICart(icart)
-            return member
+            return member.getUserID()
         return None
 
 
@@ -70,7 +70,7 @@ class UserManagment(implements(IUser)):
                                 i.setLoggedIn(True)
                                 i.setMemberCheck(True)
                                 self.__market.loginUpdates(i.getUserID())
-                                return "member logged in succesfully!"
+                                return i.getUserID()
                             else:
                                 raise Exception("password not good!")
                         else:
@@ -94,11 +94,9 @@ class UserManagment(implements(IUser)):
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
             if systemManager:
                 self.__systemManager[userName] = systemManager
-                return systemManager
+                return systemManager.getUserID()
         return None
 
-    def removeMember(self,userName,password):
-        pass
 
     def createBankAcount(self, accountNumber, branch):
         return Bank(accountNumber, branch)
@@ -106,3 +104,5 @@ class UserManagment(implements(IUser)):
     def createAddress(self, country, city, street, apartmentNum, zipCode):
         return Address(country, city, street, apartmentNum, zipCode)
 
+    def removeMember(self,userName,password):
+        pass

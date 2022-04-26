@@ -60,3 +60,8 @@ class Bag(implements(IBag)):
     def cleanBag(self):
         self.__products = {}
 
+    def printProducts(self):
+        products_print = ""
+        for product in self.__products:
+            products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(product.getProductName()) + " quantity:" + str(self.__products.get(product))
+        return products_print

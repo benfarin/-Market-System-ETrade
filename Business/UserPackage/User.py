@@ -65,3 +65,4 @@ class User:
 
     def addProduct(self, storeId, product, quantity):
         self._cart.addProduct(storeId, product, quantity)
+

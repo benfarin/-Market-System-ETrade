@@ -88,3 +88,9 @@ class Cart(implements(ICart)):
             products.update(bag.getProducts())
         return products
 
+    def printBags(self):
+        printBags =""
+        for bag in self.__bags.values():
+            printBags +=  "\n\t\t\tStore id:" + str(bag.getStoreId()) + " store products:" + "\t\t\t\t\t\t\t\t\t" + bag.printProducts()
+        return printBags
+
