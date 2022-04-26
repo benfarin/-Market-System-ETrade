@@ -51,3 +51,15 @@ class UserService:
             return toReturn
         except Exception as e:
             return e
+
+    def systemManagerSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
+        try:
+            bank = self.__userManagment.createBankAcount(accountNumber, brunch)
+            address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
+            toReturn = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
+            self.__events.addEventLog(EventLog("system managment signup", "username: " + userName,
+                                               "password: " + password, "phone: " + str(phone),
+                                               "bank: " + bank.printForEvents(), "address: " + address.printForEvents()))
+            return toReturn
+        except Exception as e:
+            return e
