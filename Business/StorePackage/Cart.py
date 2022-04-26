@@ -63,6 +63,7 @@ class Cart(implements(ICart)):
             self.removeBag(storeId)
         return quantity
 
+
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
         if self.__bags.get(storeId) is None:
             raise Exception("can't update a product without a bag to his store")
@@ -86,3 +87,4 @@ class Cart(implements(ICart)):
         for bag in self.__bags.values():
             products.update(bag.getProducts())
         return products
+

@@ -88,3 +88,9 @@ class IMarket(Interface):
     def purchaseCart(self, userID, bank):
         pass
 
+    def loginUpdates(self, userID):
+        pass
+
+    def removeStore(self, storeID, userID):
+        pass
+

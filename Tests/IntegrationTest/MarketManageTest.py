@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
         self.__market.addActiveUser(self.__member1)
         self.__store3: IStore = self.__market.createStore("foot-locker", self.__member1.getUserID(), self.__bank1,
                                                           self.__address2)
-        self.__product1: Product = Product(1, "milk", 75, "halavi", "ff", 1)
+        self.__product1: Product = Product(1, "milk", 75, "halavi", "ff")
         self.__market.addProductToStore(self.__store3.getStoreId(), self.__member1.getUserID(), self.__product1)
         self.__market.addProductQuantityToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
                                                 self.__product1.getProductId(), 100)
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
                                        self.__product1.getProductId(), 7)
         self.assertTrue(self.__market.updateProductFromCart(self.__member1.getUserID(), self.__store3.getStoreId(),
                                                             self.__product1.getProductId(), 99))
-        pass
+
 
     def test_appointManagerToStore(self):
         self.assertTrue(self.__market.appointManagerToStore(self.__store3.getStoreId(), self.__member1.getUserID(),
@@ -129,6 +129,8 @@ class MyTestCase(unittest.TestCase):
         self.__market.cancelPurchaseCart(self.__member1.getUserID(), 1)
         print(self.__store3.getProductQuantity())
 
+    def test_removeStore(self):
+        self.assertEqual(self.__market.removeStore(self.__store3.getStoreId(),self.__member1.getUserID()),"Store removed succesfully!")
 
 
 

@@ -16,7 +16,14 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_memberSignUp(self):
-       self.__userManager.memberSignUp("shalom","123456","089702342",self.__address1,self.__bank1,None)
+        self.__userManager.memberSignUp("shalom","123456","089702342",self.__address1,self.__bank1,None)
+        self.assertTrue(len(self.__userManager.getMembers()) > 0)
+
+    def test_loginMember(self):
+        self.__userManager.memberSignUp("shalom","123456","089702342",self.__address1,self.__bank1,None)
+        self.__userManager.systemManagerSignUp("bar","123","089362716",self.__address2,self.__bank2)
+        self.assertEqual(self.__userManager.memberLogin("shalom","123456"), "member logged in succesfully!")
+
 
 
 

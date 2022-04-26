@@ -68,7 +68,8 @@ class RoleManagment():
 
     def addProductToStore(self, storeID, userID, product):
         try:
-            return self.__market.addProductToStore(storeID, userID, product)
+             self.__market.addProductToStore(storeID, userID, product)
+             return product.getProductId()
         except Exception as e:
             raise Exception(e)
 
@@ -106,5 +107,6 @@ class RoleManagment():
         productId = self.productId
         self.productId += 1
         return productId
+
 
 

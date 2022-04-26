@@ -42,12 +42,12 @@ class Market(implements(IMarket)):
         else:
             return True
 
-    def createStore(self, storeName, userID, bank, address):
+    def createStore(self, storeName, userID, bank, address): #change test!
         if self.__checkOnlineUser(userID):
             storeID = self.__globalStore + 1
             newStore = Store(storeID, storeName, userID, bank, address)
             self.__stores[storeID] = newStore
-            return newStore
+            return newStore.getStoreId()
         return None
 
     def addGuest(self):  # ?
@@ -86,7 +86,7 @@ class Market(implements(IMarket)):
             else:
                 raise Exception("user not online")
         except Exception as e:
-            return e
+            raise Exception(e)
 
     def updateProductFromCart(self, userID, storeID, productId, quantity):  # UnTested
         try:
@@ -101,7 +101,6 @@ class Market(implements(IMarket)):
                 raise Exception("user not online")
         except Exception as e:
             return e
-
     def getProductByCategory(self, category):
         productsInStores: Dict[IStore, Product] = {}
         keys = self.__stores.keys()
@@ -350,3 +349,31 @@ class Market(implements(IMarket)):
         tId = self._transactionIdCounter
         self._transactionIdCounter += 1
         return tId
+
+    def removeStore(self,storeID,userID):
+        try:
+            if self.__activeUsers.get(userID) is None:
+                raise Exception("member with id " + userID + " is not online!")
+            if self.__stores.get(storeID) is None:
+                raise Exception("Store " + storeID + " is not exist in system!")
+            for user in self.__activeUsers.values():
+                user.getCart().removeBag(storeID)
+            self.__stores.pop(storeID)
+            return "Store removed succesfully!"
+        except Exception as e:
+            return  e
+
+    def loginUpdates(self,userID): # we need to check if all the store exist if not we remove all the products from the user that get in the systsem!
+        for storeID in self.__activeUsers.get(userID).getCart():
+            if self.__stores.get(storeID) == None:
+                self.__activeUsers.get(userID).getCart().removeBag(storeID)
+
+
+    # in all functions in usermanger back the userID!
+
+    def getCart(self,userID): #need to back nice ToString!!!
+        pass
+    def updateProductName(self,userID,productID,newName):
+        pass
+    def updateProductCategory(self,userID,productID,newCategory):
+        pass
