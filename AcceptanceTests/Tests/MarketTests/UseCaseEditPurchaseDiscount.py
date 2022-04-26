@@ -1,4 +1,6 @@
 import unittest
+
+from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
@@ -8,7 +10,7 @@ from Service.UserService import UserService
 
 class UseCaseEditPurchaseDiscount(unittest.TestCase):
     def setUp(self):
-        self.proxyMarket = MarketProxyBridge(MarketService())
+        self.proxyMarket = MarketProxyBridge(MarketRealBridge(MarketService()))
         self.proxyUser = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
         self.proxyMarket.add_store(0, "testStore")
 

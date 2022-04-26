@@ -9,17 +9,23 @@ from Service.UserService import UserService
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        self.user_proxy = UserProxyBridge(UserService())
-        self.market_proxy = MarketProxyBridge(UserRealBridge(UserService(), MarketService()))
-        self.user_proxy.register("User1", "Pass", "Pass", "Mail@Mail.com")
-        self.user_proxy.login("User1", "Pass")
+        self.user_proxy = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
+        self.market_proxy = MarketProxyBridge(MarketProxyBridge(MarketService()))
+        self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+                                          "Ben Gurion", 1, 1)
+        self.user_id = self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                                "Ben Gurion", 0, "HaPoalim", None)
+        self.user_proxy.login_member("user1", "1234")
 
     def test_open_store_positive1(self):
-        self.assertEqual(self.user_proxy.open_store("User1", "Store1"), True)
+        self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, "000000")
+        self.assertTrue(True)
 
     def test_open_store_negative1(self):
-        self.user_proxy.open_store("User1", "Store1")
-        self.assertEqual(self.user_proxy.open_store("User1", "Store1"), False)
+        self.assertRaises(Exception, self.user_proxy.open_store("store", -999, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                   0, "000000"))
+
 
 
 if __name__ == '__main__':
