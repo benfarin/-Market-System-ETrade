@@ -21,17 +21,23 @@ class UseCaseGetEditUserCart(unittest.TestCase):
                                                    0, "000000")
         self.product1 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
                                                                "Category", ["Test1", "Test2"])
+        self.market_proxy.add_quantity_to_store(self.store_id, self.user_id, self.product1.getProductId(), 100)
 
     def test_get_cart_info_positive1(self):
-        self.assertEqual(self.market_proxy.get_cart_info(self.user_id), True)
+        try:
+            self.user_proxy.add_product_to_cart(self.user_id, self.store_id, self.product1.getProductId(), 10)
+            print(self.market_proxy.get_cart_info(self.user_id))
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
 
     def test_get_cart_info_negative1(self):
-        self.assertEqual(self.market_proxy.get_cart_info(-999), False)
+        self.assertRaises(Exception, self.market_proxy.get_cart_info(-999))
 
     def test_edit_cart_info_positive1(self):
-        old_info = self.user_proxy.get_cart_info("User1")
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_id, self.product1, 50)
-        new_info = self.user_proxy.get_cart_info("User1")
+        old_info = self.market_proxy.get_cart_info(self.user_id)
+        self.user_proxy.add_product_to_cart(self.user_id, self.store_id, self.product1.getProductId(), 50)
+        new_info = self.market_proxy.get_cart_info(self.user_id)
         self.assertNotEqual(old_info, new_info)
 
     # def test_edit_cart_info_negative1(self):  # NEED TO EDIT THIS

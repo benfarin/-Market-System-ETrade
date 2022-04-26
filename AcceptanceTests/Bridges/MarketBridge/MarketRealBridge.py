@@ -46,8 +46,11 @@ class MarketRealBridge(implements(IMarketBridge)):
     def add_quantity_to_store(self, store_id, user_id, productID, quantity):
         return self._market_service.addProductQuantityToStore(store_id, user_id, productID, quantity)
 
-    def close_store(self, store_id):
-        pass
+    def get_cart_info(self, user_id):
+        return self._market_service.getCart(user_id)
+
+    # def close_store(self, store_id):
+    #     return self._market_service.
 
     # def get_store_info(self, store_id):
     #     pass

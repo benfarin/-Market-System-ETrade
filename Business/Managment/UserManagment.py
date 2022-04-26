@@ -81,9 +81,9 @@ class UserManagment(implements(IUser)):
 
     def logoutMember(self, userName):
         user = self.__members.get(userName)
+        self.__members.get(userName).setLoggedIn(False)
+        self.__members.get(userName).setMemberCheck(False)
         self.__market.getActiveUsers().pop(user.getUserID())
-        self.__members.get(user.getUserID()).setLoggedIn(False)
-        self.__members.get(user.getUserID()).setMemberCheck(False)
         return self.guestLogin()
 
     def systemManagerSignUp(self, userName, password, phone, address, bank):

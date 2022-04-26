@@ -144,7 +144,7 @@ class MarketProxyBridge(implements(IMarketBridge)):
     #         return True
     #     return self._real_subject.edit_discount(store_id, new_discount)
 
-    # def get_cart_info(self, username):
-    #     if self.check_access():
-    #         return True
-    #     return self._real_subject.get_cart_info(username)
+    def get_cart_info(self, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_cart_info(user_id)

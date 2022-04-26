@@ -101,7 +101,7 @@ class MarketService:
 
     def getCart(self, userID):
         try:
-            toReturn = self.__marketManage.getCart(userID,)
+            toReturn = self.__marketManage.getCart(userID)
             self.__events.addEventLog(EventLog("get cart", "userId: " + str(userID)))
             return toReturn
         except Exception as e:

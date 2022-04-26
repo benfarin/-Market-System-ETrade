@@ -379,7 +379,7 @@ class Market(implements(IMarket)):
     def getCart(self, userID):
         try:
             if self.__activeUsers.get(userID) is None:
-                raise Exception("member with id " + userID + " is not online!")
+                raise Exception("member with id " + str(userID) + " is not online!")
             return self.__activeUsers.get(userID).getCart().printBags()
         except Exception as e:
             raise Exception(e)

@@ -44,11 +44,11 @@ class UserService:
         except Exception as e:
             return e
 
-    def logoutMember(self, userID):
+    def logoutMember(self, userName):
         try:
-            toReturn = self.__userManagment.logoutMember(userID)
-            self.__events.addEventLog(EventLog("member logout", "userId: " + str(userID)))
-            return toReturn
+            self.__userManagment.logoutMember(userName)
+            self.__events.addEventLog(EventLog("member logout", "userId: " + userName))
+            return True
         except Exception as e:
             return e
 
