@@ -27,37 +27,37 @@ class UseCaseEditProduct(unittest.TestCase):
 
     def test_editProductPricePositive(self):
         # store_id, user_id, prod_id, new_price
-        self.assertEqual(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id, 20), True)
+        self.assertEqual(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), 20), True)
 
     def test_editProductNamePositive(self):
-        self.assertEqual(self.proxy_market.edit_product_name(self.user_id, self.store_id, self.prod_id, "newName"), True)
+        self.assertEqual(self.proxy_market.edit_product_name(self.user_id, self.store_id, self.prod_id.getProductId(), "newName"), True)
 
     def test_editProductCategoryPositive(self):
-        self.assertEqual(self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id, "newCategory"), True)
+        self.assertEqual(self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id.getProductId(), "newCategory"), True)
 
     def test_editProductStoreDoesntExists(self):
         # the store doesn't exist
-        self.assertEqual(self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id, 10), False)
+        self.assertRaises(Exception, self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id.getProductId(), 10))
 
     def test_editProductStoreDoesntExists2(self):
-        self.assertEqual(self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id, "newName"),True)
+        self.assertRaises(Exception, self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id.getProductId(), "newName"))
 
     def test_editProductStoreDoesntExists3(self):
-        self.assertEqual(self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id, "newCategory"), True)
+        self.assertRaises(Exception, self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id.getProductId(), "newCategory"))
 
     def test_editProductNoManager(self):
         # the manager's ID is negative
-        self.assertEqual(self.proxy_market.edit_product_price(self.store_id, -1, self.prod_id, 10), False)
+        self.assertRaises(Exception, self.proxy_market.edit_product_price(self.store_id, -1, self.prod_id.getProductId(), 10))
 
     def test_editProductDoesntExists(self):
         # the product doesn't exists
-        self.assertEqual(self.proxy_market.edit_product_price(self.store_id, self.user_id, -1, 10), False)
+        self.assertRaises(Exception, self.proxy_market.edit_product_price(self.store_id, self.user_id, -1, 10))
         # self.assertEqual(self.proxy.edit_product_name(0, 3, 10), False)
         # self.assertEqual(self.proxy.edit_product_category(0, 3, 10), False)
 
     def test_editProductNegativePrice(self):
         # the new price is negative
-        self.assertEqual((self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id, -3)), False)
+        self.assertRaises(Exception, self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), -3))
 
 
 if __name__ == '__main__':

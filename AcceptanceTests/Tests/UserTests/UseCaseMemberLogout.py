@@ -19,11 +19,11 @@ class UseCaseMemberLogout(unittest.TestCase):
         self.assertEqual(self.user_proxy.logout_member("user1"), True)
 
     def test_logout_negative1(self):
-        self.assertEqual(self.user_proxy.logout("User1"), False)
+        self.assertRaises(Exception, self.user_proxy.logout_member("User1"))
 
     def test_logout_negative2(self):
         self.user_proxy.login_member(self.user_id, "1234")
-        self.assertEqual(self.user_proxy.logout(-999), False)
+        self.assertRaises(Exception, self.user_proxy.logout_member(-999))
 
 
 if __name__ == '__main__':

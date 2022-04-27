@@ -8,7 +8,7 @@ from Service.MarketService import MarketService
 from Service.UserService import UserService
 
 
-class MyTestCase(unittest.TestCase):
+class UseCaseSaveProductToCart(unittest.TestCase):
     def setUp(self):
         self.market_proxy = MarketProxyBridge(MarketRealBridge(MarketService()))
         self.user_proxy = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
