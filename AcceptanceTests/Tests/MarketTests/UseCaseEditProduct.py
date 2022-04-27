@@ -29,17 +29,21 @@ class UseCaseEditProduct(unittest.TestCase):
         # store_id, user_id, prod_id, new_price
         self.assertEqual(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id, 20), True)
 
-    # def test_editProductNamePositive(self):
-    #     self.assertEqual(self.proxy.edit_product_name(0, 0, "test"), True)
+    def test_editProductNamePositive(self):
+        self.assertEqual(self.proxy_market.edit_product_name(self.user_id, self.store_id, self.prod_id, "newName"), True)
 
-    # def test_editProductCategoryPositive(self):
-    #     self.assertEqual(self.proxy.edit_product_price(0, 0, "test"), True)
+    def test_editProductCategoryPositive(self):
+        self.assertEqual(self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id, "newCategory"), True)
 
     def test_editProductStoreDoesntExists(self):
         # the store doesn't exist
         self.assertEqual(self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id, 10), False)
-        # self.assertEqual(self.proxy.edit_product_name(0, 0, None), False)
-        # self.assertEqual(self.proxy.edit_product_category(0, 0, None), False)
+
+    def test_editProductStoreDoesntExists2(self):
+        self.assertEqual(self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id, "newName"),True)
+
+    def test_editProductStoreDoesntExists3(self):
+        self.assertEqual(self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id, "newCategory"), True)
 
     def test_editProductNoManager(self):
         # the manager's ID is negative

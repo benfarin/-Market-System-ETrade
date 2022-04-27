@@ -95,19 +95,30 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.get_store_info(store_id, user_id)
 
-    # def edit_product_name(self, store_id, prod_id, new_name):
-    #     if self._real_subject is None:
-    #         if new_name is None or store_id < 0 or prod_id < 0:
-    #             return False
-    #         return True
-    #     return self._real_subject.edit_product_name(store_id, prod_id, new_name)
-    #
-    # def edit_product_category(self, store_id, prod_id, new_category):
-    #     if self._real_subject is None:
-    #         if new_category is None or store_id < 0 or prod_id < 0:
-    #             return False
-    #         return True
-    #     return self._real_subject.edit_product_category(store_id, prod_id, new_category)
+    def get_cart_info(self, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_cart_info(user_id)
+
+    def edit_product_name(self,user_id, store_id, prod_id, new_name):
+        if self.check_access():
+            return True
+        return self._real_subject.edit_product_name(user_id, store_id, prod_id, new_name)
+
+    def edit_product_category(self, user_id , store_id, prod_id, new_category):
+        if self.check_access():
+            return True
+        return self._real_subject.edit_product_category(user_id, store_id, prod_id, new_category)
+
+    def get_cart(self, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_cart(user_id)
+
+    def print_purchase_history(self, store_id, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.print_purchase_history(store_id, user_id)
 
     # def define_purchase(self, store_id, purchase):
     #     if self._real_subject is None:
@@ -146,7 +157,3 @@ class MarketProxyBridge(implements(IMarketBridge)):
     #         return True
     #     return self._real_subject.edit_discount(store_id, new_discount)
 
-    def get_cart_info(self, user_id):
-        if self.check_access():
-            return True
-        return self._real_subject.get_cart_info(user_id)

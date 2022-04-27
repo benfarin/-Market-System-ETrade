@@ -40,6 +40,11 @@ class UseCaseRemoveProduct(unittest.TestCase):
         # the product does not exit
         self.assertRaises(Exception, self.proxy_market.remove_product_from_store(-3, self.user_id, self.prod.getProductId()))
 
+    def test_removeProductTwice(self):
+        # remove product that was already already removed
+        self.proxy_market.remove_product_from_store(self.store_id, self.user_id, self.prod.getProductId())
+        self.assertRaises(Exception, self.proxy_market.remove_product_from_store(self.store_id, self.user_id, self.prod.getProductId()))
+
 
 if __name__ == '__main__':
     unittest.main()

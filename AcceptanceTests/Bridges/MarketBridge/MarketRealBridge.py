@@ -49,18 +49,23 @@ class MarketRealBridge(implements(IMarketBridge)):
     def get_cart_info(self, user_id):
         return self._market_service.getCart(user_id)
 
-    # def close_store(self, store_id):
-    #     return self._market_service.
-
     def get_store_info(self, store_id, user_id):
         return self._market_service.PrintRolesInformation(store_id, user_id)
 
-    # def edit_product_name(self, store_id, prod_id, new_name):
-    #     pass
-    #
-    # def edit_product_category(self, store_id, prod_id, new_category):
-    #     pass
+    def edit_product_name(self,user_id, store_id, prod_id, new_name):
+        return self._market_service.updateProductName(user_id, store_id, prod_id, new_name)
 
+    def edit_product_category(self, user_id, store_id, prod_id, new_category):
+        return self._market_service.updateProductCategory(user_id, store_id, prod_id, new_category)
+
+    def get_cart(self, user_id):
+        return self._market_service.getCart(user_id)
+
+    def print_purchase_history(self, store_id, user_id):
+        return self._market_service.printPurchaseHistoryInformation(store_id, user_id)
+
+    # def close_store(self, store_id):
+    #     return self._market_service.
     # def define_purchase(self, store_id, purchase):
     #     pass
     #
