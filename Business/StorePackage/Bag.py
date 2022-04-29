@@ -1,4 +1,6 @@
 from interface import implements
+
+from Exceptions.CustomExceptions import QuantityException, ProductException
 from interfaces.IBag import IBag
 
 
@@ -21,7 +23,7 @@ class Bag(implements(IBag)):
 
     def addProduct(self, product, quantity):
         if quantity <= 0:
-            raise Exception("cannot add negative quantity of product")
+            raise QuantityException("cannot add negative quantity of product")
         if self.__products.get(product) is None:
             self.__products[product] = quantity
             return True
@@ -34,7 +36,7 @@ class Bag(implements(IBag)):
                 quantity = self.__products[product]
                 self.__products.pop(product)
                 return quantity
-        raise Exception("no such product in the Bag")
+        raise ProductException("no such product in the Bag")
 
     def updateProduct(self, productId, quantity):
         for product in self.__products.keys():
@@ -43,7 +45,7 @@ class Bag(implements(IBag)):
                 if self.__products[product] <= 0:
                     self.__products.pop(product)
                 return True
-        raise Exception("no such product in the Bag")
+        raise ProductException("no such product in the Bag")
 
     def getProducts(self):
         return self.__products

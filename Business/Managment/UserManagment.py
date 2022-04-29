@@ -2,6 +2,8 @@ from Business.Address import Address
 from Business.Bank import Bank
 from Business.Market import Market
 from Business.UserPackage.User import User
+from Exceptions.CustomExceptions import NoSuchUserException, PasswordException, NotOnlineException, \
+    SystemManagerException
 from interfaces import IMarket
 from typing import Dict
 from Business.UserPackage.Member import Member
@@ -36,7 +38,7 @@ class UserManagment(implements(IUser)):
             if len(self.__systemManager) > 0:
                 return self.__market.addGuest()
             else:
-                raise Exception("There no system manager!")
+                raise SystemManagerException("There no system manager!")
         except Exception as e:
             raise Exception(e)
 
@@ -62,20 +64,20 @@ class UserManagment(implements(IUser)):
             if len(self.__systemManager) > 0:
                 i : Member = self.__members.get(userName)
                 if i is None:
-                    raise Exception("The user ID " + userName + " not registered!")
+                    raise NoSuchUserException("The user ID " + userName + " not registered!")
                 if self.__market.getActiveUsers().get(i.getUserID()) is None:
                     if i.getPassword() == password:
-                            self.__market.addActiveUser(i)
-                            i.setLoggedIn(True)
-                            i.setMemberCheck(True)
-                            self.__market.loginUpdates(i.getUserID())
-                            return i.getUserID()
+                        self.__market.addActiveUser(i)
+                        i.setLoggedIn(True)
+                        i.setMemberCheck(True)
+                        self.__market.loginUpdates(i.getUserID())
+                        return i.getUserID()
                     else:
-                            raise Exception("password not good!")
+                        raise PasswordException("password not good!")
                 else:
-                    raise Exception("member allready login")
+                    raise NotOnlineException("member already login")
             else:
-                raise Exception("There no system manager!")
+                raise SystemManagerException("There no system manager!")
         except Exception as e:
             raise Exception(e)
 
