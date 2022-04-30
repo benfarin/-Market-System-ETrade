@@ -49,12 +49,12 @@ class UserManagment(implements(IUser)):
         return True
 
 
-    def memberSignUp(self, userName, password, phone, address, bank, icart):  # Tested
+    def memberSignUp(self, userName, password, phone, address, bank):  # Tested
         if self.__members.get(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[userName] = member
-            if icart is not None:
-                  member.setICart(icart)
+            # if icart is not None:
+            #       member.setICart(icart)
             return member.getUserID()
         return None
 

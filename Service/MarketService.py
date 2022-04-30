@@ -4,6 +4,11 @@ from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
 import logging
 
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.ERROR,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 
 class MarketService:
     def __init__(self):
@@ -26,6 +31,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
+            logging.error("Failed opening a new store")
             return e
 
     def addProductToCart(self, userID, storeId, productId, quantity):
@@ -38,6 +44,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed add product to cart")
             return e
 
     def removeProductFromCart(self, userId, storeId, productId):
@@ -50,6 +57,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed remove product from cart")
             return e
 
     def updateProductFromCart(self, userID, storeID, productId, quantity):
@@ -62,6 +70,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed updating product in cart")
             return e
 
     def getProductByCategory(self, category):
@@ -71,6 +80,7 @@ class MarketService:
             logging.info("success to get product by category " + category)
             return toReturn
         except Exception as e:
+            logging.error("Cannot find product by this category")
             return e
 
     def getProductByName(self, nameProduct):
@@ -80,6 +90,7 @@ class MarketService:
             logging.info("success to get product by name " + nameProduct)
             return toReturn
         except Exception as e:
+            logging.error("Cannot find product by this name")
             return e
 
     def getProductByKeyword(self, keyword):
@@ -89,6 +100,7 @@ class MarketService:
             logging.info("success to get product by keyword " + keyword)
             return toReturn
         except Exception as e:
+            logging.error("Cannot find product by this keywords")
             return e
 
     def getProductPriceRange(self, minPrice, highPrice):
@@ -99,6 +111,7 @@ class MarketService:
             logging.info("success to get product by price range")
             return toReturn
         except Exception as e:
+            logging.error("Cannot find product by this price range")
             return e
 
     def purchaseCart(self, userID, accountNumber, branch):
@@ -111,6 +124,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to purchase cart for user" + str(userID))
             return e
 
     def getCart(self, userID):
@@ -120,6 +134,7 @@ class MarketService:
             logging.info("success get cart for user " + str(userID))
             return toReturn
         except Exception as e:
+            logging.error("Failed to get cart for user" + str(userID))
             return e
 
     def appointManagerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
@@ -131,6 +146,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to appoint " + str(assigneID) + " as manager")
             return e
 
     def appointOwnerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
@@ -142,6 +158,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to appoint " + str(assigneID) + " as owner")
             return e
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
@@ -154,6 +171,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to set permissions to user " + str(assigneeID))
             return e
 
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
@@ -166,6 +184,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to set permissions to user " + str(assigneeID))
             return e
 
     def setChangePermission(self, storeID, assignerID, assigneeID):
@@ -177,6 +196,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to set permissions to user " + str(assigneeID))
             return e
 
     def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
@@ -188,6 +208,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to set permissions to user " + str(assigneeID))
             return e
 
     def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
@@ -199,6 +220,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to set permissions to user " + str(assigneeID))
             return e
 
     def addProductToStore(self, storeID, userID, name, price, category, keywords):
@@ -211,6 +233,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return product
         except Exception as e:
+            logging.error("Failed to add new product to store " + str(storeID))
             return e
 
     def addProductQuantityToStore(self, storeID, userID, productId, quantity):
@@ -223,6 +246,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to add product quantity in store " + str(storeID))
             return e
 
     def removeProductFromStore(self, storeID, userID, productId):
@@ -234,6 +258,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to remove product " + str(productId) + " in store " + str(storeID))
             return e
 
     def PrintRolesInformation(self, storeID, userID):
@@ -243,6 +268,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
+            logging.error("Failed to print roles information for store " + str(storeID))
             return e
 
     def printPurchaseHistoryInformation(self, storeID, userID):
@@ -252,6 +278,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:
+            logging.error("Failed to print purchase history information for store " + str(storeID))
             return e
 
     def updateProductPrice(self, storeID, userID, productId, newPrice):
@@ -263,6 +290,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to update price for product " + str(productId) + "in store " + str(storeID))
             return e
 
     def updateProductName(self, userID, storeID, productID, newName):
@@ -274,6 +302,7 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to update name for product " + str(productID) + "in store " + str(storeID))
             return e
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
@@ -285,4 +314,5 @@ class MarketService:
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
+            logging.error("Failed to update category for product " + str(productID) + "in store " + str(storeID))
             return e

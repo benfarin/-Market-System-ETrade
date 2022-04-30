@@ -3,6 +3,11 @@ from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
 import logging
 
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.ERROR,
+    datefmt='%Y-%m-%d %H:%M:%S')
+
 
 class UserService:
     def __init__(self):
@@ -29,11 +34,11 @@ class UserService:
             logging.error("There was a problem during logout from the system")
             return e
 
-    def memberSignUp(self, userName, password, phone,  accountNumber, brunch, country, city, street, apartmentNum, zipCode, icart):  # address is an object of "Adress"
+    def memberSignUp(self, userName, password, phone,  accountNumber, brunch, country, city, street, apartmentNum, zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__userManagment.memberSignUp(userName, password, phone, address, bank, icart)
+            toReturn = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             self.__events.addEventLog(EventLog("member sign up", "user name: " + userName, "password: " + password,
                                                "phone: " + phone, "address: " + address.printForEvents(),
                                                "bank: " + bank.printForEvents()))
@@ -50,7 +55,7 @@ class UserService:
             logging.info("success to login user " + userName)
             return toReturn
         except Exception as e:
-            logging.error("There was a problem during login, try again")
+            logging.error("There was a problem during login as a member")
             return e
 
     def logoutMember(self, userName):

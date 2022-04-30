@@ -3,7 +3,7 @@ class IUser(Interface):
    pass
 
 
-   def memberSignUp(self, userName, password, phone, address, bank, icart):
+   def memberSignUp(self, userName, password, phone, address, bank):
       pass
 
    def getMembers(self):
