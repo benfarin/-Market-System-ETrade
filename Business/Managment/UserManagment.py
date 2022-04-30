@@ -10,6 +10,7 @@ from Business.UserPackage.Member import Member
 from interface import implements
 from interfaces.IUser import IUser
 from Business.UserPackage.SystemManager import SystemManager
+import bcrypt
 
 
 class UserManagment(implements(IUser)):
@@ -66,7 +67,7 @@ class UserManagment(implements(IUser)):
                 if i is None:
                     raise NoSuchUserException("The user ID " + userName + " not registered!")
                 if self.__market.getActiveUsers().get(i.getUserID()) is None:
-                    if i.getPassword() == password:
+                    if bcrypt.checkpw(password.encode('utf-8'), i.getPassword()):
                         self.__market.addActiveUser(i)
                         i.setLoggedIn(True)
                         i.setMemberCheck(True)

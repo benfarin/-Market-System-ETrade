@@ -1,4 +1,5 @@
 from Business.UserPackage.User import User
+import bcrypt
 
 
 class Member(User):
@@ -6,7 +7,7 @@ class Member(User):
         super().__init__() # extend the constructor of user class
         self.__isLoggedIn = False
         self.__userName = userName #string
-        self.__password = password #string
+        self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) #string
         self.__phone = phone # string
         self.__address = address #type address class
         self.__bank = bank # type bank
