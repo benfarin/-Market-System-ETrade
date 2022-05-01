@@ -56,7 +56,7 @@ class Market(implements(IMarket)):
     def addGuest(self):  # ?
         guest = Guest()
         self.__activeUsers[guest.getUserID()] = guest
-        return guest.getUserID()
+        return guest
 
     def addActiveUser(self, user):
         try:

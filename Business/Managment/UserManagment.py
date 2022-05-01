@@ -34,20 +34,15 @@ class UserManagment(implements(IUser)):
     def getMembers(self):
         return self.__members
 
-    def guestLogin(self):
+    def enterSystem(self):
         try:
-            if len(self.__systemManager) > 0:
-                return self.__market.addGuest()
-            else:
-                raise SystemManagerException("There no system manager!")
+            return self.__market.addGuest()
         except Exception as e:
             raise Exception(e)
 
-
-    def guestLogOut(self, guestID):  # need to remove cart!
+    def exitSystem(self, guestID):  # need to remove cart!
         self.__market.getActiveUsers().pop(guestID)
         return True
-
 
     def memberSignUp(self, userName, password, phone, address, bank):  # Tested
         if self.__members.get(userName) is None:
@@ -58,36 +53,45 @@ class UserManagment(implements(IUser)):
             return member.getUserID()
         return None
 
-
-
-    def memberLogin(self, userName, password): #Tested
+    def memberLogin(self, userName, password):  # Tested
         try:
-            if len(self.__systemManager) > 0:
-                i : Member = self.__members.get(userName)
-                if i is None:
-                    raise NoSuchUserException("The user ID " + userName + " not registered!")
-                if self.__market.getActiveUsers().get(i.getUserID()) is None:
-                    if bcrypt.checkpw(password.encode('utf-8'), i.getPassword()):
-                        self.__market.addActiveUser(i)
-                        i.setLoggedIn(True)
-                        i.setMemberCheck(True)
-                        self.__market.loginUpdates(i.getUserID())
-                        return i.getUserID()
-                    else:
-                        raise PasswordException("password not good!")
+            system_manager: SystemManager = self.__systemManager.get(userName)
+            member: Member = self.__members.get(userName)
+            if member and system_manager is None:
+                raise NoSuchUserException("The user ID " + userName + " not registered!")
+            if system_manager is not None:
+                if bcrypt.checkpw(password.encode('utf-8'), system_manager.getPassword()):
+                    self.__market.addActiveUser(system_manager)
+                    system_manager.setLoggedIn(True)
+                    system_manager.setMemberCheck(True)
+                    self.__market.loginUpdates(system_manager.getUserID())
+                    return system_manager.getUserID()
+            if self.__market.getActiveUsers().get(member.getUserID()) is None:
+                if bcrypt.checkpw(password.encode('utf-8'), member.getPassword()):
+                    self.__market.addActiveUser(member)
+                    member.setLoggedIn(True)
+                    member.setMemberCheck(True)
+                    self.__market.loginUpdates(member.getUserID())
+                    return member.getUserID()
                 else:
-                    raise NotOnlineException("member already login")
+                    raise PasswordException("password not good!")
             else:
-                raise SystemManagerException("There no system manager!")
+                raise NotOnlineException("member already login")
         except Exception as e:
             raise Exception(e)
 
     def logoutMember(self, userName):
         user = self.__members.get(userName)
-        self.__members.get(userName).setLoggedIn(False)
-        self.__members.get(userName).setMemberCheck(False)
-        self.__market.getActiveUsers().pop(user.getUserID())
-        return self.guestLogin()
+        system_manager: SystemManager = self.__systemManager.get(userName)
+        if user is not None:
+            self.__members.get(userName).setLoggedIn(False)
+            self.__members.get(userName).setMemberCheck(False)
+            self.__market.getActiveUsers().pop(user.getUserID())
+        if system_manager is not None:
+            self.__systemManager.get(userName).setLoggedIn(False)
+            self.__systemManager.get(userName).setMemberCheck(False)
+            self.__market.getActiveUsers().pop(system_manager.getUserID())
+        return self.enterSystem()
 
     def systemManagerSignUp(self, userName, password, phone, address, bank):
         if self.__members.get(userName) is None:
@@ -97,12 +101,11 @@ class UserManagment(implements(IUser)):
                 return systemManager.getUserID()
         return None
 
-
     def createBankAcount(self, accountNumber, branch):
         return Bank(accountNumber, branch)
 
     def createAddress(self, country, city, street, apartmentNum, zipCode):
         return Address(country, city, street, apartmentNum, zipCode)
 
-    def removeMember(self,userName,password):
+    def removeMember(self, userName, password):
         pass

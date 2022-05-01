@@ -6,7 +6,7 @@ import logging
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.ERROR,
+    level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
 
 
@@ -15,6 +15,7 @@ class MarketService:
         self.__marketManage = MarketManage().getInstance()
         self.__roleManagment = RoleManagment().getInstance()
         self.__events = Events()
+
 
     def getEvents(self):
         return self.__events

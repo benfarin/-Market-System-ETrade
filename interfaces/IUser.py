@@ -9,10 +9,10 @@ class IUser(Interface):
    def getMembers(self):
       pass
 
-   def guestLogin(self):
+   def enterSystem(self):
       pass
 
-   def guestLogOut(self, guestID):
+   def exitSystem(self, guestID):
       pass
 
    def memberLogin(self, userName, password):
