@@ -46,8 +46,7 @@ class Market(implements(IMarket)):
 
     def createStore(self, storeName, userID, bank, address):  # change test!
         if self.__checkOnlineUser(userID):
-            storeID = self.__globalStore + 1
-            self.__globalStore += 1
+            storeID = self.__getGlobalStoreId()
             newStore = Store(storeID, storeName, userID, bank, address)
             self.__stores[storeID] = newStore
             return newStore.getStoreId()
@@ -133,7 +132,7 @@ class Market(implements(IMarket)):
         return productsInStores
 
     def getProductByPriceRange(self, minPrice, highPrice):
-        productsInStores= []
+        productsInStores = []
         keys = self.__stores.keys()
         for i in keys:
             products_list_per_Store = self.__stores.get(i).getProductsByPriceRange(minPrice, highPrice)
@@ -199,6 +198,7 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
+    # need to delete that function
     def cancelPurchaseCart(self, userID, transactionId):
         try:
             if self.__activeUsers.get(userID) is None:
@@ -222,7 +222,7 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    #  action of roles - role managment
+    #  actions of roles - role managment
     def appointManagerToStore(self, storeID, assignerID, assigneeID):  # Tested
         try:
             if self.__activeUsers.get(assignerID) is not None:
@@ -352,12 +352,6 @@ class Market(implements(IMarket)):
     def getActiveUsers(self):
         return self.__activeUsers
 
-    def __getTransactionId(self):
-        tId = self._transactionIdCounter
-        self._transactionIdCounter += 1
-        return tId
-
-
     def removeStore(self, storeID, userID):
         try:
             if self.__activeUsers.get(userID) is None:
@@ -367,13 +361,12 @@ class Market(implements(IMarket)):
             for user in self.__activeUsers.values():
                 user.getCart().removeBag(storeID)
             self.__stores.pop(storeID)
-            return "Store removed succesfully!"
+            return "Store removed successfully!"
         except Exception as e:
             return e
 
-    def loginUpdates(self,
-                     userID):  # we need to check if all the store exist if not we remove all the products from the user that get in the systsem!
-
+    def loginUpdates(self, userID):  # we need to check if all the store exist if not we remove all the products from
+                                     # the user that get in the system!
         for storeID in self.__activeUsers.get(userID).getCart().getAllBags().keys():
             if self.__stores.get(storeID) is None:
                 self.__activeUsers.get(userID).getCart().removeBag(storeID)
@@ -403,3 +396,15 @@ class Market(implements(IMarket)):
                 raise NotOnlineException("user not logged in!")
         except Exception as e:
             raise Exception(e)
+
+    # need to add a lock/cas in here
+    def __getGlobalStoreId(self):
+        storeId = self.__globalStore
+        self.__globalStore += 1
+        return storeId
+
+    # need to add a lock/cas in here
+    def __getTransactionId(self):
+        transactionId = self._transactionIdCounter
+        self._transactionIdCounter += 1
+        return transactionId

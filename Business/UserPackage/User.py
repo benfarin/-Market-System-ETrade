@@ -34,11 +34,9 @@ class User:
         self.__paymentStatus: Dict[int: PaymentStatus] = {}
         self.__transactions: Dict[int: UserTransaction] = {}
 
-    @threaded
     def getPaymentStatus(self):
         return self.__paymentStatus
 
-    @threaded
     def getTransactions(self):
         return self.__transactions
 
@@ -50,14 +48,13 @@ class User:
     def removeTransaction(self, transactionId):
         self.__transactions.pop(transactionId)
 
-    @threaded
     def getTransaction(self, transactionId):
         return self.__transactions[transactionId]
 
-    @threaded
     def getPaymentById(self, paymentID):
         return self.__paymentStatus[paymentID]
 
+    @threaded
     def addPaymentStatus(self, paymentStatus):
         self.__paymentStatus[paymentStatus.getPaymentId()] = paymentStatus
 
@@ -65,15 +62,12 @@ class User:
     def removePaymentStatus(self, paymentStatusId):
         self.__paymentStatus.pop(paymentStatusId)
 
-    @threaded
     def getUserID(self):
         return self.__id
 
-    @threaded
     def getCart(self):
         return self._cart
 
-    @threaded
     def getMemberCheck(self):
         return self.__memberCheck
 
@@ -85,7 +79,6 @@ class User:
     def setMemberCheck(self, state):
         self.__memberCheck = state
 
-    @threaded
     def getShopingCartProducts(self):
         return self._cart.getAllProduct()
 
