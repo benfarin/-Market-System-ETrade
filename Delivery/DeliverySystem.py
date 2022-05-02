@@ -1,5 +1,7 @@
 import numpy as np
 
+from Exceptions.CustomExceptions import DeliveryException
+
 
 class DeliverytSystem:
     __instance = None
@@ -17,11 +19,11 @@ class DeliverytSystem:
 
     def CreateDelivery(self, reciverID, phone, source, destination):
         if np.random.random() < 0.25:
-            raise Exception("Delivery failed")
+            raise DeliveryException("Delivery failed")
         return True
 
     def CancelDelivery(self, derliveryID):
         if derliveryID >= 0:
             return True
         else:
-            raise Exception("illegal DeliveryID")
+            raise DeliveryException("illegal DeliveryID")

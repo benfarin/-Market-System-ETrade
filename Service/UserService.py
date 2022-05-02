@@ -1,65 +1,97 @@
 from Business.Managment.UserManagment import UserManagment
+from Business.UserPackage.User import User
 from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
+from typing import Dict
+import logging
+import threading
+
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 class UserService:
     def __init__(self):
         self.__userManagment = UserManagment()
         self.__events = Events()
+        self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
+                                 999999)
+        self.__users: Dict[str : User] = {}
+        self.enterSystem()
 
-    def guestLogin(self):
+    async def enterSystem(self):
         try:
-            toReturn = self.__userManagment.guestLogin()
+            guest: User = self.__userManagment.enterSystem()
+            self.__users[guest.getUserID()] = guest
             self.__events.addEventLog(EventLog("guest login"))
-            return toReturn
+            logging.info("success to enter system as a guest")
+            return guest
         except Exception as e:
+            logging.error("There was a problem during entering the system")
             return e
 
-    def guestLogOut(self, guestID):  # need to remove cart!
+    async def exitSystem(self, guestID):  # need to remove cart!
         try:
-            toReturn = self.__userManagment.guestLogOut(guestID)
+            toReturn = self.__userManagment.exitSystem(guestID)
+            self.__users.pop(guestID)
             self.__events.addEventLog(EventLog("guest logout", "guestId: ", str(guestID)))
+            logging.info("success to exit system")
             return toReturn
         except Exception as e:
+            logging.error("There was a problem during logout from the system")
             return e
 
-    def memberSignUp(self, userName, password, phone,  accountNumber, brunch, country, city, street, apartmentNum, zipCode, icart):  # address is an object of "Adress"
+    async def memberSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
+                     zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__userManagment.memberSignUp(userName, password, phone, address, bank, icart)
+            toReturn = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             self.__events.addEventLog(EventLog("member sign up", "user name: " + userName, "password: " + password,
                                                "phone: " + phone, "address: " + address.printForEvents(),
                                                "bank: " + bank.printForEvents()))
+            logging.info("success to register user " + userName)
             return toReturn
         except Exception as e:
+            logging.warning("There was a problem during registration process")
             return e
 
-    def memberLogin(self, userName, password):
+    async def memberLogin(self, userName, password):
         try:
             toReturn = self.__userManagment.memberLogin(userName, password)
             self.__events.addEventLog(EventLog("member login", "username: " + userName, "password: " + password))
+            logging.info("success to login user " + userName)
             return toReturn
         except Exception as e:
+            logging.error("There was a problem during login as a member")
             return e
 
-    def logoutMember(self, userName):
+    async def logoutMember(self, userName):
         try:
             self.__userManagment.logoutMember(userName)
             self.__events.addEventLog(EventLog("member logout", "userId: " + userName))
+            logging.info("success to logout user " + userName)
             return True
         except Exception as e:
+            logging.error("There was a problem to logout from the market")
             return e
 
-    def systemManagerSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
+    async def systemManagerSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
+                            zipCode):
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
             toReturn = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
             self.__events.addEventLog(EventLog("system managment signup", "username: " + userName,
                                                "password: " + password, "phone: " + str(phone),
-                                               "bank: " + bank.printForEvents(), "address: " + address.printForEvents()))
+                                               "bank: " + bank.printForEvents(),
+                                               "address: " + address.printForEvents()))
+            logging.info("success to sign new system manager " + userName)
             return toReturn
         except Exception as e:
+            logging.error("Cannot signup new System Manager")
             return e
+

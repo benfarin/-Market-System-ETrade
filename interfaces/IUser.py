@@ -3,16 +3,16 @@ class IUser(Interface):
    pass
 
 
-   def memberSignUp(self, userName, password, phone, address, bank, icart):
+   def memberSignUp(self, userName, password, phone, address, bank):
       pass
 
    def getMembers(self):
       pass
 
-   def guestLogin(self):
+   def enterSystem(self):
       pass
 
-   def guestLogOut(self, guestID):
+   def exitSystem(self, guestID):
       pass
 
    def memberLogin(self, userName, password):

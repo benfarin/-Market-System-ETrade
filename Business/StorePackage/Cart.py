@@ -1,4 +1,6 @@
 from interface import implements
+
+from Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
 from interfaces.ICart import ICart
 from Business.StorePackage.Bag import Bag
 from Business.StorePackage.Product import Product
@@ -21,7 +23,7 @@ class Cart(implements(ICart)):
         try:
             return self.__bags[storeId]
         except:
-            raise Exception("storeId does not exists, can't add the bag to the cart")
+            raise NoSuchStoreException("storeId does not exists, can't add the bag to the cart")
 
     def removeBag(self, storeId):
         if self.__bags.get(storeId) is not None:
@@ -63,10 +65,9 @@ class Cart(implements(ICart)):
             self.removeBag(storeId)
         return quantity
 
-
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
         if self.__bags.get(storeId) is None:
-            raise Exception("can't update a product without a bag to his store")
+            raise NoSuchBagException("can't update a product without a bag to his store")
         self.getBag(storeId).updateProduct(productId, quantity)
         if self.getBag(storeId).isEmpty():
             self.removeBag(storeId)
@@ -89,8 +90,8 @@ class Cart(implements(ICart)):
         return products
 
     def printBags(self):
-        printBags =""
+        printBags = ""
         for bag in self.__bags.values():
-            printBags +=  "\n\t\t\tStore id:" + str(bag.getStoreId()) + " store products:" + "\t\t\t\t\t\t\t\t\t" + bag.printProducts()
+            printBags += "\n\t\t\tStore id:" + str(
+                bag.getStoreId()) + " store products:" + "\t\t\t\t\t\t\t\t\t" + bag.printProducts()
         return printBags
-

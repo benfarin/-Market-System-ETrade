@@ -18,7 +18,7 @@ class UserRealBridge(implements(IUserBridge)):
             return True
 
     def login_guest(self):
-        return self._user_service.guestLogin()
+        return self._user_service.enterSystem()
 
     def register(self, username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code, ICart):
