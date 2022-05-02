@@ -41,6 +41,7 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(2, self.__storeId2)
 
     def test_createStore_FAIL(self):
+
         self.assertRaises(Exception,
                           lambda: self.__market.createStore("Rotem", self.__member3.getUserID(), self.__bank3,
                                                             self.__address3))
