@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+{% if title %}
+    <h1 style="text-align:center;">{{ title }}</h1>
+{% endif %}
+<div class="mb-3">
+<form style="text-align:center;" method="POST" action="." enctype="multipart/form-data"> {% csrf_token %}
+    {{ form.as_p }}
+    <button style="text-align:center;" type="submit">Send</button>
+</form>
+</div>
+
+{% endblock %}
