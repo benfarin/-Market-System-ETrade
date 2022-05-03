@@ -13,8 +13,11 @@ import os
 from pathlib import Path
 import sys
 
+sys.path.append('....')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+SERVICE_DIR = BASE_DIR.parent.parent
+sys.path.append(str(SERVICE_DIR))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
