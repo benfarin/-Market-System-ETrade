@@ -12,6 +12,7 @@ class Bag(implements(IBag)):
 
     def getStore(self):
         pass
+
     def isEmpty(self):
         return len(self.__products) == 0
 

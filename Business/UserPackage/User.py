@@ -26,25 +26,29 @@ def threaded(fn):
     return wrapper
 
 
-class User:
+class User(threading.Thread):
+
     def __init__(self):
+        #  threading.Thread.__init__(self, target=t, args=args)
+        threading.Thread.__init__(self)
+
         self.__id = str(uuid.uuid4())  # unique id
         self._cart = Cart(self.__id)
         self.__memberCheck = False
         self.__paymentStatus: Dict[int: PaymentStatus] = {}
         self.__transactions: Dict[int: UserTransaction] = {}
+        self.start()
 
     def getPaymentStatus(self):
         return self.__paymentStatus
 
+    # all the transaction should be access only from member !!!!
     def getTransactions(self):
         return self.__transactions
 
-    @threaded
     def addTransaction(self, userTransaction: UserTransaction):
         self.__transactions[userTransaction.getUserTransactionId()] = userTransaction
 
-    @threaded
     def removeTransaction(self, transactionId):
         self.__transactions.pop(transactionId)
 
@@ -54,11 +58,9 @@ class User:
     def getPaymentById(self, paymentID):
         return self.__paymentStatus[paymentID]
 
-    @threaded
     def addPaymentStatus(self, paymentStatus):
         self.__paymentStatus[paymentStatus.getPaymentId()] = paymentStatus
 
-    @threaded
     def removePaymentStatus(self, paymentStatusId):
         self.__paymentStatus.pop(paymentStatusId)
 
@@ -71,11 +73,9 @@ class User:
     def getMemberCheck(self):
         return self.__memberCheck
 
-    @threaded
     def setICart(self, icart):
         self._cart = icart
 
-    @threaded
     def setMemberCheck(self, state):
         self.__memberCheck = state
 
@@ -83,13 +83,13 @@ class User:
         return self._cart.getAllProduct()
 
     @threaded
-    def updateProductInCart(self, storeId, productId, quantity):
-        self._cart.updateProduct(storeId, productId, quantity)
+    def addProduct(self, storeId, product, quantity):
+        self._cart.addProduct(storeId, product, quantity)
 
     @threaded
     def removeProduct(self, storeId, productId):
         self._cart.removeProduct(storeId, productId)
 
     @threaded
-    def addProduct(self, storeId, product, quantity):
-        self._cart.addProduct(storeId, product, quantity)
+    def updateProductInCart(self, storeId, productId, quantity):
+        self._cart.updateProduct(storeId, productId, quantity)

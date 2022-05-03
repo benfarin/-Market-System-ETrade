@@ -16,6 +16,7 @@ from Business.Transactions.StoreTransaction import StoreTransaction
 from Business.Transactions.UserTransaction import UserTransaction
 from interface import implements
 from typing import Dict
+import threading
 
 
 class Market(implements(IMarket)):
@@ -31,10 +32,11 @@ class Market(implements(IMarket)):
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
-        self.__activeUsers: Dict[
-            str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
+        self.__activeUsers: Dict[str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
         self.__globalStore = 0
         self._transactionIdCounter = 0
+        self.__storeId_lock = threading.Lock()
+        self.__transactionId_lock = threading.Lock()
         if Market.__instance is None:
             Market.__instance = self
 
@@ -399,12 +401,14 @@ class Market(implements(IMarket)):
 
     # need to add a lock/cas in here
     def __getGlobalStoreId(self):
-        storeId = self.__globalStore
-        self.__globalStore += 1
-        return storeId
+        with self.__storeId_lock:
+            storeId = self.__globalStore
+            self.__globalStore += 1
+            return storeId
 
     # need to add a lock/cas in here
     def __getTransactionId(self):
-        transactionId = self._transactionIdCounter
-        self._transactionIdCounter += 1
-        return transactionId
+        with self.__transactionId_lock:
+            transactionId = self._transactionIdCounter
+            self._transactionIdCounter += 1
+            return transactionId

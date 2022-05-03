@@ -1,7 +1,3 @@
-from Service.Events.EventLog import EventLog
-from Service.Events.EventError import EventError
-
-
 class Events:
 
     def __init__(self):

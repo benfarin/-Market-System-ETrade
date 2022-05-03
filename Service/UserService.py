@@ -1,11 +1,9 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.User import User
 from Service.Events.Events import Events
-from Service.Events.EventLog import EventLog
+from Service.Events.Events import EventLog
 from typing import Dict
 import logging
-import threading
-
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',

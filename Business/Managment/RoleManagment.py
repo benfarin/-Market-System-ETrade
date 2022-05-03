@@ -1,6 +1,7 @@
 from interfaces.IMarket import IMarket
 from Business.Market import Market
 from Business.StorePackage.Product import Product
+import threading
 
 
 class RoleManagment():
@@ -16,7 +17,8 @@ class RoleManagment():
     def __init__(self):
         """ Virtually private constructor. """
         self.__market: IMarket = Market().getInstance()
-        self.productId = 0
+        self.__productId = 0
+        self.__productId_lock = threading.Lock()
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
@@ -120,6 +122,7 @@ class RoleManagment():
             raise Exception(e)
 
     def __getProductId(self):
-        productId = self.productId
-        self.productId += 1
-        return productId
+        with self.__productId_lock:
+            productId = self.__productId
+            self.__productId += 1
+            return productId

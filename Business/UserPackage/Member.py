@@ -31,7 +31,6 @@ class Member(User):
         self.__address = address  # type address class
         self.__bank = bank  # type bank
 
-    @threaded
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
 
@@ -49,11 +48,3 @@ class Member(User):
 
     def addStoreRating(self, storeID, rating):
         pass
-
-    # need to delete both of this, deu to the fact there is all ready get user transaction
-    def getMemberHistory(self):
-        return self.__userHistory
-
-    def getMemberHistory(self, nameMember):
-        member = self.__membersFromCart.get(self.getUserByName(nameMember))
-        return member.getMemberHistory()

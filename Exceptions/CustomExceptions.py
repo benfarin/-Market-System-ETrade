@@ -45,3 +45,6 @@ class PermissionException(Exception):
 class DeliveryException(Exception):
     pass
 
+
+class TransactionException(Exception):
+    pass
