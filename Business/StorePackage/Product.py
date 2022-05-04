@@ -7,7 +7,7 @@ from interfaces.IProduct import IProduct
 
 
 @zope.interface.implementer(IProduct)
-class Product(implements(IProduct)):
+class Product:
 
     def __init__(self, Id, name, price, category, keyword):
         self.__id = Id

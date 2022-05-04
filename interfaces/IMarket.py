@@ -1,16 +1,21 @@
 from zope.interface import Interface
 
-from Business.UserPackage.User import User
-
 
 class IMarket(Interface):
-    def addGuest(self):
+
+    def getUserID(self):
         pass
 
-    def getStoreByName(self, store_name):
+    def createStore(self, storeName, user, bank, address):  # change test!
         pass
 
-    def getStoreById(self, id_store):
+    def addProductToCart(self, user, storeID, productID, quantity):  # Tested
+        pass
+
+    def removeProductFromCart(self, storeID, user, productId):  # Tested
+        pass
+
+    def updateProductFromCart(self, user, storeID, productId, quantity):  # UnTested
         pass
 
     def getProductByCategory(self, category):
@@ -22,52 +27,7 @@ class IMarket(Interface):
     def getProductByKeyWord(self, keyword):
         pass
 
-    def getUserByName(self, userName):
-        pass
-
-    def createStore(self, storeName, userID, bank, address):
-        pass
-
-    def addProductToCart(self, userID, storeID, productID, quantity):
-        pass
-
-    def removeProductFromCart(self,storeID ,userID, productId):
-        pass
-
-    def updateProductFromCart(self, userID, storeID, productId, quantity):
-        pass
-
-    def appointManagerToStore(self, storeID, assignerID, assigneeID):
-        pass
-
-    def appointOwnerToStore(self, storeID, assignerID, assigneeID):
-        pass
-
-    def setStockManagerPermission(self, storeID, assignerID, assigneeID):
-        pass
-
-    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
-        pass
-
-    def setChangePermission(self, storeID, assignerID, assigneeID):
-        pass
-
-    def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
-        pass
-
-    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
-        pass
-
-    def addProductToStore(self, storeID, userID, product):
-        pass
-
-    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
-        pass
-
-    def removeProductFromStore(self, storeID, userID, productId):
-        pass
-
-    def printRolesInformation(self, storeID, userID):
+    def getProductByPriceRange(self, minPrice, highPrice):
         pass
 
     def addTransaction(self, storeID, transaction):
@@ -76,24 +36,69 @@ class IMarket(Interface):
     def removeTransaction(self, storeID, transactionId):
         pass
 
-    def printPurchaseHistoryInformation(self, storeID, userID):
+    def purchaseCart(self, user, bank):
         pass
 
-    def updateProductPrice(self, storeID, userID, productId, mewPrice):
+    def appointManagerToStore(self, storeID, assigner, assignee):  # Tested
         pass
 
-    def addActiveUser(self, user):
+    def appointOwnerToStore(self, storeID, assigner, assignee):  # unTested
         pass
 
-    def purchaseCart(self, userID, bank):
+    def setStockManagerPermission(self, storeID, assigner, assignee):  # Tested
         pass
 
-    def loginUpdates(self, userID):
+    def setAppointOwnerPermission(self, storeID, assigner, assignee):  # Tested
         pass
 
-    def removeStore(self, storeID, userID):
+    def setChangePermission(self, storeID, assigner, assignee):
         pass
 
-    def getCart(self, userID):
+    def setRolesInformationPermission(self, storeID, assigner, assignee):
         pass
 
+    def setPurchaseHistoryInformationPermission(self, storeID, assigner, assignee):
+        pass
+
+    def addProductToStore(self, storeID, user, product):  # Tested
+        pass
+
+    def updateProductPrice(self, storeID, user, productId, mewPrice):
+        pass
+
+    def addProductQuantityToStore(self, storeID, user, productId, quantity):
+        pass
+
+    def removeProductFromStore(self, storeID, user, productId):
+        pass
+
+    def printRolesInformation(self, storeID, user):
+        pass
+
+    def printPurchaseHistoryInformation(self, storeID, user):
+        pass
+
+    def getStoreByName(self, store_name):
+        pass
+
+    def getStoreById(self, id_store):  # maybe should be private
+        pass
+
+    def getUserByName(self, userName):
+        pass
+
+    def getStores(self):
+        pass
+
+    # need to add to the service
+    def removeStore(self, storeID, user):
+        pass
+
+    def loginUpdates(self, user):
+        pass
+
+    def updateProductName(self, user, storeID, productID, newName):
+        pass
+
+    def updateProductCategory(self, user, storeID, productID, newCategory):
+        pass

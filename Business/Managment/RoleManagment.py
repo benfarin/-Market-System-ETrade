@@ -1,10 +1,11 @@
-from interfaces.IMarket import IMarket
-from Business.Market import Market
+from Business.UserPackage.Member import Member
+from Business.Managment.MemberManagment import MemberManagment
+from Exceptions.CustomExceptions import NoSuchMemberException
 from Business.StorePackage.Product import Product
 import threading
 
 
-class RoleManagment():
+class RoleManagment(MemberManagment):
     __instance = None
 
     @staticmethod
@@ -16,7 +17,7 @@ class RoleManagment():
 
     def __init__(self):
         """ Virtually private constructor. """
-        self.__market: IMarket = Market().getInstance()
+        super().__init__()
         self.__productId = 0
         self.__productId_lock = threading.Lock()
         if RoleManagment.__instance is None:
@@ -25,43 +26,173 @@ class RoleManagment():
     def appointManagerToStore(self, storeID, assignerID,
                               assigneeID):  # check if the asssignee he member and assignerID!!
         try:
-            return self.__market.appointManagerToStore(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.appointManagerToStore(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
     def appointOwnerToStore(self, storeID, assignerID, assigneeID):  # check if the assignee he member and assignerID!!
         try:
-            return self.__market.appointOwnerToStore(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.appointOwnerToStore(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         try:
-            return self.setStockManagerPermission(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.setStockManagerPermission(storeID, assignee)
         except Exception as e:
             return e
 
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
         try:
-            return self.__market.setAppointOwnerPermission(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.setAppointOwnerPermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
     def setChangePermission(self, storeID, assignerID, assigneeID):
         try:
-            return self.__market.setChangePermission(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.setChangePermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
     def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            return self.__market.setRolesInformationPermission(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.setRolesInformationPermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
     def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            return self.__market.setRolesInformationPermission(storeID, assignerID, assigneeID)
+            self.__checkOnlineUser(assignerID)
+            assigner = self.__members.get(assignerID)
+            assignee = self.__members.get(assigneeID)
+            if assignerID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            if assigneeID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            return assigner.setRolesInformationPermission(storeID, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def addProductToStore(self, storeID, userID, product):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            member.addProductToStore(storeID, product)
+            return product.getProductId()
+        except Exception as e:
+            raise Exception(e)
+
+    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.addProductQuantityToStore(storeID, productId, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeProductFromStore(self, storeID, userID, product):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.removeProductFromStore(storeID, product)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductPrice(self, storeID, userID, productId, newPrice):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.updateProductPrice(storeID, productId, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductName(self, userID, storeID, productID, newName):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.updateProductPrice(storeID, productID, newName)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductCategory(self, userID, storeID, productID, newCategory):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.updateProductPrice(storeID, productID, newCategory)
+        except Exception as e:
+            raise Exception(e)
+
+    def PrintRolesInformation(self, storeID, userID):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.PrintRolesInformation(storeID)
+        except Exception as e:
+            raise Exception(e)
+
+    def printPurchaseHistoryInformation(self, storeID, userID):
+        try:
+            self.__checkOnlineUser(userID)
+            member = self.__members.get(userID)
+            if userID not in self.__members.keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.printPurchaseHistoryInformation(storeID)
         except Exception as e:
             raise Exception(e)
 
@@ -71,55 +202,6 @@ class RoleManagment():
         if category is None:
             raise Exception("product category cannot be None")
         return Product(self.__getProductId(), name, price, category, keywords)
-
-    def addProductToStore(self, storeID, userID, product):
-        try:
-            self.__market.addProductToStore(storeID, userID, product)
-            return product.getProductId()
-        except Exception as e:
-            raise Exception(e)
-
-    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
-        try:
-            return self.__market.addProductQuantityToStore(storeID, userID, productId, quantity)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeProductFromStore(self, storeID, userID, product):
-        try:
-            return self.__market.removeProductFromStore(storeID, userID, product)
-        except Exception as e:
-            raise Exception(e)
-
-    def updateProductPrice(self, storeID, userID, productId, newPrice):
-        try:
-            return self.__market.updateProductPrice(storeID, userID, productId, newPrice)
-        except Exception as e:
-            raise Exception(e)
-
-    def updateProductName(self, userID, storeID, productID, newName):
-        try:
-            return self.__market.updateProductPrice(storeID, userID, productID, newName)
-        except Exception as e:
-            raise Exception(e)
-
-    def updateProductCategory(self, userID, storeID, productID, newCategory):
-        try:
-            return self.__market.updateProductPriceFromStore(storeID, userID, productID, newCategory)
-        except Exception as e:
-            raise Exception(e)
-
-    def PrintRolesInformation(self, storeID, userID):
-        try:
-            return self.__market.printRolesInformation(storeID, userID)
-        except Exception as e:
-            raise Exception(e)
-
-    def printPurchaseHistoryInformation(self, storeID, userID):
-        try:
-            return self.__market.printPurchaseHistoryInformation(storeID, userID)
-        except Exception as e:
-            raise Exception(e)
 
     def __getProductId(self):
         with self.__productId_lock:

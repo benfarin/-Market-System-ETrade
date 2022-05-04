@@ -5,7 +5,7 @@ from interfaces.IPayment import IPayment
 from interface import implements
 
 
-class Paymentlmpl(implements(IPayment)):
+class Paymentlmpl:
     __instance = None
 
     @staticmethod

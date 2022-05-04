@@ -1,6 +1,10 @@
 from Business.UserPackage.User import User
 import bcrypt
 import threading
+
+from Exceptions.CustomExceptions import NoSuchMemberException
+from interfaces.IMarket import IMarket
+from Business.Market import Market
 from concurrent.futures import Future
 
 
@@ -30,6 +34,7 @@ class Member(User):
         self.__phone = phone  # string
         self.__address = address  # type address class
         self.__bank = bank  # type bank
+        self.__market: IMarket = Market.getInstance()
 
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
@@ -43,8 +48,102 @@ class Member(User):
     def getBank(self):
         return self.__bank
 
-    def getUserName(self):
-        return self.__userName
+    def createStore(self, storeName, bank, address):
+        try:
+            return self.__market.createStore(storeName, self, bank, address)
+        except Exception as e:
+            raise Exception(e)
 
-    def addStoreRating(self, storeID, rating):
-        pass
+    def getMemberTransactions(self):
+        return self.__transactions
+
+    def appointManagerToStore(self, storeID, assignee):
+        try:
+            return self.__market.appointManagerToStore(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def appointOwnerToStore(self, storeID, assignee):
+        try:
+            return self.__market.appointOwnerToStore(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def setStockManagerPermission(self, storeID, assignee):
+        try:
+            return self.__market.setStockManagerPermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def setAppointOwnerPermission(self, storeID, assignee):
+        try:
+            return self.__market.setAppointOwnerPermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def setChangePermission(self, storeID, assignee):
+        try:
+            return self.__market.setChangePermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def setRolesInformationPermission(self, storeID, assignee):
+        try:
+            return self.__market.setRolesInformationPermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def setPurchaseHistoryInformationPermission(self, storeID, assignee):
+        try:
+            return self.__market.setPurchaseHistoryInformationPermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def addProductToStore(self, storeID, product):
+        try:
+            return self.__market.addProductToStore(storeID, self, product)
+        except Exception as e:
+            raise Exception(e)
+
+    def addProductQuantityToStore(self, storeID, productId, quantity):
+        try:
+            return self.__market.addProductQuantityToStore(storeID, self, productId, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeProductFromStore(self, storeID, product):
+        try:
+            return self.__market.removeProductFromStore(storeID, self, product)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductPrice(self, storeID, productId, newPrice):
+        try:
+            return self.__market.updateProductPrice(storeID, self, productId, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductName(self, storeID, productID, newName):
+        try:
+            return self.__market.updateProductName(storeID, self, productID, newName)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductCategory(self, storeID, productID, newCategory):
+        try:
+            return self.__market.updateProductName(storeID, self, productID, newCategory)
+        except Exception as e:
+            raise Exception(e)
+
+    def PrintRolesInformation(self, storeID):
+        try:
+            return self.__market.printRolesInformation(storeID, self)
+        except Exception as e:
+            raise Exception(e)
+
+    def printPurchaseHistoryInformation(self, storeID):
+        try:
+            return self.__market.printPurchaseHistoryInformation(storeID, self)
+        except Exception as e:
+            raise Exception(e)
+

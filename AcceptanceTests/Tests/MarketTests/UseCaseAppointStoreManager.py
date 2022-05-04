@@ -4,7 +4,7 @@ from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBrid
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
-from Service.MarketService import MarketService
+from Service.MemberService import MarketService
 from Service.UserService import UserService
 
 

@@ -1,7 +1,7 @@
 from interface import implements
 
 from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
-from Service.MarketService import MarketService
+from Service.MemberService import MarketService
 from Service.UserService import UserService
 from interface import implements
 

@@ -1,8 +1,8 @@
 from Business.StorePackage.Cart import Cart
-from Business.StorePackage.Bag import Bag
-from Payment.PaymentStatus import PaymentStatus
 from Payment.PaymentStatus import PaymentStatus
 from Business.Transactions.UserTransaction import UserTransaction
+from interfaces.IMarket import IMarket
+from Business.Market import Market
 from typing import Dict
 import uuid
 import threading
@@ -26,18 +26,20 @@ def threaded(fn):
     return wrapper
 
 
-class User(threading.Thread):
+# class User(threading.Thread):
+class User:
 
     def __init__(self):
         #  threading.Thread.__init__(self, target=t, args=args)
-        threading.Thread.__init__(self)
+        # threading.Thread.__init__(self)
 
         self.__id = str(uuid.uuid4())  # unique id
         self._cart = Cart(self.__id)
         self.__memberCheck = False
         self.__paymentStatus: Dict[int: PaymentStatus] = {}
         self.__transactions: Dict[int: UserTransaction] = {}
-        self.start()
+        self.__market: IMarket = Market.getInstance()
+        # self.start()
 
     def getPaymentStatus(self):
         return self.__paymentStatus
@@ -79,17 +81,28 @@ class User(threading.Thread):
     def setMemberCheck(self, state):
         self.__memberCheck = state
 
-    def getShopingCartProducts(self):
-        return self._cart.getAllProduct()
+    def addProductToCart(self, storeID, product, quantity):
+        try:
+            return self.__market.addProductToCart(self, storeID, product, quantity)
+        except Exception as e:
+            raise Exception(e)
 
-    @threaded
-    def addProduct(self, storeId, product, quantity):
-        self._cart.addProduct(storeId, product, quantity)
+    def removeProductFromCart(self, storeID, productId):
+        try:
+            return self.__market.removeProductFromCart(self, storeID, productId)
+        except Exception as e:
+            raise Exception(e)
 
-    @threaded
-    def removeProduct(self, storeId, productId):
-        self._cart.removeProduct(storeId, productId)
+    def updateProductFromCart(self, storeID, productId, quantity):
+        try:
+            return self.__market.addProductToCart(self, storeID, productId, quantity)
+        except Exception as e:
+            raise Exception(e)
 
-    @threaded
-    def updateProductInCart(self, storeId, productId, quantity):
-        self._cart.updateProduct(storeId, productId, quantity)
+    def purchaseCart(self, bank):
+        try:
+            return self.__market.purchaseCart(self, bank)
+        except Exception as e:
+            raise Exception(e)
+
+
