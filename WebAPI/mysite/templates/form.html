@@ -5,11 +5,14 @@
 {% if title %}
     <h1 style="text-align:center;">{{ title }}</h1>
 {% endif %}
-<div class="mb-3">
-<form style="text-align:center;" method="POST" action="." enctype="multipart/form-data"> {% csrf_token %}
-    {{ form.as_p }}
-    <button style="text-align:center;" type="submit">Send</button>
+
+<form style="text-align:center;" method="POST" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    <table style="margin-left:auto;margin-right:auto;">
+        {{ form.as_table }}
+    </table>
+    <button style="text-align:row mb-3;" class="btn btn-secondary" type="submit">Send</button>
 </form>
-</div>
+
 
 {% endblock %}
