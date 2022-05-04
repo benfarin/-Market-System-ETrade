@@ -4,6 +4,7 @@ from Business.Address import Address
 from Business.Bank import Bank
 from Business.Market import Market
 from Business.UserPackage.User import User
+from Business.UserPackage.Guest import Guest
 from Exceptions.CustomExceptions import NoSuchUserException, PasswordException, NotOnlineException, \
     SystemManagerException
 from interfaces import IMarket
@@ -29,22 +30,36 @@ class UserManagment:
     def __init__(self):
         """ Virtually private constructor. """
         self.__market: IMarket = Market().getInstance()
+        self.__activeUsers: Dict[str, User] = {}  # <name,User> should check how to initial all the activeStores into
+                                                  # dictionary
         self.__members: Dict[str, Member] = {}
         self.__systemManager: Dict[str, SystemManager] = {}
         if UserManagment.__instance is None:
             UserManagment.__instance = self
 
+    def __checkOnlineUser(self, userId):
+        if (self.__activeUsers.get(userId)) is None:
+            raise NotOnlineException("The member " + userId + " not online!")
+        else:
+            return True
+
     def getMembers(self):
         return self.__members
 
+    def getSystemManagers(self):
+        return self.__systemManager
+
     def enterSystem(self):
         try:
-            return self.__market.addGuest()
+            guest = Guest()
+            self.__activeUsers[guest.getUserID()] = guest
+            return guest
         except Exception as e:
             raise Exception(e)
 
     def exitSystem(self, guestID):  # need to remove cart!
-        self.__market.getActiveUsers().pop(guestID)
+        self.__checkOnlineUser(guestID)
+        self.__activeUsers.pop(guestID)
         return True
 
     def memberSignUp(self, userName, password, phone, address, bank):  # Tested
@@ -64,17 +79,17 @@ class UserManagment:
                 raise NoSuchUserException("The user ID " + userName + " not registered!")
             if system_manager is not None:
                 if bcrypt.checkpw(password.encode('utf-8'), system_manager.getPassword()):
-                    self.__market.addActiveUser(system_manager)
+                    self.__activeUsers[system_manager.getUserID()] = system_manager
                     system_manager.setLoggedIn(True)
                     system_manager.setMemberCheck(True)
-                    self.__market.loginUpdates(system_manager.getUserID())
+                    self.__activeUsers.get(member.getUserID()).loginUpdates(system_manager.getUserID())
                     return system_manager.getUserID()
-            if self.__market.getActiveUsers().get(member.getUserID()) is None:
+            if self.__getActiveUsers().get(member.getUserID()) is None:
                 if bcrypt.checkpw(password.encode('utf-8'), member.getPassword()):
-                    self.__market.addActiveUser(member)
+                    self.__activeUsers[member.getUserID()] = member
                     member.setLoggedIn(True)
                     member.setMemberCheck(True)
-                    self.__market.loginUpdates(member.getUserID())
+                    self.__activeUsers.get(member.getUserID()).loginUpdates(member.getUserID())
                     return member.getUserID()
                 else:
                     raise PasswordException("password not good!")
@@ -83,19 +98,6 @@ class UserManagment:
         except Exception as e:
             raise Exception(e)
 
-    def logoutMember(self, userName):
-        user = self.__members.get(userName)
-        system_manager: SystemManager = self.__systemManager.get(userName)
-        if user is not None:
-            self.__members.get(userName).setLoggedIn(False)
-            self.__members.get(userName).setMemberCheck(False)
-            self.__market.getActiveUsers().pop(user.getUserID())
-        if system_manager is not None:
-            self.__systemManager.get(userName).setLoggedIn(False)
-            self.__systemManager.get(userName).setMemberCheck(False)
-            self.__market.getActiveUsers().pop(system_manager.getUserID())
-        return self.enterSystem()
-
     def systemManagerSignUp(self, userName, password, phone, address, bank):
         if self.__members.get(userName) is None:
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
@@ -103,6 +105,66 @@ class UserManagment:
                 self.__systemManager[userName] = systemManager
                 return systemManager.getUserID()
         return None
+
+    # from here is to move to user class
+    def addProductToCart(self, userID, storeID, product, quantity):
+        try:
+            self.__checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).addProductToCart(storeID, product, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeProductFromCart(self, userID, storeID, productId):
+        try:
+            self.__checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).removeProductFromCart(storeID, productId)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductFromCart(self, userID, storeID, productId, quantity):
+        try:
+            self.__checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).updateProductFromCart(storeID, productId, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+    def purchaseCart(self, userID, bank):
+        try:
+            self.__checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).purchaseCart(bank)
+        except Exception as e:
+            raise Exception(e)
+
+    def getCart(self, userID):
+        try:
+            self.__checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).getCart()
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductByCategory(self, category):
+        try:
+            return self.__market.getProductByCategory(category)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductsByName(self, nameProduct):
+        try:
+            return self.__market.getProductsByName(nameProduct)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductByKeyWord(self, keyword):
+        try:
+            return self.__market.getProductByKeyWord(keyword)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductPriceRange(self, minPrice, highPrice):
+        try:
+            return self.__market.getProductByPriceRange(minPrice, highPrice)
+        except Exception as e:
+            raise Exception(e)
 
     def createBankAcount(self, accountNumber, branch):
         return Bank(accountNumber, branch)

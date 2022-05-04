@@ -1,7 +1,7 @@
 import unittest
-import uuid
 from Business.Bank import Bank
 from Business.Address import Address
+from Business.UserPackage.Member import Member
 from Business.StorePackage.Product import Product
 from Business.StorePackage.Store import Store
 
@@ -9,15 +9,16 @@ from Business.StorePackage.Store import Store
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.founderId = str(uuid.uuid4())
         bank = Bank(1, 1)
         address = Address("Israel", "Tel Aviv", "s", 1, 0)
-        self.store = Store(0, "kfir store", self.founderId, bank, address)
 
-        self.user1Id = str(uuid.uuid4())
-        self.user2Id = str(uuid.uuid4())
-        self.user3Id = str(uuid.uuid4())
-        self.user4Id = str(uuid.uuid4())
+        self.founder = Member("kfir1", "1234", "012", address, bank)
+        self.store = Store(0, "kfir store", self.founder, bank, address)
+
+        self.member1 = Member("kfir1", "1234", "012", address, bank)
+        self.member2 = Member("kfir2", "1234", "012", address, bank)
+        self.member3 = Member("kfir3", "1234", "012", address, bank)
+        self.member4 = Member("kfir4", "1234", "012", address, bank)
 
         self.product1 = Product(0, "tara milk 5%", 10.0, "dairy", ["drink", "tara", "5%"])
         self.product2 = Product(1, "beef", 20.0, "meat", ["cow"])
@@ -29,82 +30,82 @@ class MyTestCase(unittest.TestCase):
         #                                   owners = [founder, founder -> user1, user1->user3]
 
     def test_appoint_owners(self):
-        self.store.appointOwnerToStore(self.founderId, self.user1Id)
-        self.assertEqual(self.store.getStoreOwners(), [self.founderId, self.user1Id])
+        self.store.appointOwnerToStore(self.founder, self.member1)
+        self.assertEqual(self.store.getStoreOwners(), [self.founder, self.member1])
 
-        self.store.appointOwnerToStore(self.user1Id, self.user3Id)
-        self.assertEqual(self.store.getStoreOwners(), [self.founderId, self.user1Id, self.user3Id])
+        self.store.appointOwnerToStore(self.member1, self.member3)
+        self.assertEqual(self.store.getStoreOwners(), [self.founder, self.member1, self.member3])
 
     def test_appoint_owners_FAIL(self):
         # user cannot assign himself
-        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.user1Id, self.user1Id))
+        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.member1, self.member1))
         # user1 doesn't have the permission to assign user2
-        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.user1Id, self.user2Id))
-        self.store.appointOwnerToStore(self.founderId, self.user1Id)
+        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.member1, self.member1))
+        self.store.appointOwnerToStore(self.founder, self.member1)
         # not allowed circularity
-        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.user1Id, self.founderId))
-        self.store.appointOwnerToStore(self.user1Id, self.user2Id)
+        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.member1, self.founder))
+        self.store.appointOwnerToStore(self.member1, self.member2)
         # cannot assign user that all ready assigned
-        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.founderId, self.user2Id))
+        self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.founder, self.member2))
 
     def test_appoint_managers(self):
         self.test_appoint_owners()
 
-        self.store.appointManagerToStore(self.user1Id, self.user2Id)
-        self.assertEqual(self.store.getStoreManagers(), [self.user2Id])
-        self.store.appointManagerToStore(self.founderId, self.user1Id)
-        self.assertEqual(self.store.getStoreManagers(), [self.user2Id, self.user1Id])
+        self.store.appointManagerToStore(self.member1, self.member2)
+        self.assertEqual(self.store.getStoreManagers(), [self.member2])
+        self.store.appointManagerToStore(self.founder, self.member1)
+        self.assertEqual(self.store.getStoreManagers(), [self.member2, self.member1])
 
     def test_appoint_managers_FAIL(self):
         # user cannot assign himself
-        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.user1Id, self.user1Id))
+        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.member1, self.member1))
         # user1 doesn't have the permission to assign user2
-        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.user1Id, self.user2Id))
-        self.store.appointManagerToStore(self.founderId, self.user1Id)
+        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.member1, self.member2))
+        self.store.appointManagerToStore(self.founder, self.member1)
         # not allowed circularity
-        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.user1Id, self.founderId))
-        self.store.appointOwnerToStore(self.founderId, self.user1Id)
-        self.store.appointManagerToStore(self.user1Id, self.user2Id)
+        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.member1, self.founder))
+        self.store.appointOwnerToStore(self.founder, self.member1)
+        self.store.appointManagerToStore(self.member1, self.member2)
         # cannot assign user that all ready assigned
-        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.founderId, self.user2Id))
+        self.assertRaises(Exception, lambda: self.store.appointManagerToStore(self.founder, self.member2))
 
     def test_set_Permission(self):
         # because all the set-permission have the same code, we will only test once
         self.test_appoint_managers()
-        self.store.setStockManagementPermission(self.user1Id, self.user2Id)
-        self.assertTrue(self.store.getPermissions(self.user1Id).get(self.user2Id).hasPermission_StockManagement())
+        self.store.setStockManagementPermission(self.member1, self.member3)
+        self.assertTrue(self.store.getPermissions(self.member1).get(self.member3).hasPermission_StockManagement())
 
     def test_set_Permission_Fail(self):
         # not an owner
-        self.assertRaises(Exception, lambda: self.store.setStockManagementPermission(self.user1Id, self.user2Id))
+        self.assertRaises(Exception, lambda: self.store.setStockManagementPermission(self.member1, self.member1))
         self.test_appoint_managers()
         # doesnt have the permission to change permissions
-        self.assertRaises(Exception, lambda: self.store.setStockManagementPermission(self.user2Id, self.user3Id))
+        self.assertRaises(Exception, lambda: self.store.setStockManagementPermission(self.member3, self.member2))
         # first user didn't was the one how assign the second user
-        self.assertRaises(Exception, lambda: self.store.setStockManagementPermission(self.user3Id, self.user2Id))
+        self.assertRaises(Exception, lambda: self.store.setStockManagementPermission(self.member3, self.member1))
 
     def test_add_product(self):
         self.test_appoint_managers()
-        self.store.addProductToStore(self.user1Id, self.product1)
-        self.store.addProductToStore(self.user1Id, self.product2)
-        self.store.addProductToStore(self.user3Id, self.product3)
-        self.store.addProductToStore(self.user3Id, self.product4)
-        self.store.addProductToStore(self.user3Id, self.product5)
+        self.store.addProductToStore(self.member1, self.product1)
+        self.store.addProductToStore(self.member1, self.product2)
+        self.store.addProductToStore(self.member3, self.product3)
+        self.store.addProductToStore(self.member3, self.product4)
+        self.store.addProductToStore(self.member3, self.product5)
         self.assertEqual({0: self.product1, 1: self.product2, 2: self.product3, 3: self.product4, 4: self.product5},
                          self.store.getProducts())
 
     def test_add_product_quantity(self):
         self.test_add_product()
-        self.store.addProductQuantityToStore(self.user1Id, self.product1.getProductId(), 15)
-        self.store.addProductQuantityToStore(self.user1Id, self.product2.getProductId(), 10)
-        self.store.addProductQuantityToStore(self.user1Id, self.product3.getProductId(), 5)
-        self.store.addProductQuantityToStore(self.user1Id, self.product4.getProductId(), 3)
-        self.store.addProductQuantityToStore(self.user1Id, self.product5.getProductId(), 7)
+        self.store.addProductQuantityToStore(self.member1, self.product1.getProductId(), 15)
+        self.store.addProductQuantityToStore(self.member1, self.product2.getProductId(), 10)
+        self.store.addProductQuantityToStore(self.member1, self.product3.getProductId(), 5)
+        self.store.addProductQuantityToStore(self.member1, self.product4.getProductId(), 3)
+        self.store.addProductQuantityToStore(self.member1, self.product5.getProductId(), 7)
         self.assertEqual({0: 15, 1: 10, 2: 5, 3: 3, 4: 7}, self.store.getProductQuantity())
 
     def test_remove_product(self):
         self.test_add_product_quantity()
-        self.store.removeProductFromStore(self.user1Id, self.product1.getProductId())
+        self.store.removeProductFromStore(self.member1, self.product1.getProductId())
         self.assertIsNone(self.store.getProducts().get(self.product1.getProductId()))
 
     def test_get_product_by_name(self):
@@ -138,7 +139,7 @@ class MyTestCase(unittest.TestCase):
     def test_add_quantity_product(self):
         self.test_add_product_quantity()
         self.assertTrue(self.store.addProductToBag(self.product4.getProductId(), 2))
-        self.assertFalse(self.store.addProductToBag(self.product4.getProductId(), 2))
+        self.assertRaises(Exception, lambda: self.store.addProductToBag(self.product4.getProductId(), 2))
 
     def test_remove_quantity_product(self):
         self.test_add_product_quantity()

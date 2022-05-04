@@ -1,11 +1,14 @@
+import zope
+
 from Delivery.DeliverySystem import DeliverytSystem
 from Delivery.DeliveryStatus import DeliveryStatus
 from Delivery.DeliveryDetails import DeliveryDetails
 from interfaces.IDelivery import IDelivery
-from interface import implements
+from zope.interface import implements
 
 
-class Deliverylmpl(implements(IDelivery)):
+@zope.interface.implementer(IDelivery)
+class Deliverylmpl:
     instance = None
 
     @staticmethod
@@ -19,18 +22,19 @@ class Deliverylmpl(implements(IDelivery)):
         self.__deliverySystem: DeliverytSystem = DeliverytSystem()
         self.__deliveryID = 0
         if Deliverylmpl.instance is None:
-            Deliverylmpl.instance=self
-    def createDelivery(self, deliveryDetail: DeliveryDetails):  #(self, reciverID, phone, source, destination):
+            Deliverylmpl.instance = self
+
+    def createDelivery(self, deliveryDetail: DeliveryDetails):  # (self, reciverID, phone, source, destination):
         try:
             self.__deliverySystem.CreateDelivery(deliveryDetail.getUserId(),
-                                               deliveryDetail.getPhone(),
-                                               deliveryDetail.getSourceAdress(),
-                                                deliveryDetail.getDestinationAdress())
-            return DeliveryStatus(self.getDeliveryID(),deliveryDetail.getUserID(),deliveryDetail.getStoreID(),"delivery succeeded")
+                                                 deliveryDetail.getPhone(),
+                                                 deliveryDetail.getSourceAdress(),
+                                                 deliveryDetail.getDestinationAdress())
+            return DeliveryStatus(self.getDeliveryID(), deliveryDetail.getUserID(), deliveryDetail.getStoreID(),
+                                  "delivery succeeded")
         except Exception:
-            return DeliveryStatus(self.getDeliveryID(),deliveryDetail.getUserID(),deliveryDetail.getStoreID(),"delivery failed")
-
-
+            return DeliveryStatus(self.getDeliveryID(), deliveryDetail.getUserID(), deliveryDetail.getStoreID(),
+                                  "delivery failed")
 
     def cancelDelivery(self, deliveryStatus: DeliveryStatus):
         try:

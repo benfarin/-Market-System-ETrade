@@ -26,6 +26,10 @@ class NoSuchUserException(Exception):
     pass
 
 
+class NoSuchMemberException(Exception):
+    pass
+
+
 class PasswordException(Exception):
     pass
 
