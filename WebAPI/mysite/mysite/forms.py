@@ -1,6 +1,8 @@
 from random import choice, choices
 from django import forms
 # from django_countries.fields import CountryField
+from django_countries.data import COUNTRIES
+
 
 countries = (
         ('israel', 'Israel'),
@@ -20,7 +22,7 @@ class SignupForm(forms.Form):
     phone = forms.CharField()
     account_num = forms.IntegerField()
     branch_num = forms.IntegerField()
-    country = forms.ChoiceField(choices= countries)
+    country = forms.ChoiceField(choices= COUNTRIES.items())
     city = forms.CharField()
     street = forms.CharField()
     apartment_num = forms.IntegerField()
