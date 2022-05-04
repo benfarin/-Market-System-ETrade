@@ -9,7 +9,8 @@ from Service.UserService import UserService
 
 
 class UseCaseGetStoresInfo(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.proxy_market = MarketProxyBridge(MarketRealBridge())
         self.proxy_user = UserProxyBridge(UserRealBridge())
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva", "Ben Gurion", 1, 1)

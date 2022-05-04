@@ -7,7 +7,8 @@ from Service.UserService import UserService
 
 
 class UseCaseMemberLogout(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.user_proxy = UserProxyBridge(UserRealBridge())
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
@@ -16,7 +17,7 @@ class UseCaseMemberLogout(unittest.TestCase):
 
     def test_logout_positive1(self):
         self.user_proxy.login_member("user1", "1234")
-        self.assertEqual(self.user_proxy.logout_member("user1"), True)
+        self.assertTrue(self.user_proxy.logout_member("user1"))
 
     def test_logout_negative1(self):
         self.assertRaises(Exception, self.user_proxy.logout_member("User1"))

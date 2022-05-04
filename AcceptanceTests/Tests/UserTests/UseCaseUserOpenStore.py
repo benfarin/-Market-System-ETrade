@@ -9,7 +9,8 @@ from Service.UserService import UserService
 
 
 class MyTestCase(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.user_proxy = UserProxyBridge(UserRealBridge())
         self.market_proxy = MarketProxyBridge(MarketRealBridge())
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
@@ -19,8 +20,8 @@ class MyTestCase(unittest.TestCase):
         self.user_proxy.login_member("user1", "1234")
 
     def test_open_store_positive1(self):
-        self.assertTrue(self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                   0, "000000"), 1)
+        self.assertEqual(self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, "000000"), 0)
 
 
     def test_open_store_negative1(self):

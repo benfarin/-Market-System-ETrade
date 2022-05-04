@@ -5,6 +5,8 @@ from Service.Events.EventLog import EventLog
 from typing import Dict
 import logging
 
+firstAdminRegistered = False
+
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
@@ -14,12 +16,15 @@ logging.basicConfig(
 class UserService:
 
     def __init__(self):
+        global firstAdminRegistered
         self.__userManagment = UserManagment.getInstance()
         self.__events = Events()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
         # self.__users: Dict[str : User] = {}
-        self.enterSystem()
+        if not firstAdminRegistered:
+            self.enterSystem()
+            firstAdminRegistered = True
 
     def enterSystem(self):
         try:
@@ -89,8 +94,7 @@ class UserService:
             self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
             eventLog = EventLog("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
                                 "productId: " + str(productId), "quantity: " + str(quantity))
-            logging.info("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
-                         "productId: " + str(productId), "quantity: " + str(quantity))
+            logging.info("added product " + str(productId) + "to cart for user " + str(userID))
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -102,8 +106,7 @@ class UserService:
             self.__userManagment.removeProductFromCart(userId, storeId, productId)
             eventLog = EventLog("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
                                 "productId: " + str(productId))
-            logging.info("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
-                         "productId: " + str(productId))
+            logging.info("removeed product " + str(productId) + " from cart for user " + userId)
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -115,8 +118,7 @@ class UserService:
             self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
             eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
                                 "productId: " + str(productId), "quantity: " + str(quantity))
-            logging.info("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
-                         "productId: " + str(productId), "quantity: " + str(quantity))
+            logging.info("updated product " + str(productId) + " from cart for user " + userID)
             self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
@@ -186,5 +188,3 @@ class UserService:
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
             return e
-
-

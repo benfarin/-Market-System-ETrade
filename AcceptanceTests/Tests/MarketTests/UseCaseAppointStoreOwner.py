@@ -10,18 +10,19 @@ from Service.UserService import UserService
 
 class UseCaseAppointStoreOwner(unittest.TestCase):
     # use-case 4.4
-    def setUp(self):
-        self.proxy_market = MarketProxyBridge(MarketRealBridge())
-        self.proxy_user = UserProxyBridge(UserRealBridge())
-        self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+    @classmethod
+    def setUpClass(cls):
+        cls.proxy_market = MarketProxyBridge(MarketRealBridge())
+        cls.proxy_user = UserProxyBridge(UserRealBridge())
+        cls.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
-        self.owner_id = self.proxy_user.register("testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
-        self.manager_id = self.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
+        cls.owner_id = cls.proxy_user.register("testUser", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
+        cls.manager_id = cls.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.proxy_user.login_member("testUser", "1234")
-        self.proxy_user.login_member("testUser2", "4321")
-        self.store_id = self.proxy_user.open_store("testStore", self.owner_id , 123, 2, "Israel", "Beer Sheva", "Rager", 1, 00000)
+        cls.proxy_user.login_member("testUser", "1234")
+        cls.proxy_user.login_member("testUser2", "4321")
+        cls.store_id = cls.proxy_user.open_store("testStore", cls.owner_id, 123, 2, "Israel", "Beer Sheva", "Rager", 1, 00000)
         c = 1
 
     def test_AppointStoreOwnerPositive(self):

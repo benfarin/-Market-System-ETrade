@@ -9,8 +9,8 @@ from Service.UserService import UserService
 
 class UseCaseEditProduct(unittest.TestCase):
     # use-case 4.1.3
-
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
 
         self.proxy_market = MarketProxyBridge(MarketRealBridge())
         self.proxy_user = UserProxyBridge(UserRealBridge())

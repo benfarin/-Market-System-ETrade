@@ -10,8 +10,8 @@ from Service.UserService import UserService
 
 class UseCaseAppointStoreManager(unittest.TestCase):
     # use-case 4.6
-
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.proxy_market = MarketProxyBridge(MarketRealBridge())
         self.proxy_user = UserProxyBridge(UserRealBridge())
 
