@@ -28,6 +28,7 @@ class UserManagment(object):
 
     def __init__(self):
         """ Virtually private constructor. """
+        super(UserManagment, self).__init__()
         self.__market: IMarket = Market().getInstance()
         self.__activeUsers: Dict[str, User] = {}  # <userId,User> should check how to initial all the activeStores into
         # dictionary

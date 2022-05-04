@@ -8,7 +8,7 @@ from Service.UserService import UserService
 
 class UseCaseMemberLogin(unittest.TestCase):
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge(UserService(), MemberManagment()))
+        self.proxy = UserProxyBridge(UserRealBridge())
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
         self.id1 = self.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",

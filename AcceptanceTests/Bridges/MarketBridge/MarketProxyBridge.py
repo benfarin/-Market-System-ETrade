@@ -1,5 +1,4 @@
 import zope
-from interface import implements
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
 

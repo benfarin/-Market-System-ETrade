@@ -14,18 +14,18 @@ class MemberManagment(UserManagment):
 
     def __init__(self):
         """ Virtually private constructor. """
-        super().__init__()
+        super(MemberManagment, self).__init__()
         if MemberManagment.__instance is None:
             MemberManagment.__instance = self
 
     def getMembersFromUser(self):
-        self.getMembers()
+        return self.getMembers()
 
     def getActiveUserFromUser(self):
-        self.getActiveUser()
+        return self.getActiveUser()
 
     def checkOnlineUserFromUser(self, userId):
-        self.checkOnlineUser(userId)
+        return super().checkOnlineUser(userId)
 
     def createStore(self, storeName, userID, bank, address):
         try:

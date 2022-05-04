@@ -27,8 +27,7 @@ class MemberService:
             toReturn = self.__memberManage.createStore(storeName, founderId, bank, address)
             eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + founderId,
                                 "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
-            logging.info("create store", "store name: " + storeName, "founderId: " + founderId,
-                         "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
+            logging.info("succeeded create store " + storeName)
             self.__events.addEventLog(eventLog)
             return toReturn
         except Exception as e:

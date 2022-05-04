@@ -1,5 +1,4 @@
 import zope
-from interface import implements
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from Service.MemberService import MemberService
 from Service.RoleService import RoleService
@@ -7,10 +6,12 @@ from Service.UserService import UserService
 
 @zope.interface.implementer(IMarketBridge)
 class MarketRealBridge:
-    def __init__(self, market_service):
-        self._memberService = MemberService()
+    def __init__(self):
         self._roleService = RoleService()
+        self._memberService = MemberService()
         self._userService = UserService()
+
+
 
     def request(self):
         print("RealSubject: Handling request.")

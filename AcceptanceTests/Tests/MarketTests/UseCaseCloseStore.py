@@ -10,8 +10,8 @@ from Service.UserService import UserService
 class UseCaseCloseStore(unittest.TestCase):
     # use-case 4.9
     def setUp(self):
-        self.proxy_market = MarketProxyBridge(MarketRealBridge(MemberService()))
-        self.proxy_user = UserProxyBridge(UserRealBridge(UserService(), MemberService()))
+        self.proxy_market = MarketProxyBridge(MarketRealBridge())
+        self.proxy_user = UserProxyBridge(UserRealBridge())
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart

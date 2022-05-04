@@ -8,7 +8,7 @@ from Service.UserService import UserService
 
 class UseCaseMemberRegister(unittest.TestCase):
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge(UserService(), MemberService()))
+        self.proxy = UserProxyBridge(UserRealBridge())
 
     def test_register_positive(self):
         try:

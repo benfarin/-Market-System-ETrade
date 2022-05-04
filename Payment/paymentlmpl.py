@@ -2,7 +2,7 @@ from Payment.PaymentSystem import PaymentSystem
 from Payment.PaymentStatus import PaymentStatus
 from Payment.PaymentDetails import PaymentDetails
 from interfaces.IPayment import IPayment
-from interface import implements
+
 
 
 class Paymentlmpl:

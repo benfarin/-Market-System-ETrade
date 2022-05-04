@@ -10,8 +10,8 @@ from Service.UserService import UserService
 
 class UsePurchasesHistory(unittest.TestCase):
     def setUp(self):
-        self.proxy_market = MarketProxyBridge(MarketRealBridge(MemberService()))
-        self.proxy_user = UserProxyBridge(UserRealBridge(UserService(), MemberService()))
+        self.proxy_market = MarketProxyBridge(MarketRealBridge())
+        self.proxy_user = UserProxyBridge(UserRealBridge())
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva", "Ben Gurion", 1, 1)
         self.owner_id = self.proxy_user.register("testUser", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
         self.proxy_user.login_member("testUser", "1234")

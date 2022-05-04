@@ -12,8 +12,8 @@ class UseCaseAppointStoreManager(unittest.TestCase):
     # use-case 4.6
 
     def setUp(self):
-        self.proxy_market = MarketProxyBridge(MarketRealBridge(MemberService()))
-        self.proxy_user = UserProxyBridge(UserRealBridge(UserService(), MemberService()))
+        self.proxy_market = MarketProxyBridge(MarketRealBridge())
+        self.proxy_user = UserProxyBridge(UserRealBridge())
 
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)

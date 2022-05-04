@@ -1,5 +1,4 @@
 import zope
-from interface import implements
 from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
 from AcceptanceTests.Bridges.UserBridge import UserRealBridge
 
