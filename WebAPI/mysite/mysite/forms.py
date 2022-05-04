@@ -22,7 +22,7 @@ class SignupForm(forms.Form):
     phone = forms.CharField()
     account_num = forms.IntegerField()
     branch_num = forms.IntegerField()
-    country = forms.ChoiceField(choices= COUNTRIES.items())
+    country = forms.ChoiceField(choices= COUNTRIES.items(), widget=forms.Select(attrs={'style': 'width:190px'}))
     city = forms.CharField()
     street = forms.CharField()
     apartment_num = forms.IntegerField()
