@@ -1,4 +1,4 @@
-from interface import Interface
+from zope.interface import Interface
 
 from Business.UserPackage.User import User
 

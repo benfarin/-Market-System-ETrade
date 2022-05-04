@@ -1,4 +1,6 @@
-from interface import  implements,Interface
+from zope.interface import Interface
 import IUser
-class Member(Interface,implements(IUser)):
+
+
+class Member(Interface):
     pass

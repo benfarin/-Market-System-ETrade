@@ -1,3 +1,5 @@
+import zope
+
 from Business.Address import Address
 from Business.Bank import Bank
 from Business.Market import Market
@@ -7,13 +9,14 @@ from Exceptions.CustomExceptions import NoSuchUserException, PasswordException, 
 from interfaces import IMarket
 from typing import Dict
 from Business.UserPackage.Member import Member
-from interface import implements
+from zope.interface import Interface
 from interfaces.IUser import IUser
 from Business.UserPackage.SystemManager import SystemManager
 import bcrypt
 
 
-class UserManagment(implements(IUser)):
+@zope.interface.implementer(IUser)
+class UserManagment:
     __instance = None
 
     @staticmethod
@@ -109,5 +112,3 @@ class UserManagment(implements(IUser)):
 
     def removeMember(self, userName, password):
         pass
-
-

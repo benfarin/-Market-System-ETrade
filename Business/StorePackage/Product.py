@@ -1,9 +1,12 @@
 from typing import List
-from interface import implements
+
+import zope
+from zope.interface import implements
 
 from interfaces.IProduct import IProduct
 
 
+@zope.interface.implementer(IProduct)
 class Product(implements(IProduct)):
 
     def __init__(self, Id, name, price, category, keyword):

@@ -1,4 +1,5 @@
-from interface import implements
+import zope
+from zope.interface import implements
 
 from Exceptions.CustomExceptions import ProductException, PermissionException, TransactionException
 from interfaces.IProduct import IProduct
@@ -8,7 +9,7 @@ from Business.Transactions.StoreTransaction import StoreTransaction
 from typing import Dict, List
 import threading
 
-
+@zope.interface.implementer(IStore)
 class Store(implements(IStore)):
 
     def __init__(self, storeId, storeName, founderId, bankAccount, address):

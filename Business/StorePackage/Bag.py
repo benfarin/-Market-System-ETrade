@@ -1,10 +1,12 @@
-from interface import implements
+import zope
+from zope.interface import implements
 
 from Exceptions.CustomExceptions import QuantityException, ProductException
 from interfaces.IBag import IBag
 
 
-class Bag(implements(IBag)):
+@zope.interface.implementer(IBag)
+class Bag:
 
     def __init__(self, storeId):
         self.__storeId = storeId
@@ -66,5 +68,6 @@ class Bag(implements(IBag)):
     def printProducts(self):
         products_print = ""
         for product in self.__products:
-            products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(product.getProductName()) + " quantity:" + str(self.__products.get(product))
+            products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(
+                product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print

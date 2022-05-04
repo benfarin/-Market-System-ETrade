@@ -1,5 +1,7 @@
 import uuid
 
+import zope
+
 from Business.StorePackage.Store import Store
 from Business.UserPackage.Guest import Guest
 from Business.UserPackage.Member import Member
@@ -14,11 +16,12 @@ from Payment.PaymentDetails import PaymentDetails
 from Payment.paymentlmpl import Paymentlmpl
 from Business.Transactions.StoreTransaction import StoreTransaction
 from Business.Transactions.UserTransaction import UserTransaction
-from interface import implements
+from zope.interface import implements
 from typing import Dict
 import threading
 
 
+@zope.interface.implementer(IMarket)
 class Market(implements(IMarket)):
     __instance = None
 
@@ -32,7 +35,8 @@ class Market(implements(IMarket)):
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
-        self.__activeUsers: Dict[str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
+        self.__activeUsers: Dict[
+            str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
         self.__globalStore = 0
         self._transactionIdCounter = 0
         self.__storeId_lock = threading.Lock()
@@ -368,7 +372,7 @@ class Market(implements(IMarket)):
             return e
 
     def loginUpdates(self, userID):  # we need to check if all the store exist if not we remove all the products from
-                                     # the user that get in the system!
+        # the user that get in the system!
         for storeID in self.__activeUsers.get(userID).getCart().getAllBags().keys():
             if self.__stores.get(storeID) is None:
                 self.__activeUsers.get(userID).getCart().removeBag(storeID)

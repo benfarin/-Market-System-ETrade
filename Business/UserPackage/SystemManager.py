@@ -1,5 +1,4 @@
 from Business.UserPackage.Member import Member
-from interface import implements
 
 
 class SystemManager(Member):
