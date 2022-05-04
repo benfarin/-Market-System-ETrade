@@ -48,6 +48,15 @@ class Member(User):
     def getBank(self):
         return self.__bank
 
+    def getMemberName(self):
+        return self.__userName
+
+    def loginUpdates(self):
+        try:
+            return self.__market.loginUpdates(self)
+        except Exception as e:
+            raise Exception(e)
+
     def createStore(self, storeName, bank, address):
         try:
             return self.__market.createStore(storeName, self, bank, address)

@@ -3,6 +3,9 @@ from zope.interface import Interface
 
 class IMember(Interface):
 
+    def getMemberName(self):
+        pass
+
     def createStore(self, storeName, bank, address):
         pass
 

@@ -271,7 +271,7 @@ class Store:
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
         if permissions is None:
-            raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:", self.__id)
+            raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:", str(self.__id))
         if not permissions.hasPermission_AppointOwner():
             raise PermissionException("User ", assigner.getUserID(), " doesn't have the permission - appoint owner in store: ",
                                       self.__name)

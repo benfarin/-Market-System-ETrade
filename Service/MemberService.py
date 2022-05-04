@@ -11,9 +11,10 @@ logging.basicConfig(
 
 
 class MemberService:
+
     def __init__(self):
-        self.__memberManage = MemberManagment().getInstance()
-        self.__roleManagment = RoleManagment().getInstance()
+        self.__memberManage = MemberManagment.getInstance()
+        self.__roleManagment = RoleManagment.getInstance()
         self.__events = Events()
 
     def getEvents(self):
@@ -24,9 +25,9 @@ class MemberService:
             bank = self.__memberManage.createBankAcount(accountNumber, brunch)
             address = self.__memberManage.createAddress(country, city, street, apartmentNum, zipCode)
             toReturn = self.__memberManage.createStore(storeName, founderId, bank, address)
-            eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + str(founderId),
+            eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + founderId,
                                 "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
-            logging.info("create store", "store name: " + storeName, "founderId: " + str(founderId),
+            logging.info("create store", "store name: " + storeName, "founderId: " + founderId,
                          "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
             self.__events.addEventLog(eventLog)
             return toReturn

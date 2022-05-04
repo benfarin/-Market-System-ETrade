@@ -23,6 +23,7 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
         self.proxy_user.login_member("testUser", "1234")
         self.proxy_user.login_member("testUser2", "4321")
         self.store_id = self.proxy_user.open_store("testStore", self.owner_id , 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000)
+        c = 1
 
     def test_AppointStoreOwnerPositive(self):
         # store_id, assigner_id, assignee_id

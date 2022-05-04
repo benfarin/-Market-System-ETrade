@@ -12,18 +12,19 @@ logging.basicConfig(
 
 
 class UserService:
+
     def __init__(self):
-        self.__userManagment = UserManagment()
+        self.__userManagment = UserManagment.getInstance()
         self.__events = Events()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
-        self.__users: Dict[str : User] = {}
+        # self.__users: Dict[str : User] = {}
         self.enterSystem()
 
     def enterSystem(self):
         try:
             guest: User = self.__userManagment.enterSystem()
-            self.__users[guest.getUserID()] = guest
+            # self.__users[guest.getUserID()] = guest
             self.__events.addEventLog(EventLog("guest login"))
             logging.info("success to enter system as a guest")
             return guest
@@ -34,7 +35,7 @@ class UserService:
     def exitSystem(self, guestID):  # need to remove cart!
         try:
             toReturn = self.__userManagment.exitSystem(guestID)
-            self.__users.pop(guestID)
+            # self.__users.pop(guestID)
             self.__events.addEventLog(EventLog("guest logout", "guestId: ", str(guestID)))
             logging.info("success to exit system")
             return toReturn

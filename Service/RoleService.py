@@ -11,9 +11,10 @@ logging.basicConfig(
 
 
 class RoleService:
+
     def __init__(self):
-        self.__marketManage = MemberManagment().getInstance()
-        self.__roleManagment = RoleManagment().getInstance()
+        self.__marketManage = MemberManagment.getInstance()
+        self.__roleManagment = RoleManagment.getInstance()
         self.__events = Events()
 
     def appointManagerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
