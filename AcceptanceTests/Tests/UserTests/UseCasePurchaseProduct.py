@@ -4,20 +4,20 @@ from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBr
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
-from Service.MemberService import MarketService
+from Service.MemberService import MemberService
 from Service.UserService import UserService
 
 
 class UseCasePurchaseProduct(unittest.TestCase):
     def setUp(self):
-        self.market_service = MarketService()
+        self.market_service = MemberService()
         self.user_service = UserService()
         self.market_proxy = MarketProxyBridge(MarketRealBridge(self.market_service))
         self.user_proxy = UserProxyBridge(UserRealBridge(self.user_service, self.market_service))
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
         self.user_id = self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                                "Ben Gurion", 0, "HaPoalim", None)
+                                                "Ben Gurion", 0, "HaPoalim")
         self.user_proxy.login_member("user1", "1234")
         self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                    0, "000000")

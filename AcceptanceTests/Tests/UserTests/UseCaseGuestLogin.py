@@ -2,13 +2,13 @@ import unittest
 
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
-from Service.MemberService import MarketService
+from Service.MemberService import MemberService
 from Service.UserService import UserService
 
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
+        self.proxy = UserProxyBridge(UserRealBridge(UserService(), MemberService()))
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
 

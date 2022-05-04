@@ -10,7 +10,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 
-class MarketService:
+class MemberService:
     def __init__(self):
         self.__memberManage = MemberManagment().getInstance()
         self.__roleManagment = RoleManagment().getInstance()

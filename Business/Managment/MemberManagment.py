@@ -15,12 +15,13 @@ class MemberManagment(UserManagment):
     def __init__(self):
         """ Virtually private constructor. """
         super().__init__()
+        self.__userManagement : UserManagment = UserManagment().getInstance()
         if MemberManagment.__instance is None:
             MemberManagment.__instance = self
 
     def createStore(self, storeName, userID, bank, address):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if member is None:
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -30,7 +31,7 @@ class MemberManagment(UserManagment):
 
     def logoutMember(self, userName):
         user = self.__members.get(userName)
-        self.__checkOnlineUser(user.getUserID())
+        self.__userManagement.checkOnlineUser(user.getUserID())
         system_manager = self.getSystemManagers().get(userName)
         if user is not None:
             self.__members.get(userName).setLoggedIn(False)
@@ -43,7 +44,7 @@ class MemberManagment(UserManagment):
         return self.enterSystem()
 
     def getMemberTransactions(self, userID):
-        self.__checkOnlineUser(userID)
+        self.__userManagement.checkOnlineUser(userID)
         member = self.__members.get(userID)
         if member is None:
             raise NoSuchMemberException("user: " + str(userID) + "is not a member")

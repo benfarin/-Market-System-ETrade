@@ -1,4 +1,4 @@
-from Business.Managment.MemberManagment import MarketManage
+from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
 from Service.Events.Events import Events
 from Service.Events.EventLog import EventLog
@@ -12,7 +12,7 @@ logging.basicConfig(
 
 class RoleService:
     def __init__(self):
-        self.__marketManage = MarketManage().getInstance()
+        self.__marketManage = MemberManagment().getInstance()
         self.__roleManagment = RoleManagment().getInstance()
         self.__events = Events()
 

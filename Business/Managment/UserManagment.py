@@ -16,7 +16,7 @@ from Business.UserPackage.SystemManager import SystemManager
 import bcrypt
 
 
-@zope.interface.implementer(IUser)
+
 class UserManagment:
     __instance = None
 
@@ -37,7 +37,7 @@ class UserManagment:
         if UserManagment.__instance is None:
             UserManagment.__instance = self
 
-    def __checkOnlineUser(self, userId):
+    def checkOnlineUser(self, userId):
         if (self.__activeUsers.get(userId)) is None:
             raise NotOnlineException("The member " + userId + " not online!")
         else:
@@ -58,7 +58,7 @@ class UserManagment:
             raise Exception(e)
 
     def exitSystem(self, guestID):  # need to remove cart!
-        self.__checkOnlineUser(guestID)
+        self.checkOnlineUser(guestID)
         self.__activeUsers.pop(guestID)
         return True
 
@@ -109,35 +109,35 @@ class UserManagment:
     # from here is to move to user class
     def addProductToCart(self, userID, storeID, product, quantity):
         try:
-            self.__checkOnlineUser(userID)
+            self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).addProductToCart(storeID, product, quantity)
         except Exception as e:
             raise Exception(e)
 
     def removeProductFromCart(self, userID, storeID, productId):
         try:
-            self.__checkOnlineUser(userID)
+            self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).removeProductFromCart(storeID, productId)
         except Exception as e:
             raise Exception(e)
 
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
-            self.__checkOnlineUser(userID)
+            self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).updateProductFromCart(storeID, productId, quantity)
         except Exception as e:
             raise Exception(e)
 
     def purchaseCart(self, userID, bank):
         try:
-            self.__checkOnlineUser(userID)
+            self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).purchaseCart(bank)
         except Exception as e:
             raise Exception(e)
 
     def getCart(self, userID):
         try:
-            self.__checkOnlineUser(userID)
+            self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).getCart()
         except Exception as e:
             raise Exception(e)

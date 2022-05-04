@@ -1,9 +1,10 @@
+import zope
 from interface import implements
 from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
 from AcceptanceTests.Bridges.UserBridge import UserRealBridge
 
-
-class UserProxyBridge(implements(IUserBridge)):
+@zope.interface.implementer(IUserBridge)
+class UserProxyBridge:
     def __init__(self, real_subject: UserRealBridge):
         self._real_subject = real_subject
 
@@ -17,12 +18,12 @@ class UserProxyBridge(implements(IUserBridge)):
         return self._real_subject is None
 
     def register(self, username, password, phone, account_number, branch, country,
-                 city, street, apartment_num, zip_code, ICart):
+                 city, street, apartment_num, zip_code):
         if self.check_access():
             return True
         else:
             return self._real_subject.register(username, password, phone, account_number, branch, country,
-                 city, street, apartment_num, zip_code, ICart)
+                 city, street, apartment_num, zip_code)
 
     def login_guest(self):
         if self.check_access():

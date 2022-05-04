@@ -1,8 +1,11 @@
+from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
 from Business.Managment.MemberManagment import MemberManagment
 from Exceptions.CustomExceptions import NoSuchMemberException
 from Business.StorePackage.Product import Product
 import threading
+
+from interfaces.IUser import IUser
 
 
 class RoleManagment(MemberManagment):
@@ -20,13 +23,14 @@ class RoleManagment(MemberManagment):
         super().__init__()
         self.__productId = 0
         self.__productId_lock = threading.Lock()
+        self.__userManagement : UserManagment = UserManagment().getInstance()
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
     def appointManagerToStore(self, storeID, assignerID,
                               assigneeID):  # check if the asssignee he member and assignerID!!
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -39,7 +43,7 @@ class RoleManagment(MemberManagment):
 
     def appointOwnerToStore(self, storeID, assignerID, assigneeID):  # check if the assignee he member and assignerID!!
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -52,7 +56,7 @@ class RoleManagment(MemberManagment):
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -65,7 +69,7 @@ class RoleManagment(MemberManagment):
 
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -78,7 +82,7 @@ class RoleManagment(MemberManagment):
 
     def setChangePermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -91,7 +95,7 @@ class RoleManagment(MemberManagment):
 
     def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -104,7 +108,7 @@ class RoleManagment(MemberManagment):
 
     def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__checkOnlineUser(assignerID)
+            self.__userManagement.checkOnlineUser(assignerID)
             assigner = self.__members.get(assignerID)
             assignee = self.__members.get(assigneeID)
             if assignerID not in self.__members.keys():
@@ -117,7 +121,7 @@ class RoleManagment(MemberManagment):
 
     def addProductToStore(self, storeID, userID, product):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -128,7 +132,7 @@ class RoleManagment(MemberManagment):
 
     def addProductQuantityToStore(self, storeID, userID, productId, quantity):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -138,7 +142,7 @@ class RoleManagment(MemberManagment):
 
     def removeProductFromStore(self, storeID, userID, product):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -148,7 +152,7 @@ class RoleManagment(MemberManagment):
 
     def updateProductPrice(self, storeID, userID, productId, newPrice):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -158,7 +162,7 @@ class RoleManagment(MemberManagment):
 
     def updateProductName(self, userID, storeID, productID, newName):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -168,7 +172,7 @@ class RoleManagment(MemberManagment):
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -178,7 +182,7 @@ class RoleManagment(MemberManagment):
 
     def PrintRolesInformation(self, storeID, userID):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
@@ -188,7 +192,7 @@ class RoleManagment(MemberManagment):
 
     def printPurchaseHistoryInformation(self, storeID, userID):
         try:
-            self.__checkOnlineUser(userID)
+            self.__userManagement.checkOnlineUser(userID)
             member = self.__members.get(userID)
             if userID not in self.__members.keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")

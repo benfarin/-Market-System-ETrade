@@ -1,9 +1,10 @@
+import zope
 from interface import implements
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
 
-
-class MarketProxyBridge(implements(IMarketBridge)):
+@zope.interface.implementer(IMarketBridge)
+class MarketProxyBridge:
     def __init__(self, real_subject: MarketRealBridge):
         self._real_subject = real_subject
 
