@@ -1,5 +1,6 @@
 import datetime
 from Service.DTO import productDTO
+from  typing import Dict
 
 class storeTransactionDTO:
 
@@ -8,7 +9,7 @@ class storeTransactionDTO:
         self.__transactionId = transactionId
         self.__payemntId = paymentId
         self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
-        self.__products: productDTO = products
+        self.__products: Dict[int: productDTO] = products
         self.__amount = amount
 
     def getTransactionID(self):
@@ -16,6 +17,10 @@ class storeTransactionDTO:
 
     def getProduts(self):
         return self.__products
+
+    def getproduct(self,productID):
+        self.__products.get(productID)
+
 
     def getStoreID(self):
         return self.__storeId

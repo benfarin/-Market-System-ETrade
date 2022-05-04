@@ -24,6 +24,18 @@ class storeDTO:
         self.__permissions: Dict[str: storePermissionDTO] = {
             founderId: storePermissionDTO()}  # UserId : storePermission
 
+    def getAppointerByUserID(self, uid):
+        return self.__appointers.get(uid)
+
+    def getProductByPruductID(self,pid):
+        return self.__products.get(pid)
+
+    def getTransactionByID(self,tid):
+        return self.__transactions.get(tid)
+
+    def getPermissionByUserID(self,uid):
+        return self.__permissions.get(uid)
+
     def getStoreId(self):
         return self.__id
 

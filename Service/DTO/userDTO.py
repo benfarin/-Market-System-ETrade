@@ -1,5 +1,6 @@
-from Service.DTO import cartDTO,paymentStatusDTO,userTransactionDTO
+from Service.DTO import cartDTO, paymentStatusDTO, userTransactionDTO
 from typing import Dict
+
 
 class userDTO:
     def __init__(self):
@@ -9,7 +10,7 @@ class userDTO:
         self.__transactions: Dict[int: userTransactionDTO] = {}
         self.__cart: cartDTO = cart
 
-    def getPaymentStatus(self):
+    def getPaymentStatuses(self):
         return self.__paymentStatus
 
     def getTransactions(self):
@@ -30,15 +31,11 @@ class userDTO:
     def setMemberCheck(self, state):
         self.__memberCheck = state
 
-    def setUserID(self,uid):
-        self.__id=uid
+    def setUserID(self, uid):
+        self.__id = uid
 
-    def setPaymentStatus(self,status : paymentStatusDTO):
+    def setPaymentStatus(self, status: paymentStatusDTO):
         self.__paymentStatus = paymentStatusDTO
 
-    def setTransactions(self, transaction : Dict[int: userTransactionDTO]):
+    def setTransactions(self, transaction: Dict[int: userTransactionDTO]):
         self.__transactions = transaction
-
-
-
-

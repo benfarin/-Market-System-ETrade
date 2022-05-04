@@ -14,3 +14,5 @@ class bankDTO:
 
     def setBranch(self, branch):
         self.__branch = branch
+
+

@@ -9,6 +9,9 @@ class userTransactionDTO:
         self.__storeTransactions: Dict[int: storeTransactionDTO] = storeTransactions
         self.__paymentStatus : paymentStatusDTO = paymentsStatus
 
+    def getStoreTransaction(self, id):
+        return self.__storeTransactions.get(id)
+
     def getUserTransactionId(self):
         return self.__transactionId
 

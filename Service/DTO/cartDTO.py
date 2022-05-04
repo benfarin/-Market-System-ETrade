@@ -7,13 +7,16 @@ class cartDTO:
 
     def getUserId(self):
         return self.__userId
-
     def getAllBags(self):
         return self.__bags
     def setUserID(self,uid):
         self.__userId = uid
-    def setBags(self,bags: Dict[int, bagDTO]):
+
+    def setBags(self, bags: Dict[int, bagDTO]):
         self.__bags = bags
+
+    def getBagByStoreID(self,storeid):
+        return self.__bags.get(storeid)
 
 
 

@@ -49,3 +49,4 @@ class storePermissionDTO:
 
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
+

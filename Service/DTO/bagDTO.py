@@ -15,3 +15,6 @@ class bagDTO:
 
     def getProduct(self, productID):
         return self.__products.get(productID)
+
+    def getAllProducts(self):
+        return self.__products
