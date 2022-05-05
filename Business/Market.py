@@ -44,7 +44,7 @@ class Market:
         storeID = self.__getGlobalStoreId()
         newStore = Store(storeID, storeName, user, bank, address)
         self.__stores[storeID] = newStore
-        return newStore.getStoreId()
+        return newStore
 
     def addProductToCart(self, user, storeID, productID, quantity):  # Tested
         try:

@@ -4,11 +4,11 @@ from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
 from Service.DTO.BagDTO import BagDTO
 from Service.DTO.ProductDTO import ProductDTO
 from Service.Response import Response
-from Service.DTO.GuestDTO import guestDTO
-from Service.DTO.MemberDTO import memberDTO
-from Service.DTO.BankDTO import bankDTO
-from Service.DTO.AddressDTO import adressDTO
-from Service.DTO.CartDTO import cartDTO
+from Service.DTO.GuestDTO import GuestDTO
+from Service.DTO.MemberDTO import MemberDTO
+from Service.DTO.BankDTO import BankDTO
+from Service.DTO.AddressDTO import AddressDTO
+from Service.DTO.CartDTO import CartDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
 from typing import Dict
 import logging
@@ -35,10 +35,10 @@ class UserService:
 
     def enterSystem(self):
         try:
-            guest: User = self.__userManagment.enterSystem()
+            guest = self.__userManagment.enterSystem()
             # self.__users[guest.getUserID()] = guest
             logging.info("success to enter system as a guest")
-            return Response(guestDTO(guest.getUserID(), self.__makeCartDTO(guest.getUserID(), guest.getCart())))
+            return Response(GuestDTO(guest))
         except Exception as e:
             logging.error("There was a problem during entering the system")
             return Response(e.__str__())
@@ -61,13 +61,7 @@ class UserService:
             member = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
 
-            dtoBAnk = bankDTO(accountNumber, brunch)
-            dtoAddress = adressDTO(country, city, street, apartmentNum, zipCode)
-            dtoCart = self.__makeCartDTO(member.getUserID(), member.getCart())
-            dtoTransactions = self.__makeDtoTransaction(member.getUserID(), member.getTransactions())
-
-            return Response(memberDTO(member.getUserID(), member.getMemberName(), member.getPhone(),
-                                      dtoAddress, dtoBAnk, dtoTransactions, member.getPaymentsIds(), dtoCart))
+            return Response(MemberDTO(member))
         except Exception as e:
             logging.warning("There was a problem during registration process")
             return Response(e.__str__())
@@ -174,45 +168,3 @@ class UserService:
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
             return e
-
-    def __makeDtoTransaction(self, userId, userTransactions):
-        transactionList = []
-        for ut in userTransactions:
-            transactionId = ut.getUserTransactionId()
-            paymentId = ut.getPaymentId()
-
-            storeTransactions = ut.getStoreTransactions()
-            storeTransactionsDtoList = []
-            for st in storeTransactions.keys():
-                storeName = st.getStoreName()
-                amount = st.getAmount()
-                products = st.getProducts()
-
-                productDTOList = []
-                for product in products:
-                    productId = product.getProductId()
-                    productName = product.getProductName()
-                    productPrice = product.getProductPrice()
-                    productCategory = product.getProductCategory()
-                    productKeywords = product.getProductKeywords()
-
-                    dtoProduct = ProductDTO(productId, productName, productPrice, productCategory, productKeywords)
-                    productDTOList.append(dtoProduct)
-
-                storeTransactionsDtoList.append(storeTransactionForUserDTO(storeName, productDTOList, amount))
-
-            transactionList.append(userTransactionDTO(userId, transactionId, storeTransactionsDtoList, paymentId))
-
-        return transactionList
-
-    def __makeCartDTO(self, userId, cart):
-        bagList: Dict[int: BagDTO] = {}
-        for bag in cart.getAllBags():
-            products: Dict[int: ProductDTO] = {}
-            for product in bag.getProducts():
-                dtoProduct = ProductDTO(product.getProductId(), product.getProductName(), product.getProductPrice(),
-                                        product.getProductCategory(), product.getProductKeywords())
-                products[product.getProductId()] = dtoProduct
-
-            bagList[bag.getStoreId()] = BagDTO(userId, products)
-        return cartDTO(userId, bagList)

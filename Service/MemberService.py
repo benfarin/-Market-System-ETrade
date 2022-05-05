@@ -2,8 +2,6 @@ from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
 from Service.Response import Response
 from Service.DTO.StoreDTO import StoreDTO
-from Service.DTO.BankDTO import bankDTO
-from Service.DTO.AddressDTO import adressDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
 from Service.DTO.ProductDTO import ProductDTO
@@ -25,13 +23,10 @@ class MemberService:
         try:
             bank = self.__memberManage.createBankAcount(accountNumber, brunch)
             address = self.__memberManage.createAddress(country, city, street, apartmentNum, zipCode)
-            storeId = self.__memberManage.createStore(storeName, founderId, bank, address)
-
-            dtoBank = bankDTO(accountNumber, brunch)
-            dtoAddress = adressDTO(country, city, street, apartmentNum, zipCode)
+            store = self.__memberManage.createStore(storeName, founderId, bank, address)
 
             logging.info("succeeded create store " + storeName)
-            return Response(StoreDTO(storeId, storeName, founderId, dtoBank, dtoAddress))
+            return Response(StoreDTO(store))
 
         except Exception as e:
             logging.error("Failed opening a new store")
@@ -59,37 +54,8 @@ class MemberService:
         try:
             transactions = self.__memberManage.getMemberTransactions(userID)
             logging.info("")
-            return Response(self.__makeDtoTransaction(userID, transactions))
+            return Response(userTransactionDTO(transactions))
         except Exception as e:
             logging.error("Failed opening a new store")
             return Response(e.__str__())
 
-    def __makeDtoTransaction(self, userId, userTransactions):
-        transactionList = []
-        for ut in userTransactions:
-            transactionId = ut.getUserTransactionId()
-            paymentId = ut.getPaymentId()
-
-            storeTransactions = ut.getStoreTransactions()
-            storeTransactionsDtoList = []
-            for st in storeTransactions.keys():
-                storeName = st.getStoreName()
-                amount = st.getAmount()
-                products = st.getProducts()
-
-                productDTOList = []
-                for product in products:
-                    productId = product.getProductId()
-                    productName = product.getProductName()
-                    productPrice = product.getProductPrice()
-                    productCategory = product.getProductCategory()
-                    productKeywords = product.getProductKeywords()
-
-                    dtoProduct = ProductDTO(productId, productName, productPrice, productCategory, productKeywords)
-                    productDTOList.append(dtoProduct)
-
-                storeTransactionsDtoList.append(storeTransactionForUserDTO(storeName, productDTOList, amount))
-
-            transactionList.append(userTransactionDTO(userId, transactionId, storeTransactionsDtoList, paymentId))
-
-        return transactionList

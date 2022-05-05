@@ -1,13 +1,17 @@
 from typing import Dict
+
+from Business.Transactions import StoreTransaction
 from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
+from Business.Transactions.UserTransaction import UserTransaction
 
 
 class userTransactionDTO:
-    def __init__(self, userID, transactionId, storeTransactions, paymentId):
-        self.__userID = userID
-        self.__transactionId = transactionId
-        self.__storeTransactions: Dict[int: storeTransactionForUserDTO] = storeTransactions
-        self.__paymentId = paymentId
+    def __init__(self, userTransaction: UserTransaction):
+        self.__userID = userTransaction.getUserId()
+        self.__transactionId = userTransaction.getUserTransactionId()
+        self.__storeTransactions: Dict[int: storeTransactionForUserDTO] = \
+            self.__makeDtoTransaction(userTransaction.getStoreTransactions())
+        self.__paymentId = userTransaction.getPaymentId()
 
     def getStoreTransaction(self, id):
         return self.__storeTransactions.get(id)
@@ -35,3 +39,9 @@ class userTransactionDTO:
 
     def setUserID(self, userid):
         __userID = userid
+
+    def __makeDtoTransaction(self, storeTransactions: {int: StoreTransaction}):
+        transactionList = {}
+        for st in storeTransactions.keys():
+            transactionList[st.getStoreId()] = storeTransactionForUserDTO(st)
+        return transactionList
