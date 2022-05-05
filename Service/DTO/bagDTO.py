@@ -3,9 +3,9 @@ from Service.DTO.productDTO import productDTO
 
 class bagDTO:
 
-    def __init__(self, storeId):
+    def __init__(self, storeId, products):
         self.__storeId = storeId
-        self.__products: [int, productDTO] = {}  # product : quantity
+        self.__products: [int, productDTO] = products
 
     def setStore(self, storeId):
         self.__storeId = storeId

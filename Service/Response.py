@@ -2,13 +2,14 @@ class Response:
 
     def __init__(self, arg):
         self.__error = None
+        self.__data = None
         if isinstance(arg, str):
             self.__error = arg
         else:
             self.__data = arg
 
     def isError(self):
-        return self.__error is None
+        return self.__error is not None
 
     def getError(self):
         return self.__error

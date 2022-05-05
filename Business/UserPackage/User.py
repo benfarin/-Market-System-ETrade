@@ -1,5 +1,4 @@
 from Business.StorePackage.Cart import Cart
-from Payment.PaymentStatus import PaymentStatus
 from Business.Transactions.UserTransaction import UserTransaction
 from interfaces.IMarket import IMarket
 from Business.Market import Market
@@ -36,13 +35,10 @@ class User:
         self.__id = str(uuid.uuid4())  # unique id
         self._cart = Cart(self.__id)
         self.__memberCheck = False
-        self.__paymentStatus: Dict[int: PaymentStatus] = {}
+        self.__paymentsId: [int] = []
         self.__transactions: Dict[int: UserTransaction] = {}
         self.__market: IMarket = Market.getInstance()
         # self.start()
-
-    def getPaymentStatus(self):
-        return self.__paymentStatus
 
     # all the transaction should be access only from member !!!!
     def getTransactions(self):
@@ -54,17 +50,17 @@ class User:
     def removeTransaction(self, transactionId):
         self.__transactions.pop(transactionId)
 
-    def getTransaction(self, transactionId):
+    def getTransactionById(self, transactionId):
         return self.__transactions[transactionId]
 
-    def getPaymentById(self, paymentID):
-        return self.__paymentStatus[paymentID]
+    def getPaymentsIds(self):
+        return self.__paymentsId
 
-    def addPaymentStatus(self, paymentStatus):
-        self.__paymentStatus[paymentStatus.getPaymentId()] = paymentStatus
+    def addPayment(self, paymentId):
+        self.__paymentsId.append(paymentId)
 
-    def removePaymentStatus(self, paymentStatusId):
-        self.__paymentStatus.pop(paymentStatusId)
+    def removePayment(self, paymentId):
+        self.__paymentsId.pop(paymentId)
 
     def getUserID(self):
         return self.__id

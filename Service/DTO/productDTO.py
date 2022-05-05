@@ -1,14 +1,15 @@
 from typing import List
+
 class productDTO:
-    def __init__(self, Id, name, price, category, keyword):
-        self.__id = Id
+    def __init__(self, productId, name, price, category, keyword):
+        self.__productId = productId
         self.__name = name
         self.__price = price
         self.__category = category  # String
         self.__keywords: List = keyword
 
     def getProductId(self):
-        return self.__id
+        return self.__productId
 
     def getProductName(self):
         return self.__name

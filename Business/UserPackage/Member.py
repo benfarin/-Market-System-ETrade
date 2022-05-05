@@ -45,6 +45,9 @@ class Member(User):
     def getPassword(self):
         return self.__password
 
+    def getPhone(self):
+        return self.__phone
+
     def getBank(self):
         return self.__bank
 
@@ -64,8 +67,12 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
-    def getMemberTransactions(self):
-        return self.__transactions
+    @threaded
+    def removeStore(self, storeId, user):
+        try:
+            return self.__market.removeStore(storeId, user)
+        except Exception as e:
+            raise Exception(e)
 
     @threaded
     def appointManagerToStore(self, storeID, assignee):
@@ -171,4 +178,3 @@ class Member(User):
             return self.__market.printPurchaseHistoryInformation(storeID, self)
         except Exception as e:
             raise Exception(e)
-

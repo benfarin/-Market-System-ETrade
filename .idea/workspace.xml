@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="still have a problem">
-      <change afterPath="$PROJECT_DIR$/Service/Response.py" afterDir="false" />
+    <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="started to work on the dto in MemberService, &#10;need to keep doing that">
+      <change afterPath="$PROJECT_DIR$/Service/DTO/StoreTransactionForUserDTO.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Service/DTO/memberDTO.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogin.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberRegister.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberRegister.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Managment/MemberManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/MemberManagment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Managment/UserManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/UserManagment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Market.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Market.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Product.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Product.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Store.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Store.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/Transactions/StoreTransaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Transactions/StoreTransaction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Transactions/UserTransaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Transactions/UserTransaction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/UserPackage/Member.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/UserPackage/Member.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/UserPackage/User.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/UserPackage/User.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Payment/PaymentDetails.py" beforeDir="false" afterPath="$PROJECT_DIR$/Payment/PaymentDetails.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Payment/PaymentStatus.py" beforeDir="false" afterPath="$PROJECT_DIR$/Payment/PaymentStatus.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Payment/paymentlmpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/Payment/paymentlmpl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/DTO/storeDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/storeDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/DTO/storeTransactionDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/storeTransactionDTO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/Events/EventError.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/Events/EventLog.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/Events/Events.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exceptions/CustomExceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Exceptions/CustomExceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/bagDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/bagDTO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/cartDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/cartDTO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/productDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/productDTO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/userDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/guestDTO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/userTransactionDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/userTransactionDTO.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Service/MemberService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/MemberService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/Response.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/Response.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/RoleService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/RoleService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/UserService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/UserService.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/IntegrationTest/MarketTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/IntegrationTest/MarketTests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/UnitTests/StoreTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/UnitTests/StoreTests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interfaces/IMember.py" beforeDir="false" afterPath="$PROJECT_DIR$/interfaces/IMember.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,35 +60,7 @@
       <recent name="C:\Users\97254\Desktop\אוניבריסיטה\שנה ג\סמסטר ב\סדנא\WorkshopSoftwareEngineering\Service" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for CartTests.MyTestCase">
-    <configuration name="Unittests for CartTests.MyTestCase" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <module name="WorkshopSoftwareEngineering" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/UnitTests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;CartTests.MyTestCase&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Unittests for MarketTests.MarketTests" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <module name="WorkshopSoftwareEngineering" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;MarketTests.MarketTests&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python tests.Unittests for StoreTests.MyTestCase.test_add_quantity_product">
     <configuration name="Unittests for MarketTests.MarketTests.test_addProductQuantity" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -101,7 +75,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for MarketTests.MarketTests.test_addProductToCart" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for MarketTests.MarketTests.test_addProductQuantity_Fail" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -111,11 +85,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductToCart&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductQuantity_Fail&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for MarketTests.MarketTests.test_createStore" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for MarketTests.MarketTests.test_addProductToStore" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -125,17 +99,45 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_createStore&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductToStore&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests for MarketTests.MarketTests.test_addProductToStore_FAIL" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="WorkshopSoftwareEngineering" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductToStore_FAIL&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests for StoreTests.MyTestCase.test_add_quantity_product" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="WorkshopSoftwareEngineering" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/UnitTests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;StoreTests.MyTestCase.test_add_quantity_product&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests for CartTests.MyTestCase" />
-        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductToCart" />
-        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_createStore" />
+        <item itemvalue="Python tests.Unittests for StoreTests.MyTestCase.test_add_quantity_product" />
         <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductQuantity" />
-        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductQuantity_Fail" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductToStore_FAIL" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductToStore" />
       </list>
     </recent_temporary>
   </component>
@@ -153,7 +155,13 @@
       <option name="presentableId" value="LOCAL‎00001" />
       <updated>1651679697338</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL‎00002" summary="started to work on the dto in MemberService, &#10;need to keep doing that">
+      <created>1651745018000</created>
+      <option name="number" value="LOCAL‎00002" />
+      <option name="presentableId" value="LOCAL‎00002" />
+      <updated>1651745018000</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -176,6 +184,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="still have a problem" />
-    <option name="LAST_COMMIT_MESSAGE" value="still have a problem" />
+    <MESSAGE value="started to work on the dto in MemberService, &#10;need to keep doing that" />
+    <option name="LAST_COMMIT_MESSAGE" value="started to work on the dto in MemberService, &#10;need to keep doing that" />
   </component>
 </project>

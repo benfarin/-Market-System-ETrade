@@ -5,6 +5,7 @@ from Service.DTO.storeDTO import storeDTO
 from Service.DTO.bankDTO import bankDTO
 from Service.DTO.adressDTO import adressDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
+from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
 from Service.DTO.productDTO import productDTO
 import logging
 
@@ -36,6 +37,15 @@ class MemberService:
             logging.error("Failed opening a new store")
             return Response(e.__str__())
 
+    def removeStore(self, storeId, userId):
+        try:
+            isRemoved = self.__memberManage.removeStore(userId, storeId)
+            logging.info("remove store: " + userId)
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed remove the store: " + str(storeId))
+            return Response(e.__str__())
+
     def logoutMember(self, userName):
         try:
             isLoggedOut = self.__memberManage.logoutMember(userName)
@@ -49,23 +59,21 @@ class MemberService:
         try:
             transactions = self.__memberManage.getMemberTransactions(userID)
             logging.info("")
-            return Response(self.__makeDtoTransaction(transactions))
+            return Response(self.__makeDtoTransaction(userID, transactions))
         except Exception as e:
             logging.error("Failed opening a new store")
             return Response(e.__str__())
 
-    def __makeDtoTransaction(self, userTransactions):
+    def __makeDtoTransaction(self, userId, userTransactions):
         transactionList = []
         for ut in userTransactions:
             transactionId = ut.getUserTransactionId()
+            paymentId = ut.getPaymentId()
 
             storeTransactions = ut.getStoreTransactions()
             storeTransactionsDtoList = []
             for st in storeTransactions.keys():
-                storeId = st.getStoreId()
                 storeName = st.getStoreName()
-                tId = st.getTransactionID()
-                pId = st.getPaymentId()
                 amount = st.getAmount()
                 products = st.getProducts()
 
@@ -80,15 +88,8 @@ class MemberService:
                     dtoProduct = productDTO(productId, productName, productPrice, productCategory, productKeywords)
                     productDTOList.append(dtoProduct)
 
-                dtoStore = storeDTO(storeId, storeName, )
+                storeTransactionsDtoList.append(storeTransactionForUserDTO(storeName, productDTOList, amount))
 
+            transactionList.append(userTransactionDTO(userId, transactionId, storeTransactionsDtoList, paymentId))
 
-
-
-            paymentStatuses = ut.getPaymentStatus()
-
-
-
-
-
-            transactionList.append(userTransactionDTO(transactionId, ))
+        return transactionList

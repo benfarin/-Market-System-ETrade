@@ -1,7 +1,15 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.User import User
-from Service.Events.Events import Events
-from Service.Events.EventLog import EventLog
+from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
+from Service.DTO.bagDTO import bagDTO
+from Service.DTO.productDTO import productDTO
+from Service.Response import Response
+from Service.DTO.guestDTO import guestDTO
+from Service.DTO.memberDTO import memberDTO
+from Service.DTO.bankDTO import bankDTO
+from Service.DTO.adressDTO import adressDTO
+from Service.DTO.cartDTO import cartDTO
+from Service.DTO.userTransactionDTO import userTransactionDTO
 from typing import Dict
 import logging
 
@@ -18,7 +26,6 @@ class UserService:
     def __init__(self):
         global firstAdminRegistered
         self.__userManagment = UserManagment.getInstance()
-        self.__events = Events()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
         # self.__users: Dict[str : User] = {}
@@ -30,48 +37,49 @@ class UserService:
         try:
             guest: User = self.__userManagment.enterSystem()
             # self.__users[guest.getUserID()] = guest
-            self.__events.addEventLog(EventLog("guest login"))
             logging.info("success to enter system as a guest")
-            return guest
+            return Response(guestDTO(guest.getUserID(), self.__makeCartDTO(guest.getUserID(), guest.getCart())))
         except Exception as e:
             logging.error("There was a problem during entering the system")
-            return e
+            return Response(e.__str__())
 
     def exitSystem(self, guestID):  # need to remove cart!
         try:
-            toReturn = self.__userManagment.exitSystem(guestID)
+            isExit = self.__userManagment.exitSystem(guestID)
             # self.__users.pop(guestID)
-            self.__events.addEventLog(EventLog("guest logout", "guestId: ", str(guestID)))
             logging.info("success to exit system")
-            return toReturn
+            return Response(isExit)
         except Exception as e:
             logging.error("There was a problem during logout from the system")
-            return e
+            return Response(e.__str__())
 
     def memberSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                      zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
-            self.__events.addEventLog(EventLog("member sign up", "user name: " + userName, "password: " + password,
-                                               "phone: " + phone, "address: " + address.printForEvents(),
-                                               "bank: " + bank.printForEvents()))
+            member = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
-            return toReturn
+
+            dtoBAnk = bankDTO(accountNumber, brunch)
+            dtoAddress = adressDTO(country, city, street, apartmentNum, zipCode)
+            dtoCart = self.__makeCartDTO(member.getUserID(), member.getCart())
+            dtoTransactions = self.__makeDtoTransaction(member.getUserID(), member.getTransactions())
+
+            return Response(memberDTO(member.getUserID(), member.getMemberName(), member.getPhone(),
+                                      dtoAddress, dtoBAnk, dtoTransactions, member.getPaymentsIds(), dtoCart))
         except Exception as e:
             logging.warning("There was a problem during registration process")
-            return e
+            return Response(e.__str__())
 
     def memberLogin(self, userName, password):
         try:
-            toReturn = self.__userManagment.memberLogin(userName, password)
-            self.__events.addEventLog(EventLog("member login", "username: " + userName, "password: " + password))
+            isLoggedIn = self.__userManagment.memberLogin(userName, password)
             logging.info("success to login user " + userName)
-            return toReturn
+            return Response(isLoggedIn)
         except Exception as e:
             logging.error("There was a problem during login as a member")
-            return e
+            return Response(e.__str__())
 
     def systemManagerSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                             zipCode):
@@ -79,10 +87,6 @@ class UserService:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
             toReturn = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
-            self.__events.addEventLog(EventLog("system managment signup", "username: " + userName,
-                                               "password: " + password, "phone: " + str(phone),
-                                               "bank: " + bank.printForEvents(),
-                                               "address: " + address.printForEvents()))
             logging.info("success to sign new system manager " + userName)
             return toReturn
         except Exception as e:
@@ -92,10 +96,7 @@ class UserService:
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
             self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
-            eventLog = EventLog("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
-                                "productId: " + str(productId), "quantity: " + str(quantity))
             logging.info("added product " + str(productId) + "to cart for user " + str(userID))
-            self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
             logging.error("Failed add product to cart")
@@ -104,10 +105,7 @@ class UserService:
     def removeProductFromCart(self, userId, storeId, productId):
         try:
             self.__userManagment.removeProductFromCart(userId, storeId, productId)
-            eventLog = EventLog("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
-                                "productId: " + str(productId))
             logging.info("removeed product " + str(productId) + " from cart for user " + userId)
-            self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
             logging.error("Failed remove product from cart")
@@ -116,10 +114,7 @@ class UserService:
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
             self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
-            eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
-                                "productId: " + str(productId), "quantity: " + str(quantity))
             logging.info("updated product " + str(productId) + " from cart for user " + userID)
-            self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
             logging.error("Failed updating product in cart")
@@ -128,7 +123,6 @@ class UserService:
     def getProductByCategory(self, category):
         try:
             toReturn = self.__userManagment.getProductByCategory(category)
-            self.__events.addEventLog(EventLog("get product by category", "category: " + category))
             logging.info("success to get product by category " + category)
             return toReturn
         except Exception as e:
@@ -138,7 +132,6 @@ class UserService:
     def getProductByName(self, nameProduct):
         try:
             toReturn = self.__userManagment.getProductsByName(nameProduct)
-            self.__events.addEventLog(EventLog("get product by name", "name: " + nameProduct))
             logging.info("success to get product by name " + nameProduct)
             return toReturn
         except Exception as e:
@@ -148,7 +141,6 @@ class UserService:
     def getProductByKeyword(self, keyword):
         try:
             toReturn = self.__userManagment.getProductByKeyWord(keyword)
-            self.__events.addEventLog(EventLog("get product by keyword", "keyword: " + keyword))
             logging.info("success to get product by keyword " + keyword)
             return toReturn
         except Exception as e:
@@ -158,8 +150,6 @@ class UserService:
     def getProductPriceRange(self, minPrice, highPrice):
         try:
             toReturn = self.__userManagment.getProductPriceRange(minPrice, highPrice)
-            self.__events.addEventLog(EventLog("get product by price range", "min price: " + str(minPrice),
-                                               "high price: " + str(highPrice)))
             logging.info("success to get product by price range")
             return toReturn
         except Exception as e:
@@ -170,10 +160,7 @@ class UserService:
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, branch)
             self.__userManagment.purchaseCart(userID, bank)
-            eventLog = EventLog("purchase cart", "userId: " + str(userID), "accountNumber: " + str(accountNumber)
-                                , "branch: " + str(branch))
             logging.info("success to purchase cart for user " + str(userID))
-            self.__events.addEventLog(eventLog)
             return True
         except Exception as e:
             logging.error("Failed to purchase cart for user" + str(userID))
@@ -182,9 +169,50 @@ class UserService:
     def getCart(self, userID):
         try:
             toReturn = self.__userManagment.getCart(userID)
-            self.__events.addEventLog(EventLog("get cart", "userId: " + str(userID)))
             logging.info("success get cart for user " + str(userID))
             return toReturn
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
             return e
+
+    def __makeDtoTransaction(self, userId, userTransactions):
+        transactionList = []
+        for ut in userTransactions:
+            transactionId = ut.getUserTransactionId()
+            paymentId = ut.getPaymentId()
+
+            storeTransactions = ut.getStoreTransactions()
+            storeTransactionsDtoList = []
+            for st in storeTransactions.keys():
+                storeName = st.getStoreName()
+                amount = st.getAmount()
+                products = st.getProducts()
+
+                productDTOList = []
+                for product in products:
+                    productId = product.getProductId()
+                    productName = product.getProductName()
+                    productPrice = product.getProductPrice()
+                    productCategory = product.getProductCategory()
+                    productKeywords = product.getProductKeywords()
+
+                    dtoProduct = productDTO(productId, productName, productPrice, productCategory, productKeywords)
+                    productDTOList.append(dtoProduct)
+
+                storeTransactionsDtoList.append(storeTransactionForUserDTO(storeName, productDTOList, amount))
+
+            transactionList.append(userTransactionDTO(userId, transactionId, storeTransactionsDtoList, paymentId))
+
+        return transactionList
+
+    def __makeCartDTO(self, userId, cart):
+        bagList: Dict[int: bagDTO] = {}
+        for bag in cart.getAllBags():
+            products: Dict[int: productDTO] = {}
+            for product in bag.getProducts():
+                dtoProduct = productDTO(product.getProductId(), product.getProductName(), product.getProductPrice(),
+                                        product.getProductCategory(), product.getProductKeywords())
+                products[product.getProductId()] = dtoProduct
+
+            bagList[bag.getStoreId()] = bagDTO(userId, products)
+        return cartDTO(userId, bagList)

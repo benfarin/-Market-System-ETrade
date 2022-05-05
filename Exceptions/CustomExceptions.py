@@ -42,6 +42,10 @@ class NoSuchBagException(Exception):
     pass
 
 
+class NotFounderException(Exception):
+    pass
+
+
 class PermissionException(Exception):
     pass
 

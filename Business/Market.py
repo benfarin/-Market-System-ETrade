@@ -4,7 +4,7 @@ import zope
 
 from Business.StorePackage.Store import Store
 from Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
-    EmptyCartException, PaymentException, NoSuchStoreException
+    EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from interfaces.IMarket import IMarket
 from interfaces.IStore import IStore
 from interfaces.IMember import IMember
@@ -150,7 +150,7 @@ class Market:
                 if paymentStatus.getStatus() == "payment succeeded":
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
-                    user.addPaymentStatus(paymentStatus)
+                    # user.addPaymentStatus(paymentStatus)
                     transactionId = self.__getTransactionId()
                     storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
@@ -161,6 +161,7 @@ class Market:
                     storeFailed.append(storeId)
 
             userPaymentId = Paymentlmpl.getInstance().getPaymentId()
+            user.addPayment(userPaymentId)
             user.addTransaction(UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId))
             if len(storeFailed) == 0:
                 return True
@@ -180,8 +181,8 @@ class Market:
                 store: Store = self.__stores.get(storeId)
                 storeTransaction: StoreTransaction = userTransaction.getStoreTransactions()[storeId]
 
-                for product in storeTransaction.getProduts().keys():
-                    quantity = storeTransaction.getProduts()[product]
+                for product in storeTransaction.getProducts().keys():
+                    quantity = storeTransaction.getProducts()[product]
                     store.addProductQuantityToStore(user.getUserID(), product.getProductId(), quantity)
 
                 store.removeTransaction(storeTransaction.getTransactionID())
@@ -298,10 +299,10 @@ class Market:
         try:
             if self.__stores.get(storeID) is None:
                 raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
-            # for user in self.__activeUsers.values():
-            #    user.getCart().removeBag(storeID)
+            if self.__stores.get(storeID).getStoreFounderId() != user.getUserID():
+                raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
             self.__stores.pop(storeID)
-            return "Store removed successfully!"
+            return True
         except Exception as e:
             return e
 

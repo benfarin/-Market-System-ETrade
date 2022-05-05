@@ -73,7 +73,7 @@ class UserManagment(object):
             self.__members[member.getUserID()] = member
             # if icart is not None:
             #       member.setICart(icart)
-            return member.getUserID()
+            return member
         return None
 
     def memberLogin(self, userName, password):  # Tested
@@ -88,14 +88,14 @@ class UserManagment(object):
                     system_manager.setLoggedIn(True)
                     system_manager.setMemberCheck(True)
                     system_manager.loginUpdates()
-                    return system_manager.getUserID()
+                    return True
             if member is not None:
                 if bcrypt.checkpw(password.encode('utf-8'), member.getPassword()):
                     self.__activeUsers[member.getUserID()] = member
                     member.setLoggedIn(True)
                     member.setMemberCheck(True)
                     member.loginUpdates()
-                    return member.getUserID()
+                    return True
                 else:
                     raise PasswordException("password not good!")
             else:

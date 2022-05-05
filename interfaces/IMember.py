@@ -9,6 +9,9 @@ class IMember(Interface):
     def createStore(self, storeName, bank, address):
         pass
 
+    def removeStore(self, storeId, user):
+        pass
+
     def getMemberTransactions(self):
         pass
 
