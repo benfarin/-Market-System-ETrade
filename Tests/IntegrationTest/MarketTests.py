@@ -9,6 +9,7 @@ from interfaces.IMarket import IMarket
 
 
 class MarketTests(unittest.TestCase):
+
     def setUp(self):
         self.__market: IMarket = Market().getInstance()
         self.__address1 = Address("Israel", "modiin", "avni hoshen", 4, 71813)
@@ -29,12 +30,12 @@ class MarketTests(unittest.TestCase):
         # store2: founder: member2, owners: [member2], managers: []
 
     def test_createStore(self):
-        # storeId1 = 0 , founder: member1
-        self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1,self.__address2)
-        self.assertEqual(0, self.__storeId1)
-
-        # storeId2 = 1, founder: member2
+        self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1, self.__address2)
         self.__storeId2 = self.__market.createStore("Decathlon", self.__member2, self.__bank1, self.__address3)
+
+        # storeId1 = 0 , founder: member1
+        self.assertEqual(0, self.__storeId1)
+        # storeId2 = 1, founder: member2
         self.assertEqual(1, self.__storeId2)
 
     def test_addProductToStore(self):

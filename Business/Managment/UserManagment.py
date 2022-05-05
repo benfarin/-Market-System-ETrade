@@ -10,8 +10,6 @@ from Exceptions.CustomExceptions import NoSuchUserException, PasswordException, 
 from interfaces import IMarket
 from typing import Dict
 from Business.UserPackage.Member import Member
-from zope.interface import Interface
-from interfaces.IUser import IUser
 from Business.UserPackage.SystemManager import SystemManager
 import bcrypt
 
@@ -32,9 +30,10 @@ class UserManagment(object):
         self.__market: IMarket = Market().getInstance()
         self.__activeUsers: Dict[str, User] = {}  # <userId,User> should check how to initial all the activeStores into
         # dictionary
-        self.__users: Dict[str : User] = {}
+        self.__users: Dict[str: User] = {}
         self.__members: Dict[str, Member] = {}
         self.__systemManager: Dict[str, SystemManager] = {}
+
         if UserManagment.__instance is None:
             UserManagment.__instance = self
 

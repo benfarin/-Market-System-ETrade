@@ -1,8 +1,8 @@
-from Service.DTO import bankDTO
-from Service.DTO import adressDTO
-from Service.DTO import productDTO
-from Service.DTO import storeTransactionDTO
-from Service.DTO import storePermissionDTO
+from Service.DTO.bankDTO import bankDTO
+from Service.DTO.adressDTO import adressDTO
+from Service.DTO.productDTO import productDTO
+from Service.DTO.storeTransactionDTO import storeTransactionDTO
+from Service.DTO.storePermissionDTO import storePermissionDTO
 from typing import List
 from typing import Dict
 

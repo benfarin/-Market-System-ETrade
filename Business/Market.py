@@ -138,10 +138,11 @@ class Market:
             paymentStatuses: Dict[int: PaymentStatus] = {}
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
+                storeName = self.__stores.get(storeId).getStoreName()
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
                 storeAmount = cart.calcSumOfBag(storeId)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeId, storeAmount)
+                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 user.addPaymentStatus(paymentStatus)
                 paymentStatuses[paymentStatus.getPaymentId()] = paymentStatus
@@ -151,7 +152,7 @@ class Market:
 
                     user.addPaymentStatus(paymentStatus)
                     transactionId = self.__getTransactionId()
-                    storeTransaction: StoreTransaction = StoreTransaction(storeId, transactionId,
+                    storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
@@ -159,7 +160,8 @@ class Market:
                 else:
                     storeFailed.append(storeId)
 
-            user.addTransaction(UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, paymentStatuses))
+            userPaymentId = Paymentlmpl.getInstance().getPaymentId()
+            user.addTransaction(UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId))
             if len(storeFailed) == 0:
                 return True
             else:

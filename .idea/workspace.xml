@@ -1,41 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="still have a problem">
+      <change afterPath="$PROJECT_DIR$/Service/Response.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/IMarketBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/IMarketBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketProxyBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketProxyBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketRealBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketRealBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/IUserBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/IUserBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserProxyBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserProxyBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserRealBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserRealBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAddProductToStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAddProductToStore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreOwner.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreOwner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseCloseStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseCloseStore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseEditProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseEditProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseGetStoresInfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseGetStoresInfo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCasePurchasesHistory.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCasePurchasesHistory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGetEditUserCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGetEditUserCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGuestLogin.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGuestLogin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogin.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogout.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogout.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberRegister.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberRegister.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCasePurchaseProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCasePurchaseProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseUserOpenStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseUserOpenStore.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Managment/MemberManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/MemberManagment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/Managment/UserManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/UserManagment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/Market.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Market.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Product.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Product.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Store.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Store.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/Transactions/StoreTransaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Transactions/StoreTransaction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/Transactions/UserTransaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Transactions/UserTransaction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/UserPackage/Member.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/UserPackage/Member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/UserPackage/User.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/UserPackage/User.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment/PaymentDetails.py" beforeDir="false" afterPath="$PROJECT_DIR$/Payment/PaymentDetails.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment/PaymentStatus.py" beforeDir="false" afterPath="$PROJECT_DIR$/Payment/PaymentStatus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Payment/paymentlmpl.py" beforeDir="false" afterPath="$PROJECT_DIR$/Payment/paymentlmpl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/storeDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/storeDTO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/DTO/storeTransactionDTO.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/DTO/storeTransactionDTO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/Events/EventError.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/Events/EventLog.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Service/Events/Events.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Service/MemberService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/MemberService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/RoleService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/RoleService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/IntegrationTest/MarketTests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/IntegrationTest/MarketTests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,99 +51,109 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in UseCaseSearchProduct.py">
-    <configuration name="Unittests in UseCaseGetStoresInfo.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\97254\Desktop\אוניבריסיטה\שנה ג\סמסטר ב\סדנא\WorkshopSoftwareEngineering\Service" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python tests.Unittests for CartTests.MyTestCase">
+    <configuration name="Unittests for CartTests.MyTestCase" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/UnitTests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseGetStoresInfo.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;CartTests.MyTestCase&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCasePurchasesHistory.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for MarketTests.MarketTests" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCasePurchasesHistory.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCaseRemoveProductFromCart.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for MarketTests.MarketTests.test_addProductQuantity" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductQuantity&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCaseSaveProductToCart.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for MarketTests.MarketTests.test_addProductToCart" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductToCart&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCaseSearchProduct.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for MarketTests.MarketTests.test_createStore" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_createStore&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in UseCaseSearchProduct.py" />
-        <item itemvalue="Python tests.Unittests in UseCaseSaveProductToCart.py" />
-        <item itemvalue="Python tests.Unittests in UseCaseRemoveProductFromCart.py" />
-        <item itemvalue="Python tests.Unittests in UseCasePurchasesHistory.py" />
-        <item itemvalue="Python tests.Unittests in UseCaseGetStoresInfo.py" />
+        <item itemvalue="Python tests.Unittests for CartTests.MyTestCase" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductToCart" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_createStore" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductQuantity" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="" />
       <created>1650971038749</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1650971038749</updated>
     </task>
+    <task id="LOCAL‎00001" summary="still have a problem">
+      <created>1651679697338</created>
+      <option name="number" value="LOCAL‎00001" />
+      <option name="presentableId" value="LOCAL‎00001" />
+      <updated>1651679697338</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -176,15 +174,8 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Business/Managment/RoleManagment.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="still have a problem" />
+    <option name="LAST_COMMIT_MESSAGE" value="still have a problem" />
   </component>
 </project>

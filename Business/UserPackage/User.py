@@ -81,24 +81,28 @@ class User:
     def setMemberCheck(self, state):
         self.__memberCheck = state
 
+    @threaded
     def addProductToCart(self, storeID, product, quantity):
         try:
             return self.__market.addProductToCart(self, storeID, product, quantity)
         except Exception as e:
             raise Exception(e)
 
+    @threaded
     def removeProductFromCart(self, storeID, productId):
         try:
             return self.__market.removeProductFromCart(self, storeID, productId)
         except Exception as e:
             raise Exception(e)
 
+    @threaded
     def updateProductFromCart(self, storeID, productId, quantity):
         try:
             return self.__market.addProductToCart(self, storeID, productId, quantity)
         except Exception as e:
             raise Exception(e)
 
+    @threaded
     def purchaseCart(self, bank):
         try:
             return self.__market.purchaseCart(self, bank)

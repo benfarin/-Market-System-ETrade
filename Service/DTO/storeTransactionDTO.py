@@ -1,6 +1,7 @@
 import datetime
 from Service.DTO import productDTO
-from  typing import Dict
+from typing import Dict
+
 
 class storeTransactionDTO:
 
@@ -18,9 +19,8 @@ class storeTransactionDTO:
     def getProduts(self):
         return self.__products
 
-    def getproduct(self,productID):
+    def getproduct(self, productID):
         self.__products.get(productID)
-
 
     def getStoreID(self):
         return self.__storeId
@@ -29,21 +29,21 @@ class storeTransactionDTO:
         return self.__payemntId
 
     def getDate(self):
-        return  self.__date
+        return self.__date
 
     def getAmount(self):
         return self.__amount
 
-    def setTransactionID(self,id):
-        self.__transactionId =id
+    def setTransactionID(self, id):
+        self.__transactionId = id
 
-    def setProduts(self,products):
+    def setProduts(self, products):
         self.__products = products
 
-    def setStoreID(self,storeid):
+    def setStoreID(self, storeid):
         self.__storeId = storeid
 
-    def setPaymentID(self,payment):
+    def setPaymentID(self, payment):
         self.__payemntId = payment
 
     def setDate(self, date):
@@ -51,4 +51,3 @@ class storeTransactionDTO:
 
     def setAmount(self, amount):
         self.__amount = amount
-

@@ -47,6 +47,9 @@ class Store:
     def getStoreId(self):
         return self.__id
 
+    def getStoreName(self):
+        return self.__name
+
     def getStoreFounderId(self):
         return self.__founderId
 

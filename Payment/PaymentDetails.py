@@ -2,11 +2,10 @@ from Business.Bank import Bank
 
 
 class PaymentDetails:
-    def __init__(self, userId, clientbankAccount, recieverBankAccount, storeID, paymentAmount):
+    def __init__(self, userId, clientbankAccount, recieverBankAccount, paymentAmount):
         self.__userId = userId
         self.__clientbankAccount: Bank = clientbankAccount
         self.__recieverBankAccount: Bank = recieverBankAccount
-        self.__storeId = storeID
         self.__paymentAmount = paymentAmount
 
     def getUserId(self):
@@ -17,9 +16,6 @@ class PaymentDetails:
 
     def getRecieverBankAccount(self):
         return self.__recieverBankAccount
-
-    def getstoreID(self):
-        return self.__storeId
 
     def getPaymentAmount(self):
         return self.__paymentAmount

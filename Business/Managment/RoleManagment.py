@@ -6,7 +6,7 @@ from Business.StorePackage.Product import Product
 import threading
 
 
-class RoleManagment():
+class RoleManagment:
     __instance = None
 
     @staticmethod
