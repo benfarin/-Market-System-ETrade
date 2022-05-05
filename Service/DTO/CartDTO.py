@@ -1,11 +1,12 @@
-from Service.DTO import bagDTO
+from Business.StorePackage.Cart import Cart
+from Service.DTO import BagDTO
 from typing import Dict
 
 
-class cartDTO:
-    def __init__(self, userId, bags):
-        self.__userId = userId
-        self.__bags: Dict[int, bagDTO] = bags  # storeId : Bag
+class CartDTO:
+    def __init__(self, cart: Cart):
+        self.__userId = cart.getUserId()
+        self.__bags: Dict[int, BagDTO] = cart.getAllBags()  # storeId : Bag
 
     def getUserId(self):
         return self.__userId

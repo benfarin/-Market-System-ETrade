@@ -48,6 +48,9 @@ class Member(User):
     def getPhone(self):
         return self.__phone
 
+    def getAddress(self):
+        return self.__address
+
     def getBank(self):
         return self.__bank
 

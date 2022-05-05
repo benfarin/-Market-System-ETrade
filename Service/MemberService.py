@@ -1,12 +1,12 @@
 from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
 from Service.Response import Response
-from Service.DTO.storeDTO import storeDTO
-from Service.DTO.bankDTO import bankDTO
-from Service.DTO.adressDTO import adressDTO
+from Service.DTO.StoreDTO import StoreDTO
+from Service.DTO.BankDTO import bankDTO
+from Service.DTO.AddressDTO import adressDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
-from Service.DTO.productDTO import productDTO
+from Service.DTO.ProductDTO import ProductDTO
 import logging
 
 logging.basicConfig(
@@ -31,7 +31,7 @@ class MemberService:
             dtoAddress = adressDTO(country, city, street, apartmentNum, zipCode)
 
             logging.info("succeeded create store " + storeName)
-            return Response(storeDTO(storeId, storeName, founderId, dtoBank, dtoAddress))
+            return Response(StoreDTO(storeId, storeName, founderId, dtoBank, dtoAddress))
 
         except Exception as e:
             logging.error("Failed opening a new store")
@@ -85,7 +85,7 @@ class MemberService:
                     productCategory = product.getProductCategory()
                     productKeywords = product.getProductKeywords()
 
-                    dtoProduct = productDTO(productId, productName, productPrice, productCategory, productKeywords)
+                    dtoProduct = ProductDTO(productId, productName, productPrice, productCategory, productKeywords)
                     productDTOList.append(dtoProduct)
 
                 storeTransactionsDtoList.append(storeTransactionForUserDTO(storeName, productDTOList, amount))

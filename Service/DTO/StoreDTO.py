@@ -1,28 +1,25 @@
-from Service.DTO.bankDTO import bankDTO
-from Service.DTO.adressDTO import adressDTO
-from Service.DTO.productDTO import productDTO
+from Business.StorePackage.Store import Store
+from Service.DTO.ProductDTO import ProductDTO
 from Service.DTO.storeTransactionDTO import storeTransactionDTO
-from Service.DTO.storePermissionDTO import storePermissionDTO
+from Service.DTO.StorePermissionDTO import StorePermissionDTO
 from typing import List
 from typing import Dict
 
 
-class storeDTO:
+class StoreDTO:
 
-    def __init__(self, storeId, storeName, founderId, bankAccount, address):
-        self.__id = storeId
-        self.__name = storeName
-        self.__founderId = founderId
-        self.__bankAccount: bankDTO = bankAccount
-        self.__address: adressDTO = address
-        self.__appointers: Dict[str: List] = {}  # UserId : UserId list
-        self.__managers = []  # userId
-        self.__owners = [founderId]  # userId
-        self.__products: Dict[int: productDTO] = {}  # productId : Product
-        self.__productsQuantity = {}  # productId : quantity
-        self.__transactions: Dict[int: storeTransactionDTO] = {}
-        self.__permissions: Dict[str: storePermissionDTO] = {
-            founderId: storePermissionDTO()}  # UserId : storePermission
+    def __init__(self, store: Store):
+        self.__id = store.getStoreId()
+        self.__name = store.getStoreName()
+        self.__founderId = store.getStoreFounderId()
+        self.__address = store.getStoreAddress()
+        # self.__managers = []  # userId
+        # self.__owners = [founderId]  # userId
+        self.__products: Dict[int: ProductDTO] = store.getProducts()  # productId : Product
+        # self.__productsQuantity = {}  # productId : quantity
+        # self.__transactions: Dict[int: storeTransactionDTO] = {}
+        # self.__permissions: Dict[str: storePermissionDTO] = {
+        #     founderId: storePermissionDTO()}  # UserId : storePermission
 
     def getAppointerByUserID(self, uid):
         return self.__appointers.get(uid)
@@ -96,7 +93,7 @@ class storeDTO:
     def setStoreManagers(self, managers):
         self.__managers = managers
 
-    def setProducts(self, products: productDTO):
+    def setProducts(self, products: ProductDTO):
         self.__products = products
 
     def setProductQuantity(self, prductQuantity):

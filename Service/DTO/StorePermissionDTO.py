@@ -1,4 +1,4 @@
-class storePermissionDTO:
+class StorePermissionDTO:
     def __init__(self):
         self.__stockManagement = False
         self.__appointManager = False

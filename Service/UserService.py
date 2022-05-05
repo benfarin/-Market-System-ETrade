@@ -1,14 +1,14 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.User import User
 from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
-from Service.DTO.bagDTO import bagDTO
-from Service.DTO.productDTO import productDTO
+from Service.DTO.BagDTO import BagDTO
+from Service.DTO.ProductDTO import ProductDTO
 from Service.Response import Response
-from Service.DTO.guestDTO import guestDTO
-from Service.DTO.memberDTO import memberDTO
-from Service.DTO.bankDTO import bankDTO
-from Service.DTO.adressDTO import adressDTO
-from Service.DTO.cartDTO import cartDTO
+from Service.DTO.GuestDTO import guestDTO
+from Service.DTO.MemberDTO import memberDTO
+from Service.DTO.BankDTO import bankDTO
+from Service.DTO.AddressDTO import adressDTO
+from Service.DTO.CartDTO import cartDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
 from typing import Dict
 import logging
@@ -196,7 +196,7 @@ class UserService:
                     productCategory = product.getProductCategory()
                     productKeywords = product.getProductKeywords()
 
-                    dtoProduct = productDTO(productId, productName, productPrice, productCategory, productKeywords)
+                    dtoProduct = ProductDTO(productId, productName, productPrice, productCategory, productKeywords)
                     productDTOList.append(dtoProduct)
 
                 storeTransactionsDtoList.append(storeTransactionForUserDTO(storeName, productDTOList, amount))
@@ -206,13 +206,13 @@ class UserService:
         return transactionList
 
     def __makeCartDTO(self, userId, cart):
-        bagList: Dict[int: bagDTO] = {}
+        bagList: Dict[int: BagDTO] = {}
         for bag in cart.getAllBags():
-            products: Dict[int: productDTO] = {}
+            products: Dict[int: ProductDTO] = {}
             for product in bag.getProducts():
-                dtoProduct = productDTO(product.getProductId(), product.getProductName(), product.getProductPrice(),
+                dtoProduct = ProductDTO(product.getProductId(), product.getProductName(), product.getProductPrice(),
                                         product.getProductCategory(), product.getProductKeywords())
                 products[product.getProductId()] = dtoProduct
 
-            bagList[bag.getStoreId()] = bagDTO(userId, products)
+            bagList[bag.getStoreId()] = BagDTO(userId, products)
         return cartDTO(userId, bagList)
