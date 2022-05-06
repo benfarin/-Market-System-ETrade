@@ -30,9 +30,9 @@ class RoleManagment:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
             assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
-            if assignerID not in self.__memberManagement.__members.keys():
+            if assignerID not in self.__memberManagement.getMembers().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.__members.keys():
+            if assigneeID not in self.__memberManagement.getMembers().keys():
                 raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.appointManagerToStore(storeID, assignee)
         except Exception as e:
