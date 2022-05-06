@@ -1,15 +1,11 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.User import User
-from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
-from Service.DTO.BagDTO import BagDTO
-from Service.DTO.ProductDTO import ProductDTO
 from Service.Response import Response
 from Service.DTO.GuestDTO import GuestDTO
 from Service.DTO.MemberDTO import MemberDTO
-from Service.DTO.BankDTO import BankDTO
-from Service.DTO.AddressDTO import AddressDTO
-from Service.DTO.CartDTO import CartDTO
+from Service.DTO.ProductDTO import ProductDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
+from Service.DTO.CartDTO import CartDTO
 from typing import Dict
 import logging
 
@@ -80,91 +76,107 @@ class UserService:
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
+            systemManager = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
             logging.info("success to sign new system manager " + userName)
-            return toReturn
+            return MemberDTO(systemManager)
         except Exception as e:
             logging.error("Cannot signup new System Manager")
             return e
 
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
-            self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
+            isAdded = self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
             logging.info("added product " + str(productId) + "to cart for user " + str(userID))
-            return True
+            return Response(isAdded)
         except Exception as e:
             logging.error("Failed add product to cart")
-            return e
+            return Response(e.__str__())
 
     def removeProductFromCart(self, userId, storeId, productId):
         try:
-            self.__userManagment.removeProductFromCart(userId, storeId, productId)
+            isRemoved = self.__userManagment.removeProductFromCart(userId, storeId, productId)
             logging.info("removeed product " + str(productId) + " from cart for user " + userId)
-            return True
+            return Response(isRemoved)
         except Exception as e:
             logging.error("Failed remove product from cart")
-            return e
+            return Response(e.__str__())
 
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
-            self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
+            isUpdated = self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
             logging.info("updated product " + str(productId) + " from cart for user " + userID)
-            return True
+            return Response(isUpdated)
         except Exception as e:
             logging.error("Failed updating product in cart")
-            return e
+            return Response(e.__str__())
 
     def getProductByCategory(self, category):
         try:
-            toReturn = self.__userManagment.getProductByCategory(category)
+            products = self.__userManagment.getProductByCategory(category)
             logging.info("success to get product by category " + category)
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this category")
-            return e
+            return Response(e.__str__())
 
     def getProductByName(self, nameProduct):
         try:
-            toReturn = self.__userManagment.getProductsByName(nameProduct)
+            products = self.__userManagment.getProductsByName(nameProduct)
             logging.info("success to get product by name " + nameProduct)
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this name")
-            return e
+            return Response(e.__str__())
 
     def getProductByKeyword(self, keyword):
         try:
-            toReturn = self.__userManagment.getProductByKeyWord(keyword)
+            products = self.__userManagment.getProductByKeyWord(keyword)
             logging.info("success to get product by keyword " + keyword)
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this keywords")
-            return e
+            return Response(e.__str__())
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            toReturn = self.__userManagment.getProductPriceRange(minPrice, highPrice)
+            products = self.__userManagment.getProductPriceRange(minPrice, highPrice)
             logging.info("success to get product by price range")
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this price range")
-            return e
+            return Response(e.__str__())
 
     def purchaseCart(self, userID, accountNumber, branch):
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, branch)
-            self.__userManagment.purchaseCart(userID, bank)
+            userTransaction = self.__userManagment.purchaseCart(userID, bank)
             logging.info("success to purchase cart for user " + str(userID))
-            return True
+            return Response(userTransactionDTO(userTransaction))
         except Exception as e:
             logging.error("Failed to purchase cart for user" + str(userID))
-            return e
+            return Response(e.__str__())
 
     def getCart(self, userID):
         try:
-            toReturn = self.__userManagment.getCart(userID)
+            cart = self.__userManagment.getCart(userID)
             logging.info("success get cart for user " + str(userID))
-            return toReturn
+            return Response(CartDTO(cart))
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
-            return e
+            return Response(e.__str__())

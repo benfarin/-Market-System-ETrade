@@ -54,9 +54,9 @@ class IMember(Interface):
     def updateProductCategory(self, storeID, productID, newCategory):
         pass
 
-    def PrintRolesInformation(self, storeID):
+    def getRolesInformation(self, storeID):
         pass
 
-    def printPurchaseHistoryInformation(self, storeID):
+    def getPurchaseHistoryInformation(self, storeID):
         pass
 

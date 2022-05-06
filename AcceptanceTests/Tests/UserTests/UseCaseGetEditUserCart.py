@@ -6,6 +6,8 @@ from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from Service.MemberService import MemberService
 from Service.UserService import UserService
+from Service.Response import Response
+from Service.DTO.StoreDTO import StoreDTO
 
 
 class UseCaseGetEditUserCart(unittest.TestCase):

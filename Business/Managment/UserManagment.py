@@ -114,7 +114,7 @@ class UserManagment(object):
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
             if systemManager:
                 self.__systemManager[userName] = systemManager
-                return systemManager.getUserID()
+                return systemManager
         return None
 
     # from here is to move to user class

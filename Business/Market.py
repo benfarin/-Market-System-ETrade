@@ -162,34 +162,16 @@ class Market:
 
             userPaymentId = Paymentlmpl.getInstance().getPaymentId()
             user.addPayment(userPaymentId)
-            user.addTransaction(UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId))
+            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId)
+            user.addTransaction(userTransaction)
+
+            # need to think what should we do if some of the payments failed
             if len(storeFailed) == 0:
-                return True
+                return userTransaction
             else:
                 raise PaymentException("failed to pay in stores: " + str(storeFailed))
 
             # here need to add delivary
-        except Exception as e:
-            raise Exception(e)
-
-    # need to delete that function
-    def cancelPurchaseCart(self, user, transactionId):
-        try:
-            userTransaction = user.getTransaction(transactionId)
-
-            for storeId in userTransaction.getStoreTransactions().keys():
-                store: Store = self.__stores.get(storeId)
-                storeTransaction: StoreTransaction = userTransaction.getStoreTransactions()[storeId]
-
-                for product in storeTransaction.getProducts().keys():
-                    quantity = storeTransaction.getProducts()[product]
-                    store.addProductQuantityToStore(user.getUserID(), product.getProductId(), quantity)
-
-                store.removeTransaction(storeTransaction.getTransactionID())
-
-            for paymentStatus in userTransaction.getPaymentStatus():
-                user.removePaymentStatus(paymentStatus)
-
         except Exception as e:
             raise Exception(e)
 
@@ -225,18 +207,21 @@ class Market:
     def setChangePermission(self, storeID, assigner, assignee):
         try:
             self.__stores.get(storeID).setChangePermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def setRolesInformationPermission(self, storeID, assigner, assignee):
         try:
             self.__stores.get(storeID).setRolesInformationPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def setPurchaseHistoryInformationPermission(self, storeID, assigner, assignee):
         try:
             self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
@@ -250,30 +235,33 @@ class Market:
     def updateProductPrice(self, storeID, user, productId, mewPrice):
         try:
             self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def addProductQuantityToStore(self, storeID, user, productId, quantity):
         try:
             self.__stores.get(storeID).addProductQuantityToStore(user, productId, quantity)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def removeProductFromStore(self, storeID, user, productId):
         try:
             self.__stores.get(storeID).removeProductFromStore(user, productId)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def printRolesInformation(self, storeID, user):
+    def getRolesInformation(self, storeID, user):
         try:
-            return self.__stores.get(storeID).PrintRolesInformation(user)
+            return self.__stores.get(storeID).getPermissions(user)
         except Exception as e:
             raise Exception(e)
 
-    def printPurchaseHistoryInformation(self, storeID, user):
+    def getPurchaseHistoryInformation(self, storeID, user):
         try:
-            self.__stores.get(storeID).printPurchaseHistoryInformation(user)
+            return self.__stores.get(storeID).getTransactionHistory(user)
         except Exception as e:
             raise Exception(e)
 
@@ -315,12 +303,14 @@ class Market:
     def updateProductName(self, user, storeID, productID, newName):
         try:
             self.__stores.get(storeID).updateProductName(user, productID, newName)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         try:
             self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
+            return True
         except Exception as e:
             raise Exception(e)
 

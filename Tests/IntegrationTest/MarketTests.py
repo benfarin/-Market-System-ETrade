@@ -32,8 +32,8 @@ class MarketTests(unittest.TestCase):
         # store2: founder: member2, owners: [member2], managers: []
 
     def test_createStore(self):
-        self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1, self.__address2)
-        self.__storeId2 = self.__market.createStore("Decathlon", self.__member2, self.__bank1, self.__address3)
+        self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1, self.__address2).getStoreId()
+        self.__storeId2 = self.__market.createStore("Decathlon", self.__member2, self.__bank1, self.__address3).getStoreId()
 
         # storeId1 = 0 , founder: member1
         self.assertEqual(0, self.__storeId1)

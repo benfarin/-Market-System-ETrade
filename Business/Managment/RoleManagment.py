@@ -25,8 +25,7 @@ class RoleManagment:
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
-    def appointManagerToStore(self, storeID, assignerID,
-                              assigneeID):  # check if the asssignee he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssignee he member and assignerID!!
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -178,23 +177,23 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def PrintRolesInformation(self, storeID, userID):
+    def getRolesInformation(self, storeID, userID):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
             if userID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
-            return member.PrintRolesInformation(storeID)
+            return member.getRolesInformation(storeID)
         except Exception as e:
             raise Exception(e)
 
-    def printPurchaseHistoryInformation(self, storeID, userID):
+    def getPurchaseHistoryInformation(self, storeID, userID):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
             if userID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
-            return member.printPurchaseHistoryInformation(storeID)
+            return member.getPurchaseHistoryInformation(storeID)
         except Exception as e:
             raise Exception(e)
 

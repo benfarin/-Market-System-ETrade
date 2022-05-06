@@ -169,14 +169,14 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def PrintRolesInformation(self, storeID):
+    def getRolesInformation(self, storeID):
         try:
             return self.__market.printRolesInformation(storeID, self)
         except Exception as e:
             raise Exception(e)
 
     @threaded
-    def printPurchaseHistoryInformation(self, storeID):
+    def getPurchaseHistoryInformation(self, storeID):
         try:
             return self.__market.printPurchaseHistoryInformation(storeID, self)
         except Exception as e:

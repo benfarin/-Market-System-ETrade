@@ -33,7 +33,7 @@ class Store:
         self.__rolesLock = threading.Lock()
         self.__transactionLock = threading.Lock()
 
-        self.__permissions: Dict[IMember: StorePermission] = {founder: StorePermission()}  # member : storePermission
+        self.__permissions: Dict[IMember: StorePermission] = {founder: StorePermission(founder.getUserID())}  # member : storePermission
         self.__permissions[founder].setPermission_AppointManager(True)
         self.__permissions[founder].setPermission_AppointOwner(True)
         self.__permissions[founder].setPermission_CloseStore(True)
@@ -41,6 +41,7 @@ class Store:
         self.__permissions[founder].setPermission_AppointManager(True)
         self.__permissions[founder].setPermission_AppointOwner(True)
         self.__permissions[founder].setPermission_ChangePermission(True)
+        self.__permissions[founder].setPermission_CloseStore(True)
         self.__permissions[founder].setPermission_RolesInformation(True)
         self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
 
@@ -266,7 +267,7 @@ class Store:
 
         with self.__permissionsLock:
             if self.__permissions.get(assignee) is None:
-                self.__permissions[assignee] = StorePermission()
+                self.__permissions[assignee] = StorePermission(assignee.getUserID())
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
 
     def appointOwnerToStore(self, assigner, assignee):
@@ -298,7 +299,7 @@ class Store:
 
         with self.__permissionsLock:
             if self.__permissions.get(assignee) is None:
-                self.__permissions[assignee] = StorePermission()
+                self.__permissions[assignee] = StorePermission(assignee.getUserID())
             self.__permissions[assignee].setPermission_StockManagement(True)
             self.__permissions[assignee].setPermission_AppointManager(True)
             self.__permissions[assignee].setPermission_AppointOwner(True)
@@ -335,7 +336,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return self.__permissions
+        return self.__permissions.values()
 
     def addTransaction(self, transaction):
         with self.__transactionLock:
@@ -373,7 +374,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return self.__storeHistory.getTransactionHistory()
+        return self.__transactions.values()
 
     def getProductsByName(self, productName):
         toReturnProducts = []
