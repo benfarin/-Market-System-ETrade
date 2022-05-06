@@ -11,7 +11,7 @@ import threading
 
 
 class MarketTests(unittest.TestCase):
-
+  
     def setUp(self):
         self.__market: IMarket = Market().getInstance()
         self.__address1 = Address("Israel", "modiin", "avni hoshen", 4, 71813)
@@ -81,8 +81,6 @@ class MarketTests(unittest.TestCase):
             store0: Store = self.__market.getStoreById(0)
             self.assertTrue(130, store0.getProductQuantity()[self.__product1.getProductId()])
 
-
-
         except:
             self.assertTrue(False)
 
@@ -103,7 +101,6 @@ class MarketTests(unittest.TestCase):
         self.assertRaises(Exception, lambda: self.__market.addProductQuantityToStore(0, self.__member1,
                                                                                      self.__product1.getProductId(),
                                                                                      -3))
-
     def test_addProductToCart(self):
         self.test_addProductQuantity()
         self.assertTrue(self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 7))
@@ -143,7 +140,6 @@ class MarketTests(unittest.TestCase):
         print("\n")
         for storeId in trans.getStoreTransactions().keys():
             print(trans.getStoreTransactions()[storeId].getPurchaseHistoryInformation())
-
 
     def test_removeStore(self):
         self.test_createStore()
