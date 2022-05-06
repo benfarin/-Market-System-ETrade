@@ -74,7 +74,7 @@ class Store:
 
     def getProduct(self, productId):
         if productId in self.__products:
-            return self.__products[productId]
+            return self.__products.get(productId)
         raise ProductException("product not in store")
 
     def hasProduct(self, productId):
@@ -176,7 +176,7 @@ class Store:
     def addProductQuantityToStore(self, user, productId, quantity):
         try:
             self.__checkPermissions_ChangeStock(user)
-            if self.__products[productId] is None:
+            if self.__products.get(productId) is None:
                 raise ProductException("cannot add quantity to a product who doesn't exist, in store: " + self.__name)
             if quantity <= 0:
                 raise ProductException("cannot add a non-positive quantity")
@@ -200,38 +200,41 @@ class Store:
     def updateProductPrice(self, user, productId, newPrice):
         try:
             self.__checkPermissions_ChangeStock(user)
-            if self.__products[productId] is None:
+            if self.__products.get(productId) is None:
                 raise ProductException("cannot update to a product who doesn't exist, in store: " + self.__name)
         except Exception as e:
             raise Exception(e)
         else:
             with self.__productsLock:
                 self.__products.get(productId).setProductPrice(newPrice)
+                return self.__products.get(productId)
 
     def updateProductName(self, user, productId, newName):
         try:
             self.__checkPermissions_ChangeStock(user)
-            if self.__products[productId] is None:
+            if self.__products.get(productId) is None:
                 raise ProductException("cannot update to a product who doesn't exist, in store: " + self.__name)
         except Exception as e:
             raise Exception(e)
         else:
             with self.__productsLock:
                 self.__products.get(newName).setProductPrice(newName)
+                return self.__products.get(productId)
 
     def updateProductCategory(self, user, productId, newCategory):
         try:
             self.__checkPermissions_ChangeStock(user)
-            if self.__products[productId] is None:
+            if self.__products.get(productId) is None:
                 raise ProductException("cannot update to a product who doesn't exist, in store: " + self.__name)
         except Exception as e:
             raise Exception(e)
         else:
             with self.__productsLock:
                 self.__products.get(productId).setProductCategory(newCategory)
+                return self.__products.get(productId)
 
     def __checkPermissions_ChangeStock(self, user):
-        permissions = self.__permissions[user]
+        permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ", self.__name)
         if not permissions.hasPermission_StockManagement():
@@ -239,7 +242,7 @@ class Store:
                                       self.__name)
 
     def appointManagerToStore(self, assigner, assignee):
-        permissions = self.__permissions[assigner]
+        permissions = self.__permissions.get(assigner)
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
         if permissions is None:
@@ -271,7 +274,7 @@ class Store:
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
 
     def appointOwnerToStore(self, assigner, assignee):
-        permissions = self.__permissions[assigner]
+        permissions = self.__permissions.get(assigner)
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
         if permissions is None:
@@ -309,7 +312,7 @@ class Store:
 
     # print all permission in store - will be deleted this version
     def PrintRolesInformation(self, user):
-        permissions = self.__permissions[user]
+        permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_RolesInformation():
@@ -329,7 +332,7 @@ class Store:
         return info
 
     def getPermissions(self, user):
-        permissions = self.__permissions[user]
+        permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_RolesInformation():
@@ -354,7 +357,7 @@ class Store:
 
     # print all transactions in store - will be deleted in this version
     def printPurchaseHistoryInformation(self, user):
-        permissions = self.__permissions[user]
+        permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_RolesInformation():
@@ -367,7 +370,7 @@ class Store:
         return info
 
     def getTransactionHistory(self, user):
-        permissions = self.__permissions[user]
+        permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_RolesInformation():

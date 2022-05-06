@@ -135,7 +135,6 @@ class Market:
             storeFailed = []
             storeTransactions: Dict[int: StoreTransaction] = {}
             totalAmount = 0.0
-            paymentStatuses: Dict[int: PaymentStatus] = {}
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 storeName = self.__stores.get(storeId).getStoreName()
@@ -144,8 +143,6 @@ class Market:
                 totalAmount += storeAmount
                 paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
-                user.addPaymentStatus(paymentStatus)
-                paymentStatuses[paymentStatus.getPaymentId()] = paymentStatus
 
                 if paymentStatus.getStatus() == "payment succeeded":
                     productsInStore = cart.getAllProductsByStore()[storeId]

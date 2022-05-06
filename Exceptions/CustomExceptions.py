@@ -56,3 +56,7 @@ class DeliveryException(Exception):
 
 class TransactionException(Exception):
     pass
+
+
+class MemberAllReadyLoggedIn(Exception):
+    pass

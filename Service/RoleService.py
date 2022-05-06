@@ -3,6 +3,7 @@ from Business.Managment.RoleManagment import RoleManagment
 from Service.Response import Response
 from Service.DTO.storeTransactionDTO import storeTransactionDTO
 from Service.DTO.StorePermissionDTO import StorePermissionDTO
+from Service.DTO.ProductDTO import ProductDTO
 import logging
 
 logging.basicConfig(
@@ -84,9 +85,9 @@ class RoleService:
     def addProductToStore(self, storeID, userID, name, price, category, keywords):
         try:
             product = self.__roleManagment.createProduct(name, price, category, keywords)
-            isAdded = self.__roleManagment.addProductToStore(storeID, userID, product)
+            self.__roleManagment.addProductToStore(storeID, userID, product)
             logging.info("success to add product " + name + "to store " + str(storeID))
-            return Response(isAdded)
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to add new product to store " + str(storeID))
             return Response(e.__str__())
@@ -137,27 +138,27 @@ class RoleService:
 
     def updateProductPrice(self, storeID, userID, productId, newPrice):
         try:
-            isUpdated = self.__roleManagment.updateProductPrice(storeID, userID, productId, newPrice)
+            product = self.__roleManagment.updateProductPrice(storeID, userID, productId, newPrice)
             logging.info("success to update product " + str(productId) + "to price " + str(newPrice))
-            return Response(isUpdated)
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update price for product " + str(productId) + "in store " + str(storeID))
             return Response(e.__str__())
 
     def updateProductName(self, userID, storeID, productID, newName):
         try:
-            isUpdated = self.__roleManagment.updateProductPrice(storeID, userID, productID, newName)
+            product = self.__roleManagment.updateProductPrice(storeID, userID, productID, newName)
             logging.info("success to update product " + str(productID) + "to name " + newName)
-            return Response(isUpdated)
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update name for product " + str(productID) + "in store " + str(storeID))
             return Response(e.__str__())
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
         try:
-            isUpdated = self.__roleManagment.updateProductPrice(storeID, userID, productID, newCategory)
+            product = self.__roleManagment.updateProductPrice(storeID, userID, productID, newCategory)
             logging.info("success to update product " + str(productID) + "to category " + newCategory)
-            return Response(isUpdated)
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update category for product " + str(productID) + "in store " + str(storeID))
             return Response(e.__str__())

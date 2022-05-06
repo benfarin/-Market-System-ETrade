@@ -54,19 +54,19 @@ class UserService:
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            member = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
+            isSignuped = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
 
-            return Response(MemberDTO(member))
+            return Response(isSignuped)
         except Exception as e:
             logging.warning("There was a problem during registration process")
             return Response(e.__str__())
 
     def memberLogin(self, userName, password):
         try:
-            isLoggedIn = self.__userManagment.memberLogin(userName, password)
+            member = self.__userManagment.memberLogin(userName, password)
             logging.info("success to login user " + userName)
-            return Response(isLoggedIn)
+            return Response(MemberDTO(member))
         except Exception as e:
             logging.error("There was a problem during login as a member")
             return Response(e.__str__())

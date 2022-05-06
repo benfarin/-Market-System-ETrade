@@ -6,7 +6,7 @@ from Business.Market import Market
 from Business.UserPackage.User import User
 from Business.UserPackage.Guest import Guest
 from Exceptions.CustomExceptions import NoSuchUserException, PasswordException, NotOnlineException, \
-    SystemManagerException
+    SystemManagerException, MemberAllReadyLoggedIn
 from interfaces import IMarket
 from typing import Dict
 from Business.UserPackage.Member import Member
@@ -68,13 +68,13 @@ class UserManagment(object):
         return True
 
     def memberSignUp(self, userName, password, phone, address, bank):  # Tested
-        if self.__members.get(userName) is None:
+        if self.__isMemberExists(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[member.getUserID()] = member
             # if icart is not None:
             #       member.setICart(icart)
-            return member
-        return None
+            return True
+        raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
 
     def memberLogin(self, userName, password):  # Tested
         try:
@@ -88,14 +88,13 @@ class UserManagment(object):
                     system_manager.setLoggedIn(True)
                     system_manager.setMemberCheck(True)
                     system_manager.loginUpdates()
-                    return True
             if member is not None:
                 if bcrypt.checkpw(password.encode('utf-8'), member.getPassword()):
                     self.__activeUsers[member.getUserID()] = member
                     member.setLoggedIn(True)
                     member.setMemberCheck(True)
                     member.loginUpdates()
-                    return True
+                    return member
                 else:
                     raise PasswordException("password not good!")
             else:

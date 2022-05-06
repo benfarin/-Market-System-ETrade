@@ -12,7 +12,7 @@ class UseCaseMemberLogin(unittest.TestCase):
         cls.proxy = UserProxyBridge(UserRealBridge())
         cls.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
-        cls.id1 = cls.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        cls.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                       "Ben Gurion", 0, 1)
 
     def test_login_positive(self):

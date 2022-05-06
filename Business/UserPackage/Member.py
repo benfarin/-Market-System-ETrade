@@ -20,7 +20,10 @@ def threaded(fn):
     def wrapper(*args, **kwargs):
         future = Future()
         threading.Thread(target=call_with_future, args=(fn, future, args, kwargs)).start()
-        return future.result()
+        try:
+            return future.result()
+        except:
+            raise future.exception()
 
     return wrapper
 
@@ -35,6 +38,7 @@ class Member(User):
         self.__address = address  # type address class
         self.__bank = bank  # type bank
         self.__market: IMarket = Market.getInstance()
+        exc = None
 
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
