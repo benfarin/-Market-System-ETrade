@@ -4,14 +4,13 @@ from Service.MemberService import MemberService
 from Service.RoleService import RoleService
 from Service.UserService import UserService
 
+
 @zope.interface.implementer(IMarketBridge)
 class MarketRealBridge:
     def __init__(self):
         self._roleService = RoleService()
         self._memberService = MemberService()
         self._userService = UserService()
-
-
 
     def request(self):
         print("RealSubject: Handling request.")
@@ -59,23 +58,19 @@ class MarketRealBridge:
         return self._roleService.addProductQuantityToStore(store_id, user_id, productID, quantity)
 
     def get_store_info(self, store_id, user_id):
-        return self._roleService.PrintRolesInformation(store_id, user_id)
+        return self._roleService.getRolesInformation(store_id, user_id)
 
-    def edit_product_name(self,user_id, store_id, prod_id, new_name):
+    def edit_product_name(self, user_id, store_id, prod_id, new_name):
         return self._roleService.updateProductName(user_id, store_id, prod_id, new_name)
 
     def edit_product_category(self, user_id, store_id, prod_id, new_category):
         return self._roleService.updateProductCategory(user_id, store_id, prod_id, new_category)
 
     def print_purchase_history(self, store_id, user_id):
-        return self._roleService.printPurchaseHistoryInformation(store_id, user_id)
+        return self._roleService.getPurchaseHistoryInformation(store_id, user_id)
 
-
-
-
-
-    # def close_store(self, store_id):
-    #     return self._market_service.
+    def close_store(self, store_id, user_id):
+        return self._memberService.removeStore(store_id, user_id)
     # def define_purchase(self, store_id, purchase):
     #     pass
     #
@@ -90,4 +85,3 @@ class MarketRealBridge:
     #
     # def edit_discount(self, store_id, new_discount):
     #     pass
-

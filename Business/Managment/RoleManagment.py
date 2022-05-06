@@ -200,6 +200,8 @@ class RoleManagment:
     def createProduct(self, name, price, category, keywords):
         if name is None:
             raise Exception("product name cannot be None")
+        if price <= 0:
+            raise Exception("product cannot have negative price")
         if category is None:
             raise Exception("product category cannot be None")
         return Product(self.__getProductId(), name, price, category, keywords)

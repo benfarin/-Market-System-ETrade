@@ -64,14 +64,13 @@ class MemberManagment(UserManagment):
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
 
             # need somehow to lock all function that trying to get to the store
-            member.createStore()
-            for user in self.__activeUsers.values():
-                user.getCart().removeBag(storeId, user)
+            member.removeStore(storeId)
+            for user in self.getActiveUser().values():
+                user.getCart().removeBag(storeId)
 
             return True
         except Exception as e:
             raise Exception(e)
-
 
     def logoutMember(self, userName):
         try:

@@ -289,7 +289,7 @@ class Market:
             self.__stores.pop(storeID)
             return True
         except Exception as e:
-            return e
+            raise Exception(e)
 
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         # the user that get in the system!

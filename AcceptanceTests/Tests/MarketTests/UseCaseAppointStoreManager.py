@@ -11,20 +11,20 @@ from Service.UserService import UserService
 class UseCaseAppointStoreManager(unittest.TestCase):
     # use-case 4.6
     @classmethod
-    def setUpClass(self):
-        self.proxy_market = MarketProxyBridge(MarketRealBridge())
-        self.proxy_user = UserProxyBridge(UserRealBridge())
+    def setUpClass(cls):
+        cls.proxy_market = MarketProxyBridge(MarketRealBridge())
+        cls.proxy_user = UserProxyBridge(UserRealBridge())
 
-        self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+        cls.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
 
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
-        self.proxy_user.register("testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
-        self.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
+        cls.proxy_user.register("testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
+        cls.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.owner_id = self.proxy_user.login_member("testUser", "1234").getData().getMemberId()
-        self.manager_id = self.proxy_user.login_member("testUser2", "4321").getData().getMemberId()
-        self.store_id = self.proxy_user.open_store("testStore", self.owner_id , 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
+        cls.owner_id = cls.proxy_user.login_member("testUser", "1234").getData().getMemberId()
+        cls.manager_id = cls.proxy_user.login_member("testUser2", "4321").getData().getMemberId()
+        cls.store_id = cls.proxy_user.open_store("testStore", cls.owner_id , 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
         check = 1
     def test_AppointStoreManagerPositive(self):
         # store_id, assigner_id, assignee_id

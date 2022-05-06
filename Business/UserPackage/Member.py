@@ -75,9 +75,9 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def removeStore(self, storeId, user):
+    def removeStore(self, storeId):
         try:
-            return self.__market.removeStore(storeId, user)
+            return self.__market.removeStore(storeId, self)
         except Exception as e:
             raise Exception(e)
 
@@ -175,7 +175,7 @@ class Member(User):
     @threaded
     def getRolesInformation(self, storeID):
         try:
-            return self.__market.printRolesInformation(storeID, self)
+            return self.__market.getRolesInformation(storeID, self)
         except Exception as e:
             raise Exception(e)
 
