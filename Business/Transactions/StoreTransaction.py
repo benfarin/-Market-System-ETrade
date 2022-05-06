@@ -4,18 +4,31 @@ import datetime
 
 class StoreTransaction:
 
-    def __init__(self, storeId, transactionId, paymentId, products, amount):
+    def __init__(self, storeId, storeName, transactionId, paymentId, products, amount):
         self.__storeId = storeId
+        self.__storeName = storeName
         self.__transactionId = transactionId
         self.__payemntId = paymentId
         self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
         self.__products = products
         self.__amount = amount
 
+    def getStoreId(self):
+        return self.__storeId
+
+    def getStoreName(self):
+        return self.__storeName
+
     def getTransactionID(self):
         return self.__transactionId
 
-    def getProduts(self):
+    def getPaymentId(self):
+        return self.__payemntId
+
+    def getAmount(self):
+        return self.__amount
+
+    def getProducts(self):
         return self.__products
 
     def getPurchaseHistoryInformation(self):

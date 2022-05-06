@@ -1,4 +1,4 @@
-from interface import Interface
+from zope.interface import Interface
 
 from Delivery.DeliveryDetails import DeliveryDetails
 from Delivery.DeliveryStatus import DeliveryStatus

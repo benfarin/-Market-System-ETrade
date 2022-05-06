@@ -1,4 +1,4 @@
-from interface import Interface
+from zope.interface import Interface
 
 
 class IStore(Interface):
@@ -6,64 +6,59 @@ class IStore(Interface):
     def getStoreId(self):
         pass
 
-    def getStoreFounderId(self):
+    def getProduct(self, productId):
         pass
 
-    def getStoreBankAccount(self):
+    def hasProduct(self, productId):
         pass
 
-    def getStoreAddress(self):
+    def setStockManagementPermission(self, assigner, assignee):
         pass
 
-    def getStoreOwners(self):
+    def setAppointManagerPermission(self, assigner, assignee):
         pass
 
-    def getStoreManagers(self):
+    def setAppointOwnerPermission(self, assigner, assignee):
         pass
 
-    def getProducts(self):
+    def setChangePermission(self, assigner, assignee):
         pass
 
-    def getProductQuantity(self):
+    def setRolesInformationPermission(self, assigner, assignee):
         pass
 
-    def setStockManagementPermission(self, assignerId, assigneeId):
+    def setPurchaseHistoryInformationPermission(self, assigner, assignee):
         pass
 
-    def setAppointManagerPermission(self, assignerId, assigneeId):
+    def addProductToStore(self, user, product):
         pass
 
-    def setAppointOwnerPermission(self, assignerId, assigneeId):
+    def addProductQuantityToStore(self, user, productId, quantity):
         pass
 
-    def setChangePermission(self, assignerId, assigneeId):
+    def removeProductFromStore(self, user, productId):
         pass
 
-    def setRolesInformationPermission(self, assignerId, assigneeId):
+    def updateProductPrice(self, user, productId, newPrice):
         pass
 
-    def setPurchaseHistoryInformationPermission(self, assignerId, assigneeId):
+    def updateProductName(self, user, productId, newName):
         pass
 
-    def addProductToStore(self, userId, product):
+    def updateProductCategory(self, user, productId, newCategory):
         pass
 
-    def addProductQuantityToStore(self, userId, productId, quantity):
+    def appointManagerToStore(self, assigner, assignee):
         pass
 
-    def removeProductFromStore(self, userId, productId):
+    def appointOwnerToStore(self, assigner, assignee):
         pass
 
-    def appointManagerToStore(self, assignerId, assigneeId):
+    # print all permission in store - will be deleted this version
+    def getRolesInformation(self, user):
         pass
 
-    def appointOwnerToStore(self, assignerId, assigneeId):
-        pass
-
-    def PrintRolesInformation(self, userId):
-        pass
-
-    def getPermissions(self, userId):
+    def getPermissions(self, user):
         pass
 
     def addTransaction(self, transaction):
@@ -75,10 +70,11 @@ class IStore(Interface):
     def getTransaction(self, transactionId):
         pass
 
-    def printPurchaseHistoryInformation(self, userId):
+    # print all transactions in store - will be deleted in this version
+    def getPurchaseHistoryInformation(self, user):
         pass
 
-    def getTransactionHistory(self, userId):
+    def getTransactionHistory(self, user):
         pass
 
     def getProductsByName(self, productName):
@@ -99,11 +95,3 @@ class IStore(Interface):
     def removeProductFromBag(self, productId, quantity):
         pass
 
-    def updateProductPrice(self, userId, productId, newPrice):
-        pass
-
-    def updateProductName(self, userId, productId, newName):
-        pass
-
-    def updateProductCategory(self, userId, productId, newCategory):
-        pass

@@ -2,10 +2,9 @@ from Payment.PaymentSystem import PaymentSystem
 from Payment.PaymentStatus import PaymentStatus
 from Payment.PaymentDetails import PaymentDetails
 from interfaces.IPayment import IPayment
-from interface import implements
 
 
-class Paymentlmpl(implements(IPayment)):
+class Paymentlmpl:
     __instance = None
 
     @staticmethod
@@ -31,11 +30,9 @@ class Paymentlmpl(implements(IPayment)):
                                                paymentDetails.getRecieverBankAccount().getBranch(),
                                                paymentDetails.getPaymentAmount())
 
-            return PaymentStatus(self.__getPaymentId(), paymentDetails.getUserId(), paymentDetails.getstoreID(),
-                                 "payment succeeded")
+            return PaymentStatus(self.getPaymentId(), paymentDetails.getUserId(), "payment succeeded")
         except Exception:
-            return PaymentStatus(self.__getPaymentId(), paymentDetails.getUserId(), paymentDetails.getstoreID(),
-                                 "payment failed")
+            return PaymentStatus(self.getPaymentId(), paymentDetails.getUserId(), "payment failed")
 
     def cancelPayment(self, paymentStatus: PaymentStatus):
         try:
@@ -44,9 +41,7 @@ class Paymentlmpl(implements(IPayment)):
         except Exception:
             paymentStatus.status("cancel payment failed")
 
-
-
-    def __getPaymentId(self):
+    def getPaymentId(self):
         paymentId = self.__paymentId
         self.__paymentId += 1
         return paymentId

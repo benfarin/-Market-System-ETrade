@@ -26,6 +26,10 @@ class NoSuchUserException(Exception):
     pass
 
 
+class NoSuchMemberException(Exception):
+    pass
+
+
 class PasswordException(Exception):
     pass
 
@@ -38,6 +42,10 @@ class NoSuchBagException(Exception):
     pass
 
 
+class NotFounderException(Exception):
+    pass
+
+
 class PermissionException(Exception):
     pass
 
@@ -45,3 +53,10 @@ class PermissionException(Exception):
 class DeliveryException(Exception):
     pass
 
+
+class TransactionException(Exception):
+    pass
+
+
+class MemberAllReadyLoggedIn(Exception):
+    pass

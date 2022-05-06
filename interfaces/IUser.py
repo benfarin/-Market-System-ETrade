@@ -1,25 +1,23 @@
-from interface import implements, Interface
+from zope.interface import Interface
+
+
 class IUser(Interface):
-   pass
 
+    def getUserID(self):
+        pass
 
-   def memberSignUp(self, userName, password, phone, address, bank):
-      pass
+    def getCart(self):
+        pass
 
-   def getMembers(self):
-      pass
+    def addProductToCart(self, storeID, product, quantity):
+        pass
 
-   def enterSystem(self):
-      pass
+    def removeProductFromCart(self, storeID, productId):
+        pass
 
-   def exitSystem(self, guestID):
-      pass
+    def updateProductFromCart(self, storeID, productId, quantity):
+        pass
 
-   def memberLogin(self, userName, password):
-      pass
+    def purchaseCart(self, bank):
+        pass
 
-   def logoutMember(self, userName):
-      pass
-
-   def systemManagerSignUp(self, userName, password, phone, address, bank):
-      pass

@@ -3,6 +3,7 @@ from Business.Address import Address
 from Business.Bank import Bank
 from Business.Managment.UserManagment import UserManagment
 from interfaces.IUser import IUser
+from Business.UserPackage.User import User
 
 
 class MyTestCase(unittest.TestCase):
@@ -13,6 +14,12 @@ class MyTestCase(unittest.TestCase):
         self.__bank1 = Bank(235235,213)
         self.__bank2 = Bank(643,2215)
 
+        self.user_1 = User()
+        self.user_2 = User()
+
+    def test_user(self):
+        print(self.user_1.getUserID())
+        print(self.user_2.getUserID())
 
 
     def test_memberSignUp(self):

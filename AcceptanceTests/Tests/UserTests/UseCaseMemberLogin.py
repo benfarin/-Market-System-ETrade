@@ -2,17 +2,18 @@ import unittest
 
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
-from Service.MarketService import MarketService
+from Service.MemberService import MemberManagment
 from Service.UserService import UserService
 
 
 class UseCaseMemberLogin(unittest.TestCase):
-    def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge(UserService(), MarketService()))
-        self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+    @classmethod
+    def setUpClass(cls):
+        cls.proxy = UserProxyBridge(UserRealBridge())
+        cls.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
-        self.id1 = self.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                      "Ben Gurion", 0, 1, None)
+        cls.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                                      "Ben Gurion", 0, 1)
 
     def test_login_positive(self):
         self.assertTrue(self.proxy.login_member("user1", "1234"),True)
