@@ -4,25 +4,13 @@ from django import forms
 from django_countries.data import COUNTRIES
 
 
-countries = (
-        ('israel', 'Israel'),
-        ('united states', 'United States'),
-        ('united kingdom', 'United Kingdom'),
-        ('canada', 'Canada'),
-        ('france', 'France'),
-        ('germany', 'Germany'),
-        ('spain', 'Spain'),
-        ('japan', 'Japan'),
-        ('china', 'China'),
-        )
-
 class SignupForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
     phone = forms.CharField()
     account_num = forms.IntegerField()
     branch_num = forms.IntegerField()
-    country = forms.ChoiceField(choices= COUNTRIES.items(), widget=forms.Select(attrs={'style': 'width:190px'}))
+    country = forms.ChoiceField(choices=COUNTRIES.items(), widget=forms.Select(attrs={'style': 'width:190px'}))
     city = forms.CharField()
     street = forms.CharField()
     apartment_num = forms.IntegerField()
