@@ -1,4 +1,5 @@
-from interface import implements
+import zope
+from zope.interface import implements
 
 from Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
 from interfaces.ICart import ICart
@@ -7,7 +8,8 @@ from Business.StorePackage.Product import Product
 from typing import Dict
 
 
-class Cart(implements(ICart)):
+@zope.interface.implementer(ICart)
+class Cart:
 
     def __init__(self, userId):
         self.__userId = userId

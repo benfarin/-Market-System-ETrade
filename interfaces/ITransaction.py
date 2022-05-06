@@ -1,3 +1,3 @@
-from interface import implements, Interface
+from zope.interface import Interface
 class ITransaction(Interface):
    pass

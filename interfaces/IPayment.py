@@ -1,4 +1,4 @@
-from interface import Interface
+from zope.interface import Interface
 
 
 from Payment.PaymentDetails import PaymentDetails

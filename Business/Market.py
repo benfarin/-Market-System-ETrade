@@ -1,24 +1,26 @@
 import uuid
 
+import zope
+
 from Business.StorePackage.Store import Store
-from Business.UserPackage.Guest import Guest
-from Business.UserPackage.Member import Member
 from Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
-    EmptyCartException, PaymentException, NoSuchStoreException
+    EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from interfaces.IMarket import IMarket
 from interfaces.IStore import IStore
-from Business.UserPackage.User import User
-from Business.StorePackage.Product import Product
+from interfaces.IMember import IMember
+from interfaces.IUser import IUser
 from Payment.PaymentStatus import PaymentStatus
 from Payment.PaymentDetails import PaymentDetails
 from Payment.paymentlmpl import Paymentlmpl
 from Business.Transactions.StoreTransaction import StoreTransaction
 from Business.Transactions.UserTransaction import UserTransaction
-from interface import implements
+from zope.interface import implements
 from typing import Dict
+import threading
 
 
-class Market(implements(IMarket)):
+@zope.interface.implementer(IMarket)
+class Market:
     __instance = None
 
     @staticmethod
@@ -31,77 +33,48 @@ class Market(implements(IMarket)):
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
-        self.__activeUsers: Dict[
-            str, User] = {}  # <name,User> should check how to initial all the activeStores into dictionary
         self.__globalStore = 0
         self._transactionIdCounter = 0
+        self.__storeId_lock = threading.Lock()
+        self.__transactionId_lock = threading.Lock()
         if Market.__instance is None:
             Market.__instance = self
 
-    def __checkOnlineUser(self, userName):
-        if (self.__activeUsers.get(userName)) is None:
-            raise NotOnlineException("The member " + userName + " not online!")
-        else:
-            return True
+    def createStore(self, storeName, user, bank, address):  # change test!
+        storeID = self.__getGlobalStoreId()
+        newStore = Store(storeID, storeName, user, bank, address)
+        self.__stores[storeID] = newStore
+        return newStore
 
-    def createStore(self, storeName, userID, bank, address):  # change test!
-        if self.__checkOnlineUser(userID):
-            storeID = self.__globalStore + 1
-            self.__globalStore += 1
-            newStore = Store(storeID, storeName, userID, bank, address)
-            self.__stores[storeID] = newStore
-            return newStore.getStoreId()
-        return None
-
-    def addGuest(self):  # ?
-        guest = Guest()
-        self.__activeUsers[guest.getUserID()] = guest
-        return guest
-
-    def addActiveUser(self, user):
+    def addProductToCart(self, user, storeID, productID, quantity):  # Tested
         try:
-            self.__activeUsers[user.getUserID()] = user
-            return True
-        except:
-            return False
-
-    #  action of buyers - market managment
-    def addProductToCart(self, userID, storeID, productID, quantity):  # Tested
-        try:
-            if self.__checkOnlineUser(userID) is not None:
-                if self.__stores.get(storeID).hasProduct(productID) is None:
-                    raise ProductException("The product id " + productID + " not in market!")
-                if self.__stores.get(storeID).addProductToBag(productID, quantity):
-                    product = self.__stores.get(storeID).getProduct(productID)
-                    self.__activeUsers.get(userID).getCart().addProduct(storeID, product, quantity)
-                    return True
-                else:
-                    raise QuantityException("The quantity " + quantity + " is not available")
-        except Exception as e:
-            raise Exception(e)
-
-    def removeProductFromCart(self, storeID, userID, productId):  # Tested
-        try:
-            if self.__activeUsers.get(userID):
-                quantity = self.__activeUsers.get(userID).getCart().removeProduct(storeID, productId)
-                self.__stores.get(storeID).removeProductFromBag(productId, quantity)
+            if self.__stores.get(storeID).hasProduct(productID) is None:
+                raise ProductException("The product id " + productID + " not in market!")
+            if self.__stores.get(storeID).addProductToBag(productID, quantity):
+                product = self.__stores.get(storeID).getProduct(productID)
+                user.getCart().addProduct(storeID, product, quantity)
                 return True
             else:
-                raise NotOnlineException("user not online")
+                raise QuantityException("The quantity " + quantity + " is not available")
         except Exception as e:
             raise Exception(e)
 
-    def updateProductFromCart(self, userID, storeID, productId, quantity):  # UnTested
+    def removeProductFromCart(self, storeID, user, productId):  # Tested
         try:
-            if self.__activeUsers.get(userID):
-                if self.__stores.get(storeID).hasProduct(productId):
-                    raise ProductException("The product id " + productId + " not in market!")
-                if quantity > 0:
-                    return self.addProductToCart(userID, storeID, productId, quantity)
-                else:
-                    return self.removeProductFromBag(productId, quantity)
+            quantity = user.getCart().removeProduct(storeID, productId)
+            self.__stores.get(storeID).removeProductFromBag(productId, quantity)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductFromCart(self, user, storeID, productId, quantity):  # UnTested
+        try:
+            if self.__stores.get(storeID).hasProduct(productId):
+                raise ProductException("The product id " + productId + " not in market!")
+            if quantity > 0:
+                return self.addProductToCart(user, storeID, productId, quantity)
             else:
-                raise NotOnlineException("user not online")
+                return self.removeProductFromBag(productId, quantity)
         except Exception as e:
             return e
 
@@ -133,7 +106,7 @@ class Market(implements(IMarket)):
         return productsInStores
 
     def getProductByPriceRange(self, minPrice, highPrice):
-        productsInStores= []
+        productsInStores = []
         keys = self.__stores.keys()
         for i in keys:
             products_list_per_Store = self.__stores.get(i).getProductsByPriceRange(minPrice, highPrice)
@@ -153,34 +126,30 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def purchaseCart(self, userID, bank):
+    def purchaseCart(self, user, bank):
         try:
-            if self.__activeUsers.get(userID) is None:
-                raise NotOnlineException("member with id " + userID + " is not online!")
-            cart = self.__activeUsers.get(userID).getCart()
+            cart = user.getCart()
             if cart.isEmpty():
                 raise EmptyCartException("cannot purchase an empty cart")
 
             storeFailed = []
             storeTransactions: Dict[int: StoreTransaction] = {}
             totalAmount = 0.0
-            paymentStatuses: Dict[int: PaymentStatus] = {}
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
+                storeName = self.__stores.get(storeId).getStoreName()
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
                 storeAmount = cart.calcSumOfBag(storeId)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(userID, bank, storeBank, storeId, storeAmount)
+                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
-                self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
-                paymentStatuses[paymentStatus.getPaymentId()] = paymentStatus
 
                 if paymentStatus.getStatus() == "payment succeeded":
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
-                    self.__activeUsers.get(userID).addPaymentStatus(paymentStatus)
+                    # user.addPaymentStatus(paymentStatus)
                     transactionId = self.__getTransactionId()
-                    storeTransaction: StoreTransaction = StoreTransaction(storeId, transactionId,
+                    storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
@@ -188,10 +157,14 @@ class Market(implements(IMarket)):
                 else:
                     storeFailed.append(storeId)
 
-            self.__activeUsers.get(userID).addTransaction(
-                UserTransaction(userID, self.__getTransactionId(), storeTransactions, paymentStatuses))
+            userPaymentId = Paymentlmpl.getInstance().getPaymentId()
+            user.addPayment(userPaymentId)
+            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId)
+            user.addTransaction(userTransaction)
+
+            # need to think what should we do if some of the payments failed
             if len(storeFailed) == 0:
-                return True
+                return userTransaction
             else:
                 raise PaymentException("failed to pay in stores: " + str(storeFailed))
 
@@ -199,138 +172,95 @@ class Market(implements(IMarket)):
         except Exception as e:
             raise Exception(e)
 
-    def cancelPurchaseCart(self, userID, transactionId):
+    #  actions of roles - role managment
+    def appointManagerToStore(self, storeID, assigner, assignee):  # Tested
         try:
-            if self.__activeUsers.get(userID) is None:
-                raise NotOnlineException("member with id " + userID + " is not online!")
-            user = self.__activeUsers.get(userID)
-            userTransaction = user.getTransaction(transactionId)
-
-            for storeId in userTransaction.getStoreTransactions().keys():
-                store: Store = self.__stores.get(storeId)
-                storeTransaction: StoreTransaction = userTransaction.getStoreTransactions()[storeId]
-
-                for product in storeTransaction.getProduts().keys():
-                    quantity = storeTransaction.getProduts()[product]
-                    store.addProductQuantityToStore(userID, product.getProductId(), quantity)
-
-                store.removeTransaction(storeTransaction.getTransactionID())
-
-            for paymentStatus in userTransaction.getPaymentStatus():
-                user.removePaymentStatus(paymentStatus)
-
+            self.__stores.get(storeID).appointManagerToStore(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    #  action of roles - role managment
-    def appointManagerToStore(self, storeID, assignerID, assigneeID):  # Tested
+    def appointOwnerToStore(self, storeID, assigner, assignee):  # unTested
         try:
-            if self.__activeUsers.get(assignerID) is not None:
-                self.__stores.get(storeID).appointManagerToStore(assignerID, assigneeID)
-                return True
-            else:
-                raise NotOnlineException("member with id " + assignerID + " is not online!")
+            self.__stores.get(storeID).appointOwnerToStore(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneeID):  # unTested
+    def setStockManagerPermission(self, storeID, assigner, assignee):  # Tested
         try:
-            if self.__activeUsers.get(assignerID) is not None:
-                self.__stores.get(storeID).appointOwnerToStore(assignerID, assigneeID)
-                return True
-            else:
-                raise NotOnlineException("member with id " + assignerID + " is not online!")
+            self.__stores.get(storeID).setStockManagementPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def setStockManagerPermission(self, storeID, assignerID, assigneeID):  # Tested
+    def setAppointOwnerPermission(self, storeID, assigner, assignee):  # Tested
         try:
-            if self.__checkOnlineUser(assignerID) is not None:
-                self.__stores.get(storeID).setStockManagementPermission(assignerID, assigneeID)
-                return True
-            else:
-                raise NotOnlineException("member with id " + assignerID + " is not online!")
+            self.__stores.get(storeID).setAppointOwnerPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):  # Tested
+    def setChangePermission(self, storeID, assigner, assignee):
         try:
-            if self.__checkOnlineUser(assignerID) is not None:
-                self.__stores.get(storeID).setAppointOwnerPermission(assignerID, assigneeID)
-                return True
-            else:
-                raise NotOnlineException("member with id " + assignerID + " is not online!")
+            self.__stores.get(storeID).setChangePermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def setChangePermission(self, storeID, assignerID, assigneeID):
+    def setRolesInformationPermission(self, storeID, assigner, assignee):
         try:
-            if self.__checkOnlineUser(assignerID) is not None:
-                self.__stores.get(storeID).setChangePermission(assignerID, assigneeID)
+            self.__stores.get(storeID).setRolesInformationPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
+    def setPurchaseHistoryInformationPermission(self, storeID, assigner, assignee):
         try:
-            if self.__checkOnlineUser(assignerID) is not None:
-                self.__stores.get(storeID).setRolesInformationPermission(assignerID, assigneeID)
+            self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
+    def addProductToStore(self, storeID, user, product):  # Tested
         try:
-            if self.__checkOnlineUser(assignerID) is not None:
-                self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assignerID, assigneeID)
+            self.__stores.get(storeID).addProductToStore(user, product)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def addProductToStore(self, storeID, userID, product):  # Tested
+    def updateProductPrice(self, storeID, user, productId, mewPrice):
         try:
-            if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).addProductToStore(userID, product)
-                return True
-            else:
-                raise NotOnlineException("member with id " + userID + " is not online!")
+            self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def updateProductPrice(self, storeID, userID, productId, mewPrice):
+    def addProductQuantityToStore(self, storeID, user, productId, quantity):
         try:
-            if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).updateProductPrice(userID, productId, mewPrice)
+            self.__stores.get(storeID).addProductQuantityToStore(user, productId, quantity)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def addProductQuantityToStore(self, storeID, userID, productId, quantity):
+    def removeProductFromStore(self, storeID, user, productId):
         try:
-            if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).addProductQuantityToStore(userID, productId, quantity)
+            self.__stores.get(storeID).removeProductFromStore(user, productId)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def removeProductFromStore(self, storeID, userID, productId):
+    def getRolesInformation(self, storeID, user):
         try:
-            if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).removeProductFromStore(userID, productId)
+            return self.__stores.get(storeID).getPermissions(user)
         except Exception as e:
             raise Exception(e)
 
-    def printRolesInformation(self, storeID, userID):
+    def getPurchaseHistoryInformation(self, storeID, user):
         try:
-            if self.__checkOnlineUser(userID) is not None:
-                return self.__stores.get(storeID).PrintRolesInformation(userID)
+            return self.__stores.get(storeID).getTransactionHistory(user)
         except Exception as e:
             raise Exception(e)
-
-    def printPurchaseHistoryInformation(self, storeID, userID):
-        try:
-            self.__stores.get(storeID).printPurchaseHistoryInformation(userID)
-        except Exception as e:
-            raise Exception(e)
-
-    def checkOnlineMember(self, userName):
-        if (self.__activeUsers.get(userName)) is None:
-            raise NotOnlineException("The member " + userName + " not online!")
 
     def getStoreByName(self, store_name):
         store_collection = []
@@ -349,57 +279,46 @@ class Market(implements(IMarket)):
     def getStores(self):
         return self.__stores
 
-    def getActiveUsers(self):
-        return self.__activeUsers
+    # need to add to the service
+    def removeStore(self, storeID, user):
+        try:
+            if self.__stores.get(storeID) is None:
+                raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
+            if self.__stores.get(storeID).getStoreFounderId() != user.getUserID():
+                raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__stores.pop(storeID)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
+        # the user that get in the system!
+        for storeID in user.getCart().getAllBags().keys():
+            if self.__stores.get(storeID) is None:
+                user.getCart().removeBag(storeID)
+
+    def updateProductName(self, user, storeID, productID, newName):
+        try:
+            self.__stores.get(storeID).updateProductName(user, productID, newName)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductCategory(self, user, storeID, productID, newCategory):
+        try:
+            self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def __getGlobalStoreId(self):
+        with self.__storeId_lock:
+            storeId = self.__globalStore
+            self.__globalStore += 1
+            return storeId
 
     def __getTransactionId(self):
-        tId = self._transactionIdCounter
-        self._transactionIdCounter += 1
-        return tId
-
-
-    def removeStore(self, storeID, userID):
-        try:
-            if self.__activeUsers.get(userID) is None:
-                raise NotOnlineException("member with id " + userID + " is not online!")
-            if self.__stores.get(storeID) is None:
-                raise NoSuchStoreException("Store " + storeID + " is not exist in system!")
-            for user in self.__activeUsers.values():
-                user.getCart().removeBag(storeID)
-            self.__stores.pop(storeID)
-            return "Store removed succesfully!"
-        except Exception as e:
-            return e
-
-    def loginUpdates(self,
-                     userID):  # we need to check if all the store exist if not we remove all the products from the user that get in the systsem!
-
-        for storeID in self.__activeUsers.get(userID).getCart().getAllBags().keys():
-            if self.__stores.get(storeID) is None:
-                self.__activeUsers.get(userID).getCart().removeBag(storeID)
-
-    def getCart(self, userID):
-        try:
-            if self.__activeUsers.get(userID) is None:
-                raise NotOnlineException("member with id " + str(userID) + " is not online!")
-            return self.__activeUsers.get(userID).getCart().printBags()
-        except Exception as e:
-            raise Exception(e)
-
-    def updateProductName(self, userID, storeID, productID, newName):
-        try:
-            if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).updateProductName(userID, productID, newName)
-            else:
-                raise NotOnlineException("user not logged in!")
-        except Exception as e:
-            raise Exception(e)
-
-    def updateProductCategory(self, userID, storeID, productID, newCategory):
-        try:
-            if self.__checkOnlineUser(userID) is not None:
-                self.__stores.get(storeID).updateProductCategory(userID, productID, newCategory)
-            else:
-                raise NotOnlineException("user not logged in!")
-        except Exception as e:
-            raise Exception(e)
+        with self.__transactionId_lock:
+            transactionId = self._transactionIdCounter
+            self._transactionIdCounter += 1
+            return transactionId

@@ -1,9 +1,9 @@
-from interface import implements
+import zope
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
 
-
-class MarketProxyBridge(implements(IMarketBridge)):
+@zope.interface.implementer(IMarketBridge)
+class MarketProxyBridge:
     def __init__(self, real_subject: MarketRealBridge):
         self._real_subject = real_subject
 
@@ -81,12 +81,10 @@ class MarketProxyBridge(implements(IMarketBridge)):
             return True
         return self._real_subject.set_change_perm(store_id, assigner_id, assignee_id)
 
-    def close_store(self, store_id):
+    def close_store(self, store_id, user_id):
         if self.check_access():
-            if store_id < 0:
-                return False
             return True
-        return self._real_subject.close_store(store_id)
+        return self._real_subject.close_store(store_id, user_id)
 
     def get_store_info(self, store_id, user_id):
         if self.check_access():

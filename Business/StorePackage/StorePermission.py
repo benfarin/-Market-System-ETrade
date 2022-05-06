@@ -1,5 +1,6 @@
 class StorePermission:
-    def __init__(self):
+    def __init__(self, userId):
+        self.__userId = userId
         self.__stockManagement = False
         self.__appointManager = False
         self.__appointOwner = False
@@ -7,6 +8,9 @@ class StorePermission:
         self.__closeStore = False
         self.__rolesInformation = False
         self.__purchaseHistoryInformation = False
+
+    def getUserId(self):
+        return self.__userId
 
     def hasPermission_StockManagement(self):
         return self.__stockManagement
