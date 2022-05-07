@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        {% if permissions.hasPermission_StockManagement %}
+                <a class="btn btn-primary" href="/addstore" role="button">Products Management</a>
+        {% endif %}
+        {% if permissions.hasPermission_AppointManager %}
+                <a class="btn btn-primary" href="/addstore" role="button">Appoint Manager</a>
+        {% endif %}
+        {% if permissions.hasPermission_AppointOwner %}
+                <a class="btn btn-primary" href="/addstore" role="button">Appoint Owner</a>
+        {% endif %}
+        {% if permissions.hasPermission_ChangePermission %}
+                <a class="btn btn-primary" href="/addstore" role="button">Change Stuff Member Permission</a>
+        {% endif %}
+        {% if permissions.hasPermission_RolesInformation %}
+                <a class="btn btn-primary" href="/addstore" role="button">Show All Stuff Members</a>
+        {% endif %}
+        {% if permissions.hasPermission_PurchaseHistoryInformation %}
+                <a class="btn btn-primary" href="/addstore" role="button">Show Purchases History</a>
+        {% endif %}
+        {% if permissions.hasPermission_CloseStore %}
+                <a class="btn btn-primary" href="/addstore" role="button">Close Store</a>
+        {% endif %}
+</div>
+
+{% endblock %}

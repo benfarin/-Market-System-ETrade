@@ -2,9 +2,12 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from threading import Thread
+
 sys.path.append('....')
 
-def main():
+
+def web_run():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     try:
@@ -16,6 +19,11 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
+
+
+def main():
+    t = Thread(target=web_run, args=(),)
+    t.run()
 
 
 if __name__ == '__main__':

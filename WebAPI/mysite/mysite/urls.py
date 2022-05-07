@@ -20,10 +20,14 @@ from .views import (
     home_page,
     signup_page,
     login_page,
+    my_stores_page, create_store_page, store_page,
 )
 
 urlpatterns = [
     path('', home_page),
+    path('my_stores/', my_stores_page),
+    path('store/<str:slug>/', store_page),
+    path('addstore/', create_store_page),
     path('signup/', signup_page),
     path('login/', login_page),
     path('admin/', admin.site.urls),
