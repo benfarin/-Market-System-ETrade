@@ -20,15 +20,22 @@ from .views import (
     home_page,
     signup_page,
     login_page,
-    my_stores_page, create_store_page, store_page,
+    my_stores_page, create_store_page, store_page, store_products_management, appoint_manager, appoint_Owner, logout,
 )
 
 urlpatterns = [
     path('', home_page),
     path('my_stores/', my_stores_page),
     path('store/<str:slug>/', store_page),
+    path('store/<str:slug>/products_manage/', store_products_management),
+    path('store/<str:slug>/appoint_manager/', appoint_manager),
+    path('store/<str:slug>/appoint_owner/', appoint_Owner),
+    path('store/<str:slug>/stuff_permissions/', store_page),
+    path('store/<str:slug>/stuff/', store_page),
+    path('store/<str:slug>/history/', store_page),
     path('addstore/', create_store_page),
     path('signup/', signup_page),
     path('login/', login_page),
+    path('logout/', logout),
     path('admin/', admin.site.urls),
 ]

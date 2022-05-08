@@ -17,7 +17,6 @@ from Service.MemberService import MemberService
 from Service.RoleService import RoleService
 from Service.UserService import UserService
 
-
 # def call_with_future(fn, future, args, kwargs):
 #     try:
 #         result = fn(*args, **kwargs)
@@ -40,7 +39,7 @@ from Service.UserService import UserService
 role_service = RoleService()
 member_service = MemberService()
 user_service = UserService()
-from .forms import SignupForm, LoginForm, CreateStoreForm
+from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -98,12 +97,21 @@ def login_page(request):
         answer = user_service.memberLogin(username, password)
         if not answer.isError():
             user = answer.getData()
+            print(user.getMemberId())
         return HttpResponseRedirect("/")
     context = {
         "title": "Login",
         "form": form
     }
     return render(request, "form.html", context)
+
+
+def logout(request):
+    global user
+    if isinstance(user, MemberDTO):
+        member_service.logoutMember(user.getMemberName())
+        user = user_service.enterSystem().getData()
+    return HttpResponseRedirect("/")
 
 
 def my_stores_page(request):
@@ -125,7 +133,7 @@ def create_store_page(request):
     form = CreateStoreForm(request.POST or None)
     if form.is_valid():
         form = CreateStoreForm()
-    storeName = request.POST.get("storeName")
+    store_name = request.POST.get("storeName")
     account_num = request.POST.get("account_num")
     branch_num = request.POST.get("branch_num")
     country = request.POST.get("country")
@@ -133,8 +141,8 @@ def create_store_page(request):
     street = request.POST.get("street")
     apartment_num = request.POST.get("apartment_num")
     zip_code = request.POST.get("zip_code")
-    if storeName is not None:
-        answer = member_service.createStore(storeName, user.getMemberId(), account_num, branch_num, country, city,
+    if store_name is not None:
+        answer = member_service.createStore(store_name, user.getMemberId(), account_num, branch_num, country, city,
                                             street,
                                             apartment_num, zip_code)
         if not answer.isError():
@@ -151,4 +159,46 @@ def store_page(request, slug):
     answer = role_service.getRolesInformation(int(slug), user.getMemberId())
     if not answer.isError():
         permissions = answer.getData()
-        return render(request, "store.html", {"permissions": permissions[0]})
+        for permission in permissions:
+            if permission.getUserId() == user.getMemberId():
+                return render(request, "store.html", {"permissions": permission})
+
+
+def store_products_management(request, slug):
+    return render(request, "products_manage.html", {})
+
+
+def appoint_manager(request, slug):
+    global user
+    form = AppointForm(request.POST or None)
+    if form.is_valid():
+        form = AppointForm()
+    assingeeID = request.POST.get("assingeeID")
+    if assingeeID is not None:
+        answer = role_service.appointManagerToStore(int(slug), user.getMemberId(), assingeeID)
+        if not answer.isError():
+            role_service.setRolesInformationPermission(int(slug), user.getMemberId(), assingeeID)
+            return HttpResponseRedirect("/store/" + slug + "/")
+    context = {
+        "title": "Appoint Store Manager",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def appoint_Owner(request, slug):
+    global user
+    form = AppointForm(request.POST or None)
+    if form.is_valid():
+        form = AppointForm()
+    assingeeID = request.POST.get("assingeeID")
+    if assingeeID is not None:
+        answer = role_service.appointOwnerToStore(int(slug), user.getMemberId(), assingeeID)
+        if not answer.isError():
+            role_service.setRolesInformationPermission(int(slug), user.getMemberId(), assingeeID)
+            return HttpResponseRedirect("/store/" + slug + "/")
+    context = {
+        "title": "Appoint Store Owner",
+        "form": form
+    }
+    return render(request, "form.html", context)

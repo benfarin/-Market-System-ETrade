@@ -3,13 +3,13 @@
 {% block content%}
 <div style="text-align: center;">
         {% if permissions.hasPermission_StockManagement %}
-                <a class="btn btn-primary" href="/addstore" role="button">Products Management</a>
+                <a class="btn btn-primary" href="products_manage/" role="button">Products Management</a>
         {% endif %}
         {% if permissions.hasPermission_AppointManager %}
-                <a class="btn btn-primary" href="/addstore" role="button">Appoint Manager</a>
+                <a class="btn btn-primary" href="appoint_manager/" role="button">Appoint Manager</a>
         {% endif %}
         {% if permissions.hasPermission_AppointOwner %}
-                <a class="btn btn-primary" href="/addstore" role="button">Appoint Owner</a>
+                <a class="btn btn-primary" href="appoint_owner/" role="button">Appoint Owner</a>
         {% endif %}
         {% if permissions.hasPermission_ChangePermission %}
                 <a class="btn btn-primary" href="/addstore" role="button">Change Stuff Member Permission</a>

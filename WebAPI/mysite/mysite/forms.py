@@ -31,3 +31,7 @@ class CreateStoreForm(forms.Form):
     street = forms.CharField()
     apartment_num = forms.IntegerField()
     zip_code = forms.IntegerField()
+
+
+class AppointForm(forms.Form):
+    assingeeID = forms.CharField()
