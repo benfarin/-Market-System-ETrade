@@ -184,3 +184,18 @@ class UserManagment(object):
 
     def removeMember(self, userName, password):
         pass
+
+    def getStore(self, storeID):
+        return self.__market.getStoreById(storeID)
+
+    def getAllStores(self):
+        return self.__market.getStores()
+
+    def getAllStoresOfUser(self, userId):
+        stores = self.__market.getStores()
+        member = self.__members.get(userId)
+        stores_of_user = []
+        for store in stores.values():
+            if store.hasPermissions(member):
+                stores_of_user.append(store)
+        return stores_of_user
