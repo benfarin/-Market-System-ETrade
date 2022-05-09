@@ -1,10 +1,13 @@
-class adressDTO():
-    def __init__(self, country, city, street, apartmentNum, zipCode):
-        self.__country = country
-        self.__city = city
-        self.__street = street
-        self.__apartmentNum = apartmentNum
-        self.__zipCode = zipCode
+from Business.Address import Address
+
+
+class AddressDTO:
+    def __init__(self, address: Address):
+        self.__country = address.getCountry()
+        self.__city = address.getCity()
+        self.__street = address.getStreet()
+        self.__apartmentNum = address.getApartmentNum()
+        self.__zipCode = address.getZipCode()
 
     def getCountry(self):
         return self.__country

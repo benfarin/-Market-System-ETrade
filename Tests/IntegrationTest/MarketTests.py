@@ -4,11 +4,14 @@ from Business.Address import Address
 from Business.Bank import Bank
 from Business.Market import Market
 from Business.StorePackage.Product import Product
+from Business.StorePackage.Store import Store
 from Business.UserPackage.Member import Member
 from interfaces.IMarket import IMarket
+import threading
 
 
 class MarketTests(unittest.TestCase):
+  
     def setUp(self):
         self.__market: IMarket = Market().getInstance()
         self.__address1 = Address("Israel", "modiin", "avni hoshen", 4, 71813)
@@ -29,12 +32,12 @@ class MarketTests(unittest.TestCase):
         # store2: founder: member2, owners: [member2], managers: []
 
     def test_createStore(self):
-        # storeId1 = 0 , founder: member1
-        self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1,self.__address2)
-        self.assertEqual(0, self.__storeId1)
+        self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1, self.__address2).getStoreId()
+        self.__storeId2 = self.__market.createStore("Decathlon", self.__member2, self.__bank1, self.__address3).getStoreId()
 
+        # storeId1 = 0 , founder: member1
+        self.assertEqual(0, self.__storeId1)
         # storeId2 = 1, founder: member2
-        self.__storeId2 = self.__market.createStore("Decathlon", self.__member2, self.__bank1, self.__address3)
         self.assertEqual(1, self.__storeId2)
 
     def test_addProductToStore(self):
@@ -51,7 +54,11 @@ class MarketTests(unittest.TestCase):
         self.assertRaises(Exception, lambda: self.__market.addProductToStore(0, self.__member2, self.__product1))
         # try to add a product that all ready exists
         self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product1))
-        self.assertRaises(Exception,lambda: self.__market.addProductToStore(0, self.__member1, self.__product1))
+        self.assertRaises(Exception, lambda: self.__market.addProductToStore(0, self.__member1, self.__product1))
+        # try to add in the same time
+        self.__market.appointOwnerToStore(0, self.__member1, self.__member3)
+        self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product3))
+        self.assertRaises(Exception, lambda: self.__market.addProductToStore(0, self.__member3, self.__product3))
 
     def test_addProductQuantity(self):
         self.test_addProductToStore()
@@ -59,7 +66,21 @@ class MarketTests(unittest.TestCase):
             self.__market.addProductQuantityToStore(0, self.__member1, self.__product1.getProductId(), 100)
             self.__market.addProductQuantityToStore(0, self.__member1, self.__product2.getProductId(), 92)
             self.__market.addProductQuantityToStore(1, self.__member2, self.__product3.getProductId(), 31)
-            self.assertTrue(True)
+
+            self.__market.appointOwnerToStore(0, self.__member1, self.__member3)
+            t1 = threading.Thread(target=self.__market.addProductQuantityToStore, args=
+            (0, self.__member1, self.__product1.getProductId(), 10))
+            t2 = threading.Thread(target=self.__market.addProductQuantityToStore, args=
+            (0, self.__member3, self.__product1.getProductId(), 20))
+
+            t1.start()
+            t2.start()
+
+            t1.join()
+            t2.join()
+            store0: Store = self.__market.getStoreById(0)
+            self.assertTrue(130, store0.getProductQuantity()[self.__product1.getProductId()])
+
         except:
             self.assertTrue(False)
 
@@ -80,7 +101,6 @@ class MarketTests(unittest.TestCase):
         self.assertRaises(Exception, lambda: self.__market.addProductQuantityToStore(0, self.__member1,
                                                                                      self.__product1.getProductId(),
                                                                                      -3))
-
     def test_addProductToCart(self):
         self.test_addProductQuantity()
         self.assertTrue(self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 7))
@@ -90,16 +110,20 @@ class MarketTests(unittest.TestCase):
         print(self.__member2.getCart().printBags())
 
     def test_addProductToCart_Fail(self):
-        # try to add product to cart from store that doesn't exist
-        self.assertRaises(Exception, lambda: self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 10))
+        # try to add product to cart1111 from store that doesn't exist
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 10))
         self.test_createStore()
         # try to add product that doesn't exist in the store
-        self.assertRaises(Exception, lambda: self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 10))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 10))
 
         self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product1))
         self.__market.addProductQuantityToStore(0, self.__member1, self.__product1.getProductId(), 100)
         # try to buy product that doesn't have in stock
-        self.assertRaises(Exception, lambda: self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 110))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(),
+                                                                 110))
 
     def test_removeProductFromCart(self):
         self.test_addProductToCart()
@@ -112,7 +136,7 @@ class MarketTests(unittest.TestCase):
     def test_purchaseCart(self):
         self.test_addProductToCart()
         self.assertTrue(self.__market.purchaseCart(self.__member1, self.__bank1))
-        trans = self.__member1.getTransaction(2)
+        trans = self.__member1.getTransactionById(2)
         print("\n")
         for storeId in trans.getStoreTransactions().keys():
             print(trans.getStoreTransactions()[storeId].getPurchaseHistoryInformation())

@@ -1,13 +1,17 @@
 from typing import Dict
-from Service.DTO import storeTransactionDTO,paymentStatusDTO
+
+from Business.Transactions import StoreTransaction
+from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
+from Business.Transactions.UserTransaction import UserTransaction
 
 
 class userTransactionDTO:
-    def __init__(self, userID, transactionId, storeTransactions, paymentsStatus):
-        self.__userID = userID
-        self.__transactionId = transactionId
-        self.__storeTransactions: Dict[int: storeTransactionDTO] = storeTransactions
-        self.__paymentStatus : paymentStatusDTO = paymentsStatus
+    def __init__(self, userTransaction: UserTransaction):
+        self.__userID = userTransaction.getUserId()
+        self.__transactionId = userTransaction.getUserTransactionId()
+        self.__storeTransactions: Dict[int: storeTransactionForUserDTO] = \
+            self.__makeDtoTransaction(userTransaction.getStoreTransactions())
+        self.__paymentId = userTransaction.getPaymentId()
 
     def getStoreTransaction(self, id):
         return self.__storeTransactions.get(id)
@@ -18,20 +22,26 @@ class userTransactionDTO:
     def getStoreTransactions(self):
         return self.__storeTransactions
 
-    def getPaymentStatus(self):
-        return self.__paymentStatus
+    def getPaymentId(self):
+        return self.__paymentId
 
     def getUserID(self):
         return self.__userID
 
-    def setUserTransactionId(self,id):
+    def setUserTransactionId(self, id):
         self.__transactionId = id
 
-    def setStoreTransactions(self, transaction: Dict[int: storeTransactionDTO]):
+    def setStoreTransactions(self, transaction):
         self.__storeTransactions = transaction
 
-    def setPaymentStatus(self, status):
-        self.__paymentStatus = status
+    def setPaymentId(self, paymentId):
+        self.__paymentId = paymentId
 
     def setUserID(self, userid):
         __userID = userid
+
+    def __makeDtoTransaction(self, storeTransactions: {int: StoreTransaction}):
+        transactionList = {}
+        for st in storeTransactions.keys():
+            transactionList[st.getStoreId()] = storeTransactionForUserDTO(st)
+        return transactionList

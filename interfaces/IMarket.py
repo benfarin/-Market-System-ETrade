@@ -72,10 +72,10 @@ class IMarket(Interface):
     def removeProductFromStore(self, storeID, user, productId):
         pass
 
-    def printRolesInformation(self, storeID, user):
+    def getRolesInformation(self, storeID, user):
         pass
 
-    def printPurchaseHistoryInformation(self, storeID, user):
+    def getPurchaseHistoryInformation(self, storeID, user):
         pass
 
     def getStoreByName(self, store_name):

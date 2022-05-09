@@ -1,7 +1,10 @@
-class bankDTO:
-    def __init__(self, accountNumber, branch):
-        self.__accountNumber = accountNumber
-        self.__branch = branch
+from Business.Bank import Bank
+
+
+class BankDTO:
+    def __init__(self, bank: Bank):
+        self.__accountNumber = bank.getAccountNumber()
+        self.__branch = bank.getBranch()
 
     def getAccountNumber(self):
         return self.__accountNumber

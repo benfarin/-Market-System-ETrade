@@ -4,7 +4,7 @@ import zope
 
 from Business.StorePackage.Store import Store
 from Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
-    EmptyCartException, PaymentException, NoSuchStoreException
+    EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from interfaces.IMarket import IMarket
 from interfaces.IStore import IStore
 from interfaces.IMember import IMember
@@ -44,7 +44,7 @@ class Market:
         storeID = self.__getGlobalStoreId()
         newStore = Store(storeID, storeName, user, bank, address)
         self.__stores[storeID] = newStore
-        return newStore.getStoreId()
+        return newStore
 
     def addProductToCart(self, user, storeID, productID, quantity):  # Tested
         try:
@@ -135,23 +135,21 @@ class Market:
             storeFailed = []
             storeTransactions: Dict[int: StoreTransaction] = {}
             totalAmount = 0.0
-            paymentStatuses: Dict[int: PaymentStatus] = {}
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
+                storeName = self.__stores.get(storeId).getStoreName()
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
                 storeAmount = cart.calcSumOfBag(storeId)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeId, storeAmount)
+                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
-                user.addPaymentStatus(paymentStatus)
-                paymentStatuses[paymentStatus.getPaymentId()] = paymentStatus
 
                 if paymentStatus.getStatus() == "payment succeeded":
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
-                    user.addPaymentStatus(paymentStatus)
+                    # user.addPaymentStatus(paymentStatus)
                     transactionId = self.__getTransactionId()
-                    storeTransaction: StoreTransaction = StoreTransaction(storeId, transactionId,
+                    storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
@@ -159,34 +157,18 @@ class Market:
                 else:
                     storeFailed.append(storeId)
 
-            user.addTransaction(UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, paymentStatuses))
+            userPaymentId = Paymentlmpl.getInstance().getPaymentId()
+            user.addPayment(userPaymentId)
+            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId)
+            user.addTransaction(userTransaction)
+
+            # need to think what should we do if some of the payments failed
             if len(storeFailed) == 0:
-                return True
+                return userTransaction
             else:
                 raise PaymentException("failed to pay in stores: " + str(storeFailed))
 
             # here need to add delivary
-        except Exception as e:
-            raise Exception(e)
-
-    # need to delete that function
-    def cancelPurchaseCart(self, user, transactionId):
-        try:
-            userTransaction = user.getTransaction(transactionId)
-
-            for storeId in userTransaction.getStoreTransactions().keys():
-                store: Store = self.__stores.get(storeId)
-                storeTransaction: StoreTransaction = userTransaction.getStoreTransactions()[storeId]
-
-                for product in storeTransaction.getProduts().keys():
-                    quantity = storeTransaction.getProduts()[product]
-                    store.addProductQuantityToStore(user.getUserID(), product.getProductId(), quantity)
-
-                store.removeTransaction(storeTransaction.getTransactionID())
-
-            for paymentStatus in userTransaction.getPaymentStatus():
-                user.removePaymentStatus(paymentStatus)
-
         except Exception as e:
             raise Exception(e)
 
@@ -222,18 +204,21 @@ class Market:
     def setChangePermission(self, storeID, assigner, assignee):
         try:
             self.__stores.get(storeID).setChangePermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def setRolesInformationPermission(self, storeID, assigner, assignee):
         try:
             self.__stores.get(storeID).setRolesInformationPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def setPurchaseHistoryInformationPermission(self, storeID, assigner, assignee):
         try:
             self.__stores.get(storeID).setPurchaseHistoryInformationPermission(assigner, assignee)
+            return True
         except Exception as e:
             raise Exception(e)
 
@@ -247,30 +232,33 @@ class Market:
     def updateProductPrice(self, storeID, user, productId, mewPrice):
         try:
             self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def addProductQuantityToStore(self, storeID, user, productId, quantity):
         try:
             self.__stores.get(storeID).addProductQuantityToStore(user, productId, quantity)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def removeProductFromStore(self, storeID, user, productId):
         try:
             self.__stores.get(storeID).removeProductFromStore(user, productId)
+            return True
         except Exception as e:
             raise Exception(e)
 
-    def printRolesInformation(self, storeID, user):
+    def getRolesInformation(self, storeID, user):
         try:
-            return self.__stores.get(storeID).PrintRolesInformation(user)
+            return self.__stores.get(storeID).getPermissions(user)
         except Exception as e:
             raise Exception(e)
 
-    def printPurchaseHistoryInformation(self, storeID, user):
+    def getPurchaseHistoryInformation(self, storeID, user):
         try:
-            self.__stores.get(storeID).printPurchaseHistoryInformation(user)
+            return self.__stores.get(storeID).getTransactionHistory(user)
         except Exception as e:
             raise Exception(e)
 
@@ -296,12 +284,12 @@ class Market:
         try:
             if self.__stores.get(storeID) is None:
                 raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
-            # for user in self.__activeUsers.values():
-            #    user.getCart().removeBag(storeID)
+            if self.__stores.get(storeID).getStoreFounderId() != user.getUserID():
+                raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
             self.__stores.pop(storeID)
-            return "Store removed successfully!"
+            return True
         except Exception as e:
-            return e
+            raise Exception(e)
 
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         # the user that get in the system!
@@ -312,12 +300,14 @@ class Market:
     def updateProductName(self, user, storeID, productID, newName):
         try:
             self.__stores.get(storeID).updateProductName(user, productID, newName)
+            return True
         except Exception as e:
             raise Exception(e)
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         try:
             self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
+            return True
         except Exception as e:
             raise Exception(e)
 

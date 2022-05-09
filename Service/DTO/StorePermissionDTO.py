@@ -1,12 +1,19 @@
-class storePermissionDTO:
-    def __init__(self):
-        self.__stockManagement = False
-        self.__appointManager = False
-        self.__appointOwner = False
-        self.__changePermission = False
-        self.__closeStore = False
-        self.__rolesInformation = False
-        self.__purchaseHistoryInformation = False
+from Business.StorePackage.StorePermission import StorePermission
+
+
+class StorePermissionDTO:
+    def __init__(self, storePermission: StorePermission):
+        self.__userId = storePermission.getUserId()
+        self.__stockManagement = storePermission.hasPermission_StockManagement()
+        self.__appointManager = storePermission.hasPermission_AppointManager()
+        self.__appointOwner = storePermission.hasPermission_AppointOwner()
+        self.__changePermission = storePermission.hasPermission_ChangePermission()
+        self.__closeStore = storePermission.hasPermission_CloseStore()
+        self.__rolesInformation = storePermission.hasPermission_RolesInformation()
+        self.__purchaseHistoryInformation = storePermission.hasPermission_PurchaseHistoryInformation()
+
+    def getUserId(self):
+        return self.__userId
 
     def hasPermission_StockManagement(self):
         return self.__stockManagement
@@ -49,4 +56,3 @@ class storePermissionDTO:
 
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
-

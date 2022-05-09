@@ -1,5 +1,4 @@
 import zope
-from interface import implements
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
 
@@ -82,12 +81,10 @@ class MarketProxyBridge:
             return True
         return self._real_subject.set_change_perm(store_id, assigner_id, assignee_id)
 
-    def close_store(self, store_id):
+    def close_store(self, store_id, user_id):
         if self.check_access():
-            if store_id < 0:
-                return False
             return True
-        return self._real_subject.close_store(store_id)
+        return self._real_subject.close_store(store_id, user_id)
 
     def get_store_info(self, store_id, user_id):
         if self.check_access():

@@ -28,6 +28,9 @@ class Product:
     def getProductCategory(self):
         return self.__category
 
+    def getProductKeywords(self):
+        return self.__keywords
+
     def setProductName(self, name):
         self.__name = name
 

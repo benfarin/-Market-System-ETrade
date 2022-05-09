@@ -1,18 +1,19 @@
 import zope
-from interface import implements
+
 
 from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
 from Service.MemberService import MemberService
 from Service.RoleService import RoleService
 from Service.UserService import UserService
-from interface import implements
+
 
 @zope.interface.implementer(IUserBridge)
 class UserRealBridge:
-    def __init__(self, user_service, market_service):
-        self._userService = UserService()
+    def __init__(self):
         self._roleService = RoleService()
         self._memberService = MemberService()
+        self._userService = UserService()
+
 
     def request(self) -> bool:
         if self.check_access():

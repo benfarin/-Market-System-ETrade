@@ -1,9 +1,15 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.User import User
-from Service.Events.Events import Events
-from Service.Events.EventLog import EventLog
+from Service.Response import Response
+from Service.DTO.GuestDTO import GuestDTO
+from Service.DTO.MemberDTO import MemberDTO
+from Service.DTO.ProductDTO import ProductDTO
+from Service.DTO.userTransactionDTO import userTransactionDTO
+from Service.DTO.CartDTO import CartDTO
 from typing import Dict
 import logging
+
+firstAdminRegistered = False
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -12,178 +18,165 @@ logging.basicConfig(
 
 
 class UserService:
+
     def __init__(self):
-        self.__userManagment = UserManagment()
-        self.__events = Events()
+        global firstAdminRegistered
+        self.__userManagment = UserManagment.getInstance()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
-        self.__users: Dict[str : User] = {}
-        self.enterSystem()
+        # self.__users: Dict[str : User] = {}
+        if not firstAdminRegistered:
+            self.enterSystem()
+            firstAdminRegistered = True
 
     def enterSystem(self):
         try:
-            guest: User = self.__userManagment.enterSystem()
-            self.__users[guest.getUserID()] = guest
-            self.__events.addEventLog(EventLog("guest login"))
+            guest = self.__userManagment.enterSystem()
+            # self.__users[guest.getUserID()] = guest
             logging.info("success to enter system as a guest")
-            return guest
+            return Response(GuestDTO(guest))
         except Exception as e:
             logging.error("There was a problem during entering the system")
-            return e
+            return Response(e.__str__())
 
     def exitSystem(self, guestID):  # need to remove cart!
         try:
-            toReturn = self.__userManagment.exitSystem(guestID)
-            self.__users.pop(guestID)
-            self.__events.addEventLog(EventLog("guest logout", "guestId: ", str(guestID)))
+            isExit = self.__userManagment.exitSystem(guestID)
+            # self.__users.pop(guestID)
             logging.info("success to exit system")
-            return toReturn
+            return Response(isExit)
         except Exception as e:
             logging.error("There was a problem during logout from the system")
-            return e
+            return Response(e.__str__())
 
     def memberSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                      zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
-            self.__events.addEventLog(EventLog("member sign up", "user name: " + userName, "password: " + password,
-                                               "phone: " + phone, "address: " + address.printForEvents(),
-                                               "bank: " + bank.printForEvents()))
+            isSignuped = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
-            return toReturn
+
+            return Response(isSignuped)
         except Exception as e:
             logging.warning("There was a problem during registration process")
-            return e
+            return Response(e.__str__())
 
     def memberLogin(self, userName, password):
         try:
-            toReturn = self.__userManagment.memberLogin(userName, password)
-            self.__events.addEventLog(EventLog("member login", "username: " + userName, "password: " + password))
+            member = self.__userManagment.memberLogin(userName, password)
             logging.info("success to login user " + userName)
-            return toReturn
+            return Response(MemberDTO(member))
         except Exception as e:
             logging.error("There was a problem during login as a member")
-            return e
+            return Response(e.__str__())
 
     def systemManagerSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                             zipCode):
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
-            self.__events.addEventLog(EventLog("system managment signup", "username: " + userName,
-                                               "password: " + password, "phone: " + str(phone),
-                                               "bank: " + bank.printForEvents(),
-                                               "address: " + address.printForEvents()))
+            systemManager = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
             logging.info("success to sign new system manager " + userName)
-            return toReturn
+            return MemberDTO(systemManager)
         except Exception as e:
             logging.error("Cannot signup new System Manager")
             return e
 
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
-            self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
-            eventLog = EventLog("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
-                                "productId: " + str(productId), "quantity: " + str(quantity))
-            logging.info("add product to cart", "userId: " + str(userID), "storeId: ", str(storeId),
-                         "productId: " + str(productId), "quantity: " + str(quantity))
-            self.__events.addEventLog(eventLog)
-            return True
+            isAdded = self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
+            logging.info("added product " + str(productId) + "to cart for user " + str(userID))
+            return Response(isAdded)
         except Exception as e:
             logging.error("Failed add product to cart")
-            return e
+            return Response(e.__str__())
 
     def removeProductFromCart(self, userId, storeId, productId):
         try:
-            self.__userManagment.removeProductFromCart(userId, storeId, productId)
-            eventLog = EventLog("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
-                                "productId: " + str(productId))
-            logging.info("remove product from cart", "userId: " + str(userId), "storeId: ", str(storeId),
-                         "productId: " + str(productId))
-            self.__events.addEventLog(eventLog)
-            return True
+            isRemoved = self.__userManagment.removeProductFromCart(userId, storeId, productId)
+            logging.info("removeed product " + str(productId) + " from cart for user " + userId)
+            return Response(isRemoved)
         except Exception as e:
             logging.error("Failed remove product from cart")
-            return e
+            return Response(e.__str__())
 
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
-            self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
-            eventLog = EventLog("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
-                                "productId: " + str(productId), "quantity: " + str(quantity))
-            logging.info("update product from cart", "userId: " + str(userID), "storeId: ", str(storeID),
-                         "productId: " + str(productId), "quantity: " + str(quantity))
-            self.__events.addEventLog(eventLog)
-            return True
+            isUpdated = self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
+            logging.info("updated product " + str(productId) + " from cart for user " + userID)
+            return Response(isUpdated)
         except Exception as e:
             logging.error("Failed updating product in cart")
-            return e
+            return Response(e.__str__())
 
     def getProductByCategory(self, category):
         try:
-            toReturn = self.__userManagment.getProductByCategory(category)
-            self.__events.addEventLog(EventLog("get product by category", "category: " + category))
+            products = self.__userManagment.getProductByCategory(category)
             logging.info("success to get product by category " + category)
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this category")
-            return e
+            return Response(e.__str__())
 
     def getProductByName(self, nameProduct):
         try:
-            toReturn = self.__userManagment.getProductsByName(nameProduct)
-            self.__events.addEventLog(EventLog("get product by name", "name: " + nameProduct))
+            products = self.__userManagment.getProductsByName(nameProduct)
             logging.info("success to get product by name " + nameProduct)
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this name")
-            return e
+            return Response(e.__str__())
 
     def getProductByKeyword(self, keyword):
         try:
-            toReturn = self.__userManagment.getProductByKeyWord(keyword)
-            self.__events.addEventLog(EventLog("get product by keyword", "keyword: " + keyword))
+            products = self.__userManagment.getProductByKeyWord(keyword)
             logging.info("success to get product by keyword " + keyword)
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this keywords")
-            return e
+            return Response(e.__str__())
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            toReturn = self.__userManagment.getProductPriceRange(minPrice, highPrice)
-            self.__events.addEventLog(EventLog("get product by price range", "min price: " + str(minPrice),
-                                               "high price: " + str(highPrice)))
+            products = self.__userManagment.getProductPriceRange(minPrice, highPrice)
             logging.info("success to get product by price range")
-            return toReturn
+
+            productsDTOs = []
+            for product in products:
+                productsDTOs.append(ProductDTO(product))
+            return Response(productsDTOs)
         except Exception as e:
             logging.error("Cannot find product by this price range")
-            return e
+            return Response(e.__str__())
 
     def purchaseCart(self, userID, accountNumber, branch):
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, branch)
-            self.__userManagment.purchaseCart(userID, bank)
-            eventLog = EventLog("purchase cart", "userId: " + str(userID), "accountNumber: " + str(accountNumber)
-                                , "branch: " + str(branch))
+            userTransaction = self.__userManagment.purchaseCart(userID, bank)
             logging.info("success to purchase cart for user " + str(userID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(userTransactionDTO(userTransaction))
         except Exception as e:
             logging.error("Failed to purchase cart for user" + str(userID))
-            return e
+            return Response(e.__str__())
 
     def getCart(self, userID):
         try:
-            toReturn = self.__userManagment.getCart(userID)
-            self.__events.addEventLog(EventLog("get cart", "userId: " + str(userID)))
+            cart = self.__userManagment.getCart(userID)
             logging.info("success get cart for user " + str(userID))
-            return toReturn
+            return Response(CartDTO(cart))
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
-            return e
-
-
+            return Response(e.__str__())

@@ -1,7 +1,10 @@
 from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
-from Service.Events.Events import Events
-from Service.Events.EventLog import EventLog
+from Service.Response import Response
+from Service.DTO.StoreDTO import StoreDTO
+from Service.DTO.userTransactionDTO import userTransactionDTO
+from Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
+from Service.DTO.ProductDTO import ProductDTO
 import logging
 
 logging.basicConfig(
@@ -11,47 +14,48 @@ logging.basicConfig(
 
 
 class MemberService:
-    def __init__(self):
-        self.__memberManage = MemberManagment().getInstance()
-        self.__roleManagment = RoleManagment().getInstance()
-        self.__events = Events()
 
-    def getEvents(self):
-        return self.__events
+    def __init__(self):
+        self.__memberManage = MemberManagment.getInstance()
+        self.__roleManagment = RoleManagment.getInstance()
 
     def createStore(self, storeName, founderId, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         try:
             bank = self.__memberManage.createBankAcount(accountNumber, brunch)
             address = self.__memberManage.createAddress(country, city, street, apartmentNum, zipCode)
-            toReturn = self.__memberManage.createStore(storeName, founderId, bank, address)
-            eventLog = EventLog("create store", "store name: " + storeName, "founderId: " + str(founderId),
-                                "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
-            logging.info("create store", "store name: " + storeName, "founderId: " + str(founderId),
-                         "bankAccount: " + bank.printForEvents(), "address: " + address.printForEvents())
-            self.__events.addEventLog(eventLog)
-            return toReturn
+            store = self.__memberManage.createStore(storeName, founderId, bank, address)
+
+            logging.info("succeeded create store " + storeName)
+            return Response(StoreDTO(store))
+
         except Exception as e:
             logging.error("Failed opening a new store")
-            return e
+            return Response(e.__str__())
+
+    def removeStore(self, storeId, userId):
+        try:
+            isRemoved = self.__memberManage.removeStore(userId, storeId)
+            logging.info("remove store: " + userId)
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed remove the store: " + str(storeId))
+            return Response(e.__str__())
 
     def logoutMember(self, userName):
         try:
-            toReturn = self.__memberManage.logoutMember(userName)
-            eventLog = EventLog("")
-            logging.info("")
-            self.__events.addEventLog(eventLog)
-            return toReturn
+            isLoggedOut = self.__memberManage.logoutMember(userName)
+            logging.info("logout member: " + userName)
+            return Response(isLoggedOut)
         except Exception as e:
             logging.error("Failed opening a new store")
-            return e
+            return Response(e.__str__())
 
     def getMemberTransactions(self, userID):
         try:
-            toReturn = self.__memberManage.getMemberTransactions(userID)
-            eventLog = EventLog("")
+            transactions = self.__memberManage.getMemberTransactions(userID)
             logging.info("")
-            self.__events.addEventLog(eventLog)
-            return toReturn
+            return Response(userTransactionDTO(transactions))
         except Exception as e:
             logging.error("Failed opening a new store")
-            return e
+            return Response(e.__str__())
+

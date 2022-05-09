@@ -3,7 +3,13 @@ from zope.interface import Interface
 
 class IMember(Interface):
 
+    def getMemberName(self):
+        pass
+
     def createStore(self, storeName, bank, address):
+        pass
+
+    def removeStore(self, storeId, user):
         pass
 
     def getMemberTransactions(self):
@@ -48,9 +54,9 @@ class IMember(Interface):
     def updateProductCategory(self, storeID, productID, newCategory):
         pass
 
-    def PrintRolesInformation(self, storeID):
+    def getRolesInformation(self, storeID):
         pass
 
-    def printPurchaseHistoryInformation(self, storeID):
+    def getPurchaseHistoryInformation(self, storeID):
         pass
 

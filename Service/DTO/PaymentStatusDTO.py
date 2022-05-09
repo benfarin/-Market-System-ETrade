@@ -1,12 +1,11 @@
-class paymentStatusDTO:
-    def __init__(self, paymentId, clientId, storeId, status):
-        self.paymentId = paymentId
-        self.clientId = clientId
-        self.storeId = storeId
-        self.status = status
+from Payment.PaymentStatus import PaymentStatus
 
-    def getPaymentId(self):
-        return self.paymentId
+
+class PaymentStatusDTO:
+    def __init__(self, payment: PaymentStatus):
+        self.paymentId = payment.getPaymentId()
+        self.clientId = payment.getUserId()
+        self.status = payment.getStatus()
 
     def getPaymentId(self):
         return self.paymentId
@@ -32,5 +31,4 @@ class paymentStatusDTO:
     def setPaymentID(self, paymentID):
         self.paymentId = paymentID
 
-    def setStatus(self, status):
-        self.status = status
+

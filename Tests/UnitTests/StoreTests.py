@@ -1,3 +1,4 @@
+import threading
 import unittest
 from Business.Bank import Bank
 from Business.Address import Address
@@ -138,8 +139,20 @@ class MyTestCase(unittest.TestCase):
 
     def test_add_quantity_product(self):
         self.test_add_product_quantity()
-        self.assertTrue(self.store.addProductToBag(self.product4.getProductId(), 2))
-        self.assertRaises(Exception, lambda: self.store.addProductToBag(self.product4.getProductId(), 2))
+
+        t1 = threading.Thread(target=self.store.addProductQuantityToStore, args=(self.member1, self.product1.getProductId(), 10))
+        t2 = threading.Thread(target=self.store.addProductQuantityToStore,args=(self.member3, self.product1.getProductId(), 10))
+
+        try:
+            t1.start()
+            t2.start()
+
+            t1.join()
+            t2.join()
+            self.assertTrue(False)
+        except:
+            self.assertTrue(True)
+
 
     def test_remove_quantity_product(self):
         self.test_add_product_quantity()

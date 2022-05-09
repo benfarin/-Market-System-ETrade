@@ -55,7 +55,7 @@ class IStore(Interface):
         pass
 
     # print all permission in store - will be deleted this version
-    def PrintRolesInformation(self, user):
+    def getRolesInformation(self, user):
         pass
 
     def getPermissions(self, user):
@@ -71,7 +71,7 @@ class IStore(Interface):
         pass
 
     # print all transactions in store - will be deleted in this version
-    def printPurchaseHistoryInformation(self, user):
+    def getPurchaseHistoryInformation(self, user):
         pass
 
     def getTransactionHistory(self, user):

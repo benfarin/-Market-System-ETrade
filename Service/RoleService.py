@@ -1,7 +1,9 @@
 from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
-from Service.Events.Events import Events
-from Service.Events.EventLog import EventLog
+from Service.Response import Response
+from Service.DTO.storeTransactionDTO import storeTransactionDTO
+from Service.DTO.StorePermissionDTO import StorePermissionDTO
+from Service.DTO.ProductDTO import ProductDTO
 import logging
 
 logging.basicConfig(
@@ -11,188 +13,153 @@ logging.basicConfig(
 
 
 class RoleService:
+
     def __init__(self):
-        self.__marketManage = MemberManagment().getInstance()
-        self.__roleManagment = RoleManagment().getInstance()
-        self.__events = Events()
+        self.__marketManage = MemberManagment.getInstance()
+        self.__roleManagment = RoleManagment.getInstance()
 
-    def appointManagerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssigne he member and assignerID!!
         try:
-            self.__roleManagment.appointManagerToStore(storeID, assignerID, assigneID)
-            eventLog = EventLog("appoint manager to store", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneID))
+            isAppointed = self.__roleManagment.appointManagerToStore(storeID, assignerID, assigneeID)
             logging.info("success to appoint manager to store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isAppointed)
         except Exception as e:
-            logging.error("Failed to appoint " + str(assigneID) + " as manager")
-            return e
+            logging.error("Failed to appoint " + str(assigneeID) + " as manager")
+            return Response(e.__str__())
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneID):  # check if the asssigne he member and assignerID!!
+    def appointOwnerToStore(self, storeID, assignerID, assigneeID):  # check if the asssigne he member and assignerID!!
         try:
-            self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneID)
-            eventLog = EventLog("appoint owner to store", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneID))
+            isAppointed = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeID)
             logging.info("success to appoint owner to store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isAppointed)
         except Exception as e:
-            logging.error("Failed to appoint " + str(assigneID) + " as owner")
-            return e
+            logging.error("Failed to appoint " + str(assigneeID) + " as owner")
+            return Response(e.__str__())
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__roleManagment.setStockManagerPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set stock manager permission", "storeId: " + str(storeID),
-                                "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneeID))
+            isSet = self.__roleManagment.setStockManagerPermission(storeID, assignerID, assigneeID)
             logging.info("success to set stock manager permission in store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isSet)
         except Exception as e:
             logging.error("Failed to set permissions to user " + str(assigneeID))
-            return e
+            return Response(e.__str__())
 
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__roleManagment.setAppointOwnerPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set appoint owner permission", "storeId: " + str(storeID),
-                                "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneeID))
+            isSet = self.__roleManagment.setAppointOwnerPermission(storeID, assignerID, assigneeID)
             logging.info("success to set owner permission in store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isSet)
         except Exception as e:
             logging.error("Failed to set permissions to user " + str(assigneeID))
-            return e
+            return Response(e.__str__())
 
     def setChangePermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__roleManagment.setChangePermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set change permissions", "storeId: " + str(storeID), "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneeID))
+            isSet = self.__roleManagment.setChangePermission(storeID, assignerID, assigneeID)
             logging.info("success to change permission in store " + str(storeID) + "for user " + str(assigneeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isSet)
         except Exception as e:
             logging.error("Failed to set permissions to user " + str(assigneeID))
-            return e
+            return Response(e.__str__())
 
     def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set roles info permission", "storeId: " + str(storeID),
-                                "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            isSet = self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeID)
+            logging.info("success to set role info permission in store " + str(storeID) + "for user " + str(assigneeID))
+            return Response(isSet)
         except Exception as e:
             logging.error("Failed to set permissions to user " + str(assigneeID))
-            return e
+            return Response(e.__str__())
 
     def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
         try:
-            self.__roleManagment.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeID)
-            eventLog = EventLog("set purchase history info permission", "storeId: " + str(storeID),
-                                "assignerId: " + str(assignerID)
-                                , "assigneeId: " + str(assigneeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            isSet = self.__roleManagment.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeID)
+            logging.info("success to set purchase history info permission in store " + str(storeID) +
+                         "for user " + str(assigneeID))
+            return Response(isSet)
         except Exception as e:
             logging.error("Failed to set permissions to user " + str(assigneeID))
-            return e
+            return Response(e.__str__())
 
     def addProductToStore(self, storeID, userID, name, price, category, keywords):
         try:
             product = self.__roleManagment.createProduct(name, price, category, keywords)
             self.__roleManagment.addProductToStore(storeID, userID, product)
-            eventLog = EventLog("add product to store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "product: " + product.printForEvents())
             logging.info("success to add product " + name + "to store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return product
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to add new product to store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
     def addProductQuantityToStore(self, storeID, userID, productId, quantity):
         try:
-            self.__roleManagment.addProductQuantityToStore(storeID, userID, productId, quantity)
-            eventLog = EventLog("add product quantity to store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "productId: " + str(productId), "quantity: " + quantity)
+            isAdded = self.__roleManagment.addProductQuantityToStore(storeID, userID, productId, quantity)
             logging.info(
                 "success to add " + str(quantity) + "units for product " + str(productId) + "to store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isAdded)
         except Exception as e:
             logging.error("Failed to add product quantity in store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
     def removeProductFromStore(self, storeID, userID, productId):
         try:
-            self.__roleManagment.removeProductFromStore(storeID, userID, productId)
-            eventLog = EventLog("remove product from store", "storeId: " + str(storeID), "userId: " + str(userID)
-                                , "productId: " + str(productId))
+            isRemoved = self.__roleManagment.removeProductFromStore(storeID, userID, productId)
             logging.info("success to remove product " + str(productId) + "from store " + str(storeID))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to remove product " + str(productId) + " in store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
-    def PrintRolesInformation(self, storeID, userID):
+    def getRolesInformation(self, storeID, userID):
         try:
-            toReturn = self.__roleManagment.PrintRolesInformation(storeID, userID)
-            eventLog = EventLog("print roles info", "storeId: " + str(storeID), "userId: " + str(userID))
-            self.__events.addEventLog(eventLog)
-            return toReturn
+            permissions = self.__roleManagment.getRolesInformation(storeID, userID)
+            logging.info("success to get role info from store" + str(storeID))
+            permissionsDTOs = []
+            for permission in permissions:
+                permissionsDTOs.append(StorePermissionDTO(permission))
+            return Response(permissionsDTOs)
         except Exception as e:
             logging.error("Failed to print roles information for store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
-    def printPurchaseHistoryInformation(self, storeID, userID):
+    def getPurchaseHistoryInformation(self, storeID, userID):
         try:
-            toReturn = self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
-            eventLog = EventLog("print purchase history info", "storeId: " + str(storeID), "userId: " + str(userID))
-            self.__events.addEventLog(eventLog)
-            return toReturn
+            transactions = self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
+            logging.info("success to get purchase history info from store" + str(storeID))
+
+            transactionsDTOs = []
+            for transaction in transactions:
+                transactionsDTOs.append(storeTransactionDTO(transaction))
+            return Response(transactionsDTOs)
         except Exception as e:
             logging.error("Failed to print purchase history information for store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
     def updateProductPrice(self, storeID, userID, productId, newPrice):
         try:
-            self.__roleManagment.updateProductPrice(storeID, userID, productId, newPrice)
-            eventLog = EventLog("update product price", "storeId: " + str(storeID), "userId: " + str(userID),
-                                "productId: " + str(productId), "new price: " + str(newPrice))
+            product = self.__roleManagment.updateProductPrice(storeID, userID, productId, newPrice)
             logging.info("success to update product " + str(productId) + "to price " + str(newPrice))
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update price for product " + str(productId) + "in store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
     def updateProductName(self, userID, storeID, productID, newName):
         try:
-            self.__roleManagment.updateProductPrice(storeID, userID, productID, newName)
-            eventLog = EventLog("update product name", "storeId: " + str(storeID), "userId: " + str(userID),
-                                "productId: " + str(productID), "new price: " + str(newName))
+            product = self.__roleManagment.updateProductPrice(storeID, userID, productID, newName)
             logging.info("success to update product " + str(productID) + "to name " + newName)
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update name for product " + str(productID) + "in store " + str(storeID))
-            return e
+            return Response(e.__str__())
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
         try:
-            self.__roleManagment.updateProductPrice(storeID, userID, productID, newCategory)
-            eventLog = EventLog("update product category", "storeId: " + str(storeID), "userId: " + str(userID),
-                                "productId: " + str(productID), "new price: " + str(newCategory))
+            product = self.__roleManagment.updateProductPrice(storeID, userID, productID, newCategory)
             logging.info("success to update product " + str(productID) + "to category " + newCategory)
-            self.__events.addEventLog(eventLog)
-            return True
+            return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update category for product " + str(productID) + "in store " + str(storeID))
-            return e
+            return Response(e.__str__())
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/CatagoryDiscount.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/Discount.py" afterDir="false" />
@@ -14,6 +15,12 @@
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Business/StorePackage/Bag.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Bag.py" afterDir="false" />
+=======
+    <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="started to work on the dto in MemberService, &#10;need to keep doing that">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" afterDir="false" />
+>>>>>>> 1c05d7be0a246208f3cef7837552f915c37089dd
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,25 +51,29 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in UseCaseSearchProduct.py">
-    <configuration name="Unittests in UseCaseGetStoresInfo.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\97254\Desktop\אוניבריסיטה\שנה ג\סמסטר ב\סדנא\WorkshopSoftwareEngineering\Service" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python tests.Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoPermission">
+    <configuration name="Unittests for MarketTests.MarketTests.test_addProductQuantity" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Tests/IntegrationTest" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseGetStoresInfo.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;MarketTests.MarketTests.test_addProductQuantity&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCasePurchasesHistory.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoNewManager" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -72,11 +83,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCasePurchasesHistory.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoNewManager&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCaseRemoveProductFromCart.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoPermission" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -86,11 +97,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoPermission&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCaseSaveProductToCart.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerTwice" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -100,11 +111,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerTwice&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in UseCaseSearchProduct.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests in UseCaseAppointStoreManager.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="WorkshopSoftwareEngineering" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -114,29 +125,41 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in UseCaseSearchProduct.py" />
-        <item itemvalue="Python tests.Unittests in UseCaseSaveProductToCart.py" />
-        <item itemvalue="Python tests.Unittests in UseCaseRemoveProductFromCart.py" />
-        <item itemvalue="Python tests.Unittests in UseCasePurchasesHistory.py" />
-        <item itemvalue="Python tests.Unittests in UseCaseGetStoresInfo.py" />
+        <item itemvalue="Python tests.Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoPermission" />
+        <item itemvalue="Python tests.Unittests for MarketTests.MarketTests.test_addProductQuantity" />
+        <item itemvalue="Python tests.Unittests in UseCaseAppointStoreManager.py" />
+        <item itemvalue="Python tests.Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerTwice" />
+        <item itemvalue="Python tests.Unittests for UseCaseAppointStoreManager.UseCaseAppointStoreManager.test_AppointStoreManagerNoNewManager" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="" />
       <created>1650971038749</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1650971038749</updated>
     </task>
+    <task id="LOCAL‎00001" summary="still have a problem">
+      <created>1651679697338</created>
+      <option name="number" value="LOCAL‎00001" />
+      <option name="presentableId" value="LOCAL‎00001" />
+      <updated>1651679697338</updated>
+    </task>
+    <task id="LOCAL‎00002" summary="started to work on the dto in MemberService, &#10;need to keep doing that">
+      <created>1651745018000</created>
+      <option name="number" value="LOCAL‎00002" />
+      <option name="presentableId" value="LOCAL‎00002" />
+      <updated>1651745018000</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -156,13 +179,23 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="still have a problem" />
+    <MESSAGE value="started to work on the dto in MemberService, &#10;need to keep doing that" />
+    <option name="LAST_COMMIT_MESSAGE" value="started to work on the dto in MemberService, &#10;need to keep doing that" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Business/Managment/RoleManagment.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py</url>
+          <line>30</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Service/RoleService.py</url>
+          <line>21</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

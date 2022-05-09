@@ -42,6 +42,10 @@ class NoSuchBagException(Exception):
     pass
 
 
+class NotFounderException(Exception):
+    pass
+
+
 class PermissionException(Exception):
     pass
 
@@ -51,4 +55,8 @@ class DeliveryException(Exception):
 
 
 class TransactionException(Exception):
+    pass
+
+
+class MemberAllReadyLoggedIn(Exception):
     pass
