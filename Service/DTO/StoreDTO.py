@@ -104,3 +104,9 @@ class StoreDTO:
 
     def setPermissionDTO(self, permission):
         self.__permissions = permission
+
+    def getProductsAsList(self):
+        products_list = []
+        for product in self.__products.values():
+            products_list.append(ProductDTO(product))
+        return products_list
