@@ -35,3 +35,16 @@ class CreateStoreForm(forms.Form):
 
 class AppointForm(forms.Form):
     assingeeID = forms.CharField()
+
+
+class UpdateProductForm(forms.Form):
+    name = forms.CharField()
+    category = forms.CharField()
+    price = forms.IntegerField()
+
+
+class AddProductForm(forms.Form):
+    name = forms.CharField()
+    category = forms.CharField()
+    price = forms.IntegerField()
+    keywords = forms.CharField()

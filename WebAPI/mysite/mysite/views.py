@@ -39,7 +39,7 @@ from Service.UserService import UserService
 role_service = RoleService()
 member_service = MemberService()
 user_service = UserService()
-from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm
+from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdateProductForm, AddProductForm
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -52,7 +52,8 @@ def home_page(request):
         title = "Welcome Guest!"
     else:
         title = "Welcome " + user.getMemberName() + "!"
-    context = {"title": title, "user": user}
+    all_stores = user_service.getAllStores().getData()
+    context = {"title": title, "user": user, "stores": all_stores}
     return render(request, "home.html", context)
 
 
@@ -97,7 +98,7 @@ def login_page(request):
         answer = user_service.memberLogin(username, password)
         if not answer.isError():
             user = answer.getData()
-            print(user.getMemberId())
+            print(user.getUserID())
         return HttpResponseRedirect("/")
     context = {
         "title": "Login",
@@ -121,6 +122,7 @@ def my_stores_page(request):
     else:
         usertype = False
         title = "My Stores"
+    stores = user_service.getAllStoresOfUser(user.getMemberId()).getData()
     context = {"title": title, "usertype": usertype, "user": user, "stores": stores}
     return render(request, "my_stores.html", context)
 
@@ -142,12 +144,12 @@ def create_store_page(request):
     apartment_num = request.POST.get("apartment_num")
     zip_code = request.POST.get("zip_code")
     if store_name is not None:
-        answer = member_service.createStore(store_name, user.getMemberId(), account_num, branch_num, country, city,
+        answer = member_service.createStore(store_name, user.getUserID(), account_num, branch_num, country, city,
                                             street,
                                             apartment_num, zip_code)
         if not answer.isError():
-            stores.append(answer.getData())
-        return HttpResponseRedirect("/my_stores")
+            # stores.append(answer.getData())
+            return HttpResponseRedirect("/my_stores")
     context = {
         "title": "Create New Store",
         "form": form
@@ -156,12 +158,16 @@ def create_store_page(request):
 
 
 def store_page(request, slug):
-    answer = role_service.getRolesInformation(int(slug), user.getMemberId())
+    store = user_service.getStore(int(slug)).getData()
+    answer = role_service.getRolesInformation(int(slug), user.getUserID())
     if not answer.isError():
         permissions = answer.getData()
         for permission in permissions:
-            if permission.getUserId() == user.getMemberId():
-                return render(request, "store.html", {"permissions": permission})
+            if permission.getUserId() == user.getUserID():
+                context = {"permissions": permission, "items": store.getProductsAsList()}
+                return render(request, "store.html", context)
+    context = {"permissions": [], "items": store.getProductsAsList()}
+    return render(request, "store.html", context)
 
 
 def store_products_management(request, slug):
@@ -175,9 +181,9 @@ def appoint_manager(request, slug):
         form = AppointForm()
     assingeeID = request.POST.get("assingeeID")
     if assingeeID is not None:
-        answer = role_service.appointManagerToStore(int(slug), user.getMemberId(), assingeeID)
+        answer = role_service.appointManagerToStore(int(slug), user.getUserID(), assingeeID)
         if not answer.isError():
-            role_service.setRolesInformationPermission(int(slug), user.getMemberId(), assingeeID)
+            role_service.setRolesInformationPermission(int(slug), user.getUserID(), assingeeID)
             return HttpResponseRedirect("/store/" + slug + "/")
     context = {
         "title": "Appoint Store Manager",
@@ -193,12 +199,41 @@ def appoint_Owner(request, slug):
         form = AppointForm()
     assingeeID = request.POST.get("assingeeID")
     if assingeeID is not None:
-        answer = role_service.appointOwnerToStore(int(slug), user.getMemberId(), assingeeID)
+        answer = role_service.appointOwnerToStore(int(slug), user.getUserID(), assingeeID)
         if not answer.isError():
-            role_service.setRolesInformationPermission(int(slug), user.getMemberId(), assingeeID)
+            role_service.setRolesInformationPermission(int(slug), user.getUserID(), assingeeID)
             return HttpResponseRedirect("/store/" + slug + "/")
     context = {
         "title": "Appoint Store Owner",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+# def update_product(request, slug):
+#     form = UpdateProductForm(request.POST or None)
+#     if form.is_valid():
+#         form = UpdateProductForm()
+#     name = request.POST.get("name")
+#     category = request.POST.get("category")
+#     price = request.POST.get("price")
+#     if name is not None:
+#         answer = role_service.updateProductName(user.getMemberId, int(slug), )
+
+def add_product(request, slug):
+    form = AddProductForm(request.POST or None)
+    if form.is_valid():
+        form = AddProductForm()
+    name = request.POST.get("name")
+    category = request.POST.get("category")
+    price = request.POST.get("price")
+    keywords = request.POST.get("keywords")
+    if name is not None:
+        answer = role_service.addProductToStore(int(slug), user.getUserID(), name, int(price), category, keywords)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+    context = {
+        "title": "Add Product",
         "form": form
     }
     return render(request, "form.html", context)

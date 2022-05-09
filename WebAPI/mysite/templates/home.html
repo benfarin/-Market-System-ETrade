@@ -3,4 +3,15 @@
 {% block content%}
         <div style="text-align: center;"><h1>{{ title }}</h1>
         <h4>This is our market website</h4></div>
+
+    <div class="row">
+    {% for store in stores %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ store.getStoreName }}</h5>
+                <a href="/store/{{ store.getStoreId }}/" class="btn btn-primary">Go To Store</a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
 {% endblock %}
