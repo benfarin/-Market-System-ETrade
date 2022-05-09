@@ -53,6 +53,7 @@ class Bag:
     def getProducts(self):
         return self.__products
 
+
     def getProductQuantity(self, product):
         return self.__products[product]
 

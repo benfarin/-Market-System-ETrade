@@ -2,40 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/CatagoryDiscount.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/Discount.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/DiscountCalc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/DiscountInfo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/DiscountManagment.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/DiscountsOfProducts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/ProductDiscount.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Business/DiscountPackage/StoreDiscount.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/interfaces/IDiscount.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/IMarketBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/IMarketBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketProxyBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketProxyBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketRealBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/MarketBridge/MarketRealBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/IUserBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/IUserBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserProxyBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserProxyBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserRealBridge.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Bridges/UserBridge/UserRealBridge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAddProductToStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAddProductToStore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreOwner.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreOwner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseCloseStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseCloseStore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseEditProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseEditProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseGetStoresInfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseGetStoresInfo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCasePurchasesHistory.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCasePurchasesHistory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGetEditUserCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGetEditUserCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGuestLogin.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseGuestLogin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogin.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogout.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberLogout.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberRegister.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseMemberRegister.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCasePurchaseProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCasePurchaseProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseUserOpenStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/UserTests/UseCaseUserOpenStore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/Managment/MemberManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/MemberManagment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/Managment/UserManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/UserManagment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/MemberService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/MemberService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/RoleService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/RoleService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Bag.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Bag.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +34,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="28KhA9RWmX88aHH7rMba8cDTail" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -174,7 +155,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
