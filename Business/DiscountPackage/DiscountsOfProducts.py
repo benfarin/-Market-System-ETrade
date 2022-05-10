@@ -4,8 +4,11 @@ from typing import Dict
 class DiscountOfProducts:
 
     def __init__(self):
-        self.__products: Dict[int,float] = {}
+        self.__products: Dict[int, float] = {}
         self.__discount = 0
+
+    def getDiscount(self):
+        return self.__discount
 
     def addProduct(self, pid, price):
         self.__products[pid] = price
@@ -25,4 +28,7 @@ class DiscountOfProducts:
 
     def addProduct(self, key, value):
         self.__products[key] = value
+
+    def setDiscount(self, discount):
+        self.__discount = discount
 
