@@ -17,29 +17,11 @@ from Service.MemberService import MemberService
 from Service.RoleService import RoleService
 from Service.UserService import UserService
 
-# def call_with_future(fn, future, args, kwargs):
-#     try:
-#         result = fn(*args, **kwargs)
-#         future.set_result(result)
-#     except Exception as exc:
-#         future.set_exception(exc)
-#
-#
-# def threaded(fn):
-#     def wrapper(*args, **kwargs):
-#         future = Future()
-#         threading.Thread(target=call_with_future, args=(fn, future, args, kwargs)).start()
-#         try:
-#             return future.result()
-#         except:
-#             raise future.exception()
-#
-#     return wrapper
-
 role_service = RoleService()
 member_service = MemberService()
 user_service = UserService()
-from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdateProductForm, AddProductForm
+from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdateProductForm, AddProductForm, \
+    AddProductToCartForm, PurchaseProductForm
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -122,7 +104,7 @@ def my_stores_page(request):
     else:
         usertype = False
         title = "My Stores"
-    stores = user_service.getAllStoresOfUser(user.getMemberId()).getData()
+    stores = user_service.getAllStoresOfUser(user.getUserID()).getData()
     context = {"title": title, "usertype": usertype, "user": user, "stores": stores}
     return render(request, "my_stores.html", context)
 
@@ -237,3 +219,50 @@ def add_product(request, slug):
         "form": form
     }
     return render(request, "form.html", context)
+
+
+def get_cart(request):
+    answer = user_service.getCart(user.getUserID())
+    bags = []
+    cart = []
+    if not answer.isError():
+        cart = answer.getData()
+        for bag in cart.getAllBags().values():
+            bags.append(bag)
+    context = {"title": "Cart", "bags": bags, "cart": cart}
+    return render(request, "cart.html", context)
+
+
+def add_to_cart_page(request, slug, slug2):
+    form = AddProductToCartForm(request.POST or None)
+    if form.is_valid():
+        form = AddProductToCartForm()
+    quantity = request.POST.get("quantity")
+    if quantity is not None:
+        answer = user_service.addProductToCart(user.getUserID(), int(slug), int(slug2), int(quantity))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+    context = {
+        "title": "Add Product",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def purchase_cart(request):
+    form = PurchaseProductForm(request.POST or None)
+    if form.is_valid():
+        form = PurchaseProductForm()
+    accountNumber = request.POST.get("accountNumber")
+    branch = request.POST.get("branch")
+    if accountNumber is not None:
+        answer = user_service.purchaseCart(user.getUserID(), int(accountNumber), int(branch))
+        if not answer.isError():
+            return HttpResponseRedirect("/cart/")
+    context = {
+        "title": "Purchase Cart",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+

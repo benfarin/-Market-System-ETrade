@@ -9,7 +9,7 @@
                         <h5 class="card-title">{{ item.getProductName }}</h5>
                             <p class="card-text">{{ item.getProductCategory }}</p>
                             <p class="card-text">Price: {{ item.getProductPrice }}</p>
-                        <a href="/store/{{ store.getStoreId }}/" class="btn btn-primary">Go To Product</a>
+                        <a href="add_to_cart/{{ item.getProductId }}" class="btn btn-primary">Add to cart</a>
                     </div>
                 </div>
         {% endfor %}

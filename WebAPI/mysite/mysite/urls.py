@@ -21,7 +21,7 @@ from .views import (
     signup_page,
     login_page,
     my_stores_page, create_store_page, store_page, store_products_management, appoint_manager, appoint_Owner, logout,
-    add_product,
+    add_product, get_cart, add_to_cart_page, purchase_cart,
 )
 
 urlpatterns = [
@@ -40,5 +40,8 @@ urlpatterns = [
     path('signup/', signup_page),
     path('login/', login_page),
     path('logout/', logout),
+    path('cart/', get_cart),
+    path('cart/purchase_cart/', purchase_cart),
+    path('store/<str:slug>/add_to_cart/<str:slug2>/', add_to_cart_page),
     path('admin/', admin.site.urls),
 ]

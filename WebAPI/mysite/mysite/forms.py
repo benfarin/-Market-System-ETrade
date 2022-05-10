@@ -48,3 +48,12 @@ class AddProductForm(forms.Form):
     category = forms.CharField()
     price = forms.IntegerField()
     keywords = forms.CharField()
+
+
+class AddProductToCartForm(forms.Form):
+    quantity = forms.IntegerField()
+
+
+class PurchaseProductForm(forms.Form):
+    accountNumber = forms.IntegerField()
+    branch = forms.IntegerField()
