@@ -6,7 +6,7 @@
         {% for bag in bags %}
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ bag.getStoreId }}</h5>
+                        <h5 class="card-title">{{ bag.getStoreName }}</h5>
                         {% for product in bag.getAllProductsAsList %}
                             <p class="card-text">{{ product.getProductName }}</p>
                         {% endfor %}

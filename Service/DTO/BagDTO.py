@@ -7,6 +7,7 @@ class BagDTO:
     def __init__(self, bag: Bag):
         self.__storeId = bag.getStoreId()
         self.__products: [int, ProductDTO] = bag.getProducts()
+        self.__storeName = bag.getStoreName()
 
     def setStore(self, storeId):
         self.__storeId = storeId
@@ -19,3 +20,6 @@ class BagDTO:
 
     def getAllProducts(self):
         return self.__products
+
+    def getStoreName(self):
+        return self.__storeName

@@ -11,6 +11,7 @@ class Bag:
     def __init__(self, storeId):
         self.__storeId = storeId
         self.__products = {}  # product : quantity
+        self.__market: IMarket = Market.getInstance()
 
     def getStore(self):
         pass
@@ -71,3 +72,6 @@ class Bag:
             products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(
                 product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print
+
+    def getStoreName(self):
+        return self.__market.getStoreNameByID(self.__storeId)

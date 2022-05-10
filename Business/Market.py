@@ -322,3 +322,6 @@ class Market:
             transactionId = self._transactionIdCounter
             self._transactionIdCounter += 1
             return transactionId
+
+    def getStoreNameByID(self, storeID):
+        return self.__stores.get(storeID).getStoreName()
