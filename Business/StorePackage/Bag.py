@@ -1,8 +1,10 @@
 import zope
 from zope.interface import implements
 
+from Business.Market import Market
 from Exceptions.CustomExceptions import QuantityException, ProductException
 from interfaces.IBag import IBag
+from interfaces.IMarket import IMarket
 
 
 @zope.interface.implementer(IBag)
@@ -72,6 +74,12 @@ class Bag:
             products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(
                 product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print
+
+    def getAllProductsAsList(self):
+        products = []
+        for prodcut in self.__products.keys():
+            products.append(prodcut)
+        return products
 
     def getStoreName(self):
         return self.__market.getStoreNameByID(self.__storeId)

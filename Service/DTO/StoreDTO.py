@@ -60,6 +60,12 @@ class StoreDTO:
     def getProducts(self):
         return self.__products
 
+    def getProductsAsList(self):
+        products_list = []
+        for product in self.__products.values():
+            products_list.append(ProductDTO(product))
+        return products_list
+
     def getProductQuantity(self):
         return self.__productsQuantity
 

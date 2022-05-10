@@ -21,5 +21,13 @@ class BagDTO:
     def getAllProducts(self):
         return self.__products
 
+    def getAllProductsAsList(self):
+        products = []
+        for prodcut in self.__products.values():
+            products.append(ProductDTO(prodcut))
+        return products
+
+
+
     def getStoreName(self):
         return self.__storeName

@@ -44,7 +44,7 @@ class MemberManagment(UserManagment):
         return self.getActiveUser()
 
     def checkOnlineUserFromUser(self, userId):
-        return super().checkOnlineUser(userId)
+        return self.checkOnlineUser(userId)
 
     def createStore(self, storeName, userID, bank, address):
         try:
@@ -95,3 +95,4 @@ class MemberManagment(UserManagment):
         if member is None:
             raise NoSuchMemberException("user: " + str(userID) + "is not a member")
         return member.getMemberTransactions()
+

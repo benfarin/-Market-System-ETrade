@@ -34,7 +34,7 @@ class CreateStoreForm(forms.Form):
 
 
 class AppointForm(forms.Form):
-    assingeeID = forms.CharField()
+    assignee_id = forms.CharField()
 
 
 class UpdateProductForm(forms.Form):

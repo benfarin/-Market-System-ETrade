@@ -161,11 +161,11 @@ def appoint_manager(request, slug):
     form = AppointForm(request.POST or None)
     if form.is_valid():
         form = AppointForm()
-    assingeeID = request.POST.get("assingeeID")
-    if assingeeID is not None:
-        answer = role_service.appointManagerToStore(int(slug), user.getUserID(), assingeeID)
+    assignee_id = request.POST.get("assignee_name")
+    if assignee_id is not None:
+        answer = role_service.appointManagerToStore(int(slug), user.getUserID(), assignee_id)
         if not answer.isError():
-            role_service.setRolesInformationPermission(int(slug), user.getUserID(), assingeeID)
+            role_service.setRolesInformationPermission(int(slug), user.getUserID(), assignee_id)
             return HttpResponseRedirect("/store/" + slug + "/")
     context = {
         "title": "Appoint Store Manager",

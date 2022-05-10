@@ -54,6 +54,12 @@ class StorePermission:
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
 
+    def hasPermissions(self):
+        return self.__stockManagement is not False and self.__appointManager is not False and\
+               self.__appointOwner is not False and self.__changePermission is not False and\
+               self.__closeStore is not False and self.__rolesInformation is not False and\
+               self.__purchaseHistoryInformation is not False
+
     def printPermission(self):
         permission = ""
         if self.__stockManagement:

@@ -423,3 +423,10 @@ class Store:
             raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         with self.__stockLock:
             self.__productsQuantity[productId] += quantity
+
+
+    def hasPermissions(self, user):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            return False
+        return True

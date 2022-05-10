@@ -7,6 +7,7 @@ class CartDTO:
     def __init__(self, cart: Cart):
         self.__userId = cart.getUserId()
         self.__bags: Dict[int, BagDTO] = cart.getAllBags()  # storeId : Bag
+        self.__sum = cart.calcSum()
 
     def getUserId(self):
         return self.__userId
@@ -22,3 +23,6 @@ class CartDTO:
 
     def getBagByStoreID(self, storeid):
         return self.__bags.get(storeid)
+
+    def calcSum(self):
+        return self.__sum

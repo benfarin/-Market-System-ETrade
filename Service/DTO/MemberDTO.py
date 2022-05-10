@@ -13,7 +13,7 @@ class MemberDTO:
         self.__paymentsIds = member.getPaymentsIds()
         self.__cart = member.getCart()
 
-    def getMemberId(self):
+    def getUserID(self):
         return self.__memberId
 
     def getMemberName(self):

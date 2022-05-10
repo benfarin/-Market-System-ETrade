@@ -51,15 +51,15 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def setStockManagerPermission(self, storeID, assignerID, assigneeID):
+    def setStockManagerPermission(self, storeID, assignerID, assingeeName):
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMembersFromUser().get(assingeeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
+            if assingeeName not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(assingeeName) + "is not a member")
             return assigner.setStockManagerPermission(storeID, assignee)
         except Exception as e:
             return e

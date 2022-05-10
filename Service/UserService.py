@@ -1,5 +1,6 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.User import User
+from Service.DTO.StoreDTO import StoreDTO
 from Service.Response import Response
 from Service.DTO.GuestDTO import GuestDTO
 from Service.DTO.MemberDTO import MemberDTO
@@ -8,6 +9,8 @@ from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.CartDTO import CartDTO
 from typing import Dict
 import logging
+
+from interfaces.IStore import IStore
 
 firstAdminRegistered = False
 
@@ -180,3 +183,50 @@ class UserService:
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
             return Response(e.__str__())
+
+    def getStore(self, storeID):
+        try:
+            store = self.__userManagment.getStore(storeID)
+            logging.info("success get store " + str(storeID))
+            return Response(StoreDTO(store))
+        except Exception as e:
+            logging.error("Failed to get store " + str(storeID))
+            return Response(e.__str__())
+
+    def getAllStores(self):
+        try:
+            stores: Dict[int, IStore] = self.__userManagment.getAllStores()
+            logging.info("success get stores in market")
+
+            storesDTOs = []
+            for store in stores.values():
+                storesDTOs.append(StoreDTO(store))
+            return Response(storesDTOs)
+        except Exception as e:
+            logging.error("Failed to get stores")
+            return Response(e.__str__())
+
+
+    def getAllStoresOfUser(self, userId):
+        try:
+            stores = self.__userManagment.getAllStoresOfUser(userId)
+            logging.info("success get stores in market")
+
+            storesDTOs = []
+            for store in stores:
+                storesDTOs.append(StoreDTO(store))
+            return Response(storesDTOs)
+        except Exception as e:
+            logging.error("Failed to get stores")
+            return Response(e.__str__())
+
+
+    def getUserIdByName(self, user_name):
+        try:
+            name = self.__userManagment.getUserIdByName(user_name)
+            logging.info("success get user id")
+            return Response(name)
+        except Exception as e:
+            logging.error("Failed to get user id")
+            return Response(e.__str__())
+
