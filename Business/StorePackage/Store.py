@@ -77,6 +77,11 @@ class Store:
             return self.__products.get(productId)
         raise ProductException("product not in store")
 
+    def getProductFromStore(self, productId):
+        if productId in self.__products:
+            return self.__products.get(productId)
+        return None
+
     def hasProduct(self, productId):
         return productId in self.__products.keys()
 

@@ -124,6 +124,13 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
+    def addProductToCartWithoutStore(self, userID,productID, quantity):
+        try:
+            self.checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).addProductToCartWithoutStore(productID, quantity)
+        except Exception as e:
+            raise Exception(e)
+
     def removeProductFromCart(self, userID, storeID, productId):
         try:
             self.checkOnlineUser(userID)

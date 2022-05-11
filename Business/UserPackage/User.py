@@ -85,6 +85,14 @@ class User:
             raise Exception(e)
 
     @threaded
+    def addProductToCartWithoutStore(self, product, quantity):
+        try:
+            return self.__market.addProductToCartWithoutStore(self, product, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+
+    @threaded
     def removeProductFromCart(self, storeID, productId):
         try:
             return self.__market.removeProductFromCart(self, storeID, productId)

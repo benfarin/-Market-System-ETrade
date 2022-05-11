@@ -102,3 +102,6 @@ class IMarket(Interface):
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         pass
+
+    def addProductToCartWithoutStore(self, user, productID, quantity):
+        pass

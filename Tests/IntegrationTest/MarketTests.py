@@ -46,6 +46,7 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product2))
         self.assertTrue(self.__market.addProductToStore(1, self.__member2, self.__product3))
 
+
     def test_addProductToStore_FAIL(self):
         # try to add a product to a non-existing store
         self.assertRaises(Exception, lambda: self.__market.addProductToStore(1, self.__member1, self.__product1))
@@ -106,6 +107,14 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 7))
         self.assertTrue(self.__market.addProductToCart(self.__member1, 1, self.__product3.getProductId(), 3))
         self.assertTrue(self.__market.addProductToCart(self.__member2, 0, self.__product2.getProductId(), 10))
+        print(self.__member1.getCart().printBags())
+        print(self.__member2.getCart().printBags())
+
+    def test_addProductToCartWithoutStoreID(self):
+        self.test_addProductQuantity()
+        self.assertTrue(self.__market.addProductToCartWithoutStore(self.__member1, self.__product1.getProductId(), 7))
+        self.assertTrue(self.__market.addProductToCartWithoutStore(self.__member1, self.__product3.getProductId(), 3))
+        self.assertTrue(self.__market.addProductToCartWithoutStore(self.__member2, self.__product2.getProductId(), 10))
         print(self.__member1.getCart().printBags())
         print(self.__member2.getCart().printBags())
 

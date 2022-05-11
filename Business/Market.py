@@ -59,6 +59,25 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def __getStoreByProductID(self,productID):
+        for store in self.__stores.values():
+            if store.getProductFromStore(productID) is not None:
+                return store
+        raise ProductException("There no product id :" + productID + " in the market!")
+
+    def addProductToCartWithoutStore(self, user, productID, quantity):  # Tested
+        try:
+            store = self.__getStoreByProductID(productID)
+            if store is not None:
+                if self.__stores.get(store.getStoreId()).addProductToBag(productID, quantity):
+                    product = self.__stores.get(store.getStoreId()).getProduct(productID)
+                    user.getCart().addProduct(store.getStoreId(), product, quantity)
+                    return True
+                else:
+                    raise QuantityException("The quantity " + quantity + " is not available")
+        except Exception as e:
+            raise Exception(e)
+
     def removeProductFromCart(self, storeID, user, productId):  # Tested
         try:
             quantity = user.getCart().removeProduct(storeID, productId)

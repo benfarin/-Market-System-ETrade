@@ -95,6 +95,15 @@ class UserService:
             logging.error("Failed add product to cart")
             return Response(e.__str__())
 
+    def addProductToCartWithoutStore(self, userID, productID, quantity):
+        try:
+            isAdded = self.__userManagment.addProductToCartWithoutStore(userID, productID, quantity)
+            logging.info("added product " + str(productID) + "to cart for user " + str(userID))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed add product to cart")
+            return Response(e.__str__())
+
     def removeProductFromCart(self, userId, storeId, productId):
         try:
             isRemoved = self.__userManagment.removeProductFromCart(userId, storeId, productId)

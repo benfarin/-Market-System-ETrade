@@ -96,6 +96,9 @@ class MemberManagment(UserManagment):
             raise NoSuchMemberException("user: " + str(userID) + "is not a member")
         return member.getMemberTransactions()
 
+
+
+# NOT IMPORTANT FUNCTION ---
     def change_password(self,userID,old_password,new_password):
         try:
             self.checkOnlineUser(userID)
