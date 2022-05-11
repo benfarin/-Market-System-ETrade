@@ -95,3 +95,13 @@ class MemberManagment(UserManagment):
         if member is None:
             raise NoSuchMemberException("user: " + str(userID) + "is not a member")
         return member.getMemberTransactions()
+
+    def change_password(self,userID,old_password,new_password):
+        try:
+            self.checkOnlineUser(userID)
+            member = self.getMembers().get(userID)
+            if member is None:
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.change_password(old_password, new_password)
+        except Exception as e:
+            raise Exception(e)

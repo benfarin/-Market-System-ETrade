@@ -59,3 +59,4 @@ class MemberService:
             logging.error("Failed opening a new store")
             return Response(e.__str__())
 
+

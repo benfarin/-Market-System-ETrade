@@ -1,7 +1,7 @@
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
 from Business.Managment.MemberManagment import MemberManagment
-from Exceptions.CustomExceptions import NoSuchMemberException
+from Exceptions.CustomExceptions import NoSuchMemberException, NoSuchStoreException
 from Business.StorePackage.Product import Product
 import threading
 
@@ -120,6 +120,8 @@ class RoleManagment:
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
+            if storeID < 0:
+                raise NoSuchStoreException("The store id " + storeID + " is not illegal!")
             if userID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
             member.addProductToStore(storeID, product)

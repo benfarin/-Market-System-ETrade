@@ -2,7 +2,7 @@ from Business.UserPackage.User import User
 import bcrypt
 import threading
 
-from Exceptions.CustomExceptions import NoSuchMemberException
+from Exceptions.CustomExceptions import NoSuchMemberException, PasswordException
 from interfaces.IMarket import IMarket
 from Business.Market import Market
 from concurrent.futures import Future
@@ -66,6 +66,14 @@ class Member(User):
             return self.__market.loginUpdates(self)
         except Exception as e:
             raise Exception(e)
+
+    def change_password(self,old_password,new_password):
+        if bcrypt.checkpw(old_password.encode('utf-8'), self.__password):
+            self.__password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            return "Password changed succesfully!"
+        else:
+            raise PasswordException("password not good!")
+
 
     @threaded
     def createStore(self, storeName, bank, address):
