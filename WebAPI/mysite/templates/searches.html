@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12 col-8 mx-auto">
+        {% if query %}
+            <p class="lead">You searched for {{ query }}</p>
+        {% else %}
+        <form class="d-flex" action='/search/'>
+            <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        {% endif %}
+        {% for item in findings %}
+            <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.getProductName }}</h5>
+                            <p class="card-text">{{ item.getProductCategory }}</p>
+                            <p class="card-text">Price: {{ item.getProductPrice }}</p>
+                        <a href="add_to_cart/{{ item.getProductId }}" class="btn btn-primary">Add to cart</a>
+                    </div>
+                </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

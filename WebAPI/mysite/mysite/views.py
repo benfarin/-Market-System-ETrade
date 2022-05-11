@@ -266,3 +266,23 @@ def purchase_cart(request):
     return render(request, "form.html", context)
 
 
+def search_view(request):
+    q = request.GET.get('q', None)
+    context = {"query": q}
+    searches = []
+    if q is not None:
+        if len(q.split("-")) == 2:
+            search = user_service.getProductPriceRange(int(q.split("-")[0]), int(q.split("-")[1]))
+            if not search.isError():
+                searches += (search.getData())
+        search = user_service.getProductByName(q)
+        if not search.isError():
+            searches += (search.getData())
+        search = user_service.getProductByCategory(q)
+        if not search.isError():
+            searches += (search.getData())
+        search = user_service.getProductByKeyword(q)
+        if not search.isError():
+            searches += (search.getData())
+        context['findings'] = searches
+    return render(request, 'searches.html', context)
