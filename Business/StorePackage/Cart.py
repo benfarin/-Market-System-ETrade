@@ -97,3 +97,7 @@ class Cart:
             printBags += "\n\t\t\tStore id:" + str(
                 bag.getStoreId()) + " store products:" + "\t\t\t\t\t\t\t\t\t" + bag.printProducts()
         return printBags
+
+    def applyDiscount(self, bag: Bag):
+        bag.applyDiscount()
+

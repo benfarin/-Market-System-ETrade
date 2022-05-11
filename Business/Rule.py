@@ -1,12 +1,11 @@
 import uuid
-
 import Rule as Rule
 
 class Rule:
 
-   def __init__(self, f):
-       self.__f = f  # Bag --> bool
-       self.__id = str(uuid.uuid4())
+    def __init__(self):
+        self.__f = f  # Bag --> bool
+        self.__id = str(uuid.uuid4())
 
     def check(self, bag):
         return True

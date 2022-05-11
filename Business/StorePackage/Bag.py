@@ -3,6 +3,8 @@ from zope.interface import implements
 
 from Exceptions.CustomExceptions import QuantityException, ProductException
 from interfaces.IBag import IBag
+from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
+from Business.DiscountPackage.Discount import Discount
 
 
 @zope.interface.implementer(IBag)
@@ -72,3 +74,29 @@ class Bag:
             products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(
                 product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print
+
+    def applyDiscount(self):
+        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        f = lambda discount: discount.makeDiscount(self)
+        g = lambda discount: discount.getRule().check(self)
+        available_discount_values = []
+        available_discount = []
+        for discount in discounts:
+            if g(discount):
+                available_discount_values.append(discount.makeDiscount(self).discount)  # brings us all of the discounts of this bag
+                available_discount.append(discount)
+        max = max(available_discount_values)
+        h = lambda discount: discount.makeDiscount(self).discount >= max
+        max_chosen = None
+        for available in available_discount:
+            if h(available):
+                max_chosen = available
+        discount_of_products = max_chosen.getCalc().calcDiscount(self)
+        for product in self.__products:
+            product.setProductPrice(discount_of_products.getProducts()[product.getProductId()])
+        return max_chosen
+
+
+
+
+

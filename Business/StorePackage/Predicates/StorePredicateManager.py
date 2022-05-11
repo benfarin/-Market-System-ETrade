@@ -1,6 +1,7 @@
 from Business.DiscountPackage.Discount import Discount
 from typing import Dict
 class storePredicateManager:
+
     __instance = None
 
     @staticmethod
@@ -10,9 +11,11 @@ class storePredicateManager:
             storePredicateManager()
         return storePredicateManager.__instance
 
-    def StorePredicateManager(self):
-        self.__discount_store: Dict[int, list[Discount]] = {}    #[id_store,[] Discount]
+    def __init__(self):
+        self.__discount_store = {}    #[id_store,[] Discount]
         self.__store_policies = {}  #implement next by kfir
+        if storePredicateManager.__instance is None:
+            Market.__instance = self
 
     def addDiscount(self, id_store, discount : Discount):
         if self.__discount_store.get(id_store) is not None:
@@ -21,7 +24,7 @@ class storePredicateManager:
             self.__discount_store[id_store] = set()
             self.__discount_store.get(id_store).add(discount)
 
-    def getDiscountsByIdStore(self,id_store):
+    def getDiscountsByIdStore(self, id_store):
         return self.__discount_store.get(id_store)  # if its empty will return None
 
     def getSingleDiscountByID(self, id_store, id_discount):

@@ -1,5 +1,6 @@
 import uuid
 from Business.DiscountPackage.DiscountCalc import DiscountCalc
+from Business.Rule import Rule
 
 class Discount:
 
@@ -13,4 +14,13 @@ class Discount:
 
     def getIdDiscount(self):
         return self.__id_discount
+
+    def getRule(self):
+        f = lambda bag : True
+        rule = Rule(f)
+        return rule
+
+    def getCalc(self):
+        return self.__calc_discount
+
 
