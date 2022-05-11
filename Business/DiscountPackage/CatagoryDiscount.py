@@ -13,7 +13,7 @@ class CataoryDiscount(IDiscount):
         self.__F = lambda a: self.calculate(a, catagory, percent)
         self.__discountCalc: DiscountCalc = DiscountCalc(self.__F)
 
-    def calculate(self, bag: Bag, catagory, percent):
+    def calculate(self, bag: Bag, catagory, percent): #(bag,catagory,percent) --> DiscountOfProducts which contain all of the product which answer on the catagory, the products is calaculated after the discount and held the price after discount <pid,price>
         to_return = DiscountOfProducts()
         discount = 0
         products: Dict[Product, int] = bag.getProducts()

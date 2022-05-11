@@ -5,9 +5,9 @@ from interfaces.IDiscount import IDiscount
 class DiscountCalc(IDiscount):
 
     def __init__(self, f):
-        self.__F = f
+        self.__F = f   #f function which get some bag and return DiscountOfProduct which contains all the product (by id as key) and their percent discount on it .
 
-    def calcDiscount(self, bag: Bag):
+    def calcDiscount(self, bag: Bag): # get bag and return f(bag)   (= DiscountOfProducts)
         return self.__F(bag)
 
     def max(self, additional_DiscountCal):

@@ -77,7 +77,7 @@ class Bag:
 
     def applyDiscount(self):
         discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        f = lambda discount: discount.makeDiscount(self)
+        f = lambda discount: discount.makeDiscount(self).getDiscount()
         g = lambda discount: discount.getRule().check(self)
         available_discount_values = []
         available_discount = []

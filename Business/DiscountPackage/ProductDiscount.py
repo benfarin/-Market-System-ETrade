@@ -10,7 +10,7 @@ class ProductDiscount(IDiscount):
         self.__F = lambda a: self.calculate(a, product_ID, percent)
         self.__discountCalc: DiscountCalc = DiscountCalc(self.__F)
 
-    def calculate(self, bag: Bag, product_ID, percent):
+    def calculate(self, bag: Bag, product_ID, percent): # each of the products got an percent from the owner of the store, this function get bag and check over it if this product in his bag , the function return an object ProductOfDiscount which contain Dict <product_id, price> all of the products and their price calculated after the discount this specific product brought.
         to_return = DiscountsOfProducts()
         discount = 0
         products: Dict[Product, int] = bag.getProducts()

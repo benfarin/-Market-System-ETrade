@@ -9,7 +9,7 @@ class Discount:
         self.__id_discount = str(uuid.uuid4())  # unique id
         self.__calc_discount = calc
 
-    def makeDiscount(self, bag):
+    def makeDiscount(self, bag):  #get some bag and return  an object DisocountOfProduct with all of the products with their id and the percent of discound
         return self.__calc_discount.calcDiscount(bag)
 
     def getIdDiscount(self):

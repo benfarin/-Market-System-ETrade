@@ -12,16 +12,16 @@ class storePredicateManager:
         return storePredicateManager.__instance
 
     def __init__(self):
-        self.__discount_store = {}    #[id_store,[] Discount]
+        self.__discount_store = {int, []}    #[id_store,[] Discount]
         self.__store_policies = {}  #implement next by kfir
         if storePredicateManager.__instance is None:
-            Market.__instance = self
+            storePredicateManager.__instance = self
 
     def addDiscount(self, id_store, discount : Discount):
         if self.__discount_store.get(id_store) is not None:
             self.__discount_store.get(id_store).add(discount)
         else:
-            self.__discount_store[id_store] = set()
+            self.__discount_store[id_store] = []
             self.__discount_store.get(id_store).add(discount)
 
     def getDiscountsByIdStore(self, id_store):
