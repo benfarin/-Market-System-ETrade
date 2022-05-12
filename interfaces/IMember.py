@@ -60,3 +60,11 @@ class IMember(Interface):
     def getPurchaseHistoryInformation(self, storeID):
         pass
 
+    def removeStoreOwner(self, storeId, assignee):
+        pass
+
+    def hasRole(self):
+        pass
+
+
+

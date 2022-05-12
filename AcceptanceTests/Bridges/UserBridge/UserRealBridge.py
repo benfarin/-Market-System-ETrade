@@ -24,9 +24,9 @@ class UserRealBridge:
     def login_guest(self):
         return self._userService.enterSystem()
 
-    def register(self, username, password, phone, account_number, branch, country,
+    def register(self, oldUserId, username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code):
-        return self._userService.memberSignUp(username, password, phone, account_number, branch,
+        return self._userService.memberSignUp(oldUserId, username, password, phone, account_number, branch,
                                                country, city, street, apartment_num, zip_code)
 
     def login_member(self, user_name, password):
@@ -46,6 +46,9 @@ class UserRealBridge:
 
     def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         return self._userService.systemManagerSignUp(userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode)
+
+    def removeMember(self, systemManagerName, memberName):
+        return self._roleService.removeMember(systemManagerName, memberName)
 
     # def logout_member(self, user_id, password):
     #     return self._memberService.logoutMember(user_id, password)

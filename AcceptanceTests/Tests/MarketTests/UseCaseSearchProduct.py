@@ -15,9 +15,10 @@ class UseCaseSearchProduct(unittest.TestCase):
         self.user_proxy = UserProxyBridge(UserRealBridge())
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
-        self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+        self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId1, "user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                              "Ben Gurion", 0, "HaPoalim")
-        self.user_id = self.user_proxy.login_member("user1", "1234").getData().getMemberId()
+        self.user_id = self.user_proxy.login_member("user1", "1234").getData().getUserID()
         self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                    0, 1).getData().getStoreId()
         self.product1  = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
@@ -27,13 +28,13 @@ class UseCaseSearchProduct(unittest.TestCase):
 
     def test_search_by_name(self):
         # need to modify for response in all functions
-        self.assertEqual(self.market_proxy.search_product_name("Product").getData()[0].getProductId(), self.product1.getProductId())
+        self.assertEqual(self.market_proxy.search_product_name("ProduCt").getData()[0].getProductId(), self.product1.getProductId())
         self.assertEqual(self.market_proxy.search_product_name("Product2").getData()[0].getProductId(), self.product2.getProductId())
 
     def test_search_by_category(self):
-        self.assertEqual(self.market_proxy.search_product_category("Milk").getData()[0].getProductId(), self.product1.getProductId())
+        self.assertEqual(self.market_proxy.search_product_category("MILK").getData()[0].getProductId(), self.product1.getProductId())
         self.assertEqual(self.market_proxy.search_product_category("Meat").getData()[0].getProductId(), self.product2.getProductId())
-        self.assertEqual(len(self.market_proxy.search_product_category("apples").getData()), 0)
+        self.assertEqual(len(self.market_proxy.search_product_category("appLes").getData()), 0)
 
     def test_search_by_price_range(self):
         products1 = self.market_proxy.search_product_price_range(5, 1000).getData()
@@ -49,8 +50,8 @@ class UseCaseSearchProduct(unittest.TestCase):
         self.assertEqual(products_id2, []) # no products in this range prices
 
     def test_search_by_keywords(self):
-        self.assertEqual(self.market_proxy.search_product_keyWord("Test1").getData()[0].getProductId(), self.product1.getProductId())
-        self.assertEqual(self.market_proxy.search_product_keyWord("Test4").getData()[0].getProductId(), self.product2.getProductId())
+        self.assertEqual(self.market_proxy.search_product_keyWord("TeSt1").getData()[0].getProductId(), self.product1.getProductId())
+        self.assertEqual(self.market_proxy.search_product_keyWord("TesT4").getData()[0].getProductId(), self.product2.getProductId())
 
     def test_search_by_name_negative(self):
         self.assertEqual(self.market_proxy.search_product_name("Product3").getData(), [])

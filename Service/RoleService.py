@@ -1,8 +1,10 @@
 from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
+from Business.Managment.GetterManagment import GetterManagment
 from Service.Response import Response
 from Service.DTO.storeTransactionDTO import storeTransactionDTO
 from Service.DTO.StorePermissionDTO import StorePermissionDTO
+from Service.DTO.StoreDTO import StoreDTO
 from Service.DTO.ProductDTO import ProductDTO
 import logging
 
@@ -17,74 +19,75 @@ class RoleService:
     def __init__(self):
         self.__marketManage = MemberManagment.getInstance()
         self.__roleManagment = RoleManagment.getInstance()
+        self.__getterManagment = GetterManagment.getInstance()
 
-    def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssigne he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID, assigneeName):  # check if the asssigne he member and assignerID!!
         try:
-            isAppointed = self.__roleManagment.appointManagerToStore(storeID, assignerID, assigneeID)
+            isAppointed = self.__roleManagment.appointManagerToStore(storeID, assignerID, assigneeName)
             logging.info("success to appoint manager to store " + str(storeID))
             return Response(isAppointed)
         except Exception as e:
-            logging.error("Failed to appoint " + str(assigneeID) + " as manager")
+            logging.error("Failed to appoint " + str(assigneeName) + " as manager")
             return Response(e.__str__())
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneeID):  # check if the asssigne he member and assignerID!!
+    def appointOwnerToStore(self, storeID, assignerID, assigneeName):  # check if the asssigne he member and assignerID!!
         try:
-            isAppointed = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeID)
+            isAppointed = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeName)
             logging.info("success to appoint owner to store " + str(storeID))
             return Response(isAppointed)
         except Exception as e:
-            logging.error("Failed to appoint " + str(assigneeID) + " as owner")
+            logging.error("Failed to appoint " + str(assigneeName) + " as owner")
             return Response(e.__str__())
 
-    def setStockManagerPermission(self, storeID, assignerID, assigneeID):
+    def setStockManagerPermission(self, storeID, assignerID, assigneeName):
         try:
-            isSet = self.__roleManagment.setStockManagerPermission(storeID, assignerID, assigneeID)
+            isSet = self.__roleManagment.setStockManagerPermission(storeID, assignerID, assigneeName)
             logging.info("success to set stock manager permission in store " + str(storeID))
             return Response(isSet)
         except Exception as e:
-            logging.error("Failed to set permissions to user " + str(assigneeID))
+            logging.error("Failed to set permissions to user " + str(assigneeName))
             return Response(e.__str__())
 
-    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
+    def setAppointOwnerPermission(self, storeID, assignerID, assigneeName):
         try:
-            isSet = self.__roleManagment.setAppointOwnerPermission(storeID, assignerID, assigneeID)
+            isSet = self.__roleManagment.setAppointOwnerPermission(storeID, assignerID, assigneeName)
             logging.info("success to set owner permission in store " + str(storeID))
             return Response(isSet)
         except Exception as e:
-            logging.error("Failed to set permissions to user " + str(assigneeID))
+            logging.error("Failed to set permissions to user " + str(assigneeName))
             return Response(e.__str__())
 
-    def setChangePermission(self, storeID, assignerID, assigneeID):
+    def setChangePermission(self, storeID, assignerID, assigneeName):
         try:
-            isSet = self.__roleManagment.setChangePermission(storeID, assignerID, assigneeID)
-            logging.info("success to change permission in store " + str(storeID) + "for user " + str(assigneeID))
+            isSet = self.__roleManagment.setChangePermission(storeID, assignerID, assigneeName)
+            logging.info("success to change permission in store " + str(storeID) + "for user " + str(assigneeName))
             return Response(isSet)
         except Exception as e:
-            logging.error("Failed to set permissions to user " + str(assigneeID))
+            logging.error("Failed to set permissions to user " + str(assigneeName))
             return Response(e.__str__())
 
-    def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
+    def setRolesInformationPermission(self, storeID, assignerID, assigneeName):
         try:
-            isSet = self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeID)
-            logging.info("success to set role info permission in store " + str(storeID) + "for user " + str(assigneeID))
+            isSet = self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeName)
+            logging.info("success to set role info permission in store " + str(storeID) + "for user " + str(assigneeName))
             return Response(isSet)
         except Exception as e:
-            logging.error("Failed to set permissions to user " + str(assigneeID))
+            logging.error("Failed to set permissions to user " + str(assigneeName))
             return Response(e.__str__())
 
-    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
+    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeName):
         try:
-            isSet = self.__roleManagment.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeID)
+            isSet = self.__roleManagment.setPurchaseHistoryInformationPermission(storeID, assignerID, assigneeName)
             logging.info("success to set purchase history info permission in store " + str(storeID) +
-                         "for user " + str(assigneeID))
+                         "for user " + str(assigneeName))
             return Response(isSet)
         except Exception as e:
-            logging.error("Failed to set permissions to user " + str(assigneeID))
+            logging.error("Failed to set permissions to user " + str(assigneeName))
             return Response(e.__str__())
 
     def addProductToStore(self, storeID, userID, name, price, category, keywords):
         try:
-            product = self.__roleManagment.createProduct(name, price, category, keywords)
+            product = self.__roleManagment.createProduct(userID, storeID, name, price, category, keywords)
             self.__roleManagment.addProductToStore(storeID, userID, product)
             logging.info("success to add product " + name + "to store " + str(storeID))
             return Response(ProductDTO(product))
@@ -162,4 +165,60 @@ class RoleService:
         except Exception as e:
             logging.error("Failed to update category for product " + str(productID) + "in store " + str(storeID))
             return Response(e.__str__())
+
+    def getStore(self, storeId):
+        try:
+            store = self.__getterManagment.getStore(storeId)
+            logging.info("get store " + str(storeId))
+            return Response(StoreDTO(store))
+        except Exception as e:
+            logging.error("Failed to get store " + str(storeId))
+            return Response(e.__str__())
+
+    def getUserStores(self, userId):
+        try:
+            stores = self.__roleManagment.getUserStores(userId)
+            logging.info("get all stores of user")
+
+            allUserStoresDTO = []
+            for store in stores:
+                allUserStoresDTO.append(StoreDTO(store))
+
+            return Response(allUserStoresDTO)
+        except Exception as e:
+            logging.error("Failed to get all stores of user")
+            return Response(e.__str__())
+
+    def getAllStores(self):
+        try:
+            stores = self.__getterManagment.getAllStores()
+            logging.info("get all stores ")
+
+            allStoresDTO = []
+            for store in stores:
+                allStoresDTO.append(StoreDTO(store))
+
+            return Response(allStoresDTO)
+        except Exception as e:
+            logging.error("Failed to get all stores ")
+            return Response(e.__str__())
+
+    def removeStoreOwner(self, storeId, assignerId, assigneeName):
+        try:
+            isRemoved = self.__roleManagment.removeStoreOwner(storeId, assignerId, assigneeName)
+            logging.info("success to remove owner to store " + str(storeId))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to remove " + str(assigneeName) + " as owner")
+            return Response(e.__str__())
+
+    def removeMember(self, systemManagerName, memberName):
+        try:
+            isRemoved = self.__roleManagment.removeMember(systemManagerName, memberName)
+            logging.info("success to remove member " + str(memberName))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to remove member" + str(memberName))
+            return Response(e.__str__())
+
 

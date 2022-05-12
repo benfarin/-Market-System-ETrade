@@ -38,7 +38,6 @@ class Member(User):
         self.__address = address  # type address class
         self.__bank = bank  # type bank
         self.__market: IMarket = Market.getInstance()
-        exc = None
 
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
@@ -60,6 +59,12 @@ class Member(User):
 
     def getMemberName(self):
         return self.__userName
+
+    def setCart(self, cart):
+        self._cart = cart
+
+    def isStoreExists(self, storeId):
+        return self.__market.isStoreExists(storeId)
 
     def loginUpdates(self):
         try:
@@ -193,3 +198,25 @@ class Member(User):
             return self.__market.printPurchaseHistoryInformation(storeID, self)
         except Exception as e:
             raise Exception(e)
+
+    def getUserStores(self):
+        try:
+            return self.__market.getUserStores(self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeStoreOwner(self, storeId, assignee):
+        try:
+            return self.__market.removeStoreOwner(storeId, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def hasRole(self):
+        try:
+            return self.__market.hasRole(self)
+        except Exception as e:
+            raise Exception(e)
+
+

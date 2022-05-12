@@ -46,6 +46,21 @@ class MemberManagment(UserManagment):
     def checkOnlineUserFromUser(self, userId):
         return super().checkOnlineUser(userId)
 
+    def getMemberByName(self, memberName):
+        for member in super().getMembers().values():
+            if member.getMemberName() == memberName:
+                return member
+        raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
+
+    def getSystemManagers(self):
+        return super().getSystemManagers()
+
+    def removeFromActiveUsers(self, userId):
+        return super().removeFromActiveUsers(userId)
+
+    def removeFromMembers(self, memberId):
+        return super().removeFromMembers(memberId)
+
     def createStore(self, storeName, userID, bank, address):
         try:
             self.checkOnlineUser(userID)

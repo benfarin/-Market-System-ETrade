@@ -7,7 +7,7 @@ from interfaces.IProduct import IProduct
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
 from Business.Transactions.StoreTransaction import StoreTransaction
-from typing import Dict, List
+from typing import Dict
 import threading
 
 
@@ -20,7 +20,7 @@ class Store:
         self.__founderId = founder.getUserID()
         self.__bankAccount = bankAccount
         self.__address = address
-        self.__appointers: Dict[IMember: List] = {}  # Member : Members list
+        self.__appointers: Dict[IMember: []] = {}  # Member : Members list
         self.__managers = []  # Members
         self.__owners = [founder]  # Members
         self.__products: Dict[int: IProduct] = {}  # productId : Product
@@ -315,6 +315,17 @@ class Store:
             self.__permissions[assignee].setPermission_RolesInformation(True)
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
 
+    def removeStoreOwner(self, assigner, assignee):
+        if assigner not in self.__owners:
+            raise Exception("user: " + str(assigner.getUserID()) + "is not an owner in store: " + str(self.__name))
+        if assignee not in self.__owners:
+            raise Exception("user: " + str(assignee) + "is not an owner in store: " + str(self.__name))
+        if assignee not in self.__appointers.get(assigner):
+            raise Exception("user: " + str(assigner.getUserID()) + "cannot remove the user: " +
+                            str(assignee.getUserID() + "because he is not the one that appoint him"))
+        self.__owners.remove(assignee)
+        self.__appointers.get(assigner).remove(assignee)
+
     # print all permission in store - will be deleted this version
     def PrintRolesInformation(self, user):
         permissions = self.__permissions.get(user)
@@ -387,7 +398,7 @@ class Store:
     def getProductsByName(self, productName):
         toReturnProducts = []
         for product in self.__products.values():
-            if product.getProductName() == productName:
+            if product.getProductName().lower() == productName.lower():
                 toReturnProducts.append(product)
         return toReturnProducts
 
@@ -401,7 +412,7 @@ class Store:
     def getProductsByCategory(self, productCategory):
         toReturnProducts = []
         for product in self.__products.values():
-            if product.getProductCategory() == productCategory:
+            if product.getProductCategory().lower() == productCategory.lower():
                 toReturnProducts.append(product)
         return toReturnProducts
 
@@ -428,6 +439,9 @@ class Store:
             raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         with self.__stockLock:
             self.__productsQuantity[productId] += quantity
+
+    def hasRole(self, user):
+        return user in self.__owners or user in self.__managers
 
     def hasPermissions(self, user):
         permissions = self.__permissions.get(user)

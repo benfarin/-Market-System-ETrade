@@ -1,7 +1,9 @@
 from interfaces import IDiscount
-from Business.StorePackage import  Bag,Product
+from Business.StorePackage.Bag import Bag
+from Business.StorePackage.Product import Product
 from typing import Dict
-from Business.DiscountPackage import DiscountCalc, DiscountsOfProducts
+from Business.DiscountPackage.DiscountCalc import DiscountCalc
+from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts
 
 
 class StoreDiscount(IDiscount):
@@ -11,7 +13,7 @@ class StoreDiscount(IDiscount):
         self.discountCalc: DiscountCalc = DiscountCalc(self.F)
 
     def calculate(self, bag: Bag, percent):  #get store's percent and bag and return an object DiscountOfProducts which contain a Dict with <pid,price> , price was calculated afther the percent
-        to_return: DiscountsOfProducts = DiscountsOfProducts()
+        to_return: DiscountOfProducts = DiscountOfProducts()
         discount = 0
         products: Dict[Product, int] = bag.getProducts()
         for prod, quantity in products.items():

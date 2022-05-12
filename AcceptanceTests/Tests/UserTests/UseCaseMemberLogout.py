@@ -12,7 +12,8 @@ class UseCaseMemberLogout(unittest.TestCase):
         cls.user_proxy = UserProxyBridge(UserRealBridge())
         cls.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
-        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        cls.__guestId1 = cls.user_proxy.login_guest().getData().getUserID()
+        cls.user_proxy.register(cls.__guestId1, "user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                                 "Ben Gurion", 0, "HaPoalim")
 
     def test_logout_positive1(self):

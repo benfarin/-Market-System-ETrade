@@ -6,6 +6,7 @@ from Business.StorePackage.Product import Product
 class ProductDTO:
     def __init__(self, product: Product):
         self.__productId = product.getProductId()
+        self.__storeId = product.getProductStoreId()
         self.__name = product.getProductName()
         self.__price = product.getProductPrice()
         self.__category = product.getProductCategory() # String
@@ -13,6 +14,9 @@ class ProductDTO:
 
     def getProductId(self):
         return self.__productId
+
+    def getProductStoreId(self):
+        return self.__storeId
 
     def getProductName(self):
         return self.__name

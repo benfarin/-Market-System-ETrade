@@ -95,3 +95,13 @@ class IStore(Interface):
     def removeProductFromBag(self, productId, quantity):
         pass
 
+    def hasPermissions(self, user):
+        pass
+
+    def removeStoreOwner(self, assigner, assignee):
+        pass
+
+    def hasRole(self, user):
+        pass
+
+

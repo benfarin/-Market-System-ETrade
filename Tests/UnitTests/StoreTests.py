@@ -21,11 +21,11 @@ class MyTestCase(unittest.TestCase):
         self.member3 = Member("kfir3", "1234", "012", address, bank)
         self.member4 = Member("kfir4", "1234", "012", address, bank)
 
-        self.product1 = Product(0, "tara milk 5%", 10.0, "dairy", ["drink", "tara", "5%"])
-        self.product2 = Product(1, "beef", 20.0, "meat", ["cow"])
-        self.product3 = Product(2, "milk", 7.0, "dairy", ["drink"])
-        self.product4 = Product(3, "yogurt", 15.5, "dairy", ["goat"])
-        self.product5 = Product(4, "milk", 1.0, "dairy", [])
+        self.product1 = Product(0, 0, "tara milk 5%", 10.0, "dairy", ["drink", "tara", "5%"])
+        self.product2 = Product(1, 0,  "beef", 20.0, "meat", ["cow"])
+        self.product3 = Product(2, 0,  "milk", 7.0, "dairy", ["drink"])
+        self.product4 = Product(3, 0, "yogurt", 15.5, "dairy", ["goat"])
+        self.product5 = Product(4, 0, "milk", 1.0, "dairy", [])
 
         # after the appointers we will get: manager = [user1->user2, founder->user1],
         #                                   owners = [founder, founder -> user1, user1->user3]
@@ -48,6 +48,18 @@ class MyTestCase(unittest.TestCase):
         self.store.appointOwnerToStore(self.member1, self.member2)
         # cannot assign user that all ready assigned
         self.assertRaises(Exception, lambda: self.store.appointOwnerToStore(self.founder, self.member2))
+
+    def test_remove_owner(self):
+        self.test_appoint_owners()
+        try:
+            print(self.store.getStoreOwners())
+            self.store.removeStoreOwner(self.member1, self.member3)
+            print(self.store.getStoreOwners())
+            self.store.removeStoreOwner(self.founder, self.member1)
+            print(self.store.getStoreOwners())
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
 
     def test_appoint_managers(self):
         self.test_appoint_owners()

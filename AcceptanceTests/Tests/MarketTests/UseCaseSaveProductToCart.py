@@ -16,24 +16,29 @@ class UseCaseSaveProductToCart(unittest.TestCase):
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
         #--------------------------users register ------------------------------------
-        self.user_proxy.register("user1", "1234", "053643643", "500", "20", "Israel", "Beer Sheva",
+        self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId1, "user1", "1234", "053643643", "500", "20", "Israel", "Beer Sheva",
                                                 "Ben Gurion", 0, "HaPoalim")
-        self.user_proxy.register("user2", "12345", "0500000000", "505", "21", "Israel", "Tel aviv",
+        self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId2, "user2", "12345", "0500000000", "505", "21", "Israel", "Tel aviv",
                                  "Ben Gurion", 0, "HaPoalim")
-        self.user_proxy.register("user3", "123451", "05325235", "506", "22", "Israel", "Tel aviv",
+        self.__guestId3 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId3, "user3", "123451", "05325235", "506", "22", "Israel", "Tel aviv",
                                  "Ben Gurion", 0, "HaPoalim")
-        self.user_proxy.register("user4", "123452", "0503643342", "402", "2124", "Israel", "Tel aviv",
+        self.__guestId4 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId4, "user4", "123452", "0503643342", "402", "2124", "Israel", "Tel aviv",
                                  "Ben Gurion", 0, "HaPoalim")
-        self.user_proxy.register("user5", "123456", "05043523523", "505", "21", "Israel", "ashdod",
+        self.__guestId5 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId5, "user5", "123456", "05043523523", "505", "21", "Israel", "ashdod",
                                  "Ben Gurion", 0, "le")
 
 
         #----------------------------user login --------------------------------------
-        self.user_id1 = self.user_proxy.login_member("user1", "1234").getData().getMemberId()
-        self.user_id2 = self.user_proxy.login_member("user2", "12345").getData().getMemberId()
-        self.user_id3 = self.user_proxy.login_member("user3", "123451").getData().getMemberId()
-        self.user_id4 = self.user_proxy.login_member("user4", "123452").getData().getMemberId()
-        self.user_id5 = self.user_proxy.login_member("user5", "123456").getData().getMemberId()
+        self.user_id1 = self.user_proxy.login_member("user1", "1234").getData().getUserID()
+        self.user_id2 = self.user_proxy.login_member("user2", "12345").getData().getUserID()
+        self.user_id3 = self.user_proxy.login_member("user3", "123451").getData().getUserID()
+        self.user_id4 = self.user_proxy.login_member("user4", "123452").getData().getUserID()
+        self.user_id5 = self.user_proxy.login_member("user5", "123456").getData().getUserID()
 
         #------------------------------------open stores-----------------------------------------------------
         self.store_id1 = self.user_proxy.open_store("store1", self.user_id1, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",

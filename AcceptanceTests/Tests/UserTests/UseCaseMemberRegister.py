@@ -14,16 +14,19 @@ class UseCaseMemberRegister(unittest.TestCase):
 
     def test_register_positive(self):
         try:
-            self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+            self.__guestId = self.proxy.login_guest().getData().getUserID()
+            self.proxy.register(self.__guestId, "user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                              "Ben Gurion", 0, "HaPoalim")
             self.assertTrue(True)
         except:
             self.assertTrue(False)
 
     def test_register_negative(self):
-        self.proxy.register("user2", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva", "Ben Gurion", 0,
+        self.__guestId1 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register(self.__guestId1, "user2", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva", "Ben Gurion", 0,
                             "HaPoalim")
-        self.assertRaises(Exception, self.proxy.register("user2", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+        self.__guestId2 = self.proxy.login_guest().getData().getUserID()
+        self.assertRaises(Exception, self.proxy.register(  self.__guestId2, "user2", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                              "Ben Gurion", 0, "HaPoalim").getError())
 
     # def test_register_negative2(self):

@@ -25,93 +25,79 @@ class RoleManagment:
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
-    def appointManagerToStore(self, storeID, assignerID, assigneeID):  # check if the asssignee he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID, assigneeName):  # check if the asssignee he member and assignerID!!
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembers().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembers().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.appointManagerToStore(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneeID):  # check if the assignee he member and assignerID!!
+    def appointOwnerToStore(self, storeID, assignerID, assigneeName):  # check if the assignee he member and assignerID!!
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.appointOwnerToStore(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
-    def setStockManagerPermission(self, storeID, assignerID, assigneeID):
+    def setStockManagerPermission(self, storeID, assignerID, assigneeName):
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.setStockManagerPermission(storeID, assignee)
         except Exception as e:
             return e
 
-    def setAppointOwnerPermission(self, storeID, assignerID, assigneeID):
+    def setAppointOwnerPermission(self, storeID, assignerID, assigneeName):
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.setAppointOwnerPermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
-    def setChangePermission(self, storeID, assignerID, assigneeID):
+    def setChangePermission(self, storeID, assignerID, assigneeName):
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.setChangePermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
-    def setRolesInformationPermission(self, storeID, assignerID, assigneeID):
+    def setRolesInformationPermission(self, storeID, assignerID, assigneeName):
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.setRolesInformationPermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
 
-    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeID):
+    def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeName):
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
-            assignee = self.__memberManagement.getMembersFromUser().get(assigneeID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
             if assignerID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
-            if assigneeID not in self.__memberManagement.getMembersFromUser().keys():
-                raise NoSuchMemberException("user: " + str(assigneeID) + "is not a member")
             return assigner.setRolesInformationPermission(storeID, assignee)
         except Exception as e:
             raise Exception(e)
@@ -199,14 +185,61 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def createProduct(self, name, price, category, keywords):
+    def createProduct(self, userId, storeId, name, price, category, keywords):
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if name is None:
             raise Exception("product name cannot be None")
         if price <= 0:
             raise Exception("product cannot have negative price")
         if category is None:
             raise Exception("product category cannot be None")
-        return Product(self.__getProductId(), name, price, category, keywords)
+        return Product(self.__getProductId(), storeId, name, price, category, keywords)
+
+    def getUserStores(self, userId):
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        try:
+            return member.getUserStores()
+        except Exception as e:
+            raise Exception(e)
+
+    def removeStoreOwner(self, storeId, assignerId, assigneeName):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(assignerId)
+            assigner = self.__memberManagement.getMembersFromUser().get(assignerId)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
+            if assignerId not in self.__memberManagement.getMembers().keys():
+                raise NoSuchMemberException("user: " + str(assignerId) + "is not a member")
+            return assigner.removeStoreOwner(storeId, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeMember(self, systemManagerName, memberName):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            member = self.__memberManagement.getMemberByName(memberName)
+            if member not in self.__memberManagement.getMembers().values():
+                raise NoSuchMemberException("user: " + str(member.getUserID()) + "is not a member")
+            if member.hasRole():
+                raise Exception("cannot remove member with a role")
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+
+            if self.__memberManagement.checkOnlineUserFromUser(member.getUserID()):
+                self.__memberManagement.removeFromActiveUsers(member.getUserID())
+            self.__memberManagement.removeFromMembers(member.getUserID())
+            return True
+
+        except Exception as e:
+            raise Exception(e)
 
     def __getProductId(self):
         with self.__productId_lock:

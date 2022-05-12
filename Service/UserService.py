@@ -1,4 +1,5 @@
 from Business.Managment.UserManagment import UserManagment
+from Business.Managment.GetterManagment import GetterManagment
 from Business.UserPackage.User import User
 from Service.DTO.StoreDTO import StoreDTO
 from Service.Response import Response
@@ -25,6 +26,7 @@ class UserService:
     def __init__(self):
         global firstAdminRegistered
         self.__userManagment = UserManagment.getInstance()
+        self.__getterManagment = GetterManagment.getInstance()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
         # self.__users: Dict[str : User] = {}
@@ -52,12 +54,12 @@ class UserService:
             logging.error("There was a problem during logout from the system")
             return Response(e.__str__())
 
-    def memberSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
+    def memberSignUp(self, oldUserId, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                      zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            isSignuped = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
+            isSignuped = self.__userManagment.memberSignUp(oldUserId, userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
 
             return Response(isSignuped)
@@ -81,10 +83,10 @@ class UserService:
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
             systemManager = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
             logging.info("success to sign new system manager " + userName)
-            return MemberDTO(systemManager)
+            return Response(MemberDTO(systemManager))
         except Exception as e:
             logging.error("Cannot signup new System Manager")
-            return e
+            return Response(e.__str__())
 
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
@@ -124,7 +126,7 @@ class UserService:
 
     def getProductByCategory(self, category):
         try:
-            products = self.__userManagment.getProductByCategory(category)
+            products = self.__getterManagment.getProductByCategory(category)
             logging.info("success to get product by category " + category)
 
             productsDTOs = []
@@ -137,7 +139,7 @@ class UserService:
 
     def getProductByName(self, nameProduct):
         try:
-            products = self.__userManagment.getProductsByName(nameProduct)
+            products = self.__getterManagment.getProductsByName(nameProduct)
             logging.info("success to get product by name " + nameProduct)
 
             productsDTOs = []
@@ -150,7 +152,7 @@ class UserService:
 
     def getProductByKeyword(self, keyword):
         try:
-            products = self.__userManagment.getProductByKeyWord(keyword)
+            products = self.__getterManagment.getProductByKeyWord(keyword)
             logging.info("success to get product by keyword " + keyword)
 
             productsDTOs = []
@@ -163,7 +165,7 @@ class UserService:
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            products = self.__userManagment.getProductPriceRange(minPrice, highPrice)
+            products = self.__getterManagment.getProductPriceRange(minPrice, highPrice)
             logging.info("success to get product by price range")
 
             productsDTOs = []

@@ -16,12 +16,12 @@ class UserProxyBridge:
     def check_access(self):
         return self._real_subject is None
 
-    def register(self, username, password, phone, account_number, branch, country,
+    def register(self, oldUserId, username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code):
         if self.check_access():
             return True
         else:
-            return self._real_subject.register(username, password, phone, account_number, branch, country,
+            return self._real_subject.register(oldUserId,username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code)
 
     def login_guest(self):
@@ -62,6 +62,11 @@ class UserProxyBridge:
             return True
         return self._real_subject.appoint_system_manager(userName, password, phone, accountNumber, brunch,
                                                          country, city, street, apartmentNum, zipCode)
+
+    def removeMember(self, systemManagerName, memberName):
+        if self.check_access():
+            return True
+        return self._real_subject.removeMember(systemManagerName, memberName)
 
     # def logout_member(self, user_id,password):
     #     if self.check_access():

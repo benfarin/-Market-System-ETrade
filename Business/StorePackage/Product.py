@@ -9,8 +9,9 @@ from interfaces.IProduct import IProduct
 @zope.interface.implementer(IProduct)
 class Product:
 
-    def __init__(self, Id, name, price, category, keyword):
+    def __init__(self, Id, storeId, name, price, category, keyword):
         self.__id = Id
+        self.__storeId = storeId
         self.__name = name
         self.__price = price
         self.__category = category  # String
@@ -18,6 +19,9 @@ class Product:
 
     def getProductId(self):
         return self.__id
+
+    def getProductStoreId(self):
+        return self.__storeId
 
     def getProductName(self):
         return self.__name
@@ -50,10 +54,14 @@ class Product:
         self.__keywords.remove(keyword)
 
     def isExistsKeyword(self, keyword):
-        return keyword in self.__keywords
+        for keyw in self.__keywords:
+            if keyw.lower() == keyword.lower():
+                return True
+        return False
 
     def printForEvents(self):
         productStr = "\n\t\t\tid: " + str(self.__id)
+        productStr = "\n\t\t\tstore id: " + str(self.__storeId)
         productStr += "\n\t\t\tname: " + self.__name
         productStr += "\n\t\t\tprice: " + str(self.__price)
         productStr += "\n\t\t\tcategory: " + self.__category

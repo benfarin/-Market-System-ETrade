@@ -46,6 +46,25 @@ class Market:
         self.__stores[storeID] = newStore
         return newStore
 
+    def isStoreExists(self, storeId):
+        return storeId in self.__stores.keys()
+
+    def getStore(self, storeId):
+        if storeId in self.__stores.keys():
+            return self.__stores.get(storeId)
+        raise NoSuchStoreException("store: " + str(storeId) + " doesnt exists in the market")
+
+    def getUserStores(self, user):
+        allStores = []
+        for store in self.__stores.values():
+            if store.hasPermissions(user):
+                allStores.append(store)
+        return allStores
+
+
+    def getAllStores(self):
+        return self.__stores.values()
+
     def addProductToCart(self, user, storeID, productID, quantity):  # Tested
         try:
             if self.__stores.get(storeID).hasProduct(productID) is None:
@@ -206,6 +225,13 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def removeStoreOwner(self, storeID, assigner, assignee):  # unTested
+        try:
+            self.__stores.get(storeID).removeStoreOwner(assigner, assignee)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def setStockManagerPermission(self, storeID, assigner, assignee):  # Tested
         try:
             self.__stores.get(storeID).setStockManagementPermission(assigner, assignee)
@@ -329,6 +355,13 @@ class Market:
             return True
         except Exception as e:
             raise Exception(e)
+
+    def hasRole(self, user):
+        for store in self.__stores.values():
+            if store.hasRole(user):
+                return True
+        return False
+
 
     def __getGlobalStoreId(self):
         with self.__storeId_lock:

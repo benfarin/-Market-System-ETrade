@@ -6,6 +6,9 @@ class IMarket(Interface):
     def getUserID(self):
         pass
 
+    def isStoreExists(self, storeId):
+        pass
+
     def createStore(self, storeName, user, bank, address):  # change test!
         pass
 
@@ -105,3 +108,13 @@ class IMarket(Interface):
 
     def addProductToCartWithoutStore(self, user, productID, quantity):
         pass
+
+    def getUserStores(self, user):
+        pass
+
+    def removeStoreOwner(self, storeID, assigner, assignee):
+        pass
+
+    def hasRole(self, user):
+        pass
+
