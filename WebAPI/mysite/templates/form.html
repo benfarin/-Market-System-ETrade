@@ -6,6 +6,14 @@
     <h1 style="text-align:center;">{{ title }}</h1>
 {% endif %}
 
+{% if messages %}
+<div class="messages" style="text-align:center;">
+    {% for message in messages %}
+    <li>{% if message.tags %} {{ message }} {% endif %}</li>
+    {% endfor %}
+</div>
+{% endif %}
+
 <form style="text-align:center;" method="POST" action="." enctype="multipart/form-data">
     {% csrf_token %}
     <table style="margin-left:auto;margin-right:auto;">

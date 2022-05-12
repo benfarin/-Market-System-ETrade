@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from Business.UserPackage.Member import Member
 from Service.DTO.GuestDTO import GuestDTO
@@ -21,7 +22,7 @@ role_service = RoleService()
 member_service = MemberService()
 user_service = UserService()
 from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdateProductForm, AddProductForm, \
-    AddProductToCartForm, PurchaseProductForm
+    AddProductToCartForm, PurchaseProductForm, AddProductQuantity
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -64,6 +65,7 @@ def signup_page(request):
                                            apartment_num, zip_code)
         if not answer.isError():
             return HttpResponseRedirect("/")
+        messages.warning(request, answer.getError())
     return render(request, "form.html", context)
 
 
@@ -81,7 +83,8 @@ def login_page(request):
         if not answer.isError():
             user = answer.getData()
             print(user.getUserID())
-        return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Login",
         "form": form
@@ -132,6 +135,7 @@ def create_store_page(request):
         if not answer.isError():
             # stores.append(answer.getData())
             return HttpResponseRedirect("/my_stores")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Create New Store",
         "form": form
@@ -152,7 +156,7 @@ def store_page(request, slug):
     return render(request, "store.html", context)
 
 
-def store_products_management(request, slug):
+def store_products_management(request, slug, slug2):
     return render(request, "products_manage.html", {})
 
 
@@ -167,6 +171,7 @@ def appoint_manager(request, slug):
         if not answer.isError():
             role_service.setRolesInformationPermission(int(slug), user.getUserID(), assignee_id)
             return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Appoint Store Manager",
         "form": form
@@ -185,6 +190,7 @@ def appoint_Owner(request, slug):
         if not answer.isError():
             role_service.setRolesInformationPermission(int(slug), user.getUserID(), assingeeID)
             return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Appoint Store Owner",
         "form": form
@@ -214,6 +220,7 @@ def add_product(request, slug):
         answer = role_service.addProductToStore(int(slug), user.getUserID(), name, int(price), category, keywords)
         if not answer.isError():
             return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Add Product",
         "form": form
@@ -242,6 +249,7 @@ def add_to_cart_page(request, slug, slug2):
         answer = user_service.addProductToCart(user.getUserID(), int(slug), int(slug2), int(quantity))
         if not answer.isError():
             return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Add Product",
         "form": form
@@ -259,6 +267,7 @@ def purchase_cart(request):
         answer = user_service.purchaseCart(user.getUserID(), int(accountNumber), int(branch))
         if not answer.isError():
             return HttpResponseRedirect("/cart/")
+        messages.warning(request, answer.getError())
     context = {
         "title": "Purchase Cart",
         "form": form
@@ -286,3 +295,65 @@ def search_view(request):
             searches += (search.getData())
         context['findings'] = searches
     return render(request, 'searches.html', context)
+
+
+def show_history(request, slug):
+    answer = role_service.getPurchaseHistoryInformation(int(slug), user.getUserID())
+    transactions = []
+    if not answer.isError():
+        purchases = answer.getData()
+        for purchase in purchases:
+            transactions.append(purchase)
+    context = {"title": "Purchases History", "transactions": transactions}
+    return render(request, "history.html", context)
+
+
+def product_update(request, slug, slug2):
+    form = UpdateProductForm(request.POST or None)
+    if form.is_valid():
+        form = UpdateProductForm()
+    name = request.POST.get("name")
+    category = request.POST.get("category")
+    price = request.POST.get("price")
+    if name is not None and category is not None and price is not None:
+        answer1 = role_service.updateProductName(user.getUserID(), int(slug), int(slug2), name)
+        answer2 = role_service.updateProductCategory(user.getUserID(), int(slug), int(slug2), category)
+        answer3 = role_service.updateProductPrice(user.getUserID(), int(slug), int(slug2), int(price))
+        if not answer1.isError() and not answer2.isError() and not answer3.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        if answer1.isError():
+            messages.warning(request, answer1.getError())
+        if answer1.isError():
+            messages.warning(request, answer2.getError())
+        if answer1.isError():
+            messages.warning(request, answer3.getError())
+    context = {
+        "title": "Purchase Cart",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def remove_product(request, slug, slug2):
+    answer = role_service.removeProductFromStore(int(slug), user.getUserID(), int(slug2))
+    store = user_service.getStore(int(slug)).getData()
+    if not answer.isError():
+        return HttpResponseRedirect("/store/" + slug + "/")
+    messages.warning(request, answer.getError())
+
+
+def add_quantity(request, slug, slug2):
+    form = AddProductQuantity(request.POST or None)
+    if form.is_valid():
+        form = AddProductQuantity()
+    quantity = request.POST.get("quantity")
+    if quantity is not None:
+        answer = role_service.addProductQuantityToStore(int(slug), user.getUserID(), int(slug2), int(quantity))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Product Quantity",
+        "form": form
+    }
+    return render(request, "form.html", context)

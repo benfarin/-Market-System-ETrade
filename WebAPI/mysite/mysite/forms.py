@@ -57,3 +57,7 @@ class AddProductToCartForm(forms.Form):
 class PurchaseProductForm(forms.Form):
     accountNumber = forms.IntegerField()
     branch = forms.IntegerField()
+
+
+class AddProductQuantity(forms.Form):
+    quantity = forms.IntegerField()

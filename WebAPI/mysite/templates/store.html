@@ -9,14 +9,14 @@
                         <h5 class="card-title">{{ item.getProductName }}</h5>
                             <p class="card-text">{{ item.getProductCategory }}</p>
                             <p class="card-text">Price: {{ item.getProductPrice }}</p>
+                                {% if permissions.hasPermission_StockManagement %}
+                                 <a class="btn btn-primary" href="{{ item.getProductId }}/products_manage/" role="button">Product Management</a>
+                                {% endif %}
                         <a href="add_to_cart/{{ item.getProductId }}" class="btn btn-primary">Add to cart</a>
                     </div>
                 </div>
         {% endfor %}
         </div>
-        {% if permissions.hasPermission_StockManagement %}
-                <a class="btn btn-primary" href="products_manage/" role="button">Products Management</a>
-        {% endif %}
         {% if permissions.hasPermission_AppointManager %}
                 <a class="btn btn-primary" href="appoint_manager/" role="button">Appoint Manager</a>
         {% endif %}
@@ -26,11 +26,14 @@
         {% if permissions.hasPermission_ChangePermission %}
                 <a class="btn btn-primary" href="/addstore" role="button">Change Stuff Member Permission</a>
         {% endif %}
-        {% if permissions.hasPermission_RolesInformation %}
-                <a class="btn btn-primary" href="/addstore" role="button">Show All Stuff Members</a>
-        {% endif %}
+<!--        {% if permissions.hasPermission_RolesInformation %}-->
+<!--                <a class="btn btn-primary" href="/addstore" role="button">Show All Stuff Members</a>-->
+<!--        {% endif %}-->
         {% if permissions.hasPermission_PurchaseHistoryInformation %}
-                <a class="btn btn-primary" href="/addstore" role="button">Show Purchases History</a>
+                <a class="btn btn-primary" href="history/" role="button">Show Purchases History</a>
+        {% endif %}
+        {% if permissions.hasPermission_StockManagement %}
+                <a class="btn btn-primary" href="addproduct/" role="button">Add New Product</a>
         {% endif %}
         {% if permissions.hasPermission_CloseStore %}
                 <a class="btn btn-primary" href="/addstore" role="button">Close Store</a>
