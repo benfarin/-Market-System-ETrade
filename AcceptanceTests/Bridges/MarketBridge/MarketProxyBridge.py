@@ -113,6 +113,21 @@ class MarketProxyBridge:
             return True
         return self._real_subject.get_cart(user_id)
 
+    def get_store_by_ID(self, store_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_store(store_id)
+
+    def getAllStores(self):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllStores()
+
+    def getUserStore(self,userId):
+        if self.check_access():
+            return True
+        return self._real_subject.getUserStore(userId)
+
     def print_purchase_history(self, store_id, user_id):
         if self.check_access():
             return True

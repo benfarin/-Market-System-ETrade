@@ -30,6 +30,12 @@ class MarketRealBridge:
     def get_cart(self, user_id):
         return self._userService.getCart(user_id)
 
+    def get_store(self, store_id):
+        return self._roleService.getStore(store_id)
+
+    def get_all_stores(self):
+        return self._roleService.getAllStores()
+
     def get_cart_info(self, user_id):
         return self._userService.getCart(user_id)
 
@@ -59,6 +65,12 @@ class MarketRealBridge:
 
     def get_store_info(self, store_id, user_id):
         return self._roleService.getRolesInformation(store_id, user_id)
+
+    def getAllStores(self):
+        return self._roleService.getAllStores()
+
+    def getUserStore(self,userId):
+        return self._roleService.getUserStores(userId)
 
     def edit_product_name(self, user_id, store_id, prod_id, new_name):
         return self._roleService.updateProductName(user_id, store_id, prod_id, new_name)

@@ -326,7 +326,7 @@ class Market:
             founderId = self.__stores.get(storeID).getStoreFounderId()
             if founderId != user.getUserID():
                 raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
-            self.__removedStores[founderId] = self.__stores.get(storeID)
+            self.__removedStores[storeID] = self.__stores.get(storeID)
             self.__stores.pop(storeID)
             return True
         except Exception as e:
@@ -339,8 +339,8 @@ class Market:
             founderId = self.__removedStores.get(storeID).getStoreFounderId()
             if founderId != founder.getUserID():
                 raise NotFounderException("user: " + founder.getUserID() + "is not the founder of store: " + str(storeID))
-            self.__stores[storeID] = self.__removedStores.get(founderId)
-            self.__removedStores.pop(founderId)
+            self.__stores[storeID] = self.__removedStores.get(storeID)
+            self.__removedStores.pop(storeID)
             return True
         except Exception as e:
             raise Exception(e)

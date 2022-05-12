@@ -29,7 +29,12 @@ class MyTestCase(unittest.TestCase):
         self.assertRaises(Exception, self.user_proxy.open_store("store", -999, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                    0, "000000"))
 
-
+    def test_recreate_store(self):
+        storeId = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                    0, "000000").getData().getStoreId()
+        print(self.assertTrue(self.user_proxy.removeStore( storeId, self.user_id).getData()))
+        self.assertTrue(self.user_proxy.recreateStore( self.user_id, storeId).getData())
+        check = 1
 
 if __name__ == '__main__':
     unittest.main()

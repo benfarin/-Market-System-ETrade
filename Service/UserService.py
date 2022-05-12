@@ -195,37 +195,3 @@ class UserService:
             logging.error("Failed to get cart for user" + str(userID))
             return Response(e.__str__())
 
-    def getStore(self, storeID):
-        try:
-            store = self.__userManagment.getStore(storeID)
-            logging.info("success get store " + str(storeID))
-            return Response(StoreDTO(store))
-        except Exception as e:
-            logging.error("Failed to get store " + str(storeID))
-            return Response(e.__str__())
-
-    def getAllStores(self):
-        try:
-            stores: Dict[int, IStore] = self.__userManagment.getAllStores()
-            logging.info("success get stores in market")
-
-            storesDTOs = []
-            for store in stores.values():
-                storesDTOs.append(StoreDTO(store))
-            return Response(storesDTOs)
-        except Exception as e:
-            logging.error("Failed to get stores")
-            return Response(e.__str__())
-
-    def getAllStoresOfUser(self, userId):
-        try:
-            stores = self.__userManagment.getAllStoresOfUser(userId)
-            logging.info("success get stores in market")
-
-            storesDTOs = []
-            for store in stores:
-                storesDTOs.append(StoreDTO(store))
-            return Response(storesDTOs)
-        except Exception as e:
-            logging.error("Failed to get stores")
-            return Response(e.__str__())

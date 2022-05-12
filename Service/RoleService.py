@@ -1,6 +1,7 @@
 from Business.Managment.MemberManagment import MemberManagment
 from Business.Managment.RoleManagment import RoleManagment
 from Business.Managment.GetterManagment import GetterManagment
+from Exceptions.CustomExceptions import NoSuchStoreException
 from Service.Response import Response
 from Service.DTO.storeTransactionDTO import storeTransactionDTO
 from Service.DTO.StorePermissionDTO import StorePermissionDTO
@@ -172,6 +173,8 @@ class RoleService:
 
     def getStore(self, storeId):
         try:
+            if storeId < 0:
+                raise NoSuchStoreException("There no store id: " + str(storeId))
             store = self.__getterManagment.getStore(storeId)
             logging.info("get store " + str(storeId))
             return Response(StoreDTO(store))

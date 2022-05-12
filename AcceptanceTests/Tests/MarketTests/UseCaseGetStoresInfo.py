@@ -20,6 +20,7 @@ class UseCaseGetStoresInfo(unittest.TestCase):
         self.owner_id = self.proxy_user.login_member("testUser", "1234").getData().getUserID()
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
         self.store_id = self.proxy_user.open_store("testStore", self.owner_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
+        self.store_id1 = self.proxy_user.open_store("testStore1", self.owner_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
         self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register(self.__guestId2, "testUser2", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
         self.manager_id = self.proxy_user.login_member("testUser2", "1234").getData().getUserID()
@@ -27,6 +28,18 @@ class UseCaseGetStoresInfo(unittest.TestCase):
 
     def test_get_stores_info_positive(self):
         print(self.proxy_market.get_store_info(self.store_id, self.owner_id).getData())
+        self.assertTrue(True)
+
+    def test_get_store_by_id(self):
+       print(self.proxy_market.get_store_by_ID(self.store_id).getData())
+       self.assertTrue(True)
+
+    def test_get_all_stores(self):
+        print(self.proxy_market.getAllStores().getData())
+        self.assertTrue(True)
+
+    def test_user_store(self):
+        print(self.proxy_market.getUserStore(self.owner_id).getData())
         self.assertTrue(True)
 
 

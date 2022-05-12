@@ -57,6 +57,16 @@ class UserProxyBridge:
             return True
         return self._real_subject.open_store(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
 
+    def removeStore(self,store_id, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.removeStore(store_id, user_id)
+
+    def recreateStore(self,user_id, store_id):
+        if self.check_access():
+            return True
+        return self._real_subject.recreateStore(user_id, store_id)
+
     def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         if self.check_access():
             return True
