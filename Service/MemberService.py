@@ -41,6 +41,15 @@ class MemberService:
             logging.error("Failed remove the store: " + str(storeId))
             return Response(e.__str__())
 
+    def recreateStore(self, founderId, storeId):
+        try:
+            isRemoved = self.__memberManage.recreateStore(founderId, storeId)
+            logging.info("recreate store: " + founderId)
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed recreate the store: " + str(storeId))
+            return Response(e.__str__())
+
     def logoutMember(self, userName):
         try:
             isLoggedOut = self.__memberManage.logoutMember(userName)

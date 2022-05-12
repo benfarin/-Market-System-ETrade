@@ -87,6 +87,17 @@ class MemberManagment(UserManagment):
         except Exception as e:
             raise Exception(e)
 
+    def recreateStore(self, founderId, storeId):
+        try:
+            self.checkOnlineUser(founderId)
+            member = self.getMembers().get(founderId)
+            if member is None:
+                raise NoSuchMemberException("user: " + str(founderId) + "is not a member")
+            member.recreateStore(storeId)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def logoutMember(self, userName):
         try:
             user = self.getMembers().get(userName)

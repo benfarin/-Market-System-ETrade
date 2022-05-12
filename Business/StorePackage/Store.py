@@ -443,6 +443,9 @@ class Store:
     def hasRole(self, user):
         return user in self.__owners or user in self.__managers
 
+    def getTransactionsForSystemManager(self):
+        return self.__transactions.values()
+
     def hasPermissions(self, user):
         permissions = self.__permissions.get(user)
         if permissions is None:

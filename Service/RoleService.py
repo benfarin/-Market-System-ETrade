@@ -4,6 +4,7 @@ from Business.Managment.GetterManagment import GetterManagment
 from Service.Response import Response
 from Service.DTO.storeTransactionDTO import storeTransactionDTO
 from Service.DTO.StorePermissionDTO import StorePermissionDTO
+from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.StoreDTO import StoreDTO
 from Service.DTO.ProductDTO import ProductDTO
 import logging
@@ -21,7 +22,8 @@ class RoleService:
         self.__roleManagment = RoleManagment.getInstance()
         self.__getterManagment = GetterManagment.getInstance()
 
-    def appointManagerToStore(self, storeID, assignerID, assigneeName):  # check if the asssigne he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID,
+                              assigneeName):  # check if the asssigne he member and assignerID!!
         try:
             isAppointed = self.__roleManagment.appointManagerToStore(storeID, assignerID, assigneeName)
             logging.info("success to appoint manager to store " + str(storeID))
@@ -30,7 +32,8 @@ class RoleService:
             logging.error("Failed to appoint " + str(assigneeName) + " as manager")
             return Response(e.__str__())
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneeName):  # check if the asssigne he member and assignerID!!
+    def appointOwnerToStore(self, storeID, assignerID,
+                            assigneeName):  # check if the asssigne he member and assignerID!!
         try:
             isAppointed = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeName)
             logging.info("success to appoint owner to store " + str(storeID))
@@ -69,7 +72,8 @@ class RoleService:
     def setRolesInformationPermission(self, storeID, assignerID, assigneeName):
         try:
             isSet = self.__roleManagment.setRolesInformationPermission(storeID, assignerID, assigneeName)
-            logging.info("success to set role info permission in store " + str(storeID) + "for user " + str(assigneeName))
+            logging.info(
+                "success to set role info permission in store " + str(storeID) + "for user " + str(assigneeName))
             return Response(isSet)
         except Exception as e:
             logging.error("Failed to set permissions to user " + str(assigneeName))
@@ -212,6 +216,7 @@ class RoleService:
             logging.error("Failed to remove " + str(assigneeName) + " as owner")
             return Response(e.__str__())
 
+    # actions of system manager
     def removeMember(self, systemManagerName, memberName):
         try:
             isRemoved = self.__roleManagment.removeMember(systemManagerName, memberName)
@@ -221,4 +226,62 @@ class RoleService:
             logging.error("Failed to remove member" + str(memberName))
             return Response(e.__str__())
 
+    def getAllStoreTransactions(self, systemManagerName):
+        try:
+            storeTransactions = self.__roleManagment.getAllStoreTransactions(systemManagerName)
+            logging.info("success to get all store transactions " + str(systemManagerName))
 
+            DTOstoreTransactuions = []
+            for st in storeTransactions:
+                DTOstoreTransactuions.append(storeTransactionDTO(st))
+
+            return Response(DTOstoreTransactuions)
+        except Exception as e:
+            logging.error("Failed to get all store transactions" + str(systemManagerName))
+            return Response(e.__str__())
+
+    def getAllUserTransactions(self, systemManagerName):
+        try:
+            userTransactions = self.__roleManagment.getAllUserTransactions(systemManagerName)
+            logging.info("success to get all store transactions " + str(systemManagerName))
+
+            DTOuserTransactuions = []
+            for ut in userTransactions:
+                DTOuserTransactuions.append(userTransactionDTO(ut))
+
+            return Response(DTOuserTransactuions)
+        except Exception as e:
+            logging.error("Failed to get all store transactions" + str(systemManagerName))
+            return Response(e.__str__())
+
+    def getStoreTransaction(self, systemManagerName, transactionId):
+        try:
+            storeTransaction = self.__roleManagment.getStoreTransaction(systemManagerName, transactionId)
+            logging.info("success to get store Transaction " + str(transactionId))
+            return Response(storeTransactionDTO(storeTransaction))
+        except Exception as e:
+            logging.error("Failed to get store transaction " + str(transactionId))
+            return Response(e.__str__())
+
+    def getUserTransaction(self, systemManagerName, transactionId):
+        try:
+            userTransaction = self.__roleManagment.getUserTransaction(systemManagerName, transactionId)
+            logging.info("success to get user Transaction " + str(transactionId))
+            return Response(userTransactionDTO(userTransaction))
+        except Exception as e:
+            logging.error("Failed to get user transaction " + str(transactionId))
+            return Response(e.__str__())
+
+    def getStoreTransactionByStoreId(self, systemManagerName, storeId):
+        try:
+            storeTransactions = self.__roleManagment.getStoreTransactionByStoreId(systemManagerName, storeId)
+            logging.info("success to get store Transaction by store id" + str(storeId))
+
+            DTOstoreTransactions = []
+            for st in storeTransactions:
+                DTOstoreTransactions.append(storeTransactionDTO(st))
+
+            return Response(DTOstoreTransactions)
+        except Exception as e:
+            logging.error("Failed to get store transaction by id " + str(self))
+            return Response(e.__str__())

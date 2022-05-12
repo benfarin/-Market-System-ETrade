@@ -10,6 +10,7 @@ from interfaces.IStore import IStore
 from interfaces.IMember import IMember
 from interfaces.IUser import IUser
 from Payment.PaymentStatus import PaymentStatus
+from Business.Transactions.TransactionHistory import TransactionHistory
 from Payment.PaymentDetails import PaymentDetails
 from Payment.paymentlmpl import Paymentlmpl
 from Business.Transactions.StoreTransaction import StoreTransaction
@@ -35,8 +36,11 @@ class Market:
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
         self.__globalStore = 0
         self._transactionIdCounter = 0
+        self.__transactionHistory = TransactionHistory.getInstance()
+        self.__removedStores: Dict[str: IStore] = {}
         self.__storeId_lock = threading.Lock()
         self.__transactionId_lock = threading.Lock()
+        self.__removeStoreLock = threading.Lock()
         if Market.__instance is None:
             Market.__instance = self
 
@@ -60,7 +64,6 @@ class Market:
             if store.hasPermissions(user):
                 allStores.append(store)
         return allStores
-
 
     def getAllStores(self):
         return self.__stores.values()
@@ -152,18 +155,6 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
-    def addTransaction(self, storeID, transaction):
-        try:
-            self.__stores.get(storeID).addTransaction(transaction)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeTransaction(self, storeID, transactionId):
-        try:
-            self.__stores.get(storeID).removeTransaction(transactionId)
-        except Exception as e:
-            raise Exception(e)
-
     def purchaseCart(self, user, bank):
         try:
             cart = user.getCart()
@@ -191,6 +182,7 @@ class Market:
                                                                           paymentStatus.getPaymentId(), productsInStore,
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
+                    self.__transactionHistory.addStoreTransaction(storeTransaction)
                     storeTransactions[storeId] = storeTransaction
                 else:
                     storeFailed.append(storeId)
@@ -199,6 +191,7 @@ class Market:
             user.addPayment(userPaymentId)
             userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId)
             user.addTransaction(userTransaction)
+            self.__transactionHistory.addUserTransaction(userTransaction)
 
             # need to think what should we do if some of the payments failed
             if len(storeFailed) == 0:
@@ -247,6 +240,7 @@ class Market:
             raise Exception(e)
 
     def setChangePermission(self, storeID, assigner, assignee):
+        self.__removeStoreLock.acquire(False)
         try:
             self.__stores.get(storeID).setChangePermission(assigner, assignee)
             return True
@@ -329,12 +323,28 @@ class Market:
         try:
             if self.__stores.get(storeID) is None:
                 raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
-            if self.__stores.get(storeID).getStoreFounderId() != user.getUserID():
+            founderId = self.__stores.get(storeID).getStoreFounderId()
+            if founderId != user.getUserID():
                 raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__removedStores[founderId] = self.__stores.get(storeID)
             self.__stores.pop(storeID)
             return True
         except Exception as e:
             raise Exception(e)
+
+    def recreateStore(self, storeID, founder):
+        try:
+            if self.__removedStores.get(storeID) is None:
+                raise NoSuchStoreException("Store " + str(storeID) + " is not removed from the system")
+            founderId = self.__removedStores.get(storeID).getStoreFounderId()
+            if founderId != founder.getUserID():
+                raise NotFounderException("user: " + founder.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__stores[storeID] = self.__removedStores.get(founderId)
+            self.__removedStores.pop(founderId)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
 
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         # the user that get in the system!
@@ -362,6 +372,37 @@ class Market:
                 return True
         return False
 
+    def getAllStoreTransactions(self):
+        try:
+            return self.__transactionHistory.getAllStoreTransactions()
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllUserTransactions(self):
+        try:
+            return self.__transactionHistory.getAllUserTransactions()
+        except Exception as e:
+            raise Exception(e)
+
+    def getStoreTransaction(self, transactionId):
+        try:
+            return self.__transactionHistory.getStoreTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getUserTransaction(self, transactionId):
+        try:
+            return self.__transactionHistory.getUserTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getStoreTransactionByStoreId(self, storeId):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).getTransactionsForSystemManager()
+        except Exception as e:
+            raise Exception(e)
 
     def __getGlobalStoreId(self):
         with self.__storeId_lock:

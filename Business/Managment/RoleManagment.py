@@ -241,8 +241,52 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def __getProductId(self):
-        with self.__productId_lock:
-            productId = self.__productId
-            self.__productId += 1
-            return productId
+    def getAllStoreTransactions(self, systemManagerName):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return system_manager.getAllStoreTransactions()
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllUserTransactions(self, systemManagerName):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return system_manager.getAllUserTransactions()
+        except Exception as e:
+            raise Exception(e)
+
+    def getStoreTransaction(self, systemManagerName, transactionId):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return system_manager.getStoreTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getUserTransaction(self, systemManagerName, transactionId):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return system_manager.getUserTransaction(transactionId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getStoreTransactionByStoreId(self, systemManagerName, storeId):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return system_manager.getStoreTransactionByStoreId(storeId)
+        except Exception as e:
+            raise Exception(e)

@@ -33,12 +33,6 @@ class IMarket(Interface):
     def getProductByPriceRange(self, minPrice, highPrice):
         pass
 
-    def addTransaction(self, storeID, transaction):
-        pass
-
-    def removeTransaction(self, storeID, transactionId):
-        pass
-
     def purchaseCart(self, user, bank):
         pass
 
@@ -116,5 +110,23 @@ class IMarket(Interface):
         pass
 
     def hasRole(self, user):
+        pass
+
+    def getAllStoreTransactions(self):
+        pass
+
+    def getAllUserTransactions(self):
+        pass
+
+    def getStoreTransaction(self, transactionId):
+        pass
+
+    def getUserTransaction(self, transactionId):
+        pass
+
+    def getStoreTransactionByStoreId(self, storeId):
+        pass
+
+    def recreateStore(self, storeID, founder):
         pass
 

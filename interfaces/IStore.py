@@ -104,4 +104,7 @@ class IStore(Interface):
     def hasRole(self, user):
         pass
 
+    def getTransactionsForSystemManager(self):
+        pass
+
 
