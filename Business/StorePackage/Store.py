@@ -7,6 +7,8 @@ from interfaces.IProduct import IProduct
 from interfaces.IStore import IStore
 from Business.StorePackage.StorePermission import StorePermission
 from Business.Transactions.StoreTransaction import StoreTransaction
+from Business.DiscountPackage.Discount import Discount
+from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 from typing import Dict
 import threading
 
@@ -451,3 +453,16 @@ class Store:
         if permissions is None:
             return False
         return True
+
+    def addDicount(self, discount: Discount):
+        predi :storePredicateManager = storePredicateManager.getInstance()
+        discounts: [] = predi.getDiscountsByIdStore(self.getStoreId())
+        discounts.append(discount)
+
+    def removeDiscount(self, discount_id):
+        predi :storePredicateManager = storePredicateManager.getInstance()
+        discounts: [] = predi.getDiscountsByIdStore(self.getStoreId())
+        discounts.remove(discount_id)
+
+
+

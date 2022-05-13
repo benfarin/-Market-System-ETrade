@@ -1,4 +1,4 @@
-from Business.Rule import Rule
+from Business.Rules.Rule import Rule
 from Business.DiscountPackage.Discount import Discount
 from Business.DiscountPackage.DiscountCalc import DiscountCalc
 from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts

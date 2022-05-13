@@ -1,6 +1,6 @@
 import uuid
 from Business.DiscountPackage.DiscountCalc import DiscountCalc
-from Business.Rule import Rule
+from Business.Rules.Rule import Rule
 
 
 class Discount:
@@ -23,3 +23,4 @@ class Discount:
 
     def getCalc(self):
         return self.__calc_discount
+
