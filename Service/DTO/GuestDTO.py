@@ -1,12 +1,12 @@
 from Business.UserPackage.Guest import Guest
-from Service.DTO import CartDTO, PaymentStatusDTO, userTransactionDTO
+from Service.DTO.CartDTO import CartDTO
 from typing import Dict
 
 
 class GuestDTO:
     def __init__(self, guest: Guest):
         self.__id = guest.getUserID()
-        self.__cart: CartDTO = guest.getCart()
+        self.__cart: CartDTO = CartDTO(guest.getCart())
 
     def getUserID(self):
         return self.__id

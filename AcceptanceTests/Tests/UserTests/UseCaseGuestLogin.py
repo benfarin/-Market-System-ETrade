@@ -21,20 +21,34 @@ class MyTestCase(unittest.TestCase):
         except:
             self.assertTrue(False)
 
-
     def test_massive_login(self):
 
         t1 = ThreadWithReturn(target=self.proxy.login_guest)
         t2 = ThreadWithReturn(target=self.proxy.login_guest)
         t3 = ThreadWithReturn(target=self.proxy.login_guest)
+        t4 = ThreadWithReturn(target=self.proxy.login_guest)
+        t5 = ThreadWithReturn(target=self.proxy.login_guest)
+        t6 = ThreadWithReturn(target=self.proxy.login_guest)
+        t7 = ThreadWithReturn(target=self.proxy.login_guest)
+        t8 = ThreadWithReturn(target=self.proxy.login_guest)
 
         t1.start()
         t2.start()
         t3.start()
+        t4.start()
+        t5.start()
+        t6.start()
+        t7.start()
+        t8.start()
 
         print(t1.join().getData().getUserID())
         print(t2.join().getData().getUserID())
         print(t3.join().getData().getUserID())
+        print(t4.join().getData().getUserID())
+        print(t5.join().getData().getUserID())
+        print(t6.join().getData().getUserID())
+        print(t7.join().getData().getUserID())
+        print(t8.join().getData().getUserID())
 
 
 
