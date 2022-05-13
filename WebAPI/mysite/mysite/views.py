@@ -198,16 +198,6 @@ def appoint_Owner(request, slug):
     return render(request, "form.html", context)
 
 
-# def update_product(request, slug):
-#     form = UpdateProductForm(request.POST or None)
-#     if form.is_valid():
-#         form = UpdateProductForm()
-#     name = request.POST.get("name")
-#     category = request.POST.get("category")
-#     price = request.POST.get("price")
-#     if name is not None:
-#         answer = role_service.updateProductName(user.getMemberId, int(slug), )
-
 def add_product(request, slug):
     form = AddProductForm(request.POST or None)
     if form.is_valid():
@@ -357,3 +347,49 @@ def add_quantity(request, slug, slug2):
         "form": form
     }
     return render(request, "form.html", context)
+
+
+def purchases_page(request):
+    if isinstance(user, GuestDTO):
+        usertype = True
+        title = "Please login to see your purchases page"
+    else:
+        usertype = False
+        title = "My Purchases"
+    purchases = member_service.getMemberTransactions(user.getUserID()).getData()
+    context = {"title": title, "usertype": usertype, "user": user, "purchases": purchases}
+    return render(request, "my_purchases.html", context)
+
+def permissions_page(request, slug):
+    global user
+    form = AppointForm(request.POST or None)
+    if form.is_valid():
+        form = AppointForm()
+    assingeeID = request.POST.get("assingeeID")
+    if assingeeID is not None:
+        if request.method == 'POST' and 'btn1' in request.POST:
+            answer = role_service.setStockManagerPermission(int(slug), user.getUserID(), assingeeID)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+        if request.method == 'POST' and 'btn2' in request.POST:
+            answer = role_service.setAppointOwnerPermission(int(slug), user.getUserID(), assingeeID)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+        if request.method == 'POST' and 'btn4' in request.POST:
+            answer = role_service.setChangePermission(int(slug), user.getUserID(), assingeeID)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+        if request.method == 'POST' and 'btn5' in request.POST:
+            answer = role_service.setPurchaseHistoryInformationPermission(int(slug), user.getUserID(), assingeeID)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+    context = {
+        "title": "Set Permissions",
+        "form": form
+    }
+    return render(request, "permissions.html", context)
+

@@ -22,7 +22,7 @@ from .views import (
     login_page,
     my_stores_page, create_store_page, store_page, store_products_management, appoint_manager, appoint_Owner, logout,
     add_product, get_cart, add_to_cart_page, purchase_cart, search_view, show_history, product_update, remove_product,
-    add_quantity,
+    add_quantity, purchases_page, permissions_page,
 )
 
 urlpatterns = [
@@ -36,7 +36,7 @@ urlpatterns = [
     path('store/<str:slug>/addproduct/', add_product),
     path('store/<str:slug>/appoint_manager/', appoint_manager),
     path('store/<str:slug>/appoint_owner/', appoint_Owner),
-    path('store/<str:slug>/stuff_permissions/', store_page),
+    path('store/<str:slug>/stuff_permissions/', permissions_page),
     # path('store/<str:slug>/stuff/', show_stuff),
     path('store/<str:slug>/history/', show_history),
     path('addstore/', create_store_page),
@@ -47,5 +47,6 @@ urlpatterns = [
     path('cart/purchase_cart/', purchase_cart),
     path('store/<str:slug>/add_to_cart/<str:slug2>/', add_to_cart_page),
     path('search/', search_view),
+    path('purchases/', purchases_page),
     path('admin/', admin.site.urls),
 ]
