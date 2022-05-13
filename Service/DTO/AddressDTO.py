@@ -32,9 +32,9 @@ class AddressDTO:
 
     def __str__(self):
         toReturn = "address: "
-        toReturn += "\n\tcountry: " + self.__country
-        toReturn += "\n\tcity: " + self.__city
-        toReturn += "\n\tstreet: " + self.__street
-        toReturn += "\n\tapartment number: " + str(self.__apartmentNum)
-        return toReturn + "\n\tzip code: " + str(self.__zipCode)
+        toReturn += "\n\t\tcountry: " + self.__country
+        toReturn += "\n\t\tcity: " + self.__city
+        toReturn += "\n\t\tstreet: " + self.__street
+        toReturn += "\n\t\tapartment number: " + str(self.__apartmentNum)
+        return toReturn + "\n\t\tzip code: " + str(self.__zipCode)
 

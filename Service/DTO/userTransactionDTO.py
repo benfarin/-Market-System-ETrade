@@ -63,3 +63,13 @@ class userTransactionDTO:
         for st in self.__storeTransactions.values():
             toReturn += "\n\t" + st.__str__()
         return toReturn + "\n\ttotal amount: " + str(self.__totalAmount)
+
+    def printUserTransactionWithSpace(self):
+        toReturn = "\tuser transaction of user: " + str(self.__userID) + ":"
+        toReturn += "\n\t\ttransaction id: " + str(self.__transactionId)
+        toReturn += "\n\t\tpayment id: " + str(self.__paymentId)
+        toReturn += "\n\t\tdate: " + str(self.__date)
+        toReturn += "\n\t\tstore transactions: "
+        for st in self.__storeTransactions.values():
+            toReturn += "\n\t\t" + st.__str__()
+        return toReturn + "\n\t\ttotal amount: " + str(self.__totalAmount)
