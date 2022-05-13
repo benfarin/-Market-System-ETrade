@@ -52,6 +52,12 @@ class UserProxyBridge:
         else:
             return self._real_subject.logout_member(user_id)
 
+    def removeMember(self, systemManagerName, memberName):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.removeMember(systemManagerName, memberName)
+
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         if self.check_access():
             return True

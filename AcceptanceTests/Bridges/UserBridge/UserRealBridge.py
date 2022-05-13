@@ -41,6 +41,9 @@ class UserRealBridge:
     def logout_member(self, user_id):
         return self._memberService.logoutMember(user_id)
 
+    def removeMember(self, systemManagerName, memberName):
+        return self._roleService.removeMember(systemManagerName, memberName)
+
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         return self._memberService.createStore(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
 

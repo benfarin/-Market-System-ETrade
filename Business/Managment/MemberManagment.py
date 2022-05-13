@@ -58,6 +58,9 @@ class MemberManagment(UserManagment):
     def removeFromActiveUsers(self, userId):
         return super().removeFromActiveUsers(userId)
 
+    def removeFromMembers(self,userId):
+        return super().removeFromMembers(userId)
+
     def removeFromMembers(self, memberId):
         return super().removeFromMembers(memberId)
 

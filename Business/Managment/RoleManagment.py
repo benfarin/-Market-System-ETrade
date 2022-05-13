@@ -233,11 +233,9 @@ class RoleManagment:
             if system_manager is None:
                 raise Exception("user: " + str(systemManagerName) + " is not a system manager")
 
-            if self.__memberManagement.checkOnlineUserFromUser(member.getUserID()):
-                self.__memberManagement.removeFromActiveUsers(member.getUserID())
-            self.__memberManagement.removeFromMembers(member.getUserID())
+            if self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID()):
+                self.__memberManagement.removeFromMembers(member.getUserID())
             return True
-
         except Exception as e:
             raise Exception(e)
 
