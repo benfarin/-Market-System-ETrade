@@ -21,8 +21,10 @@ class MyTestCase(unittest.TestCase):
         self.user_id = self.user_proxy.login_member("user1", "1234").getData().getUserID()
 
     def test_open_store_positive1(self):
-        self.assertEqual(self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                   0, "000000").getData().getStoreId(), 0)
+        store = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, "000000")
+        self.assertEqual(store.getData().getStoreId(), 0)
+        print(store.__str__())
 
 
     def test_open_store_negative1(self):

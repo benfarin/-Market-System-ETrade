@@ -56,3 +56,12 @@ class StorePermissionDTO:
 
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
+
+    def __str__(self):
+        toReturn = "permissions for user: " + str(self.__userId) + ":"
+        toReturn += "\n\tstock permission: " + str(self.__stockManagement)
+        toReturn += "\n\tappoint manager: " + str(self.__appointManager)
+        toReturn += "\n\tappoint owner: " + str(self.__appointOwner)
+        toReturn += "\n\tclose store" + str(self.__closeStore)
+        toReturn += "\n\tget role information" + str(self.__rolesInformation)
+        return toReturn + "\n\tget purchase history information" + str(self.__purchaseHistoryInformation)

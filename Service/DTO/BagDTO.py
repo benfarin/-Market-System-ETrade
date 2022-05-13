@@ -22,6 +22,7 @@ class BagDTO:
 
     def __str__(self):
         toReturn = "bag" + str(self.__storeId) + ":"
+        toReturn += "\n\tproducts: "
         for product in self.__products.values():
             toReturn += "\n\t" + product.__str__()
         return toReturn

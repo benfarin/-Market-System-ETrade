@@ -61,9 +61,6 @@ class MemberManagment(UserManagment):
     def removeFromMembers(self,userId):
         return super().removeFromMembers(userId)
 
-    def removeFromMembers(self, memberId):
-        return super().removeFromMembers(memberId)
-
     def createStore(self, storeName, userID, bank, address):
         try:
             self.checkOnlineUser(userID)

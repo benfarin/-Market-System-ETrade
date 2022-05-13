@@ -26,6 +26,7 @@ class CartDTO:
     def __str__(self):
         toReturn = "cart:"
         toReturn += "userId: " + str(self.__userId)
+        toReturn += "\n\tbags: "
         for bag in self.__bags.values():
             toReturn += "\n\t" + bag.__str__()
         return toReturn

@@ -112,7 +112,10 @@ class StoreDTO:
         return products_list
 
     def __str__(self):
-        toReturn = "store:" + str(self.__id) + ":"
+        toReturn = "store " + str(self.__id) + ":"
         toReturn += "\n\tname: " + self.__name
-        toReturn += "\n\tfounder id" + str(self.__founderId)
-        toReturn += "\n\t"
+        toReturn += "\n\tfounder id: " + str(self.__founderId)
+        toReturn += "\n\tproducts: "
+        for product in self.__products:
+            toReturn += "\n\t\t" + product.__str__()
+        return toReturn

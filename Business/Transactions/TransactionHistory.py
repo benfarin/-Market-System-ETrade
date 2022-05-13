@@ -50,4 +50,4 @@ class TransactionHistory:
                                 st.getPaymentId(), st.getProducts(), st.getAmount())
 
     def __createUserTransaction(self, ut):
-        return UserTransaction(ut.getUserId(), ut.getUserTransactionId(), ut.getStoreTransactions(), ut.getPaymentId())
+        return UserTransaction(ut.getUserId(), ut.getUserTransactionId(), ut.getStoreTransactions(), ut.getPaymentId(), ut.getTotalAmount())

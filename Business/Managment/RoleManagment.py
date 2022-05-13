@@ -288,3 +288,10 @@ class RoleManagment:
             return system_manager.getStoreTransactionByStoreId(storeId)
         except Exception as e:
             raise Exception(e)
+
+    def __getProductId(self):
+        with self.__productId_lock:
+            pId = self.__productId
+            self.__productId += 1
+            return pId
+

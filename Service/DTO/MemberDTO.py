@@ -1,4 +1,5 @@
 from Business.UserPackage.Member import Member
+from Service.DTO.AddressDTO import AddressDTO
 
 
 class MemberDTO:
@@ -7,7 +8,7 @@ class MemberDTO:
         self.__memberId = member.getUserID()
         self.__memberName = member.getMemberName()
         self.__phone = member.getPhone()
-        self.__address = member.getAddress()
+        self.__address: AddressDTO = member.getAddress()
         self.__bank = member.getBank()
         self.__transactions = member.getTransactions()
         self.__cart = member.getCart()
@@ -40,6 +41,7 @@ class MemberDTO:
         toReturn += "\n\tphone: " + self.__phone
         toReturn += "\n\t" + self.__address.__str__()
         toReturn += "\n\t" + self.__bank.__str__()
+        toReturn += "\n\ttransactions: "
         for transaction in self.__transactions.values():
-            toReturn += "\n\t" + transaction.__str__()
+            toReturn += "\n\t\t" + transaction.__str__()
         return toReturn + "\n\t" + self.__cart.__str__()

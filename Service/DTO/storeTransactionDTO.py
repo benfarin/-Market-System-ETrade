@@ -52,3 +52,13 @@ class storeTransactionDTO:
 
     def setAmount(self, amount):
         self.__amount = amount
+
+    def __str__(self):
+        toReturn = "store transaction of store: " + str(self.__storeId) + ":"
+        toReturn += "\n\ttransaction id: " + str(self.__transactionId)
+        toReturn += "\n\tpayment id: " + str(self.__payemntId)
+        toReturn += "\n\tdate: " + str(self.__date)
+        toReturn += "\n\tproducts: "
+        for product in self.__products.values():
+            toReturn += "\n\t" + product.__str__()
+        return toReturn + "\n\tamount: " + str(self.__amount)

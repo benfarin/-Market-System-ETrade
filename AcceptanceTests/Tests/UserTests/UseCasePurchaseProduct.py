@@ -40,8 +40,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                 "Ben Gurion", 0, "HaPoalim")
         self.user2_id = self.user_proxy.login_member("user2", "1234").getData().getUserID()
         try:
-            userTransaction1 = self.user_proxy.purchase_product(self.user2_id, 500, 20).getData()
-            print(userTransaction)
+            userTransaction1 = self.user_proxy.purchase_product(self.user2_id, 500, 20)
+            print(userTransaction1.__str__())
         except:
             self.assertTrue(False)
 

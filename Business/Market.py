@@ -188,7 +188,7 @@ class Market:
                     storeFailed.append(storeId)
 
             userPaymentId = Paymentlmpl.getInstance().getPaymentId()
-            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId)
+            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId, totalAmount)
             user.addTransaction(userTransaction)
             self.__transactionHistory.addUserTransaction(userTransaction)
 
