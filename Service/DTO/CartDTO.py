@@ -22,3 +22,10 @@ class CartDTO:
 
     def getBagByStoreID(self, storeid):
         return self.__bags.get(storeid)
+
+    def __str__(self):
+        toReturn = "cart:"
+        toReturn += "userId: " + str(self.__userId)
+        for bag in self.__bags.values():
+            toReturn += "\n\t" + bag.__str__()
+        return toReturn

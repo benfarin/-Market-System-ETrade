@@ -9,7 +9,7 @@ class ProductDTO:
         self.__storeId = product.getProductStoreId()
         self.__name = product.getProductName()
         self.__price = product.getProductPrice()
-        self.__category = product.getProductCategory() # String
+        self.__category = product.getProductCategory()  # String
         self.__keywords: List = product.getProductKeywords()
 
     def getProductId(self):
@@ -33,7 +33,7 @@ class ProductDTO:
     def setProductName(self, name):
         self.__name = name
 
-    def setProductID(self,productID):
+    def setProductID(self, productID):
         self.__id = productID
 
     def setProductPrice(self, price):
@@ -44,3 +44,14 @@ class ProductDTO:
 
     def setKeyWords(self, keywords):
         self.__keywords = keywords
+
+    def __str__(self):
+        toReturn = "product: " + str(self.__productId) + ":"
+        toReturn += "\n\tstoreId: " + str(self.__storeId)
+        toReturn += "\n\tname: " + self.__name
+        toReturn += "\n\tprice: " + str(self.__price)
+        toReturn += "\n\tcategory: " + str(self.__category)
+        toReturn += "\n\tkeywords: "
+        for keyword in self.__keywords:
+            toReturn += "\n\n\t" + keyword
+        return toReturn

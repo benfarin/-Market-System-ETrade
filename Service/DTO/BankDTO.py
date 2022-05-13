@@ -19,3 +19,11 @@ class BankDTO:
         self.__branch = branch
 
 
+    def __str__(self):
+        toReturn = "bank: "
+        toReturn += "\n\taccount number: " + str(self.__accountNumber)
+        toReturn += "\n\tbranch: " + str(self.__branch)
+        return toReturn
+
+
+

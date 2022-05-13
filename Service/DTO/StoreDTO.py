@@ -110,3 +110,9 @@ class StoreDTO:
         for product in self.__products.values():
             products_list.append(ProductDTO(product))
         return products_list
+
+    def __str__(self):
+        toReturn = "store:" + str(self.__id) + ":"
+        toReturn += "\n\tname: " + self.__name
+        toReturn += "\n\tfounder id" + str(self.__founderId)
+        toReturn += "\n\t"
