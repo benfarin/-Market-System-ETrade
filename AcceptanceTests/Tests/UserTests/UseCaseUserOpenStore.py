@@ -74,6 +74,19 @@ class MyTestCase(unittest.TestCase):
                     self.assertNotEqual(sd_i, sIds[j])
             print("id of store " + str(i + 1) + " is: " + str(sIds[i]))
 
+    def test_open_store_Fail(self):
+        self.assertTrue(self.user_proxy.open_store("store-1", 100, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, "000000").isError())
+
+        guestId = self.user_proxy.login_guest().getData().getUserID()
+        self.assertTrue(self.user_proxy.open_store("store-1", guestId, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, "000000").isError())
+
+        self.user_proxy.register(self.__guestId1, "user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                 "Ben Gurion", 0, "HaPoalim")
+        guestId = self.user_proxy.login_guest().getData().getUserID()
+        self.assertTrue(self.user_proxy.open_store("store-1", guestId, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, "000000").isError())
 
 if __name__ == '__main__':
     unittest.main()

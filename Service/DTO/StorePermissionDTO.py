@@ -11,6 +11,7 @@ class StorePermissionDTO:
         self.__closeStore = storePermission.hasPermission_CloseStore()
         self.__rolesInformation = storePermission.hasPermission_RolesInformation()
         self.__purchaseHistoryInformation = storePermission.hasPermission_PurchaseHistoryInformation()
+        self.__discountPermissions = storePermission.hasPermission_Discount()
 
     def getUserId(self):
         return self.__userId
@@ -36,6 +37,9 @@ class StorePermissionDTO:
     def hasPermission_PurchaseHistoryInformation(self):
         return self.__purchaseHistoryInformation
 
+    def hasPermission_Discount(self):
+        return self.__discountPermissions
+
     def setPermission_StockManagement(self, stockManagement):
         self.__stockManagement = stockManagement
 
@@ -57,6 +61,9 @@ class StorePermissionDTO:
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
 
+    def setPermission_Discount(self, discountPermissions):
+        self.__discountPermissions = discountPermissions
+
     def __str__(self):
         toReturn = "permissions for user: " + str(self.__userId) + ":"
         toReturn += "\n\t\t\tstock permission: " + str(self.__stockManagement)
@@ -64,4 +71,5 @@ class StorePermissionDTO:
         toReturn += "\n\t\t\tappoint owner: " + str(self.__appointOwner)
         toReturn += "\n\t\t\tclose store: " + str(self.__closeStore)
         toReturn += "\n\t\t\tget role information: " + str(self.__rolesInformation)
-        return toReturn + "\n\t\t\tget purchase history information: " + str(self.__purchaseHistoryInformation)
+        toReturn += "\n\t\t\tget purchase history information: " + str(self.__purchaseHistoryInformation)
+        return toReturn + "\n\t\t\tdiscount permission: " + str(self.__discountPermissions)

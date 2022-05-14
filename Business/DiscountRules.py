@@ -62,6 +62,13 @@ class DiscountRules:
             discount_calc = self.createCalc(discountType, percent, catagory, productID)
             discount = Discount(discount_calc)
             store.addDicount(discount)
+            return discount
+
+    def updateDiscount(self,existsDiscount,userId,storeId,ruleContext,discountPercentage, catagory, productId):
+        pass
+
+    def removeDiscount(self,discountId):
+        pass
 
 
     def createConditionalDiscount(self, store:Store, username , store_id, rule_context, rule_type: ruleType, percent, catagory, product_id, value_less_than, value_bigger_than, time1, time2, discount_id ):
