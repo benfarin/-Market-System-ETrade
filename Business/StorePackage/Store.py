@@ -465,9 +465,10 @@ class Store:
         predi.addDiscount(self.getStoreId(), discount)
 
 
-    def removeDiscount(self, discount: Discount):
+    def removeDiscount(self, discount):
         predi :storePredicateManager = storePredicateManager.getInstance()
         predi.removeDiscount(self.getStoreId(), discount)
+
 
 
 
