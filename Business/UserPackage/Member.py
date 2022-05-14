@@ -151,6 +151,13 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def setDiscountPermission(self, storeID, assignee):
+        try:
+            return self.__market.setDiscountPermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def addProductToStore(self, storeID, product):
         try:
             return self.__market.addProductToStore(storeID, self, product)

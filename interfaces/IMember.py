@@ -36,6 +36,9 @@ class IMember(Interface):
     def setPurchaseHistoryInformationPermission(self, storeID, assignee):
         pass
 
+    def setDiscountPermission(self, storeID, assignee):
+        pass
+
     def addProductToStore(self, storeID, product):
         pass
 

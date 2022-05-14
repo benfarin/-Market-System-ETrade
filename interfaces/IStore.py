@@ -30,6 +30,9 @@ class IStore(Interface):
     def setPurchaseHistoryInformationPermission(self, assigner, assignee):
         pass
 
+    def setDiscountPermission(self, assigner, assignee):
+        pass
+
     def addProductToStore(self, user, product):
         pass
 

@@ -98,6 +98,16 @@ class RoleService:
             logging.error("Failed to set permissions to user " + str(assigneeName))
             return Response(e.__str__())
 
+    def setDiscountPermission(self, storeID, assignerID, assigneeName):
+        try:
+            isSet = self.__roleManagment.setDiscountPermission(storeID, assignerID, assigneeName)
+            logging.info("success to set discount permission in store " + str(storeID) +
+                         "for user " + str(assigneeName))
+            return Response(isSet)
+        except Exception as e:
+            logging.error("Failed to set discount permission to user " + str(assigneeName))
+            return Response(e.__str__())
+
     def addProductToStore(self, storeID, userID, name, price, category, keywords):
         try:
             product = self.__roleManagment.createProduct(userID, storeID, name, price, category, keywords)

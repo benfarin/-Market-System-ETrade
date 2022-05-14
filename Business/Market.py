@@ -266,6 +266,13 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def setDiscountPermission(self, storeID, assigner, assignee):
+        try:
+            self.__stores.get(storeID).setDiscountPermission(assigner, assignee)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def addProductToStore(self, storeID, user, product):  # Tested
         try:
             self.__stores.get(storeID).addProductToStore(user, product)

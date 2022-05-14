@@ -8,6 +8,7 @@ class StorePermission:
         self.__closeStore = False
         self.__rolesInformation = False
         self.__purchaseHistoryInformation = False
+        self.__discountPermission = False
 
     def getUserId(self):
         return self.__userId
@@ -33,6 +34,9 @@ class StorePermission:
     def hasPermission_PurchaseHistoryInformation(self):
         return self.__purchaseHistoryInformation
 
+    def hasPermission_Discount(self):
+        return self.__discountPermission
+
     def setPermission_StockManagement(self, stockManagement):
         self.__stockManagement = stockManagement
 
@@ -54,6 +58,9 @@ class StorePermission:
     def setPermission_PurchaseHistoryInformation(self, purchaseHistoryInformation):
         self.__purchaseHistoryInformation = purchaseHistoryInformation
 
+    def setPermission_Discount(self, discountPermission):
+        self.__discountPermission = discountPermission
+
     def printPermission(self):
         permission = ""
         if self.__stockManagement:
@@ -71,9 +78,3 @@ class StorePermission:
         if self.__purchaseHistoryInformation:
             permission += "\n\tpurchase history information"
         return permission
-
-    def hasPermissions(self):
-        return self.__stockManagement is not False and self.__appointManager is not False and \
-               self.__appointOwner is not False and self.__changePermission is not False and \
-               self.__closeStore is not False and self.__rolesInformation is not False and \
-               self.__purchaseHistoryInformation is not False
