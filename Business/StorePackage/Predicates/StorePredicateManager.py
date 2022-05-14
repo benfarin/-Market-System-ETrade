@@ -35,6 +35,13 @@ class storePredicateManager:
                     return discount
         return None
 
+    def removeDiscount(self, sid, discount:Discount ):
+        if self.__discount_store.get(sid) is not None:
+            self.__discount_store.get(sid).remove(discount)
+        else:
+            self.__discount_store[sid] = []
+            self.__discount_store.get(sid).remove(discount)
+
 
 
 
