@@ -22,13 +22,33 @@ class MyTestCase(unittest.TestCase):
                                  "Ben Gurion", 0, "HaPoalim")
         self.founder = self.user_proxy.login_member("user1", "1234").getData().getUserID()
 
+    def test_removeStore(self):
+        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                             0, "000000").getData().getStoreId()
+        self.assertTrue(self.user_proxy.removeStore(storeId, self.founder).getData())
 
+    def test_removeStore_Fail(self):
+        self.assertTrue(self.user_proxy.removeStore(10, self.founder).isError())
+        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                             0, "000000").getData().getStoreId()
+        self.assertTrue(self.user_proxy.removeStore(storeId, 10).isError())
 
     def test_recreate_store(self):
-        storeId = self.user_proxy.open_store("store", self.founder1_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                              0, "000000").getData().getStoreId()
-        self.assertTrue(self.user_proxy.removeStore(storeId, self.founder1_id).getData())
-        self.assertTrue(self.user_proxy.recreateStore(self.founder1_id, storeId).getData())
+        self.user_proxy.removeStore(storeId, self.founder)
+        self.assertTrue(self.user_proxy.recreateStore(self.founder, storeId).getData())
+
+    def test_recreateStore_Fail(self):
+        self.assertTrue(self.user_proxy.recreateStore(10, self.founder).isError())
+
+        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                             0, "000000").getData().getStoreId()
+        self.assertTrue(self.user_proxy.recreateStore(storeId, self.founder).isError())
+
+        self.user_proxy.removeStore(storeId, self.founder)
+        self.assertTrue(self.user_proxy.recreateStore(storeId, 10).isError())
+
 
 
 if __name__ == '__main__':
