@@ -307,31 +307,34 @@ class RoleService:
             logging.error("Failed to get store transaction by id " + str(self))
             return Response(e.__str__())
 
-    def addSimpleDiscount(self, userId,storeId,ruleContext,discountPercentage, catagory, productId):
+    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
+                          value_less_than, value_grather_than, time_from, time_until):
         try:
-            discount = self.__roleManagment.addSimpleDiscount(userId,self.getStore(storeId).getData(), ruleContext , discountPercentage,catagory,productId)
-            logging.info("success to get user Transaction " + str(discount))
-            return Response(discount)
+            isAdded = self.__roleManagment.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
+                                                              value_less_than, value_grather_than, time_from, time_until)
+            logging.info("success to add discount")
+            return Response(isAdded)
         except Exception as e:
-            logging.error("Failed to make discount! ")
+            logging.error("Failed to add discount! ")
             return Response(e.__str__())
 
-    def updateDiscount(self,existsDiscount,userId,storeId,ruleContext,discountPercentage, catagory, productId):
+    def removeDiscount(self, userId, storeId, discountId):
         try:
-
-            discountId = self.__roleManagment.updateDiscount(existsDiscount,userId, self.getStore(storeId).getData(), ruleContext,
-                                                                discountPercentage, catagory, productId)
+            isRemoved = self.__roleManagment.removeDiscount(userId, storeId, discountId)
             logging.info("success to get user Transaction " + str(discountId))
-            return Response(discountId)
+            return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to make discount! ")
             return Response(e.__str__())
 
-    def removeDiscount(self,userId, storeId, discountId):
-        try:
-            discountId = self.__roleManagment.removeDiscount(userId, storeId, discountId)
-            logging.info("success to get user Transaction " + str(discountId))
-            return Response(discountId)
-        except Exception as e:
-            logging.error("Failed to make discount! ")
-            return Response(e.__str__())
+    # def updateDiscount(self, existsDiscount, userId, storeId, ruleContext, discountPercentage, catagory, productId):
+    #     try:
+    #
+    #         discountId = self.__roleManagment.updateDiscount(existsDiscount, userId, self.getStore(storeId).getData(),
+    #                                                          ruleContext,
+    #                                                          discountPercentage, catagory, productId)
+    #         logging.info("success to get user Transaction " + str(discountId))
+    #         return Response(discountId)
+    #     except Exception as e:
+    #         logging.error("Failed to make discount! ")
+    #         return Response(e.__str__())

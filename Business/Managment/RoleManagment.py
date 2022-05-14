@@ -35,7 +35,8 @@ class RoleManagment:
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
-    def appointManagerToStore(self, storeID, assignerID, assigneeName):  # check if the asssignee he member and assignerID!!
+    def appointManagerToStore(self, storeID, assignerID,
+                              assigneeName):  # check if the asssignee he member and assignerID!!
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -46,7 +47,8 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def appointOwnerToStore(self, storeID, assignerID, assigneeName):  # check if the assignee he member and assignerID!!
+    def appointOwnerToStore(self, storeID, assignerID,
+                            assigneeName):  # check if the assignee he member and assignerID!!
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -327,24 +329,26 @@ class RoleManagment:
                                         productId, value_less_than, value_grather_than, time_from, time_until)
             self.__discountManager.addDiscount(discountInfo)
 
+            member.addDiscount(storeId, discount)
+            return True
 
-
-            store.addDicount(discount)
         except Exception as e:
             raise Exception(e)
 
+    def removeDiscount(self, userId, storeId, discountId):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-    def removeDiscount(self,userId, storeId, discountId):
-        pass
-        #     # await StorePredicatesManager.Instance.SaveRequest(++counter, "RemoveDiscountAsync", username, storeId,
-        #     #                                                   discountId);
-        # if self.__discountManager.isComplex(discountId):
-        #     raise ComplexDiscountException("Can't update this type of discount!")
-        # await marketRules.RemoveDiscountAsync(await MarketStores.Instance.GetStoreById(storeId), username, storeId,
-        #                                       discountId);
-        # await discountsManager.RemoveDiscount(discountId);
-        # return new
-        # Result < Guid > (discountId, false, "");
+            member.removeDiscount(storeId, discountId)
+            return True
+
+        except Exception as e:
+            raise Exception(e)
 
     # def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
     #     try:
@@ -374,7 +378,3 @@ class RoleManagment:
             dId = self.__discountId
             self.__discountId += 1
             return dId
-
-
-
-

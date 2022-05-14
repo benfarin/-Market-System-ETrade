@@ -69,7 +69,7 @@ class IMember(Interface):
     def addDiscount(self, storeId, discount):
         pass
 
-    def removeDiscount(self, storeId, user, discountId):
+    def removeDiscount(self, storeId, discountId):
         pass
 
     def hasRole(self):

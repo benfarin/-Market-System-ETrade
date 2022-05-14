@@ -234,7 +234,7 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def removeDiscount(self, storeId, user, discountId):
+    def removeDiscount(self, storeId, discountId):
         try:
             return self.__market.removeDiscount(storeId, self, discountId)
         except Exception as e:
