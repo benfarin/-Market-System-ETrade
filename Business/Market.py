@@ -416,6 +416,22 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def addDiscount(self, storeId, user, discount):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addDiscount(user, discount)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeDiscount(self, storeId, user, discountId):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).removeDiscount(user, discountId)
+        except Exception as e:
+            raise Exception(e)
+
     def __getGlobalStoreId(self):
         with self.__storeId_lock:
             storeId = self.__globalStore

@@ -66,6 +66,12 @@ class IMember(Interface):
     def removeStoreOwner(self, storeId, assignee):
         pass
 
+    def addDiscount(self, storeId, discount):
+        pass
+
+    def removeDiscount(self, storeId, user, discountId):
+        pass
+
     def hasRole(self):
         pass
 

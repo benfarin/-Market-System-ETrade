@@ -472,13 +472,26 @@ class Store:
             return False
         return True
 
-    def addDicount(self, discount: Discount):
-        predi :storePredicateManager = storePredicateManager.getInstance()
+    def addDiscount(self, user, discount: Discount):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(),
+                                      " doesn't have the discount permission in store: ", self.__name)
+        predi = storePredicateManager.getInstance()
         predi.addDiscount(self.getStoreId(), discount)
+        return True
 
-    def removeDiscount(self, discount: Discount):
+    def removeDiscount(self, user, discountId):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(),
+                                      " doesn't have the discount permission in store: ", self.__name)
         predi :storePredicateManager = storePredicateManager.getInstance()
-        predi.removeDiscount(self.getStoreId(), discount)
+        predi.removeDiscount(self.getStoreId(), discountId)
 
 
 

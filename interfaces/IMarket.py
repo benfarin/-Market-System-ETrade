@@ -133,3 +133,9 @@ class IMarket(Interface):
     def recreateStore(self, storeID, founder):
         pass
 
+    def addDiscount(self, storeId, user, discount):
+        pass
+
+    def removeDiscount(self, storeId, user, discountId):
+        pass
+

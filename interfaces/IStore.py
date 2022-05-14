@@ -110,4 +110,10 @@ class IStore(Interface):
     def getTransactionsForSystemManager(self):
         pass
 
+    def addDiscount(self, user, discount):
+        pass
+
+    def removeDiscount(self, user, discountId):
+        pass
+
 

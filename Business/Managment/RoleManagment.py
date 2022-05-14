@@ -29,7 +29,9 @@ class RoleManagment:
         self.__discountManager = DiscountManagement()
         self.__memberManagement = MemberManagment.getInstance()
         self.__productId = 0
+        self.__discountId = 0
         self.__productId_lock = threading.Lock()
+        self.__discountId_lock = threading.Lock()
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
@@ -308,40 +310,29 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def __getProductId(self):
-        with self.__productId_lock:
-            pId = self.__productId
-            self.__productId += 1
-            return pId
-
-    def addSimpleDiscount(self, userId,store,ruleContext,discountPercentage, catagory, productId):
+    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
+                          value_less_than, value_grather_than, time_from, time_until):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
-            discountId = self.__discountRules.createSimpleDiscount(store, ruleContext , discountPercentage,catagory,productId)
-           # await StorePredicatesManager.Instance.SaveRequest(++counter, "CreateSimpleDiscountAsync", username, storeId,
-                                                       #       discountType, precent, category, productId, discountId);
-            discountInfo = DiscountInfo(discountId,userId,store.getStoreId(),ruleContext,ruleType.simple,discountPercentage,catagory,productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+            discountId = self.__getDiscountId()
+            discount = self.__discountRules.createSimpleDiscount(discountId, ruleContext, precent,
+                                                                 category, productId)
+
+            discountInfo = DiscountInfo(discountId, userId, storeId, ruleContext, ruleType, precent, category,
+                                        productId, value_less_than, value_grather_than, time_from, time_until)
             self.__discountManager.addDiscount(discountInfo)
-            return discountId
+
+
+
+            store.addDicount(discount)
         except Exception as e:
             raise Exception(e)
 
-    def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
-        try:
-            self.__memberManagement.checkOnlineUserFromUser(userId)
-            if self.__discountManager.isComplex(existsDiscount):
-                raise ComplexDiscountException("Can't update this type of discount!")
-            updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
-            #StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateSimpleDiscountAsync",
-                                                              #username, storeId, discountType, precent, category, productId,
-                                                              #discountId);
-
-            discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
-            self.__discountManager.removeDiscount(updatedDiscount); # check if id or object of discount
-            self.__discountManager.addDiscount(discountData);
-            return updatedDiscount
-        except Exception as e:
-            raise Exception(e)
 
     def removeDiscount(self,userId, storeId, discountId):
         pass
@@ -354,6 +345,35 @@ class RoleManagment:
         # await discountsManager.RemoveDiscount(discountId);
         # return new
         # Result < Guid > (discountId, false, "");
+
+    # def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
+    #     try:
+    #         self.__memberManagement.checkOnlineUserFromUser(userId)
+    #         if self.__discountManager.isComplex(existsDiscount):
+    #             raise ComplexDiscountException("Can't update this type of discount!")
+    #         updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
+    #         #StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateSimpleDiscountAsync",
+    #                                                           #username, storeId, discountType, precent, category, productId,
+    #                                                           #discountId);
+    #
+    #         discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
+    #         self.__discountManager.removeDiscount(updatedDiscount); # check if id or object of discount
+    #         self.__discountManager.addDiscount(discountData);
+    #         return updatedDiscount
+    #     except Exception as e:
+    #         raise Exception(e)
+
+    def __getProductId(self):
+        with self.__productId_lock:
+            pId = self.__productId
+            self.__productId += 1
+            return pId
+
+    def __getDiscountId(self):
+        with self.__discountId_lock:
+            dId = self.__discountId
+            self.__discountId += 1
+            return dId
 
 
 

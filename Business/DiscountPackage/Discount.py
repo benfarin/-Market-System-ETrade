@@ -5,8 +5,8 @@ from Business.Rules.Rule import Rule
 
 class Discount:
 
-    def __init__(self, calc: DiscountCalc):
-        self.__id_discount = str(uuid.uuid4())  # unique id
+    def __init__(self, discountId, calc: DiscountCalc):
+        self.__id_discount = discountId
         self.__calc_discount = calc
 
     def makeDiscount(self,

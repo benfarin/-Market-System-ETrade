@@ -227,10 +227,26 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def addDiscount(self, storeId, discount):
+        try:
+            return self.__market.addDiscount(storeId, self, discount)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeDiscount(self, storeId, user, discountId):
+        try:
+            return self.__market.removeDiscount(storeId, self, discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def hasRole(self):
         try:
             return self.__market.hasRole(self)
         except Exception as e:
             raise Exception(e)
+
+
 
 
