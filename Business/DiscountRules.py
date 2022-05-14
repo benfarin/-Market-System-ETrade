@@ -11,6 +11,7 @@ from Business.Rules.ruleCreator import ruleCreator
 from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 
 
+
 class ruleContext(Enum):
     store = 'store'
     category = 'category'
@@ -27,6 +28,17 @@ class ruleType(Enum):
 
 
 class DiscountRules:
+
+
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if DiscountRules.__instance is None:
+            DiscountRules()
+        return DiscountRules.__instance
+
 
     def __init__(self):
         self.__rules_creator = ruleCreator()

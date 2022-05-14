@@ -24,12 +24,28 @@ class UseCaseCloseStore(unittest.TestCase):
         self.store_id = self.proxy_user.open_store("testStore", self.user_id, 123, None, "Israel", "Beer Sheva",
                                                    "Rager", 1, 00000).getData().getStoreId()
 
+    def test_closeStorePositive_afterLogOut(self):
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1243")
+        self.assertTrue(self.proxy_market.close_store(self.store_id, self.user_id).getData())
+
     def test_closeStorePositive(self):
         self.assertTrue(self.proxy_market.close_store(self.store_id, self.user_id).getData())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1243")
+        self.store_id1 = self.proxy_user.open_store("testStore", self.user_id, 123, None, "Israel", "Beer Sheva",
+                                                   "Rager", 1, 00000).getData().getStoreId()
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1243")
+        self.assertTrue(self.proxy_market.close_store(self.store_id1, self.user_id).getData())
 
     def test_closeStoreNegative(self):
         # store doesn't exist
         self.assertTrue(self.proxy_market.close_store(-1, self.user_id).isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1243")
+        self.assertTrue(self.proxy_market.close_store(-2, self.user_id).isError())
+
 
 
 if __name__ == '__main__':

@@ -30,6 +30,9 @@ class UseCaseSearchProduct(unittest.TestCase):
         # need to modify for response in all functions
         self.assertEqual(self.market_proxy.search_product_name("ProduCt").getData()[0].getProductId(), self.product1.getProductId())
         self.assertEqual(self.market_proxy.search_product_name("Product2").getData()[0].getProductId(), self.product2.getProductId())
+        self.assertRaises(Exception,self.market_proxy.search_product_name("Product5").getData().getError())
+        self.assertRaises(Exception,self.market_proxy.search_product_name("").getData().getError())
+
 
     def test_search_by_category(self):
         self.assertEqual(self.market_proxy.search_product_category("MILK").getData()[0].getProductId(), self.product1.getProductId())
@@ -52,19 +55,28 @@ class UseCaseSearchProduct(unittest.TestCase):
     def test_search_by_keywords(self):
         self.assertEqual(self.market_proxy.search_product_keyWord("TeSt1").getData()[0].getProductId(), self.product1.getProductId())
         self.assertEqual(self.market_proxy.search_product_keyWord("TesT4").getData()[0].getProductId(), self.product2.getProductId())
+        self.assertRaises(Exception,self.market_proxy.search_product_keyWord("Te").getData().getError())
+        self.assertRaises(Exception,self.market_proxy.search_product_keyWord("").getData().getError())
 
     def test_search_by_name_negative(self):
         self.assertEqual(self.market_proxy.search_product_name("Product3").getData(), [])
+        self.assertEqual(self.market_proxy.search_product_name("").getData(), [])
+        self.assertEqual(self.market_proxy.search_product_name("235223sdf").getData(), [])
 
     def test_search_by_category_negative(self):
         self.assertEqual(self.market_proxy.search_product_category("Category999").getData(), [])
+        self.assertEqual(self.market_proxy.search_product_category("").getData(), [])
+        self.assertEqual(self.market_proxy.search_product_category("532532").getData(), [])
 
     def test_search_by_price_range_negative(self):
         self.assertEqual(self.market_proxy.search_product_price_range(2000, 3000).getData(), [])
+        self.assertEqual(self.market_proxy.search_product_price_range(-1241, -200).getData(), [])
 
     def test_search_by_keywords_negative(self):
         self.assertEqual(self.market_proxy.search_product_keyWord("Test5").getData(), [])
         self.assertEqual(self.market_proxy.search_product_keyWord("").getData(), [])
+        self.assertEqual(self.market_proxy.search_product_keyWord("21421").getData(), [])
+        self.assertEqual(self.market_proxy.search_product_keyWord("Tes").getData(), [])
 
 
 
