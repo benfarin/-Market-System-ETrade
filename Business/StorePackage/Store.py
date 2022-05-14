@@ -492,5 +492,29 @@ class Store:
         predi :storePredicateManager = storePredicateManager.getInstance()
         predi.removeDiscount(self.getStoreId(), discountId)
 
+    def addConditionDiscountAdd(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
 
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionADD(discount2))
+
+    def addConditionDiscountMax(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionMax(discount2))
 

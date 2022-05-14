@@ -58,8 +58,8 @@ class ConditionDiscount(Discount):
 
     # max between self and second_rule
     def conditionMax(self, second_calc):
-        return super().__calc_discount.max(second_calc)
+        return super().getCalc().max(second_calc)
 
     # add self and second_rule
     def conditionADD(self, second_calc):
-        return super().__calc_discount.add(second_calc)
+        return super().getCalc().add(second_calc)

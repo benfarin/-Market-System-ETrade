@@ -241,6 +241,20 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def addConditionDiscountAdd(self, storeId, dId1, dId2):
+        try:
+            return self.__market.addConditionDiscountAdd(storeId, self, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountMax(self, storeId, dId1, dId2):
+        try:
+            return self.__market.addConditionDiscountMax(storeId, self, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def hasRole(self):
         try:
             return self.__market.hasRole(self)

@@ -310,10 +310,10 @@ class RoleService:
     def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
                           value_less_than, value_grather_than, time_from, time_until):
         try:
-            isAdded = self.__roleManagment.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
                                                               value_less_than, value_grather_than, time_from, time_until)
             logging.info("success to add discount")
-            return Response(isAdded)
+            return Response(discountId)
         except Exception as e:
             logging.error("Failed to add discount! ")
             return Response(e.__str__())
@@ -321,11 +321,30 @@ class RoleService:
     def removeDiscount(self, userId, storeId, discountId):
         try:
             isRemoved = self.__roleManagment.removeDiscount(userId, storeId, discountId)
-            logging.info("success to get user Transaction " + str(discountId))
+            logging.info("success to remove discount " + str(discountId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to make discount! ")
             return Response(e.__str__())
+
+    def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
+        try:
+            isRemoved = self.__roleManagment.addConditionDiscountAdd(userId, storeId, dId1, dId2)
+            logging.info("success to add the add condition discount with:  " + str(dId1) + ", " + str(dId2))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to add the add condition discount! ")
+            return Response(e.__str__())
+
+    def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
+        try:
+            isRemoved = self.__roleManagment.addConditionDiscountMax(userId, storeId, dId1, dId2)
+            logging.info("success to add the max condition discount with:  " + str(dId1) + ", " + str(dId2))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to add the max condition discount! ")
+            return Response(e.__str__())
+
 
     # def updateDiscount(self, existsDiscount, userId, storeId, ruleContext, discountPercentage, catagory, productId):
     #     try:

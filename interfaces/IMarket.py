@@ -139,3 +139,8 @@ class IMarket(Interface):
     def removeDiscount(self, storeId, user, discountId):
         pass
 
+    def addConditionDiscountAdd(self, storeId, user, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(self, storeId, user, dId1, dId2):
+        pass

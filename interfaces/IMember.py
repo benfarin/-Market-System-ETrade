@@ -72,6 +72,12 @@ class IMember(Interface):
     def removeDiscount(self, storeId, discountId):
         pass
 
+    def addConditionDiscountAdd(storeId, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(storeId, dId1, dId2):
+        pass
+
     def hasRole(self):
         pass
 
