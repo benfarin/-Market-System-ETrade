@@ -149,7 +149,7 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.purchaseCart(self.__member1, self.__bank1))
         trans = self.__member1.getTransactionById(2)
 
-        cd 
+
         # print("\n")
         # for storeId in trans.getStoreTransactions().keys():
         #     print(trans.getStoreTransactions()[storeId].printPurchaseHistoryInformation())

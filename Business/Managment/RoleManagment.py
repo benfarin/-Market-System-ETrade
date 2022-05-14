@@ -1,7 +1,13 @@
+import sys
+from datetime import datetime
+
+from Business.DiscountPackage.DiscountInfo import DiscountInfo
+from Business.DiscountPackage.DiscountManagement import DiscountManagement
+from Business.DiscountRules import ruleType, DiscountRules
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
 from Business.Managment.MemberManagment import MemberManagment
-from Exceptions.CustomExceptions import NoSuchMemberException, NoSuchStoreException
+from Exceptions.CustomExceptions import NoSuchMemberException, NoSuchStoreException, ComplexDiscountException
 from Business.StorePackage.Product import Product
 import threading
 
@@ -19,6 +25,8 @@ class RoleManagment:
     def __init__(self):
         """ Virtually private constructor. """
         super().__init__()
+        self.__discountRules = DiscountRules()
+        self.__discountManager = DiscountManagement()
         self.__memberManagement = MemberManagment.getInstance()
         self.__productId = 0
         self.__productId_lock = threading.Lock()
@@ -294,4 +302,48 @@ class RoleManagment:
             pId = self.__productId
             self.__productId += 1
             return pId
+
+    def addSimpleDiscount(self, userId,store,ruleContext,discountPercentage, catagory, productId):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            discountId = self.__discountRules.createSimpleDiscount(store, ruleContext , discountPercentage,catagory,productId)
+           # await StorePredicatesManager.Instance.SaveRequest(++counter, "CreateSimpleDiscountAsync", username, storeId,
+                                                       #       discountType, precent, category, productId, discountId);
+            discountInfo = DiscountInfo(discountId,userId,store.getStoreId(),ruleContext,ruleType.simple,discountPercentage,catagory,productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
+            self.__discountManager.addDiscount(discountInfo)
+            return discountId
+        except Exception as e:
+            raise Exception(e)
+
+    def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            if self.__discountManager.isComplex(existsDiscount):
+                raise ComplexDiscountException("Can't update this type of discount!")
+            updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
+            #StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateSimpleDiscountAsync",
+                                                              #username, storeId, discountType, precent, category, productId,
+                                                              #discountId);
+
+            discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
+            self.__discountManager.removeDiscount(updatedDiscount); # check if id or object of discount
+            self.__discountManager.addDiscount(discountData);
+            return updatedDiscount
+        except Exception as e:
+            raise Exception(e)
+
+    def removeDiscount(self,userId, storeId, discountId):
+        passcd
+        #     # await StorePredicatesManager.Instance.SaveRequest(++counter, "RemoveDiscountAsync", username, storeId,
+        #     #                                                   discountId);
+        # if self.__discountManager.isComplex(discountId):
+        #     raise ComplexDiscountException("Can't update this type of discount!")
+        # await marketRules.RemoveDiscountAsync(await MarketStores.Instance.GetStoreById(storeId), username, storeId,
+        #                                       discountId);
+        # await discountsManager.RemoveDiscount(discountId);
+        # return new
+        # Result < Guid > (discountId, false, "");
+
+
+
 

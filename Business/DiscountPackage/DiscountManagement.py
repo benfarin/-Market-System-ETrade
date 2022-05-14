@@ -32,7 +32,7 @@ class DiscountManagement:
         return set_discount_relations
 
     def getAllDiscountInfo(self, id_store):
-        set_discount_info= []
+        set_discount_info = []
         for discount_info in self.__discount_info:
             if discount_info.getStoreID() == id_store:
                 set_discount_info.append(discount_info)
