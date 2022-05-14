@@ -4,7 +4,6 @@ from  Business.DiscountRules import DiscountRules
 from Business.StorePackage.Store import Store
 from Business.DiscountPackage.DiscountManagement import DiscountManagement
 from Business.DiscountPackage.DiscountInfo import DiscountInfo
-from os import system
 from datetime import date
 class requestNewSimpleDiscount:
 

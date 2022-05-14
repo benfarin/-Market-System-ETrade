@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8acc9784-880b-453a-bdde-30e93508409c" name="Default Changelist" comment="commit for pule">
-      <change afterPath="$PROJECT_DIR$/Business/StorePackage/Predicates/requestNewConditionDiscount.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Business/StorePackage/Predicates/requestNewSimpleDiscount.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="dc80bcb2-2aa3-44a9-aefe-d1c7a4757212" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_13_05_2022_11_03__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_13_05_2022_11_03__Default_Changelist_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_28__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_28__Default_Changelist_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreOwner.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseAppointStoreOwner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseCloseStore.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseCloseStore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseEditProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseEditProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseRemoveProductFromCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSaveProductToCart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/AcceptanceTests/Tests/MarketTests/UseCaseSearchProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/DiscountRules.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/DiscountRules.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/RoleManagment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Store.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Store.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/UserPackage/Member.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/UserPackage/Member.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/RoleService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Service/RoleService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Service/marketRuleService.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interfaces/IMember.py" beforeDir="false" afterPath="$PROJECT_DIR$/interfaces/IMember.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/DiscountPackage/ConditionDiscount.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/DiscountPackage/ConditionDiscount.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Predicates/requestNewSimpleDiscount.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Predicates/requestNewSimpleDiscount.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +198,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="added recreateStore" />
