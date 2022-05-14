@@ -19,8 +19,8 @@ class StoreDTO:
         for manager in store.getStoreManagers():
             self.__managers.append(MemberDTO(manager))
         self.__owners = []
-        for manager in store.getStoreOwners():
-            self.__owners.append(MemberDTO(manager))
+        for owner in store.getStoreOwners():
+            self.__owners.append(MemberDTO(owner))
         self.__products = {}
         for productId in store.getProducts().keys():
             self.__products[productId] = ProductDTO(store.getProducts().get(productId))
@@ -126,8 +126,12 @@ class StoreDTO:
         toReturn = "store " + str(self.__id) + ":"
         toReturn += "\n\tname: " + self.__name
         toReturn += "\n\tfounder id: " + str(self.__founderId)
-        toReturn += "\n\rmanagers:" + str(self.__managers)
-        toReturn += "\n\rowners:" + str(self.__owners)
+        toReturn += "\n\towners:"
+        for owner in self.__owners:
+            toReturn += "\n\t\t" + owner.getMemberName()
+        toReturn += "\n\tmanagers:"
+        for manager in self.__managers:
+            toReturn += "\n\t\t" + manager.getMemberName()
         toReturn += "\n\tproducts: "
         for product in self.__products:
             toReturn += "\n\t\t" + product.__str__()
@@ -137,5 +141,5 @@ class StoreDTO:
             toReturn += "\n\t\t" + transaction.__str__()
         toReturn += "\n\tpermissions:"
         for member in self.__permissions.keys():
-            toReturn += "\n\t\t\t" + self.__permissions.get(member).__str__()
+            toReturn += "\n\t\t" + self.__permissions.get(member).__str__()
         return toReturn

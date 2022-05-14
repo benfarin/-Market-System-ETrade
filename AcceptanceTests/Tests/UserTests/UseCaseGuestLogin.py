@@ -41,15 +41,16 @@ class MyTestCase(unittest.TestCase):
         t7.start()
         t8.start()
 
-        print(t1.join().getData().getUserID())
-        print(t2.join().getData().getUserID())
-        print(t3.join().getData().getUserID())
-        print(t4.join().getData().getUserID())
-        print(t5.join().getData().getUserID())
-        print(t6.join().getData().getUserID())
-        print(t7.join().getData().getUserID())
-        print(t8.join().getData().getUserID())
+        uIds = [t1.join().getData().getUserID(), t2.join().getData().getUserID(), t3.join().getData().getUserID(),
+                t4.join().getData().getUserID(), t5.join().getData().getUserID(), t6.join().getData().getUserID(),
+                t7.join().getData().getUserID(), t8.join().getData().getUserID()]
 
+        for i in range(8):
+            Id_i = uIds[i]
+            for j in range(8):
+                if i != j:
+                    self.assertNotEqual(Id_i, uIds[j])
+            print("id of user " + str(i) + " is: " + uIds[i])
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBr
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
+from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 from Service.MemberService import MemberService
 from Service.UserService import UserService
 
@@ -14,29 +15,65 @@ class MyTestCase(unittest.TestCase):
         self.user_proxy = UserProxyBridge(UserRealBridge())
         self.market_proxy = MarketProxyBridge(MarketRealBridge())
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                          "Ben Gurion", 1, 1)
-        self.__guestId = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.register( self.__guestId, "user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                                                "Ben Gurion", 0, "HaPoalim")
-        self.user_id = self.user_proxy.login_member("user1", "1234").getData().getUserID()
+                                               "Ben Gurion", 1, 1)
+
+        self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId1, "user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                 "Ben Gurion", 0, "HaPoalim")
+        self.founder1_id = self.user_proxy.login_member("user1", "1234").getData().getUserID()
+
+        self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId2, "user2", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                 "Ben Gurion", 0, "HaPoalim")
+        self.founder2_id = self.user_proxy.login_member("user2", "1234").getData().getUserID()
+
+        self.__guestId3 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register(self.__guestId3, "user3", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                 "Ben Gurion", 0, "HaPoalim")
+        self.founder3_id = self.user_proxy.login_member("user3", "1234").getData().getUserID()
 
     def test_open_store_positive1(self):
-        store = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                   0, "000000")
+        store = self.user_proxy.open_store("store-1", self.founder1_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                           0, "000000")
         self.assertEqual(store.getData().getStoreId(), 0)
         print(store.__str__())
 
+    def test_open_stores_in_the_same_time(self):
+        store = self.user_proxy.open_store("store-1", self.founder1_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                           0, "000000")
 
-    def test_open_store_negative1(self):
-        self.assertRaises(Exception, self.user_proxy.open_store("store", -999, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                   0, "000000"))
+        t1 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-1", self.founder1_id, 0, 0,
+                                                                       "israel", "Beer-Sheva", "Ben-Gurion",
+                                                                       0, "000000"))
+        t2 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-2", self.founder2_id, 0, 0,
+                                                                       "israel", "Beer-Sheva", "Ben-Gurion",
+                                                                       0, "000000"))
+        t3 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-3", self.founder2_id, 0, 0,
+                                                                       "israel", "Beer-Sheva", "Ben-Gurion",
+                                                                       0, "000000"))
+        t4 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-4", self.founder3_id, 0, 0,
+                                                                       "israel", "Beer-Sheva", "Ben-Gurion",
+                                                                       0, "000000"))
+        t5 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-5", self.founder3_id, 0, 0,
+                                                                       "israel", "Beer-Sheva", "Ben-Gurion",
+                                                                       0, "000000"))
 
-    def test_recreate_store(self):
-        storeId = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                    0, "000000").getData().getStoreId()
-        print(self.assertTrue(self.user_proxy.removeStore( storeId, self.user_id).getData()))
-        self.assertTrue(self.user_proxy.recreateStore( self.user_id, storeId).getData())
-        check = 1
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t5.start()
+
+        sIds = [t1.join().getData().getStoreId(), t2.join().getData().getStoreId(), t3.join().getData().getStoreId(),
+                t4.join().getData().getStoreId(), t5.join().getData().getStoreId()]
+
+        for i in range(5):
+            sd_i = sIds[i]
+            for j in range(5):
+                if i != j:
+                    self.assertNotEqual(sd_i, sIds[j])
+            print("id of store " + str(i + 1) + " is: " + str(sIds[i]))
+
 
 if __name__ == '__main__':
     unittest.main()

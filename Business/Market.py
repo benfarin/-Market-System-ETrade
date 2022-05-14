@@ -34,13 +34,16 @@ class Market:
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
-        self.__globalStore = 0
-        self._transactionIdCounter = 0
         self.__transactionHistory = TransactionHistory.getInstance()
         self.__removedStores: Dict[str: IStore] = {}
+
+        self.__globalStore = 0
+        self.__storeTransactionIdCounter = 0
+        self.__userTransactionIdCounter = 0
         self.__storeId_lock = threading.Lock()
-        self.__transactionId_lock = threading.Lock()
-        self.__removeStoreLock = threading.Lock()
+        self.__StoreTransactionId_lock = threading.Lock()
+        self.__UserTransactionId_lock = threading.Lock()
+
         if Market.__instance is None:
             Market.__instance = self
 
@@ -81,7 +84,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def __getStoreByProductID(self,productID):
+    def __getStoreByProductID(self, productID):
         for store in self.__stores.values():
             if store.getProductFromStore(productID) is not None:
                 return store
@@ -155,6 +158,7 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
+    # need to remember that if a user add the product to the cart, then the product is in the stock.
     def purchaseCart(self, user, bank):
         try:
             cart = user.getCart()
@@ -177,18 +181,20 @@ class Market:
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
                     # user.addPaymentStatus(paymentStatus)
-                    transactionId = self.__getTransactionId()
+                    transactionId = self.__getStoreTransactionId()
                     storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
                     self.__transactionHistory.addStoreTransaction(storeTransaction)
                     storeTransactions[storeId] = storeTransaction
+                    cart.cleanBag(storeId)
                 else:
                     storeFailed.append(storeId)
 
             userPaymentId = Paymentlmpl.getInstance().getPaymentId()
-            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId, totalAmount)
+            userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(), storeTransactions,
+                                              userPaymentId, totalAmount)
             user.addTransaction(userTransaction)
             self.__transactionHistory.addUserTransaction(userTransaction)
 
@@ -337,13 +343,13 @@ class Market:
                 raise NoSuchStoreException("Store " + str(storeID) + " is not removed from the system")
             founderId = self.__removedStores.get(storeID).getStoreFounderId()
             if founderId != founder.getUserID():
-                raise NotFounderException("user: " + founder.getUserID() + "is not the founder of store: " + str(storeID))
+                raise NotFounderException(
+                    "user: " + founder.getUserID() + "is not the founder of store: " + str(storeID))
             self.__stores[storeID] = self.__removedStores.get(storeID)
             self.__removedStores.pop(storeID)
             return True
         except Exception as e:
             raise Exception(e)
-
 
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         # the user that get in the system!
@@ -409,8 +415,14 @@ class Market:
             self.__globalStore += 1
             return storeId
 
-    def __getTransactionId(self):
-        with self.__transactionId_lock:
-            transactionId = self._transactionIdCounter
-            self._transactionIdCounter += 1
-            return transactionId
+    def __getStoreTransactionId(self):
+        with self.__StoreTransactionId_lock:
+            stId = self.__storeTransactionIdCounter
+            self.__storeTransactionIdCounter += 1
+            return stId
+
+    def __getUserTransactionId(self):
+        with self.__UserTransactionId_lock:
+            utId = self.__userTransactionIdCounter
+            self.__userTransactionIdCounter += 1
+            return utId

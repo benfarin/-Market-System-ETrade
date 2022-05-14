@@ -59,9 +59,9 @@ class StorePermissionDTO:
 
     def __str__(self):
         toReturn = "permissions for user: " + str(self.__userId) + ":"
-        toReturn += "\n\tstock permission: " + str(self.__stockManagement)
-        toReturn += "\n\tappoint manager: " + str(self.__appointManager)
-        toReturn += "\n\tappoint owner: " + str(self.__appointOwner)
-        toReturn += "\n\tclose store" + str(self.__closeStore)
-        toReturn += "\n\tget role information" + str(self.__rolesInformation)
-        return toReturn + "\n\tget purchase history information" + str(self.__purchaseHistoryInformation)
+        toReturn += "\n\t\t\tstock permission: " + str(self.__stockManagement)
+        toReturn += "\n\t\t\tappoint manager: " + str(self.__appointManager)
+        toReturn += "\n\t\t\tappoint owner: " + str(self.__appointOwner)
+        toReturn += "\n\t\t\tclose store: " + str(self.__closeStore)
+        toReturn += "\n\t\t\tget role information: " + str(self.__rolesInformation)
+        return toReturn + "\n\t\t\tget purchase history information: " + str(self.__purchaseHistoryInformation)
