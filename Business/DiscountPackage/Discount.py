@@ -5,7 +5,7 @@ from Business.Rules.Rule import Rule
 
 class Discount:
 
-    def __init__(self, discountId, calc: DiscountCalc):
+    def __init__(self, discountId, calc):
         self.__id_discount = discountId
         self.__calc_discount = calc
 

@@ -2,6 +2,7 @@ import zope
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
 
+
 @zope.interface.implementer(IMarketBridge)
 class MarketProxyBridge:
     def __init__(self, real_subject: MarketRealBridge):
@@ -98,12 +99,12 @@ class MarketProxyBridge:
             return True
         return self._real_subject.get_cart_info(user_id)
 
-    def edit_product_name(self,user_id, store_id, prod_id, new_name):
+    def edit_product_name(self, user_id, store_id, prod_id, new_name):
         if self.check_access():
             return True
         return self._real_subject.edit_product_name(user_id, store_id, prod_id, new_name)
 
-    def edit_product_category(self, user_id , store_id, prod_id, new_category):
+    def edit_product_category(self, user_id, store_id, prod_id, new_category):
         if self.check_access():
             return True
         return self._real_subject.edit_product_category(user_id, store_id, prod_id, new_category)
@@ -123,7 +124,7 @@ class MarketProxyBridge:
             return True
         return self._real_subject.getAllStores()
 
-    def getUserStore(self,userId):
+    def getUserStore(self, userId):
         if self.check_access():
             return True
         return self._real_subject.getUserStore(userId)
@@ -132,6 +133,14 @@ class MarketProxyBridge:
         if self.check_access():
             return True
         return self._real_subject.print_purchase_history(store_id, user_id)
+
+    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
+                          value_less_than, value_grather_than, time_from, time_until):
+        if self.check_access():
+            return True
+        return self._real_subject.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category,
+                                                    productId,
+                                                    value_less_than, value_grather_than, time_from, time_until)
 
     # def define_purchase(self, store_id, purchase):
     #     if self._real_subject is None:
@@ -154,8 +163,6 @@ class MarketProxyBridge:
     #         return True
     #     return self._real_subject.discount_prod(store_id, prod_id , discount)
 
-
-
     # def edit_purchase(self, store_id, new_purchase):
     #     if self._real_subject is None:
     #         if new_purchase is None:
@@ -169,4 +176,3 @@ class MarketProxyBridge:
     #             return False
     #         return True
     #     return self._real_subject.edit_discount(store_id, new_discount)
-

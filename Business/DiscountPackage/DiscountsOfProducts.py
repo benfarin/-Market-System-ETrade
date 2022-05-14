@@ -26,9 +26,6 @@ class DiscountOfProducts: #wad created by interface IDiscount.represent the prod
     def getProducts(self):
         return self.__products
 
-    def addProduct(self, key, value):
-        self.__products[key] = value
-
     def setDiscount(self, discount):
         self.__discount = discount
 

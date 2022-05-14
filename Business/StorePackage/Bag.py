@@ -3,7 +3,7 @@ from zope.interface import implements
 
 from Exceptions.CustomExceptions import QuantityException, ProductException
 from interfaces.IBag import IBag
-# from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
+from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 
 
 @zope.interface.implementer(IBag)
@@ -59,10 +59,8 @@ class Bag:
         return self.__products[product]
 
     def calcSum(self):
-        s = 0.0
-        for p in self.__products.keys():
-            s += p.getProductPrice() * self.__products[p]
-        return s
+        newPrices = self.applyDiscount()
+        return sum(newPrices.values())
 
     def cleanBag(self):
         self.__products = {}
@@ -75,25 +73,29 @@ class Bag:
         return products_print
 
     def applyDiscount(self):
-        # discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        f = lambda discount: discount.makeDiscount(self).getDiscount()
-        g = lambda discount: discount.getRule().check(self)
+        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        f = lambda discount: discount.getRule().check(self)
         available_discount_values = []
         available_discount = []
-        # for discount in discounts:
-        #     if g(discount):
-        #         available_discount_values.append(discount.makeDiscount(self).discount)  # brings us all of the discounts of this bag
-        #         available_discount.append(discount)
-        max = max(available_discount_values)
-        h = lambda discount: discount.makeDiscount(self).discount >= max
+        for discount in discounts:
+             if f(discount):
+                 available_discount_values.append(discount.makeDiscount(self).getDiscount())  # brings us all of the discounts of this bag
+                 available_discount.append(discount)
+
+        m = max(available_discount_values)
+        g = lambda d: d.makeDiscount(self).getDiscount() >= m
         max_chosen = None
         for available in available_discount:
-            if h(available):
-                max_chosen = available
+             if g(available):
+                 max_chosen = available
         discount_of_products = max_chosen.getCalc().calcDiscount(self)
+
+        newPrices = {}
         for product in self.__products:
-            product.setProductPrice(discount_of_products.getProducts()[product.getProductId()])
-        return max_chosen
+            pId = product.getProductId()
+            if pId in discount_of_products.getProducts():
+                newPrices[product] = discount_of_products.getProducts()[pId]
+        return newPrices
 
 
 

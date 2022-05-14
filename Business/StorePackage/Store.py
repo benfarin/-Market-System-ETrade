@@ -479,7 +479,7 @@ class Store:
         if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID()," doesn't have the discount permission in store: ",self.__name)
 
-        predi :storePredicateManager = storePredicateManager.getInstance()
+        predi = storePredicateManager.getInstance()
         predi.addDiscount(self.getStoreId(), discount)
 
     def removeDiscount(self, user, discountId):

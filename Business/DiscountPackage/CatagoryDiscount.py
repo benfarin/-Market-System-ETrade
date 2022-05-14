@@ -1,4 +1,6 @@
-from interfaces import IDiscount
+import zope
+
+from interfaces.IDiscount import IDiscount
 from Business.StorePackage.Product import Product
 from Business.StorePackage.Bag import Bag
 
@@ -7,20 +9,21 @@ from Business.DiscountPackage.DiscountCalc import DiscountCalc
 from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts
 
 
-class CataoryDiscount(IDiscount):
+@zope.interface.implementer(IDiscount)
+class CataoryDiscount:
 
-    def __int__(self, catagory, percent):
-        self.__F = lambda a: self.calculate(a, catagory, percent)
-        self.__discountCalc: DiscountCalc = DiscountCalc(self.__F)
+    def __init__(self, category, percent):
+        self.__F = lambda a: self.calculate(a, category, percent)
+        self.__discountCalc = DiscountCalc(self.__F)
 
-    def calculate(self, bag: Bag, catagory, percent): #(bag,catagory,percent) --> DiscountOfProducts which contain all of the product which answer on the catagory, the products is calaculated after the discount and held the price after discount <pid,price>
+    def calculate(self, bag, category, percent):  # (bag,catagory,percent) --> DiscountOfProducts which contain all of the product which answer on the catagory, the products is calaculated after the discount and held the price after discount <pid,price>
         to_return = DiscountOfProducts()
         discount = 0
         products: Dict[Product, int] = bag.getProducts()
         for prod, quantity in products.items():
-            if prod.getProductCategory() == catagory:
-                discount += quantity*prod.getProductPrice()*percent
-                to_return.addProduct(prod.getProductId(), (1-percent)*prod.getProductPrice())
+            if prod.getProductCategory() == category:
+                discount += quantity * prod.getProductPrice() * percent
+                to_return.addProduct(prod.getProductId(), (1 - percent) * prod.getProductPrice())
             else:
                 to_return.addProduct(prod.getProductId(), prod.getProductPrice())
             to_return.setDiscount(discount)
@@ -34,5 +37,3 @@ class CataoryDiscount(IDiscount):
 
     def add(self, discount_calc_2):
         return self.__discountCalc.add(discount_calc_2)
-
-

@@ -1,4 +1,6 @@
-from interfaces import IDiscount
+import zope
+
+from interfaces.IDiscount import IDiscount
 from Business.StorePackage.Bag import Bag
 from Business.StorePackage.Product import Product
 from typing import Dict
@@ -6,9 +8,10 @@ from Business.DiscountPackage.DiscountCalc import DiscountCalc
 from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts
 
 
-class ProductDiscount(IDiscount):
+@zope.interface.implementer(IDiscount)
+class ProductDiscount:
 
-    def __int__(self, product_ID, percent):
+    def __init__(self, product_ID, percent):
         self.__F = lambda bag: self.calculate(bag, product_ID, percent)
         self.__discountCalc: DiscountCalc = DiscountCalc(self.__F)
 

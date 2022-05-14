@@ -1,6 +1,7 @@
 from zope.interface import Interface
 
-class IDiscount:
+
+class IDiscount(Interface):
 
     def calcDiscount(self, bag):
         pass
@@ -10,5 +11,3 @@ class IDiscount:
 
     def add(self, discount_calc_2):
         pass
-
-

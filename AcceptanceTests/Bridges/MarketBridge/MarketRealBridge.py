@@ -83,6 +83,13 @@ class MarketRealBridge:
 
     def close_store(self, store_id, user_id):
         return self._memberService.removeStore(store_id, user_id)
+
+    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
+                          value_less_than, value_grather_than, time_from, time_until):
+        return self._roleService.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
+                          value_less_than, value_grather_than, time_from, time_until)
+
+
     # def define_purchase(self, store_id, purchase):
     #     pass
     #

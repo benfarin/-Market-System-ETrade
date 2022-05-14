@@ -1,4 +1,4 @@
-import Rule
+from Business.Rules.Rule import Rule
 from Business.Managment.UserManagment import UserManagment
 
 class ruleCreator:

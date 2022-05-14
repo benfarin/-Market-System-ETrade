@@ -1,8 +1,10 @@
+import zope
+
 from Business.StorePackage.Bag import Bag
 from interfaces.IDiscount import IDiscount
 
-
-class DiscountCalc(IDiscount):
+@zope.interface.implementer(IDiscount)
+class DiscountCalc:
 
     def __init__(self, f):
         self.__F = f  # f function which get some bag and return DiscountOfProduct which contains all the product (by id as key) and their percent discount on it .

@@ -1,5 +1,5 @@
-from Business.DiscountPackage.Discount import Discount
 from typing import Dict
+
 class storePredicateManager:
 
     __instance = None
@@ -12,17 +12,16 @@ class storePredicateManager:
         return storePredicateManager.__instance
 
     def __init__(self):
-        self.__discount_store = {int, []}    #[id_store,[] Discount]
+        self.__discount_store: Dict[int: []] = {}    #[id_store,[] Discount]
         self.__store_policies = {}  #implement next by kfir
         if storePredicateManager.__instance is None:
             storePredicateManager.__instance = self
 
-    def addDiscount(self, id_store, discount : Discount):
+    def addDiscount(self, id_store, discount):
         if self.__discount_store.get(id_store) is not None:
-            self.__discount_store.get(id_store).add(discount)
+            self.__discount_store.get(id_store).append(discount)
         else:
-            self.__discount_store[id_store] = []
-            self.__discount_store.get(id_store).add(discount)
+            self.__discount_store[id_store] = [discount]
 
     def getDiscountsByIdStore(self, id_store):
         return self.__discount_store.get(id_store)  # if its empty will return None
@@ -35,7 +34,7 @@ class storePredicateManager:
                     return discount
         return None
 
-    def removeDiscount(self, sid, discount:Discount ):
+    def removeDiscount(self, sid, discount):
         if self.__discount_store.get(sid) is not None:
             self.__discount_store.get(sid).remove(discount)
         else:

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from Business.DiscountPackage.DiscountInfo import DiscountInfo
 from Business.DiscountPackage.DiscountManagement import DiscountManagement
-from Business.DiscountRules import ruleType, DiscountRules
+from Business.DiscountRules import DiscountRules
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
 from Business.Managment.MemberManagment import MemberManagment

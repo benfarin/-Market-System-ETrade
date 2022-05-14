@@ -6,7 +6,7 @@ from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts
 
 class ConditionDiscount(Discount):
 
-    def __init__(self, discountCalc: DiscountCalc):
+    def __init__(self, discountCalc):
         f = lambda bag: True
         self.__rule = Rule(f)
         super().__init__(discountCalc)
@@ -55,3 +55,11 @@ class ConditionDiscount(Discount):
         orRule = second_rule.AndRules(self.__rule, second_rule)
         condition_discount.setRule(orRule)
         return condition_discount
+
+    # max between self and second_rule
+    def conditionMax(self, second_rule):
+        pass
+
+    # add self and second_rule
+    def conditionADD(self, second_rule):
+        pass
