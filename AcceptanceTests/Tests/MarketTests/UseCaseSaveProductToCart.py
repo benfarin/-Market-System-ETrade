@@ -178,12 +178,23 @@ class UseCaseSaveProductToCart(unittest.TestCase):
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, -50, 10).isError())
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, -40, 10).isError())
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, -20, 10).isError())
+        self.user_proxy.logout_member("user1")  # user logout!
+        self.user_proxy.login_member("user1", "1234")  # user login
+        self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, -20, 10).isError())
 
     def test_add_to_cart_negative2(self):
+        self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, -50, self.product1, 10).isError())
+        self.user_proxy.logout_member("user1")  # user logout!
+        self.user_proxy.login_member("user1", "1234")  # user login
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, -50, self.product1, 10).isError())
 
     def test_add_to_cart_negative3(self):
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, self.product1, 2500).isError())
+        self.user_proxy.logout_member("user1")  # user logout!
+        self.user_proxy.login_member("user1", "1234")  # user login
+        self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, self.product1, 2500).isError())
+
+
 
 
 if __name__ == '__main__':

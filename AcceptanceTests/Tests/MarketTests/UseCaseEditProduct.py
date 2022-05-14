@@ -52,19 +52,39 @@ class UseCaseEditProduct(unittest.TestCase):
     def test_editProductStoreDoesntExists(self):
         # the store doesn't exist
         self.assertTrue(self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id.getProductId(), 10).isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1234")
+        self.assertTrue(self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id.getProductId(), 10).isError())
+
 
     def test_editProductStoreDoesntExists2(self):
         self.assertTrue(self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id.getProductId(), "newName").isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1234")
+        self.assertTrue(self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id.getProductId(), "newName").isError())
+
+
 
     def test_editProductStoreDoesntExists3(self):
         self.assertTrue(self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id.getProductId(), "newCategory").isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1234")
+        self.assertTrue(self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id.getProductId(), "newCategory").isError())
+
 
     def test_editProductNoManager(self):
         # the manager's ID is negative
         self.assertTrue(self.proxy_market.edit_product_price(self.store_id, -1, self.prod_id.getProductId(), 10).isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1234")
+        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, -1, self.prod_id.getProductId(), 10).isError())
+
 
     def test_editProductDoesntExists(self):
         # the product doesn't exists
+        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, -1, 10).isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1234")
         self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, -1, 10).isError())
         # self.assertEqual(self.proxy.edit_product_name(0, 3, 10), False)
         # self.assertEqual(self.proxy.edit_product_category(0, 3, 10), False)
@@ -72,6 +92,10 @@ class UseCaseEditProduct(unittest.TestCase):
     def test_editProductNegativePrice(self):
         # the new price is negative
         self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), -3).isError())
+        self.proxy_user.logout_member(self.user_id)
+        self.proxy_user.login_member("testUser", "1234")
+        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), -3).isError())
+
 
 
 if __name__ == '__main__':
