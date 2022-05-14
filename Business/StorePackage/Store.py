@@ -456,13 +456,12 @@ class Store:
 
     def addDicount(self, discount: Discount):
         predi :storePredicateManager = storePredicateManager.getInstance()
-        discounts: [] = predi.getDiscountsByIdStore(self.getStoreId())
-        discounts.append(discount)
+        predi.addDiscount(self.getStoreId(), discount)
 
-    def removeDiscount(self, discount_id):
+
+    def removeDiscount(self, discount: Discount):
         predi :storePredicateManager = storePredicateManager.getInstance()
-        discounts: [] = predi.getDiscountsByIdStore(self.getStoreId())
-        discounts.remove(discount_id)
+        predi.removeDiscount(self.getStoreId(), discount)
 
 
 

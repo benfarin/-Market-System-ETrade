@@ -9,7 +9,7 @@ from Business.DiscountPackage.ConditionDiscount import ConditionDiscount
 from Business.Rules.Rule import Rule
 from Business.Rules.ruleCreator import ruleCreator
 from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
-class DiscountRules:
+
 
 class ruleContext(Enum):
     store = 'store'
@@ -24,6 +24,7 @@ class ruleType(Enum):
     price = 'price'
     time = 'time'
     weight = 'weight'
+
 
 class DiscountRules:
 
@@ -46,7 +47,7 @@ class DiscountRules:
 
     def createSimpleDiscount(self, store: Store, discountType: ruleContext,percent, catagory, productID):
         if store is not None:
-            discount_calc = self.createSimpleDiscount(discountType, percent, catagory, productID)
+            discount_calc = self.createCalc(discountType, percent, catagory, productID)
             discount = Discount(discount_calc)
             store.addDicount(discount)
 
@@ -75,10 +76,10 @@ class DiscountRules:
             return self.__rules_creator.createWeightRule(pid, value_less_than, value_greater_than)
         return self.__rules_creator.createTimeRule(time1,time2)
 
-    def addDiscountOrRule(self, store: Store, store_id, discount_id1, discount_id2, original_discount_id):
+    def addDiscountOrRule(self, store: Store, discount_id1, discount_id2, original_discount_id):
         predicate :storePredicateManager = storePredicateManager.getInstance()
-        discounts1 :Discount = predicate.getSingleDiscountByID(store.getStoreId(),discount_id1)
-        discount2:Discount = predicate.getSingleDiscountByID(store.getStoreId(),discount_id2)
+        discounts1:Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
+        discount2: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
         rule1 = discounts1.getRule()
         rule2 = discount2.getRule()
         orRule = Rule.OrRule(rule1,rule2)
@@ -92,7 +93,7 @@ class DiscountRules:
         discount2:Discount = predicate.getSingleDiscountByID(store.getStoreId(),discount_id2)
         rule1 = discounts1.getRule()
         rule2 = discount2.getRule()
-        andRule = Rule.AddRules(rule1,rule2)
+        andRule = Rule.AddRules(rule1, rule2)
         condition_discount = ConditionDiscount(predicate.getSingleDiscountByID(store.getStoreId(), original_discount_id))
         condition_discount.setRule(andRule)
         store.addDicount(condition_discount)
