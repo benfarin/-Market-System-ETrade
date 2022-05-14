@@ -46,6 +46,7 @@ class Store:
         self.__permissions[founder].setPermission_CloseStore(True)
         self.__permissions[founder].setPermission_RolesInformation(True)
         self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
+        self.__permissions[founder].setPermission_Discount(True)
 
     def getStoreId(self):
         return self.__id
@@ -155,12 +156,22 @@ class Store:
             if assignee not in self.__managers and assignee not in self.__owners:
                 raise PermissionException("cannot give a permission to member how is not manager or owner")
             self.__haveAllPermissions(assigner, assignee)
-            self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
         except Exception as e:
             raise Exception(e)
         else:
             with self.__permissionsLock:
                 self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
+
+    def setDiscountPermission(self, assigner, assignee):
+        try:
+            if assignee not in self.__managers and assignee not in self.__owners:
+                raise PermissionException("cannot give a permission to member how is not manager or owner")
+            self.__haveAllPermissions(assigner, assignee)
+        except Exception as e:
+            raise Exception(e)
+        else:
+            with self.__permissionsLock:
+                self.__permissions[assignee].setPermission_Discount(True)
 
     def __haveAllPermissions(self, assigner, assignee):
         # next version need to add parameter for removing.
@@ -322,6 +333,7 @@ class Store:
             self.__permissions[assignee].setPermission_ChangePermission(True)
             self.__permissions[assignee].setPermission_RolesInformation(True)
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
+            self.__permissions[assignee].setPermission_Discount(True)
 
     def removeStoreOwner(self, assigner, assignee):
         if assigner not in self.__owners:
@@ -463,7 +475,6 @@ class Store:
     def addDicount(self, discount: Discount):
         predi :storePredicateManager = storePredicateManager.getInstance()
         predi.addDiscount(self.getStoreId(), discount)
-
 
     def removeDiscount(self, discount: Discount):
         predi :storePredicateManager = storePredicateManager.getInstance()

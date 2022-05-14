@@ -110,6 +110,17 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def setDiscountPermission(self, storeID, assignerID, assigneeName):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(assignerID)
+            assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
+            assignee = self.__memberManagement.getMemberByName(assigneeName)
+            if assignerID not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(assignerID) + "is not a member")
+            return assigner.setDiscountPermission(storeID, assignee)
+        except Exception as e:
+            raise Exception(e)
+
     def addProductToStore(self, storeID, userID, product):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
@@ -333,7 +344,7 @@ class RoleManagment:
             raise Exception(e)
 
     def removeDiscount(self,userId, storeId, discountId):
-        passcd
+        pass
         #     # await StorePredicatesManager.Instance.SaveRequest(++counter, "RemoveDiscountAsync", username, storeId,
         #     #                                                   discountId);
         # if self.__discountManager.isComplex(discountId):

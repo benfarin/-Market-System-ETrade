@@ -57,6 +57,9 @@ class IMarket(Interface):
     def setPurchaseHistoryInformationPermission(self, storeID, assigner, assignee):
         pass
 
+    def setDiscountPermission(self, storeID, assigner, assignee):
+        pass
+
     def addProductToStore(self, storeID, user, product):  # Tested
         pass
 
