@@ -32,7 +32,5 @@ class UseCaseMemberLogout(unittest.TestCase):
         print(self.user_proxy.removeMember("Manager", "user1").getData())
         print(self.user_proxy.login_member("user1", "1234").getError())
 
-
-
 if __name__ == '__main__':
     unittest.main()

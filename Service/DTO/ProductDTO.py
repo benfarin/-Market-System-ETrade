@@ -47,11 +47,21 @@ class ProductDTO:
 
     def __str__(self):
         toReturn = "product: " + str(self.__productId) + ":"
-        toReturn += "\n\tstoreId: " + str(self.__storeId)
         toReturn += "\n\tname: " + self.__name
         toReturn += "\n\tprice: " + str(self.__price)
         toReturn += "\n\tcategory: " + str(self.__category)
         toReturn += "\n\tkeywords: "
         for keyword in self.__keywords:
-            toReturn += "\n\n\t" + keyword
+            toReturn += "\n\t\t" + keyword
+        return toReturn
+
+    def printInBag(self):
+        toReturn = "product: " + str(self.__productId) + ":"
+        toReturn += "\n\t\t\t\t\t\tstoreId: " + str(self.__storeId)
+        toReturn += "\n\t\t\t\t\t\tname: " + self.__name
+        toReturn += "\n\t\t\t\t\t\tprice: " + str(self.__price)
+        toReturn += "\n\t\t\t\t\t\tcategory: " + str(self.__category)
+        toReturn += "\n\t\t\t\t\t\tkeywords: "
+        for keyword in self.__keywords:
+            toReturn += "\n\t\t\t\t\t\t\t" + keyword
         return toReturn

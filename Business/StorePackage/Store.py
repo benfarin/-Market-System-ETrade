@@ -74,6 +74,12 @@ class Store:
     def getProductQuantity(self):
         return self.__productsQuantity
 
+    def getTransactionForDTO(self):
+        return self.__transactions
+
+    def getPermissionForDto(self):
+        return self.__permissions
+
     def getProduct(self, productId):
         if productId in self.__products:
             return self.__products.get(productId)

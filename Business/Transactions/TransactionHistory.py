@@ -25,7 +25,7 @@ class TransactionHistory:
         self.__storeTransactions[st.getTransactionID()] = self.__createStoreTransaction(st)
 
     def addUserTransaction(self, ut):
-        if ut.getUserTransactionId() in self.__storeTransactions.keys():
+        if ut.getUserTransactionId() in self.__userTransaction.keys():
             raise Exception("transaction with Id: " + str(ut.getUserTransactionId()) + "is all ready exists")
         self.__userTransaction[ut.getUserTransactionId()] = self.__createUserTransaction(ut)
 

@@ -1,5 +1,7 @@
 from Business.StorePackage.Store import Store
 from Service.DTO.ProductDTO import ProductDTO
+from Service.DTO.MemberDTO import MemberDTO
+from Service.DTO.ProductDTO import ProductDTO
 from Service.DTO.storeTransactionDTO import storeTransactionDTO
 from Service.DTO.StorePermissionDTO import StorePermissionDTO
 from typing import List
@@ -13,24 +15,33 @@ class StoreDTO:
         self.__name = store.getStoreName()
         self.__founderId = store.getStoreFounderId()
         self.__address = store.getStoreAddress()
-        # self.__managers = []  # userId
-        # self.__owners = [founderId]  # userId
-        self.__products: Dict[int: ProductDTO] = store.getProducts()  # productId : Product
-        # self.__productsQuantity = {}  # productId : quantity
-        # self.__transactions: Dict[int: storeTransactionDTO] = {}
-        # self.__permissions: Dict[str: storePermissionDTO] = {
-        #     founderId: storePermissionDTO()}  # UserId : storePermission
+        self.__managers = []
+        for manager in store.getStoreManagers():
+            self.__managers.append(MemberDTO(manager))
+        self.__owners = []
+        for owner in store.getStoreOwners():
+            self.__owners.append(MemberDTO(owner))
+        self.__products = {}
+        for productId in store.getProducts().keys():
+            self.__products[productId] = ProductDTO(store.getProducts().get(productId))
+        self.__productsQuantity = store.getProductQuantity()
+        self.__transactions = {}
+        for tId in store.getTransactionForDTO().values():
+            self.__transactions[tId] = storeTransactionDTO(store.getTransactionForDTO().get(tId))
+        self.__permissions = {}
+        for member in store.getPermissionForDto().keys():
+            self.__permissions[member.getMemberName()] = StorePermissionDTO(store.getPermissionForDto().get(member))
 
     def getAppointerByUserID(self, uid):
         return self.__appointers.get(uid)
 
-    def getProductByPruductID(self,pid):
+    def getProductByPruductID(self, pid):
         return self.__products.get(pid)
 
-    def getTransactionByID(self,tid):
+    def getTransactionByID(self, tid):
         return self.__transactions.get(tid)
 
-    def getPermissionByUserID(self,uid):
+    def getPermissionByUserID(self, uid):
         return self.__permissions.get(uid)
 
     def getStoreId(self):
@@ -99,7 +110,7 @@ class StoreDTO:
     def setProductQuantity(self, prductQuantity):
         self.__productsQuantity = prductQuantity
 
-    def setTransactionDTO(self,transaction):
+    def setTransactionDTO(self, transaction):
         self.__transactions = transaction
 
     def setPermissionDTO(self, permission):
@@ -115,7 +126,20 @@ class StoreDTO:
         toReturn = "store " + str(self.__id) + ":"
         toReturn += "\n\tname: " + self.__name
         toReturn += "\n\tfounder id: " + str(self.__founderId)
+        toReturn += "\n\towners:"
+        for owner in self.__owners:
+            toReturn += "\n\t\t" + owner.getMemberName()
+        toReturn += "\n\tmanagers:"
+        for manager in self.__managers:
+            toReturn += "\n\t\t" + manager.getMemberName()
         toReturn += "\n\tproducts: "
         for product in self.__products:
             toReturn += "\n\t\t" + product.__str__()
+            toReturn += "\n\t\t\tquantity: " + self.__productsQuantity.get(product.getProductId())
+        toReturn += "\n\ttransactions: "
+        for transaction in self.__transactions:
+            toReturn += "\n\t\t" + transaction.__str__()
+        toReturn += "\n\tpermissions:"
+        for member in self.__permissions.keys():
+            toReturn += "\n\t\t" + self.__permissions.get(member).__str__()
         return toReturn

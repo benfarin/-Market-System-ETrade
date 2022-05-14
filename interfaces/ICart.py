@@ -15,6 +15,9 @@ class ICart(Interface):
     def removeBag(self, storeId):
         pass
 
+    def cleanBag(self, storeId):
+        pass
+
     def updateBag(self, bag):
         pass
 
