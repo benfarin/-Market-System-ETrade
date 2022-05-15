@@ -35,7 +35,7 @@ def home_page(request):
         title = "Welcome Guest!"
     else:
         title = "Welcome " + user.getMemberName() + "!"
-    all_stores = user_service.getAllStores().getData()
+    all_stores = role_service.getAllStores().getData()
     context = {"title": title, "user": user, "stores": all_stores}
     return render(request, "home.html", context)
 
@@ -79,7 +79,7 @@ def login_page(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
     if username is not None and password is not None:
-        answer = user_service.memberLogin(username, password)
+        answer = user_service.memberLogin(user.getUserID(), username, password)
         if not answer.isError():
             user = answer.getData()
             print(user.getUserID())
@@ -107,7 +107,7 @@ def my_stores_page(request):
     else:
         usertype = False
         title = "My Stores"
-    stores = user_service.getAllStoresOfUser(user.getUserID()).getData()
+    stores = role_service.getUserStores(user.getUserID()).getData()
     context = {"title": title, "usertype": usertype, "user": user, "stores": stores}
     return render(request, "my_stores.html", context)
 
@@ -144,7 +144,7 @@ def create_store_page(request):
 
 
 def store_page(request, slug):
-    store = user_service.getStore(int(slug)).getData()
+    store = role_service.getStore(int(slug)).getData()
     answer = role_service.getRolesInformation(int(slug), user.getUserID())
     if not answer.isError():
         permissions = answer.getData()
@@ -184,7 +184,7 @@ def appoint_Owner(request, slug):
     form = AppointForm(request.POST or None)
     if form.is_valid():
         form = AppointForm()
-    assingeeID = request.POST.get("assingeeID")
+    assingeeID = request.POST.get("assignee_name")
     if assingeeID is not None:
         answer = role_service.appointOwnerToStore(int(slug), user.getUserID(), assingeeID)
         if not answer.isError():
@@ -326,7 +326,7 @@ def product_update(request, slug, slug2):
 
 def remove_product(request, slug, slug2):
     answer = role_service.removeProductFromStore(int(slug), user.getUserID(), int(slug2))
-    store = user_service.getStore(int(slug)).getData()
+    store = role_service.getUserStores(int(slug)).getData()
     if not answer.isError():
         return HttpResponseRedirect("/store/" + slug + "/")
     messages.warning(request, answer.getError())
@@ -365,7 +365,7 @@ def permissions_page(request, slug):
     form = AppointForm(request.POST or None)
     if form.is_valid():
         form = AppointForm()
-    assingeeID = request.POST.get("assingeeID")
+    assingeeID = request.POST.get("assignee_name")
     if assingeeID is not None:
         if request.method == 'POST' and 'btn1' in request.POST:
             answer = role_service.setStockManagerPermission(int(slug), user.getUserID(), assingeeID)
