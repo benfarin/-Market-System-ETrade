@@ -38,8 +38,8 @@ class DiscountManagement:
                 set_discount_info.append(discount_info)
         return set_discount_info
 
-    def isComplex(self,discount_id):
-        for  discount_info in self.__discount_info:
+    def isComplex(self, discount_id):
+        for discount_info in self.__discount_info:
             if discount_info.getIdDiscount1() == discount_id or discount_info.getIdDiscount2() == discount_id:
                 return True
         return  False

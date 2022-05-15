@@ -182,3 +182,8 @@ class UserManagment(object):
         if userId not in self.__guests.keys():
             raise NoSuchUserException("user: " + str(userId) + "is not exists")
         return self.__guests.get(userId).getCart()
+    def getUser(self,uid):
+        if uid not in self.__activeUsers:
+            raise NoSuchUserException("user: " + str(uid) + "is not exists")
+        return self.__activeUsers.get(uid)
+
