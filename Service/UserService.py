@@ -54,12 +54,12 @@ class UserService:
             logging.error("There was a problem during logout from the system")
             return Response(e.__str__())
 
-    def memberSignUp(self, oldUserId, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
+    def memberSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                      zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            isSignuped = self.__userManagment.memberSignUp(oldUserId, userName, password, phone, address, bank)
+            isSignuped = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
 
             return Response(isSignuped)
@@ -67,9 +67,9 @@ class UserService:
             logging.warning("There was a problem during registration process")
             return Response(e.__str__())
 
-    def memberLogin(self, userName, password):
+    def memberLogin(self, oldUserId, userName, password):
         try:
-            member = self.__userManagment.memberLogin(userName, password)
+            member = self.__userManagment.memberLogin(oldUserId, userName, password)
             logging.info("success to login user " + userName)
             return Response(MemberDTO(member))
         except Exception as e:

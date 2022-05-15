@@ -63,6 +63,9 @@ class Member(User):
     def setCart(self, cart):
         self._cart = cart
 
+    def updateCart(self, cart):
+        return self.__market.updateCart(self._cart, cart)
+
     def isStoreExists(self, storeId):
         return self.__market.isStoreExists(storeId)
 

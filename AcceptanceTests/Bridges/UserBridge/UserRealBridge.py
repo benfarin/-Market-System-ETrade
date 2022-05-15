@@ -24,13 +24,13 @@ class UserRealBridge:
     def login_guest(self):
         return self._userService.enterSystem()
 
-    def register(self, oldUserId, username, password, phone, account_number, branch, country,
+    def register(self,username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code):
-        return self._userService.memberSignUp(oldUserId, username, password, phone, account_number, branch,
+        return self._userService.memberSignUp(username, password, phone, account_number, branch,
                                                country, city, street, apartment_num, zip_code)
 
-    def login_member(self, user_name, password):
-        return self._userService.memberLogin(user_name, password)
+    def login_member(self, oldUserId, user_name, password):
+        return self._userService.memberLogin(oldUserId, user_name, password)
 
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         return self._userService.addProductToCart(user_id, store_id, product_id, quantity)
