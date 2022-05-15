@@ -16,14 +16,14 @@ logging.basicConfig(
 class MemberService:
 
     def __init__(self):
-        self.__memberManage = MemberManagment.getInstance()
-        self.__roleManagment = RoleManagment.getInstance()
+        self._memberManage = MemberManagment.getInstance()
+        self._roleManagment = RoleManagment.getInstance()
 
     def createStore(self, storeName, founderId, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         try:
-            bank = self.__memberManage.createBankAcount(accountNumber, brunch)
-            address = self.__memberManage.createAddress(country, city, street, apartmentNum, zipCode)
-            store = self.__memberManage.createStore(storeName, founderId, bank, address)
+            bank = self._memberManage.createBankAcount(accountNumber, brunch)
+            address = self._memberManage.createAddress(country, city, street, apartmentNum, zipCode)
+            store = self._memberManage.createStore(storeName, founderId, bank, address)
 
             logging.info("succeeded create store " + storeName)
             return Response(StoreDTO(store))
@@ -34,7 +34,7 @@ class MemberService:
 
     def removeStore(self, storeId, userId):
         try:
-            isRemoved = self.__memberManage.removeStore(userId, storeId)
+            isRemoved = self._memberManage.removeStore(userId, storeId)
             logging.info("remove store: " + userId)
             return Response(isRemoved)
         except Exception as e:
@@ -52,7 +52,7 @@ class MemberService:
 
     def logoutMember(self, userName):
         try:
-            isLoggedOut = self.__memberManage.logoutMember(userName)
+            isLoggedOut = self._memberManage.logoutMember(userName)
             logging.info("logout member: " + userName)
             return Response(isLoggedOut)
         except Exception as e:
@@ -61,7 +61,7 @@ class MemberService:
 
     def getMemberTransactions(self, userID):
         try:
-            transactions = self.__memberManage.getMemberTransactions(userID)
+            transactions = self._memberManage.getMemberTransactions(userID)
             logging.info("")
             return Response(userTransactionDTO(transactions))
         except Exception as e:

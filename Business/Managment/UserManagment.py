@@ -30,7 +30,7 @@ class UserManagment(object):
         self.__market: IMarket = Market().getInstance()
         self.__activeUsers: Dict[str, User] = {}  # <userId,User> should check how to initial all the activeStores into
         # dictionary
-        self.__guests: Dict[str: User] = {}
+        self.__users: Dict[str: User] = {}
         self.__members: Dict[str, Member] = {}
         self.__systemManager: Dict[str, SystemManager] = {}
 
@@ -52,19 +52,10 @@ class UserManagment(object):
     def getSystemManagers(self):
         return self.__systemManager
 
-    def removeFromActiveUsers(self, userId):
-        self.checkOnlineUser(userId)
-        self.__activeUsers.pop(userId)
-
-    def removeFromMembers(self, memberId):
-        if memberId not in self.__members.keys():
-            raise Exception("member: " + str(memberId) + " not exists")
-        self.__members.pop(memberId)
-
     def enterSystem(self):
         try:
             guest = Guest()
-            self.__guests[guest.getUserID()] = guest
+            self.__users[guest.getUserID()] = guest
             self.__activeUsers[guest.getUserID()] = guest
             return guest
         except Exception as e:
@@ -72,20 +63,18 @@ class UserManagment(object):
 
     def exitSystem(self, guestID):  # need to remove cart!
         self.checkOnlineUser(guestID)
-        self.__guests.pop(guestID)
+        self.__users.pop(guestID)
         self.__activeUsers.pop(guestID)
         return True
 
-    def memberSignUp(self, oldUserId, userName, password, phone, address, bank):  # Tested
+    def memberSignUp(self, userName, password, phone, address, bank):  # Tested
         if self.__isMemberExists(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[member.getUserID()] = member
-            member.setCart(self.__getUserCart(oldUserId))
-
-            self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
-            self.__guests.pop(oldUserId)       # we can delete the guest.
+            # if icart is not None:
+            #       member.setICart(icart)
             return True
-        raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
+        raise MemberAllReadyLoggedIn("user: " + userName + " is all ready loggedIn")
 
     def memberLogin(self, userName, password):  # Tested
         try:
@@ -135,13 +124,6 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
-    def addProductToCartWithoutStore(self, userID, productID, quantity):
-        try:
-            self.checkOnlineUser(userID)
-            return self.__activeUsers.get(userID).addProductToCartWithoutStore(productID, quantity)
-        except Exception as e:
-            raise Exception(e)
-
     def removeProductFromCart(self, userID, storeID, productId):
         try:
             self.checkOnlineUser(userID)
@@ -170,13 +152,57 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
+    def getProductByCategory(self, category):
+        try:
+            return self.__market.getProductByCategory(category)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductsByName(self, nameProduct):
+        try:
+            return self.__market.getProductsByName(nameProduct)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductByKeyWord(self, keyword):
+        try:
+            return self.__market.getProductByKeyWord(keyword)
+        except Exception as e:
+            raise Exception(e)
+
+    def getProductPriceRange(self, minPrice, highPrice):
+        try:
+            return self.__market.getProductByPriceRange(minPrice, highPrice)
+        except Exception as e:
+            raise Exception(e)
+
     def createBankAcount(self, accountNumber, branch):
         return Bank(accountNumber, branch)
 
     def createAddress(self, country, city, street, apartmentNum, zipCode):
         return Address(country, city, street, apartmentNum, zipCode)
 
-    def __getUserCart(self, userId):
-        if userId not in self.__guests.keys():
-            raise NoSuchUserException("user: " + str(userId) + "is not exists")
-        return self.__guests.get(userId).getCart()
+    def removeMember(self, userName, password):
+        pass
+
+    def getStore(self, storeID):
+        return self.__market.getStoreById(storeID)
+
+    def getAllStores(self):
+        return self.__market.getStores()
+
+    def getAllStoresOfUser(self, userId):
+        stores = self.__market.getStores()
+        member = self.__members.get(userId)
+        stores_of_user = []
+        for store in stores.values():
+            if store.hasPermissions(member):
+                stores_of_user.append(store)
+        return stores_of_user
+
+    def getUserIdByName(self, user_name):
+        for user in self.__members.values():
+            if user.getMemberName() == user_name:
+                return user.getUserID()
+        return None
+

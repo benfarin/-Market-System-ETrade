@@ -1,5 +1,4 @@
 from Business.Managment.UserManagment import UserManagment
-from Business.Managment.GetterManagment import GetterManagment
 from Business.UserPackage.User import User
 from Service.DTO.StoreDTO import StoreDTO
 from Service.Response import Response
@@ -26,7 +25,6 @@ class UserService:
     def __init__(self):
         global firstAdminRegistered
         self.__userManagment = UserManagment.getInstance()
-        self.__getterManagment = GetterManagment.getInstance()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
         # self.__users: Dict[str : User] = {}
@@ -54,12 +52,12 @@ class UserService:
             logging.error("There was a problem during logout from the system")
             return Response(e.__str__())
 
-    def memberSignUp(self, oldUserId, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
+    def memberSignUp(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum,
                      zipCode):  # address is an object of "Adress"
         try:
             bank = self.__userManagment.createBankAcount(accountNumber, brunch)
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
-            isSignuped = self.__userManagment.memberSignUp(oldUserId, userName, password, phone, address, bank)
+            isSignuped = self.__userManagment.memberSignUp(userName, password, phone, address, bank)
             logging.info("success to register user " + userName)
 
             return Response(isSignuped)
@@ -83,24 +81,15 @@ class UserService:
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
             systemManager = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
             logging.info("success to sign new system manager " + userName)
-            return Response(MemberDTO(systemManager))
+            return MemberDTO(systemManager)
         except Exception as e:
             logging.error("Cannot signup new System Manager")
-            return Response(e.__str__())
+            return e
 
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
             isAdded = self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
             logging.info("added product " + str(productId) + "to cart for user " + str(userID))
-            return Response(isAdded)
-        except Exception as e:
-            logging.error("Failed add product to cart")
-            return Response(e.__str__())
-
-    def addProductToCartWithoutStore(self, userID, productID, quantity):
-        try:
-            isAdded = self.__userManagment.addProductToCartWithoutStore(userID, productID, quantity)
-            logging.info("added product " + str(productID) + "to cart for user " + str(userID))
             return Response(isAdded)
         except Exception as e:
             logging.error("Failed add product to cart")
@@ -126,7 +115,7 @@ class UserService:
 
     def getProductByCategory(self, category):
         try:
-            products = self.__getterManagment.getProductByCategory(category)
+            products = self.__userManagment.getProductByCategory(category)
             logging.info("success to get product by category " + category)
 
             productsDTOs = []
@@ -139,7 +128,7 @@ class UserService:
 
     def getProductByName(self, nameProduct):
         try:
-            products = self.__getterManagment.getProductsByName(nameProduct)
+            products = self.__userManagment.getProductsByName(nameProduct)
             logging.info("success to get product by name " + nameProduct)
 
             productsDTOs = []
@@ -152,7 +141,7 @@ class UserService:
 
     def getProductByKeyword(self, keyword):
         try:
-            products = self.__getterManagment.getProductByKeyWord(keyword)
+            products = self.__userManagment.getProductByKeyWord(keyword)
             logging.info("success to get product by keyword " + keyword)
 
             productsDTOs = []
@@ -165,7 +154,7 @@ class UserService:
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            products = self.__getterManagment.getProductPriceRange(minPrice, highPrice)
+            products = self.__userManagment.getProductPriceRange(minPrice, highPrice)
             logging.info("success to get product by price range")
 
             productsDTOs = []
@@ -193,5 +182,51 @@ class UserService:
             return Response(CartDTO(cart))
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
+            return Response(e.__str__())
+
+    def getStore(self, storeID):
+        try:
+            store = self.__userManagment.getStore(storeID)
+            logging.info("success get store " + str(storeID))
+            return Response(StoreDTO(store))
+        except Exception as e:
+            logging.error("Failed to get store " + str(storeID))
+            return Response(e.__str__())
+
+    def getAllStores(self):
+        try:
+            stores: Dict[int, IStore] = self.__userManagment.getAllStores()
+            logging.info("success get stores in market")
+
+            storesDTOs = []
+            for store in stores.values():
+                storesDTOs.append(StoreDTO(store))
+            return Response(storesDTOs)
+        except Exception as e:
+            logging.error("Failed to get stores")
+            return Response(e.__str__())
+
+
+    def getAllStoresOfUser(self, userId):
+        try:
+            stores = self.__userManagment.getAllStoresOfUser(userId)
+            logging.info("success get stores in market")
+
+            storesDTOs = []
+            for store in stores:
+                storesDTOs.append(StoreDTO(store))
+            return Response(storesDTOs)
+        except Exception as e:
+            logging.error("Failed to get stores")
+            return Response(e.__str__())
+
+
+    def getUserIdByName(self, user_name):
+        try:
+            name = self.__userManagment.getUserIdByName(user_name)
+            logging.info("success get user id")
+            return Response(name)
+        except Exception as e:
+            logging.error("Failed to get user id")
             return Response(e.__str__())
 

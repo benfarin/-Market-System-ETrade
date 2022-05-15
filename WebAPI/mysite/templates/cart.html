@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        <div class="row">
+        {% for bag in bags %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ bag.getStoreName }}</h5>
+                        {% for product in bag.getAllProductsAsList %}
+                            <p class="card-text">{{ product.getProductName }}</p>
+                            <a href="{{ product.getProductId }}/remove_product/" class="btn btn-danger">Remove From Cart</a>
+                        {% endfor %}
+
+                    </div>
+                </div>
+        {% endfor %}
+        </div>
+    <h4>Sum = {{ cart.calcSum }} </h4>
+    <a class="btn btn-primary" href="purchase_cart/" role="button">Checkout</a>
+</div>
+
+{% endblock %}
