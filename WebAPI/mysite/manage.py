@@ -43,25 +43,25 @@ def initialize_system():
     store2: StoreDTO = member_service.createStore("o2", user1.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
     computer: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.getUserID(), "Computer", 3000,
-                                                          "Electric Devices", ["Electric Device", "Computer", "Check"]).getData()
+                                                          "Electric Devices", 50, ["Electric Device", "Computer", "Check"]).getData()
     role_service.addProductQuantityToStore(store1.getStoreId(), user1.getUserID(), computer.getProductId(), 1000)
     camera: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.getUserID(), "Camera", 1000,
-                                                        "Electric Devices", []).getData()
+                                                        "Electric Devices", 20, []).getData()
     role_service.addProductQuantityToStore(store1.getStoreId(), user1.getUserID(), camera.getProductId(), 500)
     cases: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.getUserID(), "Phone Case", 50,
-                                                       "Phone Accessories", []).getData()
+                                                       "Phone Accessories", 5, []).getData()
     role_service.addProductQuantityToStore(store1.getStoreId(), user1.getUserID(), cases.getProductId(), 3000)
-    role_service.addProductToStore(store2.getStoreId(), user1.getUserID(), "Bed Sheets", 200, "Sheets", [])
-    role_service.addProductToStore(store2.getStoreId(), user1.getUserID(), "Pillow", 100, "Pillows", [])
+    role_service.addProductToStore(store2.getStoreId(), user1.getUserID(), "Bed Sheets", 200, "Sheets",8, [])
+    role_service.addProductToStore(store2.getStoreId(), user1.getUserID(), "Pillow", 100, "Pillows", 5,[])
     member_service.logoutMember("ori")
     user: MemberDTO = user_service.memberLogin("bar", "1234").getData()
     store3: StoreDTO = member_service.createStore("b1", user.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
     cola: ProductDTO = role_service.addProductToStore(store3.getStoreId(), user.getUserID(), "Cola", 15,
-                                                          "Drinks", []).getData()
+                                                          "Drinks", 8, []).getData()
     role_service.addProductQuantityToStore(store3.getStoreId(), user.getUserID(), cola.getProductId(), 2000)
     orange_juice: ProductDTO = role_service.addProductToStore(store3.getStoreId(), user.getUserID(), "Orange Juice", 11,
-                                                          "Drinks", []).getData()
+                                                          "Drinks",8, []).getData()
     role_service.addProductQuantityToStore(store3.getStoreId(), user.getUserID(), orange_juice.getProductId(), 3000)
     store4: StoreDTO = member_service.createStore("b2", user.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
@@ -72,10 +72,10 @@ def initialize_system():
     store6: StoreDTO = member_service.createStore("r2", user.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
     product1: ProductDTO = role_service.addProductToStore(store5.getStoreId(), user.getUserID(), "Shirt", 100,
-                                                          "Clothing", []).getData()
+                                                          "Clothing", 2, []).getData()
     role_service.addProductQuantityToStore(store5.getStoreId(), user.getUserID(), product1.getProductId(), 50)
     product2: ProductDTO = role_service.addProductToStore(store5.getStoreId(), user.getUserID(), "Pants", 200,
-                                                          "Clothing", []).getData()
+                                                          "Clothing",2, []).getData()
     role_service.addProductQuantityToStore(store5.getStoreId(), user.getUserID(), product2.getProductId(), 100)
     role_service.appointManagerToStore(store5.getStoreId(), user.getUserID(), user1Id)
     role_service.setRolesInformationPermission(store5.getStoreId(), user.getUserID(), user1Id)
