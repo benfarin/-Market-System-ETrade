@@ -29,13 +29,13 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                                 0, "000000").getData().getStoreId()
 
         cls.product01 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-01", 100,
-                                                              "Category", 8,  ["Test1", "Test2"]).getData().getProductId()
+                                                              "Category", 8,["Test1", "Test2"]).getData().getProductId()
         cls.product02 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-02", 150,
-                                                              "Category", 9,  ["Test1", "Test2"]).getData().getProductId()
+                                                              "Category", 9,["Test1", "Test2"]).getData().getProductId()
         cls.product1 = cls.market_proxy.add_product_to_store(cls.store_1, cls.user_id, "Product-1", 100,
-                                                             "Category", 10,  ["Test1", "Test2"]).getData().getProductId()
+                                                             "Category", 10,["Test1", "Test2"]).getData().getProductId()
         cls.product2 = cls.market_proxy.add_product_to_store(cls.store_2, cls.user_id, "Product-2", 10,
-                                                             "Category", 11,  ["Test1", "Test2"]).getData().getProductId()
+                                                             "Category", 11,["Test1", "Test2"]).getData().getProductId()
 
         cls.market_proxy.add_quantity_to_store(cls.store_0, cls.user_id, cls.product01, 100)
         cls.market_proxy.add_quantity_to_store(cls.store_0, cls.user_id, cls.product02, 100)
@@ -76,12 +76,12 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(guest3_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(guest3_id, self.store_2, self.product2, 1)
 
-        self.user_proxy.register(guest3_id, "user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register( "user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, "HaPoalim")
-        member3_id = self.user_proxy.login_member("user3", "1234").getData().getUserID()
+        member3_id = self.user_proxy.login_member(guest3_id,"user3", "1234").getData().getUserID()
 
         self.user_proxy.logout_member(member3_id)
-        self.user_proxy.login_member("user3", "1234")
+        self.user_proxy.login_member(member3_id,"user3", "1234")
 
         userTransaction = self.user_proxy.purchase_product(member3_id, 500, 20)
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())

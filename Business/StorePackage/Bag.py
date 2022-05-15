@@ -60,6 +60,7 @@ class Bag:
                 self.__products[product] += bag.getProducts()[product]
             else:
                 self.__products[product] = bag.getProducts()[product]
+        return True
 
     def getProductQuantity(self, product):
         return self.__products[product]

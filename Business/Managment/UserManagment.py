@@ -104,8 +104,8 @@ class UserManagment(object):
 
                     member.updateCart(self.__getUserCart(oldUserId))
 
-                    self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
-                    self.__guests.pop(oldUserId)  # we can delete the guest.
+                    # self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
+                    # self.__guests.pop(oldUserId)  # we can delete the guest.
 
                     return member
                 else:
