@@ -1,43 +1,77 @@
+import DateTime
+
 from Business.Rules.Rule import Rule
 from Business.Managment.UserManagment import UserManagment
 from Business.StorePackage.Bag import Bag
+from datetime import datetime
+
 
 class ruleCreator:
 
-    # def createUserAgeRule(self, less_than, more_than):
-
     def createProductWeightRule(self, pid, less_than, bigger_than):
-        f  = lambda bag :
+        f = lambda bag: self.weightHelper(pid, less_than, bag) and not self.weightHelper(pid, bigger_than, bag)
+        return f
 
-    def weightHelper(self,less_than, bigger_than, bag :Bag):
+    def weightHelper(self, pid, less_than, bag: Bag):
         products = bag.getProducts()
-        prod_to_return = []
-        for  prod, quantityu in products :
-            if  prod
-            prod_to_return.append()
+        sum_product_weight = 0
+        for prod, quantity in products:
+            if prod.getProductId() == pid:
+                sum_product_weight += prod.getProductWeight() * quantity
+        return sum_product_weight < less_than
 
+    def createProductRule(self, pid, less_than, bigger_than):
+        f = lambda bag: self.productRuleHelper(bag, less_than, pid) and not self.productRuleHelper(bag, bigger_than,
+                                                                                                   pid)
+        return f
 
+    def productRuleHelper(self, bag, less_than, pid):
+        products = bag.getProducts()
+        sum_product = 0
+        for prod, quantity in products:
+            if prod.getProductId() == pid:
+                sum_product += quantity
+        return sum_product < less_than
 
-    def createProductRule(self, pid, less_than, bigger_than ):
-        pass
+    def createStoreTotalPriceLessThanRule(self, less_than, bigger_than):  # return the
+        f = lambda bag: self.storeTotalPriceRuleHelper(bag, less_than) and not self.storeTotalPriceRuleHelper(bag,
+                                                                                                              bigger_than)
+        return f
 
-    def createStorePriceRule(self, less_than, bigget_than ):
-        pass
+    def storeTotalPriceRuleHelper(self, bag, less_than):
+        products = bag.getProducts()
+        sum_product = 0
+        for prod, quantity in products:
+            sum_product += quantity * prod.getProductPrice()
+        return sum_product < less_than
 
-    def createCatagoryRule(self, catagory, less_than, bigger_than):
-        pass
+    def createStoreQuantityLessThanRule(self, less_than, bigger_than):  # return the
+        f = lambda bag: self.storeQuantityRuleHelper(bag, less_than) and not self.storeQuantityRuleHelper(bag,
+                                                                                                          bigger_than)
+        return f
 
-    def createWeightRule(self, pid, less_than , bigger_than):
-        pass
+    def storeQuantityRuleHelper(self, bag, less_than):
+        products = bag.getProducts()
+        sum_product = 0
+        for prod, quantity in products:
+            sum_product += quantity
+        return sum_product < less_than
 
-    def createTimeRule(self, ti, t2):
-        pass
+    def createCategoryRule(self, category, less_than, bigger_than):
+        f = lambda bag: self.categoryRuleHelper(bag, category, less_than) and not self.categoryRuleHelper(bag, category, bigger_than)
+        return f
 
+    def categoryRuleHelper(self, bag, category, less_than):
+        products = bag.getProducts()
+        sum_product = 0
+        for prod, quantity in products:
+            if prod.getProductCategory() == category:
+                sum_product += quantity
+        return sum_product < less_than
 
+    def createTimeRule(self, time_from, time_to):
+        f = lambda bag: self.timeRuleHelper(time_from) and not self.timeRuleHelper(time_to)
+        return f
 
-
-    # f = lambda bag:
-    #   return Rule()
-    #def ageLessThan(self, username):
-    #    manag :UserManagment = UserManagment.getInstance()
-    #  manag.getActiveUser(username)./#
+    def timeRuleHelper(self, time_from):
+        return time_from < datetime.now()
