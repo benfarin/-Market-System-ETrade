@@ -44,7 +44,22 @@ class MemberManagment(UserManagment):
         return self.getActiveUser()
 
     def checkOnlineUserFromUser(self, userId):
-        return self.checkOnlineUser(userId)
+        return super().checkOnlineUser(userId)
+
+    def getMemberByName(self, memberName):
+        for member in super().getMembers().values():
+            if member.getMemberName() == memberName:
+                return member
+        raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
+
+    def getSystemManagers(self):
+        return super().getSystemManagers()
+
+    def removeFromActiveUsers(self, userId):
+        return super().removeFromActiveUsers(userId)
+
+    def removeFromMembers(self,userId):
+        return super().removeFromMembers(userId)
 
     def createStore(self, storeName, userID, bank, address):
         try:
@@ -68,6 +83,17 @@ class MemberManagment(UserManagment):
             for user in self.getActiveUser().values():
                 user.getCart().removeBag(storeId)
 
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def recreateStore(self, founderId, storeId):
+        try:
+            self.checkOnlineUser(founderId)
+            member = self.getMembers().get(founderId)
+            if member is None:
+                raise NoSuchMemberException("user: " + str(founderId) + "is not a member")
+            member.recreateStore(storeId)
             return True
         except Exception as e:
             raise Exception(e)
@@ -96,3 +122,15 @@ class MemberManagment(UserManagment):
             raise NoSuchMemberException("user: " + str(userID) + "is not a member")
         return member.getMemberTransactions()
 
+
+
+# NOT IMPORTANT FUNCTION ---
+    def change_password(self,userID,old_password,new_password):
+        try:
+            self.checkOnlineUser(userID)
+            member = self.getMembers().get(userID)
+            if member is None:
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.change_password(old_password, new_password)
+        except Exception as e:
+            raise Exception(e)
