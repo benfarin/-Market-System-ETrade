@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="dc80bcb2-2aa3-44a9-aefe-d1c7a4757212" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/DiscountPackage/DiscountManagement.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/DiscountPackage/DiscountManagement.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/Managment/UserManagment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Managment/UserManagment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/Rules/ruleCreator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/Rules/ruleCreator.py" afterDir="false" />
+=======
     <list default="true" id="b47573d3-9cf3-4d66-a37b-ccb4b4b677dd" name="Changes" comment="all pages for funvtionality of version 1 done!">
       <change beforePath="$PROJECT_DIR$/.idea/WorkshopSoftwareEngineering.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
@@ -29,6 +36,7 @@
       <change beforePath="$PROJECT_DIR$/WebAPI/mysite/templates/form.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebAPI/mysite/templates/form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAPI/mysite/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebAPI/mysite/templates/navbar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAPI/mysite/templates/store.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebAPI/mysite/templates/store.html" afterDir="false" />
+>>>>>>> 81c7e87da1dc72169276c2ecae3b7f8760e4abc4
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

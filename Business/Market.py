@@ -386,7 +386,7 @@ class Market:
             raise Exception(e)
 
     def updateCart(self, cart1, cart2):
-        return cart1.updateCart(cart2)
+        cart1.updateCart(cart2)
 
     def hasRole(self, user):
         for store in self.__stores.values():

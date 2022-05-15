@@ -41,8 +41,12 @@ class Cart:
             raise NoSuchStoreException("storeId does not exists, can't clean the bag from the cart")
 
     def updateCart(self, cart):
-        for bag in cart.__bags.keys():
-            bag.updateBag(bag)
+        for storeId in cart.getAllBags().keys():
+            if storeId in self.__bags.keys():
+                self.__bags[storeId] = self.__bags[storeId].addBag(cart.getAllBags()[storeId])
+            else:
+                self.__bags[storeId] = cart.getAllBags()[storeId]
+
 
 
     def updateBag(self, bag):

@@ -18,21 +18,21 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                               "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         cls.__guestId1 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register(cls.__guestId1, "testUser1", "1234", "0540000000", 123, [], "Israel", "Beer Sheva",
+        cls.proxy_user.register( "testUser1", "1234", "0540000000", 123, [], "Israel", "Beer Sheva",
                                 "Rager", 1,
                                 "testBank")
-        cls.user_id1 = cls.proxy_user.login_member("testUser1", "1234").getData().getUserID()
+        cls.user_id1 = cls.proxy_user.login_member(cls.__guestId1,"testUser1", "1234").getData().getUserID()
 
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
         cls.store_id1 = cls.proxy_user.open_store("testStore1", cls.user_id1, 123, None, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
         cls.product_id = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct1", 10,
-                                                               "testCategory", ["test"]).getData().getProductId()
+                                                               "testCategory",20 ,["test"]).getData().getProductId()
         cls.product_id_2 = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct2", 100,
-                                                                 "testCategory1", ["test"]).getData().getProductId()
+                                                                 "testCategory1",17, ["test"]).getData().getProductId()
         cls.product_id_3 = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct3", 20,
-                                                                 "testCategory", ["test"]).getData().getProductId()
+                                                                 "testCategory",15, ["test"]).getData().getProductId()
         cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id, 100)
         cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id_2, 100)
         cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id_3, 100)

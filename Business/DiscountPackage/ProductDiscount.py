@@ -35,7 +35,7 @@ class ProductDiscount:
         return self.__discountCalc.max(additional_DiscountCal)
 
     def add(self, discount_calc_2):
-        return self.__discountCalc.add(discount_calc_2)
+        return self.__discountCalc.adxd(discount_calc_2)
 
 
 

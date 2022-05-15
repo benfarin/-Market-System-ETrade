@@ -27,9 +27,9 @@ class MarketTests(unittest.TestCase):
         self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1, self.__address2).getStoreId()
 
 
-        self.__product1 = Product(1,0, "tara milk 5%", 5.5, "dairy", ["tara", "dairy drink", "5%"])
-        self.__product2 = Product(2,0, "shoko", 6.90, "dairy", ["sugar", "chocolate", "dairy drink"])
-        self.__product3 = Product(3,0, "dress", 199.99, "cloth", ["short sleeve", "red"])
+        self.__product1 = Product(1,0, "tara milk 5%", 5.5, "dairy", 10 ,["tara", "dairy drink", "5%"])
+        self.__product2 = Product(2,0, "shoko", 6.90, "dairy",15, ["sugar", "chocolate", "dairy drink"])
+        self.__product3 = Product(3,0, "dress", 199.99, "cloth",7, ["short sleeve", "red"])
 
         # store1: founder: member1, owners: [member1], managers: []
         # store2: founder: member2, owners: [member2], managers: []

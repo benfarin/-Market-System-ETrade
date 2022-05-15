@@ -60,6 +60,7 @@ class Bag:
                 self.__products[product] += bag.getProducts()[product]
             else:
                 self.__products[product] = bag.getProducts()[product]
+        return True
 
     def getProductQuantity(self, product):
         return self.__products[product]
@@ -80,6 +81,11 @@ class Bag:
 
     def applyDiscount(self):
         discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        if discounts is None:
+            newPrices = {}
+            for product in self.__products:
+                newPrices[product] = product.getProductPrice() * self.__products[product]
+            return newPrices
         f = lambda discount: discount.getRule().check(self)
         available_discount_values = []
         available_discount = []
