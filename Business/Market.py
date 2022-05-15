@@ -378,6 +378,14 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def updateProductWeight(self, user, storeId, productID, newWeight):
+        try:
+            self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+
     def hasRole(self, user):
         for store in self.__stores.values():
             if store.hasRole(user):

@@ -17,11 +17,11 @@ class MarketProxyBridge:
     def check_access(self) -> bool:
         return self._real_subject is None
 
-    def add_product_to_store(self, store_id, user_id, name, price, category, key_words):
+    def add_product_to_store(self, store_id, user_id, name, price, category, weight, key_words):
         if self.check_access():
             return True
         else:
-            return self._real_subject.add_product_to_store(store_id, user_id, name, price, category, key_words)
+            return self._real_subject.add_product_to_store(store_id, user_id, name, price, category, weight, key_words)
 
     def remove_product_from_store(self, store_id, user_id, prod_id):
         if self.check_access():
@@ -108,6 +108,11 @@ class MarketProxyBridge:
         if self.check_access():
             return True
         return self._real_subject.edit_product_category(user_id, store_id, prod_id, new_category)
+
+    def edit_product_Weight(self, user_id, store_id, prod_id, new_weight):
+        if self.check_access():
+            return True
+        return self._real_subject.edit_product_Weight(user_id, store_id, prod_id, new_weight)
 
     def get_cart(self, user_id):
         if self.check_access():

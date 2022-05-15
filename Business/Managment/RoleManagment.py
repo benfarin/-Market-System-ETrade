@@ -189,6 +189,17 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def updateProductWeight(self, userID, storeID, productID, newWeight):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userID)
+            member = self.__memberManagement.getMembersFromUser().get(userID)
+            if userID not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.updateProductWeight(storeID, productID, newWeight)
+        except Exception as e:
+            raise Exception(e)
+
+
     def getRolesInformation(self, storeID, userID):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
@@ -209,7 +220,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def createProduct(self, userId, storeId, name, price, category, keywords):
+    def createProduct(self, userId, storeId, name, price, category, weight, keywords):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -218,11 +229,13 @@ class RoleManagment:
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if name is None:
             raise Exception("product name cannot be None")
-        if price <= 0:
-            raise Exception("product cannot have negative price")
+        if price < 0:
+            raise Exception("product cannot have a non positive price")
         if category is None:
             raise Exception("product category cannot be None")
-        return Product(self.__getProductId(), storeId, name, price, category, keywords)
+        if weight < 0:
+            raise Exception("product cannot have a non positive weight")
+        return Product(self.__getProductId(), storeId, name, price, category, weight, keywords)
 
     def getUserStores(self, userId):
         self.__memberManagement.checkOnlineUserFromUser(userId)

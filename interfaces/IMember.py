@@ -57,6 +57,9 @@ class IMember(Interface):
     def updateProductCategory(self, storeID, productID, newCategory):
         pass
 
+    def updateProductWeight(storeID, productID, newWeight):
+        pass
+
     def getRolesInformation(self, storeID):
         pass
 

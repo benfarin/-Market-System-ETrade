@@ -42,11 +42,11 @@ class UseCaseAddProduct(unittest.TestCase):
     def test_addProductPositive(self):
         # store_id, user_id, name, price, category, key_words
         try:
-            self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10, "testCategory",
+            product = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10, "testCategory", 15,
                                                    ["test"])
-            self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct2", 100, "testCategory",
+            self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct2", 100, "testCategory", 10,
                                                    ["test"])
-            self.proxy_market.add_product_to_store(self.store_id3, self.user_id1, "testProduct3", 100, "testCategory",
+            self.proxy_market.add_product_to_store(self.store_id3, self.user_id1, "testProduct3", 100, "testCategory", 12,
                                                    ["test"])
             self.assertTrue(True)
         except Exception as e:

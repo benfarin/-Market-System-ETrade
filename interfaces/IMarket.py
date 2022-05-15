@@ -66,6 +66,9 @@ class IMarket(Interface):
     def updateProductPrice(self, storeID, user, productId, mewPrice):
         pass
 
+    def updateProductWeight(self, user, storeID, productID, newWeight):
+        pass
+
     def addProductQuantityToStore(self, storeID, user, productId, quantity):
         pass
 

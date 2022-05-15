@@ -257,6 +257,18 @@ class Store:
                 self.__products.get(productId).setProductCategory(newCategory)
                 return self.__products.get(productId)
 
+    def updateProductWeight(self, user, productID, newWeight):
+        try:
+            self.__checkPermissions_ChangeStock(user)
+            if self.__products.get(productID) is None:
+                raise ProductException("cannot update to a product who doesn't exist, in store: " + self.__name)
+        except Exception as e:
+            raise Exception(e)
+        else:
+            with self.__productsLock:
+                self.__products.get(productID).setProductWeight(newWeight)
+                return self.__products.get(productID)
+
     def __checkPermissions_ChangeStock(self, user):
         permissions = self.__permissions.get(user)
         if permissions is None:

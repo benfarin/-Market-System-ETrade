@@ -200,6 +200,13 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def updateProductWeight(self, storeID, productID, newWeight):
+        try:
+            return self.__market.updateProductWeight(self, storeID, productID, newWeight)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def getRolesInformation(self, storeID):
         try:
             return self.__market.getRolesInformation(storeID, self)

@@ -108,9 +108,9 @@ class RoleService:
             logging.error("Failed to set discount permission to user " + str(assigneeName))
             return Response(e.__str__())
 
-    def addProductToStore(self, storeID, userID, name, price, category, keywords):
+    def addProductToStore(self, storeID, userID, name, price, category, weight, keywords):
         try:
-            product = self.__roleManagment.createProduct(userID, storeID, name, price, category, keywords)
+            product = self.__roleManagment.createProduct(userID, storeID, name, price, category, weight, keywords)
             self.__roleManagment.addProductToStore(storeID, userID, product)
             logging.info("success to add product " + name + "to store " + str(storeID))
             return Response(ProductDTO(product))
@@ -173,7 +173,7 @@ class RoleService:
 
     def updateProductName(self, userID, storeID, productID, newName):
         try:
-            product = self.__roleManagment.updateProductPrice(storeID, userID, productID, newName)
+            product = self.__roleManagment.updateProductName(storeID, userID, productID, newName)
             logging.info("success to update product " + str(productID) + "to name " + newName)
             return Response(ProductDTO(product))
         except Exception as e:
@@ -182,11 +182,20 @@ class RoleService:
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
         try:
-            product = self.__roleManagment.updateProductPrice(storeID, userID, productID, newCategory)
+            product = self.__roleManagment.updateProductCategory(storeID, userID, productID, newCategory)
             logging.info("success to update product " + str(productID) + "to category " + newCategory)
             return Response(ProductDTO(product))
         except Exception as e:
             logging.error("Failed to update category for product " + str(productID) + "in store " + str(storeID))
+            return Response(e.__str__())
+
+    def updateProductWeight(self, userID, storeID, productID, newWeight):
+        try:
+            product = self.__roleManagment.updateProductWeight(storeID, userID, productID, newWeight)
+            logging.info("success to update product " + str(productID) + "to weight " + str(newWeight))
+            return Response(ProductDTO(product))
+        except Exception as e:
+            logging.error("Failed to update weight for product " + str(productID) + "in store " + str(storeID))
             return Response(e.__str__())
 
     def getStore(self, storeId):

@@ -18,13 +18,14 @@ class UseCaseEditProduct(unittest.TestCase):
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
-        self.__guestId1 = self.proxy_user.login_guest().getData().getUserId()
+        self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register(self.__guestId1, "testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
         self.user_id = self.proxy_user.login_member("testUser", "1234").getData().getUserID()
         self.store_id = self.proxy_user.open_store("testStore", self.user_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
         # store_id, user_id, name, price, category, key_words
-        self.prod_id = self.proxy_market.add_product_to_store(self.store_id, self.user_id, "testProduct", 10, "testCategory", ["testKeyWord"]).getData()
+        self.prod_id = self.proxy_market.add_product_to_store(self.store_id, self.user_id, "testProduct", 10,
+                                                              "testCategory", 10,  ["testKeyWord"]).getData()
 
     def test_editProductPricePositive(self):
         # store_id, user_id, prod_id, new_price
@@ -46,6 +47,13 @@ class UseCaseEditProduct(unittest.TestCase):
             self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id.getProductId(),
                                                     "newCategory")
             self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+    def test_editProductWeightPositive(self):
+        try:
+            self.proxy_market.edit_product_Weight(self.user_id, self.store_id, self.prod_id.getProductId(), 20)
+            print(self.assertTrue(self.prod_id.getProductWeight()))
         except:
             self.assertTrue(False)
 
