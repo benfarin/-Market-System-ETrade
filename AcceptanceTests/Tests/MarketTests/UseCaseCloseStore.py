@@ -19,7 +19,7 @@ class UseCaseCloseStore(unittest.TestCase):
         self.proxy_user.register("testUser", "1243", "0540000000", 123, [], "Israel", "Beer Sheva",
                                                 "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.user_id = self.proxy_user.login_member("testUser", "1243").getData().getMemberId()
+        self.user_id = self.proxy_user.login_member("testUser", "1243").getData().getUserID()
         self.store_id = self.proxy_user.open_store("testStore", self.user_id, 123, None, "Israel", "Beer Sheva",
                                                    "Rager", 1, 00000).getData().getStoreId()
 

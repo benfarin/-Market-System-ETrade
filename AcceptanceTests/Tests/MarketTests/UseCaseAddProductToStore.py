@@ -18,7 +18,7 @@ class UseCaseAddProduct(unittest.TestCase):
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         cls.proxy_user.register("testUser", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
-        cls.user_id = cls.proxy_user.login_member("testUser", "1234").getData().getMemberId()
+        cls.user_id = cls.proxy_user.login_member("testUser", "1234").getData().getUserID()
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
         cls.store_id = cls.proxy_user.open_store("testStore", cls.user_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
 

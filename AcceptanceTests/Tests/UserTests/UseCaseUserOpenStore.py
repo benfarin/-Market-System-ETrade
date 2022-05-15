@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
                                           "Ben Gurion", 1, 1)
         self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                                 "Ben Gurion", 0, "HaPoalim")
-        self.user_id = self.user_proxy.login_member("user1", "1234").getData().getMemberId()
+        self.user_id = self.user_proxy.login_member("user1", "1234").getData().getUserID()
 
     def test_open_store_positive1(self):
         self.assertEqual(self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",

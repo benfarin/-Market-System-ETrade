@@ -40,6 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+]
+
+CRISPY_TEMPLATE_PACK = 'uni_form'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'Service.DTO.GuestDTO.GuestDTO',
+    'Service.DTO.MemberDTO.MemberDTO',
 ]
 
 MIDDLEWARE = [

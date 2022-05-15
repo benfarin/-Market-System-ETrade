@@ -393,3 +393,17 @@ def permissions_page(request, slug):
     }
     return render(request, "permissions.html", context)
 
+def remove_product_from_cart(request, slug):
+    answer = user_service.removeProductFromCart(user.getUserID(), 0, int(slug))
+    if not answer.isError():
+        return HttpResponseRedirect("/cart/")
+    messages.warning(request, answer.getError())
+
+
+def close_store(request, slug):
+    answer = member_service.removeStore(int(slug), user.getUserID())
+    if not answer.isError():
+        return HttpResponseRedirect("/my_stores/")
+    messages.warning(request, answer.getError())
+
+

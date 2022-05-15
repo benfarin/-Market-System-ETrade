@@ -20,8 +20,8 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
         cls.proxy_user.register("testUser", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
         cls.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        cls.owner_id = cls.proxy_user.login_member("testUser", "1234").getData().getMemberId()
-        cls.manager_id = cls.proxy_user.login_member("testUser2", "4321").getData().getMemberId()
+        cls.owner_id = cls.proxy_user.login_member("testUser", "1234").getData().getUserID()
+        cls.manager_id = cls.proxy_user.login_member("testUser2", "4321").getData().getUserID()
         cls.store_id = cls.proxy_user.open_store("testStore", cls.owner_id, 123, 2, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
 
     def test_AppointStoreOwnerPositive(self):

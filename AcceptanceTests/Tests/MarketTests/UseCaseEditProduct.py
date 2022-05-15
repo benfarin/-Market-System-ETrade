@@ -20,7 +20,7 @@ class UseCaseEditProduct(unittest.TestCase):
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.proxy_user.register("testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.user_id = self.proxy_user.login_member("testUser", "1234").getData().getMemberId()
+        self.user_id = self.proxy_user.login_member("testUser", "1234").getData().getUserID()
         self.store_id = self.proxy_user.open_store("testStore", self.user_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
         # store_id, user_id, name, price, category, key_words
         self.prod_id = self.proxy_market.add_product_to_store(self.store_id, self.user_id, "testProduct", 10, "testCategory", ["testKeyWord"]).getData()

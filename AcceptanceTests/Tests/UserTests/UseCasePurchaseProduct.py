@@ -17,7 +17,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                           "Ben Gurion", 1, 1)
         cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                                 "Ben Gurion", 0, "HaPoalim")
-        cls.user_id = cls.user_proxy.login_member("user1", "1234").getData().getMemberId()
+        cls.user_id = cls.user_proxy.login_member("user1", "1234").getData().getUserID()
         cls.store_id = cls.user_proxy.open_store("store", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                    0, "000000").getData().getStoreId()
         cls.product1 = cls.market_proxy.add_product_to_store(cls.store_id, cls.user_id, "Product", 500,

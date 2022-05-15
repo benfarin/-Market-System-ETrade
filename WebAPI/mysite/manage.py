@@ -43,7 +43,7 @@ def initialize_system():
     store2: StoreDTO = member_service.createStore("o2", user1.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
     computer: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.getUserID(), "Computer", 3000,
-                                                          "Electric Devices", []).getData()
+                                                          "Electric Devices", ["Electric Device", "Computer", "Check"]).getData()
     role_service.addProductQuantityToStore(store1.getStoreId(), user1.getUserID(), computer.getProductId(), 1000)
     camera: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.getUserID(), "Camera", 1000,
                                                         "Electric Devices", []).getData()
@@ -57,6 +57,12 @@ def initialize_system():
     user: MemberDTO = user_service.memberLogin("bar", "1234").getData()
     store3: StoreDTO = member_service.createStore("b1", user.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
+    cola: ProductDTO = role_service.addProductToStore(store3.getStoreId(), user.getUserID(), "Cola", 15,
+                                                          "Drinks", []).getData()
+    role_service.addProductQuantityToStore(store3.getStoreId(), user.getUserID(), cola.getProductId(), 2000)
+    orange_juice: ProductDTO = role_service.addProductToStore(store3.getStoreId(), user.getUserID(), "Orange Juice", 11,
+                                                          "Drinks", []).getData()
+    role_service.addProductQuantityToStore(store3.getStoreId(), user.getUserID(), orange_juice.getProductId(), 3000)
     store4: StoreDTO = member_service.createStore("b2", user.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                   1).getData()
     member_service.logoutMember("bar")

@@ -9,8 +9,9 @@
                         <h5 class="card-title">{{ bag.getStoreName }}</h5>
                         {% for product in bag.getAllProductsAsList %}
                             <p class="card-text">{{ product.getProductName }}</p>
+                            <a href="{{ product.getProductId }}/remove_product/" class="btn btn-danger">Remove From Cart</a>
                         {% endfor %}
-                        <a href="/store/{{ store.getStoreId }}/" class="btn btn-primary">Go To Product</a>
+
                     </div>
                 </div>
         {% endfor %}

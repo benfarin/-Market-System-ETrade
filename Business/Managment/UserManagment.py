@@ -74,7 +74,7 @@ class UserManagment(object):
             # if icart is not None:
             #       member.setICart(icart)
             return True
-        raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
+        raise MemberAllReadyLoggedIn("user: " + userName + " is all ready loggedIn")
 
     def memberLogin(self, userName, password):  # Tested
         try:
