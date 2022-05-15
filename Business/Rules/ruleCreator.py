@@ -1,4 +1,3 @@
-import DateTime
 
 from Business.Rules.Rule import Rule
 from Business.Managment.UserManagment import UserManagment
@@ -9,7 +8,7 @@ from datetime import datetime
 class ruleCreator:
 
     def createProductWeightRule(self, pid, less_than, bigger_than):
-<<<<<<< HEAD
+
         f = lambda bag: self.weightHelper(pid, less_than, bag) and not self.weightHelper(pid, bigger_than, bag)
         return f
 
@@ -20,19 +19,9 @@ class ruleCreator:
             if prod.getProductId() == pid:
                 sum_product_weight += prod.getProductWeight() * quantity
         return sum_product_weight < less_than
-=======
-        # f  = lambda bag :
-        pass
 
-    def weightHelper(self,less_than, bigger_than, bag :Bag):
-        # products = bag.getProducts()
-        # prod_to_return = []
-        # for  prod, quantityu in products :
-        #     if  prod
-        #     prod_to_return.append()
-        pass
 
->>>>>>> 09dfceea018f3651974c51ca8d302884a3382ad9
+
 
     def createProductRule(self, pid, less_than, bigger_than):
         f = lambda bag: self.productRuleHelper(bag, less_than, pid) and not self.productRuleHelper(bag, bigger_than,
