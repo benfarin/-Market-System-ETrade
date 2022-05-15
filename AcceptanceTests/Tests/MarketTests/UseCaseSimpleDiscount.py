@@ -45,7 +45,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
-        self.assertTrue(990, userTransaction.getData().getTotalAmount())
+        self.assertEqual(990, userTransaction.getData().getTotalAmount())
 
     def test_addSimpleDiscountCategory(self):
         self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "category", "simple", 0.1, "testCategory",
@@ -56,7 +56,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_3, 5)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
-        self.assertTrue(180, userTransaction.getData().getTotalAmount())
+        self.assertEqual(1180, userTransaction.getData().getTotalAmount())
 
     def test_addSimpleDiscountProduct(self):
         self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "product", "simple", 0.1, None,
@@ -67,7 +67,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_3, 5)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
-        self.assertTrue(90, userTransaction.getData().getTotalAmount())
+        self.assertEqual(90, userTransaction.getData().getTotalAmount())
 
 
 if __name__ == '__main__':

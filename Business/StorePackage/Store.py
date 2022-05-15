@@ -530,3 +530,43 @@ class Store:
         discount2 = predi.getSingleDiscountByID(self.__id, dId2)
         predi.addDiscount(self.getStoreId(), discount1.conditionMax(discount2))
 
+    def addConditionDiscountXor(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionXor(discount2))
+
+    def addConditionDiscountAnd(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionAnd(discount2))
+
+    def addConditionDiscountOr(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionOr(discount2))
+
+

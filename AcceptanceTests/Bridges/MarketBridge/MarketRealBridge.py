@@ -98,6 +98,15 @@ class MarketRealBridge:
     def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
         return self._roleService.addConditionDiscountMax(userId, storeId, dId1, dId2)
 
+    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
+        return self._roleService.addConditionDiscountXor(userId, storeId, dId1, dId2)
+
+    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
+        return self._roleService.addConditionDiscountAnd(userId, storeId, dId1, dId2)
+
+    def addConditionDiscountOr(self, userId, storeId, dId1, dId2):
+        return self._roleService.addConditionDiscountOr(userId, storeId, dId1, dId2)
+
 
     # def define_purchase(self, store_id, purchase):
     #     pass

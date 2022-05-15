@@ -3,7 +3,7 @@ from datetime import datetime
 
 from Business.DiscountPackage.DiscountInfo import DiscountInfo
 from Business.DiscountPackage.DiscountManagement import DiscountManagement
-from Business.DiscountRules import DiscountRules
+from Business.DiscountRules import DiscountRules, ruleType
 from Business.DiscountPackage.Discount import Discount
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
@@ -402,22 +402,79 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    # def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
-    #     try:
-    #         self.__memberManagement.checkOnlineUserFromUser(userId)
-    #         if self.__discountManager.isComplex(existsDiscount):
-    #             raise ComplexDiscountException("Can't update this type of discount!")
-    #         updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
-    #         #StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateSimpleDiscountAsync",
-    #                                                           #username, storeId, discountType, precent, category, productId,
-    #                                                           #discountId);
-    #
-    #         discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
-    #         self.__discountManager.removeDiscount(updatedDiscount); # check if id or object of discount
-    #         self.__discountManager.addDiscount(discountData);
-    #         return updatedDiscount
-    #     except Exception as e:
-    #         raise Exception(e)
+    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountCalc = member.addConditionDiscountXor(storeId, dId1, dId2)
+            discountId = self.__getDiscountId()
+            discount = Discount(discountId, discountCalc)
+            member.addDiscount(userId, storeId, discount)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountCalc = member.addConditionDiscountAnd(storeId, dId1, dId2)
+            discountId = self.__getDiscountId()
+            discount = Discount(discountId, discountCalc)
+            member.addDiscount(userId, storeId, discount)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountOr(self, userId, storeId, dId1, dId2):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountCalc = member.addConditionDiscountOr(storeId, dId1, dId2)
+            discountId = self.__getDiscountId()
+            discount = Discount(discountId, discountCalc)
+            member.addDiscount(userId, storeId, discount)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
+
+
+    def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            if self.__discountManager.isComplex(existsDiscount):
+                raise ComplexDiscountException("Can't update this type of discount!")
+            updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
+            discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
+            self.__discountManager.removeDiscount(updatedDiscount) # check if id or object of discount
+            self.__discountManager.addDiscount(discountData)
+            return updatedDiscount
+        except Exception as e:
+            raise Exception(e)
+
+
 
     def __getProductId(self):
         with self.__productId_lock:

@@ -107,6 +107,8 @@ class Bag:
             pId = product.getProductId()
             if pId in discount_of_products.getProducts():
                 newPrices[product] = discount_of_products.getProducts()[pId]
+            else:
+                newPrices[product] = product.getProductPrice()*self.__products[product]
         return newPrices
 
 

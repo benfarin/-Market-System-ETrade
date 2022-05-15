@@ -87,5 +87,13 @@ class IMember(Interface):
     def hasRole(self):
         pass
 
+    def addConditionDiscountOr(self, storeId, dId1, dId2):
+        pass
+
+    def addConditionDiscountAnd(self, storeId, dId1, dId2):
+        pass
+
+    def addConditionDiscountXor(self, storeId, dId1, dId2):
+        pass
 
 

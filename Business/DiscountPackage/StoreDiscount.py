@@ -20,7 +20,7 @@ class StoreDiscount:
         products: Dict[Product, int] = bag.getProducts()
         for prod, quantity in products.items():
             discount += quantity * prod.getProductPrice() * percent
-            to_return.addProduct(prod.getProductId(), (1 - percent) * prod.getProductPrice())
+            to_return.addProduct(prod.getProductId(), quantity*(1 - percent) * prod.getProductPrice())
         to_return.increaseDiscount(discount)
         return to_return
 

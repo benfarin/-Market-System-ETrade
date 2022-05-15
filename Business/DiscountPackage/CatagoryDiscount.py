@@ -23,7 +23,7 @@ class CataoryDiscount:
         for prod, quantity in products.items():
             if prod.getProductCategory() == category:
                 discount += quantity * prod.getProductPrice() * percent
-                to_return.addProduct(prod.getProductId(), (1 - percent) * prod.getProductPrice())
+                to_return.addProduct(prod.getProductId(), quantity*(1 - percent) * prod.getProductPrice())
             else:
                 to_return.addProduct(prod.getProductId(), prod.getProductPrice())
             to_return.setDiscount(discount)

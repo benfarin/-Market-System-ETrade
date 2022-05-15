@@ -17,9 +17,10 @@ class storePredicateManager:
         if storePredicateManager.__instance is None:
             storePredicateManager.__instance = self
 
+
     def addDiscount(self, id_store, discount):
         if self.__discount_store.get(id_store) is not None:
-            self.__discount_store.get(id_store).append(discount)
+            self.__discount_store[id_store] += 1*[discount]
         else:
             self.__discount_store[id_store] = [discount]
 

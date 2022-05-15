@@ -157,6 +157,21 @@ class MarketProxyBridge:
             return True
         return self._real_subject.addConditionDiscountMax(userId, storeId, dId1, dId2)
 
+    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addConditionDiscountXor(userId, storeId, dId1, dId2)
+
+    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addConditionDiscountAnd(userId, storeId, dId1, dId2)
+
+    def addConditionDiscountOr(self, userId, storeId, dId1, dId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addConditionDiscountOr(userId, storeId, dId1, dId2)
+
     # def define_purchase(self, store_id, purchase):
     #     if self._real_subject is None:
     #         if purchase is None or store_id < 0:
