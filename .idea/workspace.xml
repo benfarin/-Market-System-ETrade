@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dc80bcb2-2aa3-44a9-aefe-d1c7a4757212" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_13_05_2022_11_03__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_13_05_2022_11_03__Default_Changelist_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_28__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_28__Default_Changelist_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/DiscountPackage/ConditionDiscount.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/DiscountPackage/ConditionDiscount.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Business/StorePackage/Predicates/requestNewSimpleDiscount.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/StorePackage/Predicates/requestNewSimpleDiscount.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Business/DiscountPackage/ProductDiscount.py" beforeDir="false" afterPath="$PROJECT_DIR$/Business/DiscountPackage/ProductDiscount.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
