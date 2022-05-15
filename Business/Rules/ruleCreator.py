@@ -7,14 +7,16 @@ class ruleCreator:
     # def createUserAgeRule(self, less_than, more_than):
 
     def createProductWeightRule(self, pid, less_than, bigger_than):
-        f  = lambda bag :
+        # f  = lambda bag :
+        pass
 
     def weightHelper(self,less_than, bigger_than, bag :Bag):
-        products = bag.getProducts()
-        prod_to_return = []
-        for  prod, quantityu in products :
-            if  prod
-            prod_to_return.append()
+        # products = bag.getProducts()
+        # prod_to_return = []
+        # for  prod, quantityu in products :
+        #     if  prod
+        #     prod_to_return.append()
+        pass
 
 
 

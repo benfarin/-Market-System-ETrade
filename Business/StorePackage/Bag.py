@@ -81,6 +81,11 @@ class Bag:
 
     def applyDiscount(self):
         discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        if discounts is None:
+            newPrices = {}
+            for product in self.__products:
+                newPrices[product] = product.getProductPrice() * self.__products[product]
+            return newPrices
         f = lambda discount: discount.getRule().check(self)
         available_discount_values = []
         available_discount = []

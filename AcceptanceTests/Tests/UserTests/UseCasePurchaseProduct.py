@@ -33,9 +33,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
         cls.product02 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-02", 150,
                                                               "Category", 9,["Test1", "Test2"]).getData().getProductId()
         cls.product1 = cls.market_proxy.add_product_to_store(cls.store_1, cls.user_id, "Product-1", 100,
-                                                             "Category", 10,["Test1", "Test2"]).getData().getProductId()
+                                                             "Category", 10, ["Test1", "Test2"]).getData().getProductId()
         cls.product2 = cls.market_proxy.add_product_to_store(cls.store_2, cls.user_id, "Product-2", 10,
-                                                             "Category", 11,["Test1", "Test2"]).getData().getProductId()
+                                                             "Category", 11, ["Test1", "Test2"]).getData().getProductId()
 
         cls.market_proxy.add_quantity_to_store(cls.store_0, cls.user_id, cls.product01, 100)
         cls.market_proxy.add_quantity_to_store(cls.store_0, cls.user_id, cls.product02, 100)
@@ -89,9 +89,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
 
     def test_two_user_trying_to_by_in_the_same_time(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.register(guest4_id, "user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, "HaPoalim")
-        member4_id = self.user_proxy.login_member("user3", "1234").getData().getUserID()
+        member4_id = self.user_proxy.login_member(guest4_id, "user3", "1234").getData().getUserID()
 
         self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product02, 2)
