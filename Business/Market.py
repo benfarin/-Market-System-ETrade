@@ -1,4 +1,4 @@
-gitimport uuid
+import uuid
 
 import zope
 
