@@ -16,12 +16,12 @@ class UserProxyBridge:
     def check_access(self):
         return self._real_subject is None
 
-    def register(self, oldUserId, username, password, phone, account_number, branch, country,
+    def register(self, username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code):
         if self.check_access():
             return True
         else:
-            return self._real_subject.register(oldUserId,username, password, phone, account_number, branch, country,
+            return self._real_subject.register(username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code)
 
     def login_guest(self):
@@ -30,11 +30,11 @@ class UserProxyBridge:
         else:
             return self._real_subject.login_guest()
 
-    def login_member(self, user_name, password):
+    def login_member(self, oldUserId, user_name, password):
         if self.check_access():
             return True
         else:
-            return self._real_subject.login_member(user_name, password)
+            return self._real_subject.login_member(oldUserId, user_name, password)
 
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         if self.check_access():

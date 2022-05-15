@@ -39,14 +39,17 @@ class MarketRealBridge:
     def get_cart_info(self, user_id):
         return self._userService.getCart(user_id)
 
-    def add_product_to_store(self, store_id, user_id, name, price, category, key_words):
-        return self._roleService.addProductToStore(store_id, user_id, name, price, category, key_words)
+    def add_product_to_store(self, store_id, user_id, name, price, category, weight, key_words):
+        return self._roleService.addProductToStore(store_id, user_id, name, price, category, weight, key_words)
 
     def remove_product_from_store(self, store_id, user_id, prod_id):
         return self._roleService.removeProductFromStore(store_id, user_id, prod_id)
 
     def edit_product_price(self, store_id, user_id, prod_id, new_price):
         return self._roleService.updateProductPrice(store_id, user_id, prod_id, new_price)
+
+    def edit_product_Weight(self, user_id, store_id, prod_id, new_weight):
+        return self._roleService.updateProductWeight(user_id, store_id, prod_id, new_weight)
 
     def appoint_store_owner(self, store_id, assigner_id, assignee_id):
         return self._roleService.appointOwnerToStore(store_id, assigner_id, assignee_id)
@@ -88,6 +91,12 @@ class MarketRealBridge:
                           value_less_than, value_grather_than, time_from, time_until):
         return self._roleService.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
                           value_less_than, value_grather_than, time_from, time_until)
+
+    def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
+        return self._roleService.addConditionDiscountAdd(userId, storeId, dId1, dId2)
+
+    def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
+        return self._roleService.addConditionDiscountMax(userId, storeId, dId1, dId2)
 
 
     # def define_purchase(self, store_id, purchase):

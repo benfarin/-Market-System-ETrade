@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content%}
+{% if usertype %}
+    <div style="text-align: center;"><h1>{{ title }}</h1></div>
+{% else %}
+    <div style="text-align: center;"><h1>{{ title }}</h1>
+        <div class="row">
+    {% for purchase in purchases %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ purchase.getPaymentId }}</h5>
+            </div>
+        </div>
+    {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

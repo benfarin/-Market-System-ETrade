@@ -42,7 +42,7 @@ class Bag:
                 return quantity
         raise ProductException("no such product in the Bag")
 
-    def updateProduct(self, productId, quantity):
+    def updateBag(self, productId, quantity):
         for product in self.__products.keys():
             if product.getProductId() == productId:
                 self.__products[product] += quantity
@@ -54,6 +54,12 @@ class Bag:
     def getProducts(self):
         return self.__products
 
+    def addBag(self, bag):
+        for product in bag.__products.keys():
+            if product in self.__products:
+                self.__products[product] += bag.getProducts()[product]
+            else:
+                self.__products[product] = bag.getProducts()[product]
 
     def getProductQuantity(self, product):
         return self.__products[product]

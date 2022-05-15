@@ -76,18 +76,14 @@ class UserManagment(object):
         self.__activeUsers.pop(guestID)
         return True
 
-    def memberSignUp(self, oldUserId, userName, password, phone, address, bank):  # Tested
+    def memberSignUp(self, userName, password, phone, address, bank):  # Tested
         if self.__isMemberExists(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[member.getUserID()] = member
-            member.setCart(self.__getUserCart(oldUserId))
-
-            self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
-            self.__guests.pop(oldUserId)       # we can delete the guest.
             return True
         raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
 
-    def memberLogin(self, userName, password):  # Tested
+    def memberLogin(self, oldUserId, userName, password):  # Tested
         try:
             system_manager: SystemManager = self.__systemManager.get(userName)
             member: Member = self.__isMemberExists(userName)
@@ -105,6 +101,12 @@ class UserManagment(object):
                     member.setLoggedIn(True)
                     member.setMemberCheck(True)
                     member.loginUpdates()
+
+                    member.updateCart(self.__getUserCart(oldUserId))
+
+                    self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
+                    self.__guests.pop(oldUserId)  # we can delete the guest.
+
                     return member
                 else:
                     raise PasswordException("password not good!")

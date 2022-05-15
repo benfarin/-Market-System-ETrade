@@ -4,6 +4,7 @@ from datetime import datetime
 from Business.DiscountPackage.DiscountInfo import DiscountInfo
 from Business.DiscountPackage.DiscountManagement import DiscountManagement
 from Business.DiscountRules import DiscountRules
+from Business.DiscountPackage.Discount import Discount
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
 from Business.Managment.MemberManagment import MemberManagment
@@ -188,6 +189,17 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def updateProductWeight(self, userID, storeID, productID, newWeight):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userID)
+            member = self.__memberManagement.getMembersFromUser().get(userID)
+            if userID not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userID) + "is not a member")
+            return member.updateProductWeight(storeID, productID, newWeight)
+        except Exception as e:
+            raise Exception(e)
+
+
     def getRolesInformation(self, storeID, userID):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
@@ -208,7 +220,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def createProduct(self, userId, storeId, name, price, category, keywords):
+    def createProduct(self, userId, storeId, name, price, category, weight, keywords):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -217,11 +229,13 @@ class RoleManagment:
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if name is None:
             raise Exception("product name cannot be None")
-        if price <= 0:
-            raise Exception("product cannot have negative price")
+        if price < 0:
+            raise Exception("product cannot have a non positive price")
         if category is None:
             raise Exception("product category cannot be None")
-        return Product(self.__getProductId(), storeId, name, price, category, keywords)
+        if weight < 0:
+            raise Exception("product cannot have a non positive weight")
+        return Product(self.__getProductId(), storeId, name, price, category, weight, keywords)
 
     def getUserStores(self, userId):
         self.__memberManagement.checkOnlineUserFromUser(userId)
@@ -330,7 +344,7 @@ class RoleManagment:
             self.__discountManager.addDiscount(discountInfo)
 
             member.addDiscount(storeId, discount)
-            return True
+            return discountId
 
         except Exception as e:
             raise Exception(e)
@@ -346,6 +360,44 @@ class RoleManagment:
 
             member.removeDiscount(storeId, discountId)
             return True
+
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountCalc = member.addConditionDiscountAdd(storeId, dId1, dId2)
+            discountId = self.__getDiscountId()
+            discount = Discount(discountId, discountCalc)
+            member.addDiscount(userId, storeId, discount)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountCalc = member.addConditionDiscountMax(storeId, dId1, dId2)
+            discountId = self.__getDiscountId()
+            discount = Discount(discountId, discountCalc)
+            member.addDiscount(userId, storeId, discount)
+
+            return discountId
 
         except Exception as e:
             raise Exception(e)

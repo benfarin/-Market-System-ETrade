@@ -63,6 +63,9 @@ class Member(User):
     def setCart(self, cart):
         self._cart = cart
 
+    def updateCart(self, cart):
+        return self.__market.updateCart(self._cart, cart)
+
     def isStoreExists(self, storeId):
         return self.__market.isStoreExists(storeId)
 
@@ -200,6 +203,13 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def updateProductWeight(self, storeID, productID, newWeight):
+        try:
+            return self.__market.updateProductWeight(self, storeID, productID, newWeight)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def getRolesInformation(self, storeID):
         try:
             return self.__market.getRolesInformation(storeID, self)
@@ -237,6 +247,20 @@ class Member(User):
     def removeDiscount(self, storeId, discountId):
         try:
             return self.__market.removeDiscount(storeId, self, discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountAdd(self, storeId, dId1, dId2):
+        try:
+            return self.__market.addConditionDiscountAdd(storeId, self, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountMax(self, storeId, dId1, dId2):
+        try:
+            return self.__market.addConditionDiscountMax(storeId, self, dId1, dId2)
         except Exception as e:
             raise Exception(e)
 

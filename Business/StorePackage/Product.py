@@ -9,12 +9,13 @@ from interfaces.IProduct import IProduct
 @zope.interface.implementer(IProduct)
 class Product:
 
-    def __init__(self, Id, storeId, name, price, category, keyword):
+    def __init__(self, Id, storeId, name, price, category, weight, keyword):
         self.__id = Id
         self.__storeId = storeId
         self.__name = name
         self.__price = price
         self.__category = category  # String
+        self.__weight = weight
         self.__keywords: List = keyword
 
     def getProductId(self):
@@ -32,6 +33,9 @@ class Product:
     def getProductCategory(self):
         return self.__category
 
+    def getProductWeight(self):
+        return self.__weight
+
     def getProductKeywords(self):
         return self.__keywords
 
@@ -43,6 +47,9 @@ class Product:
 
     def setProductCategory(self, category):
         self.__category = category
+
+    def setProductWeight(self, weight):
+        self.__weight = weight
 
     def addKeyWord(self, keyword):
         if keyword not in self.__keywords:
@@ -58,14 +65,3 @@ class Product:
             if keyw.lower() == keyword.lower():
                 return True
         return False
-
-    def printForEvents(self):
-        productStr = "\n\t\t\tid: " + str(self.__id)
-        productStr = "\n\t\t\tstore id: " + str(self.__storeId)
-        productStr += "\n\t\t\tname: " + self.__name
-        productStr += "\n\t\t\tprice: " + str(self.__price)
-        productStr += "\n\t\t\tcategory: " + self.__category
-        productStr += "\n\t\t\tkeywords: "
-        for keyword in self.__keywords:
-            productStr += "\n\t\t\t\t" + keyword
-        return productStr

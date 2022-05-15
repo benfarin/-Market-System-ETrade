@@ -257,6 +257,18 @@ class Store:
                 self.__products.get(productId).setProductCategory(newCategory)
                 return self.__products.get(productId)
 
+    def updateProductWeight(self, user, productID, newWeight):
+        try:
+            self.__checkPermissions_ChangeStock(user)
+            if self.__products.get(productID) is None:
+                raise ProductException("cannot update to a product who doesn't exist, in store: " + self.__name)
+        except Exception as e:
+            raise Exception(e)
+        else:
+            with self.__productsLock:
+                self.__products.get(productID).setProductWeight(newWeight)
+                return self.__products.get(productID)
+
     def __checkPermissions_ChangeStock(self, user):
         permissions = self.__permissions.get(user)
         if permissions is None:
@@ -492,5 +504,29 @@ class Store:
         predi :storePredicateManager = storePredicateManager.getInstance()
         predi.removeDiscount(self.getStoreId(), discountId)
 
+    def addConditionDiscountAdd(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
 
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionADD(discount2))
+
+    def addConditionDiscountMax(self, user, dId1, dId2):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        predi: storePredicateManager = storePredicateManager.getInstance()
+        discount1 = predi.getSingleDiscountByID(self.__id, dId1)
+        discount2 = predi.getSingleDiscountByID(self.__id, dId2)
+        predi.addDiscount(self.getStoreId(), discount1.conditionMax(discount2))
 

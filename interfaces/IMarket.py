@@ -66,6 +66,9 @@ class IMarket(Interface):
     def updateProductPrice(self, storeID, user, productId, mewPrice):
         pass
 
+    def updateProductWeight(self, user, storeID, productID, newWeight):
+        pass
+
     def addProductQuantityToStore(self, storeID, user, productId, quantity):
         pass
 
@@ -139,3 +142,11 @@ class IMarket(Interface):
     def removeDiscount(self, storeId, user, discountId):
         pass
 
+    def addConditionDiscountAdd(self, storeId, user, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(self, storeId, user, dId1, dId2):
+        pass
+
+    def updateCart(self, cart1, cart2):
+        pass

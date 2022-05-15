@@ -51,6 +51,9 @@ class IStore(Interface):
     def updateProductCategory(self, user, productId, newCategory):
         pass
 
+    def updateProductWeight(self, user, productID, newWeight):
+        pass
+
     def appointManagerToStore(self, assigner, assignee):
         pass
 
@@ -114,6 +117,12 @@ class IStore(Interface):
         pass
 
     def removeDiscount(self, user, discountId):
+        pass
+
+    def addConditionDiscountAdd(self, user, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(self, user, dId1, dId2):
         pass
 
 

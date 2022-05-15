@@ -378,6 +378,16 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def updateProductWeight(self, user, storeId, productID, newWeight):
+        try:
+            self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def updateCart(self, cart1, cart2):
+        return cart1.updateCart(cart2)
+
     def hasRole(self, user):
         for store in self.__stores.values():
             if store.hasRole(user):
@@ -429,6 +439,22 @@ class Market:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
             self.__stores.get(storeId).removeDiscount(user, discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountAdd(self, storeId, user, dId1, dId2):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountAdd(user, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountMax(self, storeId, user, dId1, dId2):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountMax(user, dId1, dId2)
         except Exception as e:
             raise Exception(e)
 

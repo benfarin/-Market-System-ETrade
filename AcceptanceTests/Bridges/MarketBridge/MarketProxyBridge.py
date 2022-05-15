@@ -17,11 +17,11 @@ class MarketProxyBridge:
     def check_access(self) -> bool:
         return self._real_subject is None
 
-    def add_product_to_store(self, store_id, user_id, name, price, category, key_words):
+    def add_product_to_store(self, store_id, user_id, name, price, category, weight, key_words):
         if self.check_access():
             return True
         else:
-            return self._real_subject.add_product_to_store(store_id, user_id, name, price, category, key_words)
+            return self._real_subject.add_product_to_store(store_id, user_id, name, price, category, weight, key_words)
 
     def remove_product_from_store(self, store_id, user_id, prod_id):
         if self.check_access():
@@ -109,6 +109,11 @@ class MarketProxyBridge:
             return True
         return self._real_subject.edit_product_category(user_id, store_id, prod_id, new_category)
 
+    def edit_product_Weight(self, user_id, store_id, prod_id, new_weight):
+        if self.check_access():
+            return True
+        return self._real_subject.edit_product_Weight(user_id, store_id, prod_id, new_weight)
+
     def get_cart(self, user_id):
         if self.check_access():
             return True
@@ -141,6 +146,16 @@ class MarketProxyBridge:
         return self._real_subject.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category,
                                                     productId,
                                                     value_less_than, value_grather_than, time_from, time_until)
+
+    def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addConditionDiscountAdd(userId, storeId, dId1, dId2)
+
+    def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addConditionDiscountMax(userId, storeId, dId1, dId2)
 
     # def define_purchase(self, store_id, purchase):
     #     if self._real_subject is None:

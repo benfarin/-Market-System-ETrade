@@ -10,6 +10,7 @@ class ProductDTO:
         self.__name = product.getProductName()
         self.__price = product.getProductPrice()
         self.__category = product.getProductCategory()  # String
+        self.__wight = product.getProductWeight()
         self.__keywords: List = product.getProductKeywords()
 
     def getProductId(self):
@@ -42,6 +43,9 @@ class ProductDTO:
     def setCatagory(self, catagory):
         self.__category = catagory
 
+    def setProductWeight(self, weight):
+        self.__wight = weight
+
     def setKeyWords(self, keywords):
         self.__keywords = keywords
 
@@ -50,6 +54,7 @@ class ProductDTO:
         toReturn += "\n\tname: " + self.__name
         toReturn += "\n\tprice: " + str(self.__price)
         toReturn += "\n\tcategory: " + str(self.__category)
+        toReturn += "\n\tweight: " + str(self.__wight)
         toReturn += "\n\tkeywords: "
         for keyword in self.__keywords:
             toReturn += "\n\t\t" + keyword
@@ -61,6 +66,7 @@ class ProductDTO:
         toReturn += "\n\t\t\t\t\t\tname: " + self.__name
         toReturn += "\n\t\t\t\t\t\tprice: " + str(self.__price)
         toReturn += "\n\t\t\t\t\t\tcategory: " + str(self.__category)
+        toReturn += "\n\t\t\t\t\t\tweight: " + str(self.__wight)
         toReturn += "\n\t\t\t\t\t\tkeywords: "
         for keyword in self.__keywords:
             toReturn += "\n\t\t\t\t\t\t\t" + keyword

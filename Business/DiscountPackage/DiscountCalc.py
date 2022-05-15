@@ -16,7 +16,7 @@ class DiscountCalc:
         f = lambda bag: self.maxDiscount(bag, additional_DiscountCal, self)
         return DiscountCalc(f)
 
-    def maxDiscount(self, bag: Bag, discount_calc_1: IDiscount, discount_calc_2: IDiscount):
+    def maxDiscount(self, bag: Bag, discount_calc_1, discount_calc_2):
         calc_1 = discount_calc_1.calcDiscount(bag)
         calc_2 = discount_calc_2.calcDiscount(bag)
         if calc_1.getDiscount() < calc_2.getDiscount():

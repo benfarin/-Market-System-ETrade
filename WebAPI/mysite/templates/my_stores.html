@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content%}
+{% if usertype %}
+    <div style="text-align: center;"><h1>{{ title }}</h1></div>
+{% else %}
+    <div style="text-align: center;"><h1>{{ title }}</h1>
+        <div class="row">
+    {% for store in stores %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ store.getStoreName }}</h5>
+                <a href="/store/{{ store.getStoreId }}/" class="btn btn-primary">Go To Store</a>
+            </div>
+        </div>
+    {% endfor %}
+        </div>
+        <a class="btn btn-primary" href="/addstore" role="button">Add New Store</a>
+    </div>
+{% endif %}
+
+{% endblock %}

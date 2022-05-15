@@ -57,6 +57,9 @@ class IMember(Interface):
     def updateProductCategory(self, storeID, productID, newCategory):
         pass
 
+    def updateProductWeight(storeID, productID, newWeight):
+        pass
+
     def getRolesInformation(self, storeID):
         pass
 
@@ -70,6 +73,15 @@ class IMember(Interface):
         pass
 
     def removeDiscount(self, storeId, discountId):
+        pass
+
+    def addConditionDiscountAdd(storeId, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(storeId, dId1, dId2):
+        pass
+
+    def updateCart(self, cart):
         pass
 
     def hasRole(self):

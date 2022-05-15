@@ -40,6 +40,10 @@ class Cart:
         else:
             raise NoSuchStoreException("storeId does not exists, can't clean the bag from the cart")
 
+    def updateCart(self, cart):
+        for bag in cart.__bags.keys():
+            bag.updateBag(bag)
+
 
     def updateBag(self, bag):
         if self.__bags.get(bag.getStoreId()) is not None:
