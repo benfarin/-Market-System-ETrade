@@ -51,7 +51,7 @@ class IStore(Interface):
     def updateProductCategory(self, user, productId, newCategory):
         pass
 
-    def updateProductWeight(user, productID, newWeight):
+    def updateProductWeight(self, user, productID, newWeight):
         pass
 
     def appointManagerToStore(self, assigner, assignee):

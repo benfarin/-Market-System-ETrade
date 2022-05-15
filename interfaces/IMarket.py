@@ -147,3 +147,6 @@ class IMarket(Interface):
 
     def addConditionDiscountMax(self, storeId, user, dId1, dId2):
         pass
+
+    def updateCart(self, cart1, cart2):
+        pass

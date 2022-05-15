@@ -17,9 +17,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
         cls.user_proxy.appoint_system_manager("user1", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
         cls.__guestId = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register(cls.__guestId, "user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
-        cls.user_id = cls.user_proxy.login_member("user1", "1234").getData().getUserID()
+        cls.user_id = cls.user_proxy.login_member(cls.__guestId, "user1", "1234").getData().getUserID()
 
         cls.store_0 = cls.user_proxy.open_store("s0", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                 0, "000000").getData().getStoreId()
@@ -60,9 +60,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(guest2_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(guest2_id, self.store_2, self.product2, 1)
 
-        self.user_proxy.register(guest2_id, "user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, "HaPoalim")
-        member2_id = self.user_proxy.login_member("user2", "1234").getData().getUserID()
+        member2_id = self.user_proxy.login_member(guest2_id, "user2", "1234").getData().getUserID()
 
         userTransaction = self.user_proxy.purchase_product(member2_id, 500, 20)
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())

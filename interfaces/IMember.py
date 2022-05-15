@@ -81,6 +81,9 @@ class IMember(Interface):
     def addConditionDiscountMax(storeId, dId1, dId2):
         pass
 
+    def updateCart(self, cart):
+        pass
+
     def hasRole(self):
         pass
 
