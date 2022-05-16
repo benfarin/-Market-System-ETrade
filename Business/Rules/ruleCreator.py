@@ -45,6 +45,7 @@ class ruleCreator:
         return sum_product_weight < less_than
 
 
+
     def createStoreTotalPriceLessThanRule(self, less_than, bigger_than):  # total price of store
         f = lambda bag: self.storeTotalPriceRuleHelper(bag, less_than) and not self.storeTotalPriceRuleHelper(bag,
                                                                                                               bigger_than)
