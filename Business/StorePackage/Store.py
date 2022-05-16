@@ -533,21 +533,22 @@ class Store:
         newDiscount = discount1.max(discount2)
         predi.addDiscount(self.getStoreId(), Discount(dId, newDiscount))
 
-    def addConditionDiscountXor(self, user, dId, pred1, pred2):
-        permissions = self.__permissions.get(user)
-        if permissions is None:
-            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
-            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
-                                      self.__name)
+    def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2):
+        pass
+        # permissions = self.__permissions.get(user)
+        # if permissions is None:
+        #     raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        # if not permissions.hasPermission_Discount():
+        #     raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+        #                               self.__name)
+        #
+        # predi: storePredicateManager = storePredicateManager.getInstance()
+        # discount1 = predi.getSingleDiscountByID(self.__id, dId1).getCalc()
+        # discount2 = predi.getSingleDiscountByID(self.__id, dId2).getCalc()
+        # newDiscount = discount1.xor(discount2)
+        # predi.addDiscount(self.getStoreId(), Discount(dId, newDiscount))
 
-        predi: storePredicateManager = storePredicateManager.getInstance()
-        discount1 = predi.getSingleDiscountByID(self.__id, dId1).getCalc()
-        discount2 = predi.getSingleDiscountByID(self.__id, dId2).getCalc()
-        newDiscount = discount1.xor(discount2)
-        predi.addDiscount(self.getStoreId(), Discount(dId, newDiscount))
-
-    def addConditionDiscountAnd(self, user, dId, pred1, pred2):
+    def addConditionDiscountAnd(self, user, discountId, dId, pred1, pred2):
         pass
         # permissions = self.__permissions.get(user)
         # if permissions is None:
@@ -562,7 +563,7 @@ class Store:
         # newDiscount = discount1.And(discount2)
         # predi.addDiscount(self.getStoreId(), Discount(dId, newDiscount))
 
-    def addConditionDiscountOr(self, user, dId, pred1, pred2):
+    def addConditionDiscountOr(self, user, discountId, dId, pred1, pred2):
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -571,14 +572,10 @@ class Store:
                                       self.__name)
 
         predi: storePredicateManager = storePredicateManager.getInstance()
-        discount1 :Discount = predi.getSingleDiscountByID(self.__id, dId).getCalc()
-        discountcalc = discount1.getCalc()
-        discount_rule = discount1.getRule()
-        condition_discount = ConditionDiscount(discountcalc, pred1, pred2)
-        #condition_discount.setRule(discount_rule)
-        condition_discount.setRule(pred1)
+        discount = predi.getSingleDiscountByID(self.__id, dId)
+        discountcalc = discount.getCalc()
+        discount_rule = discount.getRule()
+        condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionOR(pred2)
-        predi.removeDiscount(self.getStoreId(), discount1 )
+        predi.removeDiscount(self.getStoreId(), discount)
         predi.addDiscount(self.getStoreId(), condition_discount)
-
-

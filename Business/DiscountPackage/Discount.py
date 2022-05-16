@@ -20,6 +20,9 @@ class Discount:
         rule = Rule(f)
         return rule
 
+    def check(self, bag):
+        return True
+
     def getCalc(self):
         return self.__calc_discount
 

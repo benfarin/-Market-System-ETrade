@@ -6,10 +6,12 @@ from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts
 
 class ConditionDiscount(Discount):
 
-    def __init__(self, discountCalc):
+    def __init__(self, discountId, rule, discountCalc):
         f = lambda bag: True
-        self.__rule = Rule(f)
-        super().__init__(discountCalc)
+        self.__rule = f
+        if rule is not None:
+            self.__rule = rule
+        super().__init__(discountId, discountCalc)
 
     def setRule(self, rule):
         self.__rule = rule
@@ -17,6 +19,9 @@ class ConditionDiscount(Discount):
     def setDefaultRule(self):
         f = lambda bag: True
         self.__rule = Rule(f)
+
+    def check(self, bag):
+        return self.__rule(bag)
 
     def getRule(self):
         return self.__rule
@@ -45,10 +50,10 @@ class ConditionDiscount(Discount):
                 return cond2.acticateDiscount(bag)
 
     def conditionOR(self, second_rule):
-        condition_discount = ConditionDiscount(DiscountCalc(self.__calc_discount))
+        # condition_discount = ConditionDiscount(discountId, self.__rule, self.__calc_discount)
         orRule = self.__rule.OrRules(second_rule)
-        condition_discount.setRule(orRule)
-        return condition_discount
+        self.setRule(orRule)
+        return self
 
     def conditionAND(self, second_rule):
         condition_discount = ConditionDiscount(DiscountCalc(self.__calc_discount))

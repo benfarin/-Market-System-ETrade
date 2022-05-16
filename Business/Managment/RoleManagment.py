@@ -450,7 +450,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
+    def updateDiscount(self, existsDiscount, userId, store,ruleContext,discountPercentage, catagory, productId):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             if self.__discountManager.isComplex(existsDiscount):

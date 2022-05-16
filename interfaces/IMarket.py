@@ -151,11 +151,11 @@ class IMarket(Interface):
     def updateCart(self, cart1, cart2):
         pass
 
-    def addConditionDiscountOr(self, storeId, user, dId, pred1, pred2):
+    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
         pass
 
-    def addConditionDiscountAnd(self, storeId, user, dId, pred1, pred2):
+    def addConditionDiscountAnd(self, storeId, user, dId, discountId, pred1, pred2):
         pass
 
-    def addConditionDiscountXor(self, storeId, user, dId, pred1, pred2):
+    def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2):
         pass

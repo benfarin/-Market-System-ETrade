@@ -100,9 +100,9 @@ class UseCaseDiscount(unittest.TestCase):
                                             None, None, None, None, None).getData()
         dId2 = self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "category", "simple", 0.1,
                                                    "testCategory1", None, None, None, None, None).getData()
-        self.rule_creator : ruleCreator= ruleCreator.getInstance()
-        rule1 = self.rule_creator.createProductRule(self.product_id, 100, 11)
-        rule2 = self.rule_creator.createProductRule(self.product_id_2, 100, 11)
+        self.rule_creator : ruleCreator = ruleCreator.getInstance()
+        rule1 = self.rule_creator.createProductRule(self.product_id, 100, 9)
+        rule2 = self.rule_creator.createProductRule(self.product_id_2, 100, 9)
         #rule1 = self.proxy_market.createProductWeightRule(self.product_id2, 100, 9) #the new discount will apply only if the weight is bigger than 9 for pid2
         #rule2 = self.proxy_market.createProductWeightRule(self.product_id2,sys.maxsize, 8) #the new discount will apply only if the weight is bigger than 8 for pid1
         self.proxy_market.addConditionDiscountOr(self.user_id1, self.store_id1, dId1, rule1, rule2)
@@ -110,6 +110,7 @@ class UseCaseDiscount(unittest.TestCase):
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
+        print(userTransaction.__str__())
         self.assertEqual(1000, userTransaction.getData().getTotalAmount())
 if __name__ == '__main__':
     unittest.main()

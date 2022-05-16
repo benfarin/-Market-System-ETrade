@@ -278,9 +278,9 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def addConditionDiscountOr(self, storeId, dId, pred1, pred2):
+    def addConditionDiscountOr(self, storeId, discountId, dId, pred1, pred2):
         try:
-            return self.__market.addConditionDiscountOr(storeId, self, dId, pred1, pred2)
+            return self.__market.addConditionDiscountOr(storeId, self, discountId, dId, pred1, pred2)
         except Exception as e:
             raise Exception(e)
 

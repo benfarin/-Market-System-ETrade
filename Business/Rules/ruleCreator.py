@@ -35,12 +35,12 @@ class ruleCreator:
     def createProductRule(self, pid, less_than, bigger_than):
         f = lambda bag: self.productRuleHelper(bag, less_than, pid) and not self.productRuleHelper(bag, bigger_than,
                                                                                                    pid)
-        return f
+        return Rule(f)
 
     def productRuleHelper(self, bag, less_than, pid):
         products = bag.getProducts()
         sum_product = 0
-        for prod, quantity in products:
+        for prod, quantity in products.items():
             if prod.getProductId() == pid:
                 sum_product += quantity
         return sum_product < less_than

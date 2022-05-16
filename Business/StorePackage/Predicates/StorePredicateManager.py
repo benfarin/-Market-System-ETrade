@@ -36,7 +36,9 @@ class storePredicateManager:
 
     def removeDiscount(self, sid, discount):
         if self.__discount_store.get(sid) is not None:
-            self.__discount_store.get(sid).remove(discount)
-        else:
-            self.__discount_store[sid] = []
-            self.__discount_store.get(sid).remove(discount)
+            lst = self.__discount_store.get(sid)
+            for i in range(len(lst)):
+                if lst[i] == discount:
+                    self.__discount_store.get(sid).remove(discount)
+                    break
+
