@@ -85,12 +85,10 @@ class Bag:
         return None
 
     def applyDiscount(self):
-        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        if discounts is None:
-            newPrices = {}
-            for product in self.__products:
-                newPrices[product] = product.getProductPrice() * self.__products[product]
-            return newPrices
+        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(
+            self.__storeId)  # brings all of the discounts of the store
+        if discounts is None or discounts == []:
+            return self.calc()
         f = lambda discount: discount.check(self)
         minPrice = float('inf')
         for discount in discounts:
@@ -98,13 +96,22 @@ class Bag:
                 newPrice = self.findMinBagPrice(discount.makeDiscount(self))
                 if newPrice < minPrice:
                     minPrice = newPrice
-        return minPrice
+        if minPrice < float('inf'):
+            return minPrice
+        else:
+            return self.calc()
 
     def findMinBagPrice(self, discount_of_product):
         newPrices = discount_of_product.getProducts()
         s = 0
         for prod in newPrices.keys():
             s += newPrices[prod] * prod.getProductPrice() * self.__products.get(prod)
+        return s
+
+    def calc(self):
+        s = 0.0
+        for product in self.__products:
+            s += product.getProductPrice() * self.__products[product]
         return s
 
 
