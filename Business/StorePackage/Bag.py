@@ -66,8 +66,7 @@ class Bag:
         return self.__products[product]
 
     def calcSum(self):
-        newPrices = self.applyDiscount()
-        return sum(newPrices.values())
+        return self.applyDiscount()
 
     def cleanBag(self):
         self.__products = {}
@@ -86,30 +85,11 @@ class Bag:
             for product in self.__products:
                 newPrices[product] = product.getProductPrice() * self.__products[product]
             return newPrices
-        f = lambda discount: discount.getRule().check(self)
-        available_discount_values = []
-        available_discount = []
-        for discount in discounts:
-             if f(discount):
-                 available_discount_values.append(discount.makeDiscount(self).getDiscount())  # brings us all of the discounts of this bag
-                 available_discount.append(discount)
-
-        m = max(available_discount_values)
-        g = lambda d: d.makeDiscount(self).getDiscount() >= m
-        max_chosen = None
-        for available in available_discount:
-             if g(available):
-                 max_chosen = available
-        discount_of_products = max_chosen.getCalc().calcDiscount(self)
-
-        newPrices = {}
+        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        sum = 0
         for product in self.__products:
-            pId = product.getProductId()
-            if pId in discount_of_products.getProducts():
-                newPrices[product] = discount_of_products.getProducts()[pId]
-            else:
-                newPrices[product] = product.getProductPrice()*self.__products[product]
-        return newPrices
+            sum += product.applyDiscount(self)
+        return sum
 
 
 

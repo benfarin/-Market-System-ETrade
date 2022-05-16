@@ -25,9 +25,9 @@ class CataoryDiscount:
                 discount += quantity * prod.getProductPrice() * percent
                 to_return.addProduct(prod.getProductId(), quantity*(1 - percent) * prod.getProductPrice())
             else:
-                to_return.addProduct(prod.getProductId(), prod.getProductPrice())
+                to_return.addProduct(prod.getProductId(), prod.getProductPrice()*quantity*1.0)
             to_return.setDiscount(discount)
-            return to_return
+        return to_return
 
     def calcDiscount(self, bag):
         return self.__discountCalc.calcDiscount(bag)

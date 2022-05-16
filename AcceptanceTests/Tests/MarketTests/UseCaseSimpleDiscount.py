@@ -50,7 +50,6 @@ class UseCaseSimpleDiscount(unittest.TestCase):
     def test_addSimpleDiscountCategory(self):
         self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "category", "simple", 0.1, "testCategory",
                                             None, None, None, None, None)
-
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_3, 5)

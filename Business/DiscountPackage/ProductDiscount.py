@@ -26,7 +26,7 @@ class ProductDiscount:
             else:
                 to_return.addProduct(prod.getProductId(), prod.getProductPrice())
             to_return.setDiscount(discount)
-            return to_return
+        return to_return
 
     def calcDiscount(self, bag):
         return self.__discountCalc.calcDiscount(bag)
