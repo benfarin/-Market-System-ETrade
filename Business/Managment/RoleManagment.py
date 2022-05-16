@@ -464,3 +464,38 @@ class RoleManagment:
             self.__discountId += 1
             return dId
 
+    def createStoreWeightRule(self,userId,pid, less_than, bigger_than):
+        try:
+            return self.rule_creator.createStoreWeightRule(pid, less_than, bigger_than)
+        except Exception as e:
+            raise Exception(e)
+
+    def createProductWeightRule(self,userId, pid, less_than, bigger_than):
+        try:
+            return self.rule_creator.createProductWeightRule(pid, less_than, bigger_than)
+        except Exception as e:
+            raise Exception(e)
+
+    def createStoreTotalPriceLessThanRule(self,userId, pid, less_than, bigger_than):
+        try:
+            return self.rule_creator.createStoreTotalPriceLessThanRule(pid, less_than, bigger_than)
+        except Exception as e:
+            raise Exception(e)
+
+    def createStoreQuantityLessThanRule(self,userId, pid, less_than, bigger_than):
+        try:
+            self.rule_creator.createStoreQuantityLessThanRule(pid, less_than, bigger_than)
+        except Exception as e:
+            raise Exception(e)
+
+    def createCategoryRule(self,userId, pid, less_than, bigger_than):
+        try:
+            return self.rule_creator.createCategoryRule(pid, less_than, bigger_than)
+        except Exception as e:
+            raise Exception(e)
+
+    def createProductRule(self,userId, pid, less_than, bigger_than):
+        try:
+            return self.rule_creator.createProductRule(pid, less_than, bigger_than)
+        except Exception as e:
+            raise Exception(e)

@@ -439,3 +439,58 @@ class RoleService:
         except Exception as e:
             logging.error("Failed to add the condition discount! ")
             return Response(e.__str__())
+
+
+    def createStoreWeightRule(self,userId,pid, less_than, bigger_than):
+        try:
+            isAdded = self.__roleManagment.createStoreWeightRule(userId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createProductWeightRule(self,userId, pid, less_than, bigger_than):
+        try:
+            isAdded = self.__roleManagment.createProductWeightRule(userId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createStoreTotalPriceLessThanRule(self,userId, pid, less_than, bigger_than):
+        try:
+            isAdded = self.__roleManagment.createStoreTotalPriceLessThanRule(userId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createStoreQuantityLessThanRule(self,userId, pid, less_than, bigger_than):
+        try:
+            isAdded = self.__roleManagment.createStoreQuantityLessThanRule(userId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createCategoryRule(self,userId, pid, less_than, bigger_than):
+        try:
+            isAdded = self.__roleManagment.createCategoryRule(userId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createProductRule(self,userId, pid, less_than, bigger_than):
+        try:
+            isAdded = self.__roleManagment.createProductRule(userId, pid, less_than,bigger_than )
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())

@@ -194,10 +194,51 @@ class MarketProxyBridge:
             return True
         return self._real_subject.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
 
-    def createProductWeightRule(self,pid, less_than, more_than):
+    def createProductWeightRule(self,uid,pid, less_than, more_than):
         if self.check_access():
             return True
-        return self.ruleCreator.createProductWeightRule(self.product_id2, 100, 9)
+        return self._real_subject.createProductWeightRule(uid ,pid, less_than, more_than)
+
+    def removeDiscount(self, dId):
+        if self.check_access():
+            return True
+        return self._real_subject.removeDiscount(dId)
+
+    def createProductWeightRule(self, sid, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createProductWeightRule( sid, pid, less_than, bigger_than)
+
+    def createStoreWeightRule(self, uid, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createStoreWeightRule(uid, pid, less_than, bigger_than)
+
+    def createProductWeightRule(self, userId, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createProductWeightRule(userId, pid, less_than, bigger_than)
+
+    def createStoreTotalPriceLessThanRule(self, userId, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createStoreTotalPriceLessThanRule(userId, pid, less_than, bigger_than)
+
+    def createStoreQuantityLessThanRule(self, userId, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createStoreQuantityLessThanRule(userId, pid, less_than, bigger_than)
+
+    def createCategoryRule(self, userId, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createCategoryRule(userId, pid, less_than, bigger_than)
+
+    def createProductRule(self, userId, pid, less_than, bigger_than):
+        if self.check_access():
+            return True
+        return self._real_subject.createProductRule(userId, pid, less_than, bigger_than)
+
 
     # def define_purchase(self, store_id, purchase):
     #     if self._real_subject is None:

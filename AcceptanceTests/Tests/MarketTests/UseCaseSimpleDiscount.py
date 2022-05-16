@@ -98,6 +98,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
 
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
+
         self.assertEqual(140, userTransaction.getData().getTotalAmount())
         self.assertTrue(True)
 

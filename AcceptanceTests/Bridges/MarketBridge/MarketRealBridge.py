@@ -119,3 +119,29 @@ class MarketRealBridge:
 
     def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         return self._roleService.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
+
+    def removeDiscount(self, dId):
+        return self._roleService.removeDiscount(dId)
+
+    def createProductWeightRule(self, sid, pid, less_than, bigger_than):
+        return self._roleService.createProductWeightRule(sid, pid, less_than, bigger_than)
+
+    def createStoreWeightRule(self,uid,pid, less_than, bigger_than):
+        return self._roleService.createStoreWeightRule(uid, pid, less_than, bigger_than)
+
+    def createProductWeightRule(self,userId, pid, less_than, bigger_than):
+        return self._roleService.createProductWeightRule(userId, pid, less_than, bigger_than)
+
+    def createStoreTotalPriceLessThanRule(self,userId, pid, less_than, bigger_than):
+        return self._roleService.createStoreTotalPriceLessThanRule(userId, pid, less_than, bigger_than)
+
+    def createStoreQuantityLessThanRule(self,userId, pid, less_than, bigger_than):
+        return self._roleService.createStoreQuantityLessThanRule(userId, pid, less_than, bigger_than)
+
+    def createCategoryRule(self,userId, pid, less_than, bigger_than):
+        return self._roleService.createCategoryRule(userId, pid, less_than, bigger_than)
+
+    def createProductRule(self,userId, pid, less_than, bigger_than):
+        return self._roleService.createProductRule(userId, pid, less_than, bigger_than)
+
+
