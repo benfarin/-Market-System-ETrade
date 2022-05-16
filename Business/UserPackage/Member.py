@@ -264,16 +264,16 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def addConditionDiscountXor(self, storeId,dId, pred1, pred2):
+    def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2, decide):
         try:
-            return self.__market.addConditionDiscountXor(storeId, self, dId, pred1, pred2)
+            return self.__market.addConditionDiscountXor(storeId, self, discountId, dId, pred1, pred2, decide)
         except Exception as e:
             raise Exception(e)
 
     @threaded
-    def addConditionDiscountAnd(self, storeId, dId, pred1, pred2):
+    def addConditionDiscountAnd(self, storeId, discountId, dId, pred1, pred2):
         try:
-            return self.__market.addConditionDiscountAnd(storeId, self, dId, pred1, pred2)
+            return self.__market.addConditionDiscountAnd(storeId, self, discountId, dId, pred1, pred2)
         except Exception as e:
             raise Exception(e)
 

@@ -458,11 +458,11 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addConditionDiscountXor(self, storeId, user, discountId, dId, pred1, pred2):
+    def addConditionDiscountXor(self, storeId, user, discountId, dId, pred1, pred2, decide):
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountXor(user, discountId, dId, pred1, pred2)
+            self.__stores.get(storeId).addConditionDiscountXor(user, discountId, dId, pred1, pred2, decide)
         except Exception as e:
             raise Exception(e)
 

@@ -80,10 +80,3 @@ class ruleCreator:
             if prod.getProductCategory() == category:
                 sum_product += quantity
         return sum_product <= less_than
-
-    def createTimeRule(self, time_from, time_to):
-        f = lambda bag: self.timeRuleHelper(time_from) and not self.timeRuleHelper(time_to)
-        return f
-
-    def timeRuleHelper(self, time_from):
-        return time_from < datetime.now()

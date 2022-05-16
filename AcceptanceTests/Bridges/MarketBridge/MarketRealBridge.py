@@ -87,10 +87,23 @@ class MarketRealBridge:
     def close_store(self, store_id, user_id):
         return self._memberService.removeStore(store_id, user_id)
 
-    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
-                          value_less_than, value_grather_than, time_from, time_until):
-        return self._roleService.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
-                          value_less_than, value_grather_than, time_from, time_until)
+    def addSimpleDiscount_Store(self, userId, storeId, precent):
+        return self._roleService.addSimpleDiscount_Store(userId, storeId, precent)
+
+    def addSimpleConditionDiscount_Store(self, userId, storeId, condition, precent, fromVal, toVal):
+        return self._roleService.addSimpleConditionDiscount_Store(userId, storeId, condition, precent, fromVal, toVal)
+
+    def addSimpleDiscount_Category(self, userId, storeId, precent, category):
+        return self._roleService.addSimpleDiscount_Category(userId, storeId, precent, category)
+
+    def addSimpleConditionDiscount_Category(self, userId, storeId, precent, condition, category, fromVal, toVal):
+        return self._roleService.addSimpleConditionDiscount_Category(userId, storeId, precent, condition, category, fromVal, toVal)
+
+    def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
+        return self._roleService.addSimpleDiscount_Product(userId, storeId, precent, productId)
+
+    def addSimpleConditionDiscount_Product(self, userId, storeId, precent, condition, productId, fromVal, toVal):
+        return self._roleService.addSimpleConditionDiscount_Product(userId, storeId, precent, condition, productId, fromVal, toVal)
 
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
         return self._roleService.addConditionDiscountAdd(userId, storeId, dId1, dId2)
@@ -98,30 +111,11 @@ class MarketRealBridge:
     def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
         return self._roleService.addConditionDiscountMax(userId, storeId, dId1, dId2)
 
-    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
-        return self._roleService.addConditionDiscountXor(userId, storeId, dId1, dId2)
+    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2, decide):
+        return self._roleService.addConditionDiscountXor(userId, storeId, dId, pred1, pred2, decide)
 
-    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
-        return self._roleService.addConditionDiscountAnd(userId, storeId, dId1, dId2)
+    def addConditionDiscountAnd(self, userId, storeId, dId, pred1, pred2):
+        return self._roleService.addConditionDiscountAnd(userId, storeId, dId, pred1, pred2)
 
     def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         return self._roleService.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
-
-    def createProductWeightRule(self, pid, less_than, more_than):
-        return self._roleService.createProductWeightRule(pid, less_than, more_than)
-
-
-    # def define_purchase(self, store_id, purchase):
-    #     pass
-    #
-    # def discount_store(self, id, discount):
-    #     pass
-    #
-    # def discount_prod(self, store_id, prod_id, discount):
-    #     pass
-
-    # def edit_purchase(self, store_id, new_purchase):
-    #     pass
-    #
-    # def edit_discount(self, store_id, new_discount):
-    #     pass

@@ -30,6 +30,7 @@ class RoleManagment:
         self.__discountRules = DiscountRules()
         self.__discountManager = DiscountManagement()
         self.__memberManagement = MemberManagment.getInstance()
+        self.rule_creator = ruleCreator.getInstance()
         self.__productId = 0
         self.__discountId = 0
         self.__productId_lock = threading.Lock()
@@ -328,7 +329,7 @@ class RoleManagment:
             raise Exception(e)
 
     def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
-                          value_less_than, value_grather_than, time_from, time_until):
+                          value_less_than, value_grather_than):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             member = self.__memberManagement.getMembersFromUser().get(userId)
@@ -336,12 +337,13 @@ class RoleManagment:
                 raise NoSuchMemberException("user: " + str(userId) + "is not a member")
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
             discountId = self.__getDiscountId()
             discount = self.__discountRules.createSimpleDiscount(discountId, ruleContext, precent,
                                                                  category, productId)
 
             discountInfo = DiscountInfo(discountId, userId, storeId, ruleContext, ruleType, precent, category,
-                                        productId, value_less_than, value_grather_than, time_from, time_until)
+                                        productId, value_less_than, value_grather_than)
             self.__discountManager.addDiscount(discountInfo)
 
             member.addDiscount(storeId, discount)
@@ -399,7 +401,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2):
+    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2, decide):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             member = self.__memberManagement.getMembersFromUser().get(userId)
@@ -409,7 +411,7 @@ class RoleManagment:
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
             discountId = self.__getDiscountId()
-            member.addConditionDiscountXor(storeId, discountId, dId, pred1, pred2)
+            member.addConditionDiscountXor(storeId, discountId, dId, pred1, pred2, decide)
 
             return discountId
 
@@ -450,19 +452,6 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def updateDiscount(self, existsDiscount, userId, store,ruleContext,discountPercentage, catagory, productId):
-        try:
-            self.__memberManagement.checkOnlineUserFromUser(userId)
-            if self.__discountManager.isComplex(existsDiscount):
-                raise ComplexDiscountException("Can't update this type of discount!")
-            updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
-            discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
-            self.__discountManager.removeDiscount(updatedDiscount) # check if id or object of discount
-            self.__discountManager.addDiscount(discountData)
-            return updatedDiscount
-        except Exception as e:
-            raise Exception(e)
-
     def __getProductId(self):
         with self.__productId_lock:
             pId = self.__productId
@@ -475,5 +464,3 @@ class RoleManagment:
             self.__discountId += 1
             return dId
 
-    def createProductWeightRule(self,pid, less_than, more_than):
-        return ruleCreator.createProductWeightRule(pid,less_than,more_than)

@@ -93,7 +93,7 @@ class IMember(Interface):
     def addConditionDiscountAnd(self, storeId, discountId, dId, pred1, pred2):
         pass
 
-    def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2):
+    def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2, decide):
         pass
 
 

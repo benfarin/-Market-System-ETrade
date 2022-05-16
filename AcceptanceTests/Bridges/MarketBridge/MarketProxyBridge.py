@@ -139,13 +139,35 @@ class MarketProxyBridge:
             return True
         return self._real_subject.print_purchase_history(store_id, user_id)
 
-    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
-                          value_less_than, value_grather_than, time_from, time_until):
+    def addSimpleDiscount_Store(self, userId, storeId, precent):
         if self.check_access():
             return True
-        return self._real_subject.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category,
-                                                    productId,
-                                                    value_less_than, value_grather_than, time_from, time_until)
+        return self._real_subject.addSimpleDiscount_Store(userId, storeId, precent)
+
+    def addSimpleConditionDiscount_Store(self, userId, storeId, condition, precent, fromVal, toVal):
+        if self.check_access():
+            return True
+        return self._real_subject.addSimpleConditionDiscount_Store(userId, storeId, condition, precent, fromVal, toVal)
+
+    def addSimpleDiscount_Category(self, userId, storeId, precent, category):
+        if self.check_access():
+            return True
+        return self._real_subject.addSimpleDiscount_Category(userId, storeId, precent, category)
+
+    def addSimpleConditionDiscount_Category(self, userId, storeId, precent, condition, category, fromVal, toVal):
+        if self.check_access():
+            return True
+        return self._real_subject.addSimpleConditionDiscount_Category(userId, storeId, precent, condition, category, fromVal, toVal)
+
+    def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
+        if self.check_access():
+            return True
+        return self._real_subject.addSimpleDiscount_Product(userId, storeId, precent, productId)
+
+    def addSimpleConditionDiscount_Product(self, userId, storeId, precent, condition, productId, fromVal, toVal):
+        if self.check_access():
+            return True
+        return self._real_subject.addSimpleConditionDiscount_Product(userId, storeId, precent, condition, productId, fromVal, toVal)
 
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
         if self.check_access():
@@ -157,15 +179,15 @@ class MarketProxyBridge:
             return True
         return self._real_subject.addConditionDiscountMax(userId, storeId, dId1, dId2)
 
-    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountXor(self, userId, storeId,  dId, pred1, pred2, decide):
         if self.check_access():
             return True
-        return self._real_subject.addConditionDiscountXor(userId, storeId, dId1, dId2)
+        return self._real_subject.addConditionDiscountXor(userId, storeId, dId, pred1, pred2, decide)
 
-    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountAnd(self, userId, storeId, dId, pred1, pred2):
         if self.check_access():
             return True
-        return self._real_subject.addConditionDiscountAnd(userId, storeId, dId1, dId2)
+        return self._real_subject.addConditionDiscountAnd(userId, storeId,  dId, pred1, pred2)
 
     def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         if self.check_access():

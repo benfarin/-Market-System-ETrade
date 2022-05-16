@@ -19,10 +19,8 @@ class ruleContext(Enum):
 
 class ruleType(Enum):
     simple = "simple"
-    age = "age"
     quantity = "quantity"
     price = "price"
-    time = "time"
     weight = "weight"
 
 
@@ -70,8 +68,6 @@ class DiscountRules:
 
     def createRule(self, discount_type, rule_type, catagory, pid, value_less_than, value_greater_than, time1, time2):
         rule: Rule
-        if rule_type == ruleType.age:
-            return self.__rules_creator.createUserAgeRule(value_less_than, value_greater_than)
         if rule_type == ruleType.price:
             return self.__rules_creator.createStorePriceRule(value_less_than, value_greater_than)
         if rule_type == ruleType.quantity:

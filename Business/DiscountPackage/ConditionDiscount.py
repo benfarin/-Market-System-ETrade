@@ -18,7 +18,7 @@ class ConditionDiscount(Discount):
 
     def setDefaultRule(self):
         f = lambda bag: True
-        self.__rule = Rule(f)
+        self.__rule = f
 
     def check(self, bag):
         return self.__rule(bag)
@@ -31,32 +31,17 @@ class ConditionDiscount(Discount):
             return self.__calc_discount.calcDiscount(bag)
         return DiscountOfProducts()
 
-    def conditionXOR(self, cond, decide):
-        f = lambda bag: self.helperXOR(bag, self, cond, decide)
-        return ConditionDiscount(DiscountCalc(f))
-
-    def helperXOR(self, bag, cond1, cond2, decide):
-        available1 = cond1.getRule(self).check(bag)
-        available2 = cond1.getRule(self).check(bag)
-        if available1 and available2:
-            if decide:
-                return cond1.makeDiscount(bag)
-            else:
-                cond2.makeDiscount(bag)
-        else:
-            if available1:
-                return cond1.makeDiscount(bag)
-            else:
-                return cond2.acticateDiscount(bag)
+    def conditionXOR(self, rule, decide):
+        orRule = self.__rule.XorRules(rule, decide)
+        self.setRule(orRule)
+        return self
 
     def conditionOR(self, second_rule):
-        # condition_discount = ConditionDiscount(discountId, self.__rule, self.__calc_discount)
         orRule = self.__rule.OrRules(second_rule)
         self.setRule(orRule)
         return self
 
     def conditionAND(self, second_rule):
-        condition_discount = ConditionDiscount(DiscountCalc(self.__calc_discount))
-        orRule = second_rule.AndRules(self.__rule, second_rule)
-        condition_discount.setRule(orRule)
-        return condition_discount
+        andRule = self.__rule.AndRules(second_rule)
+        self.setRule(andRule)
+        return self

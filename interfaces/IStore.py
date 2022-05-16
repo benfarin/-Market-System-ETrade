@@ -131,6 +131,6 @@ class IStore(Interface):
     def addConditionDiscountAnd(self, user, discountId, dId, pred1, pred2):
         pass
 
-    def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2):
+    def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2, decide):
         pass
 

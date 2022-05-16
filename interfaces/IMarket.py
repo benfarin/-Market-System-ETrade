@@ -157,5 +157,5 @@ class IMarket(Interface):
     def addConditionDiscountAnd(self, storeId, user, dId, discountId, pred1, pred2):
         pass
 
-    def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2):
+    def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2, decide):
         pass
