@@ -365,8 +365,8 @@ class RoleService:
 
     def addConditionDiscountAnd(self, userId, storeId,  dId, pred1, pred2):
         try:
-            isRemoved = self.__roleManagment.addConditionDiscountAnd(userId, storeId, dId1, dId2)
-            logging.info("success to add the and condition discount with:  " + str(dId1) + ", " + str(dId2))
+            isRemoved = self.__roleManagment.addConditionDiscountAnd(userId, storeId,  dId, pred1, pred2)
+            logging.info("success to add the and condition discount with:  " + str(userId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to add the and condition discount! ")
@@ -374,11 +374,20 @@ class RoleService:
 
     def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         try:
-            isRemoved = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId1, dId2)
-            logging.info("success to add the or condition discount with:  " + str(dId1) + ", " + str(dId2))
+            isRemoved = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
+            logging.info("success to add the or condition discount with:  " + str(userId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to add the or condition discount! ")
+            return Response(e.__str__())
+
+    def createProductWeightRule(self,pid, less_than, more_than):
+        try:
+            isRemoved = self.__roleManagment.createProductWeightRule(pid, less_than, more_than)
+            logging.info("success to add the wieght rule:  " + str(pid))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to add the and condition discount! ")
             return Response(e.__str__())
 
 

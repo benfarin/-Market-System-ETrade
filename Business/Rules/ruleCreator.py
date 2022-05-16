@@ -7,8 +7,20 @@ from datetime import datetime
 
 class ruleCreator:
 
-    def createProductWeightRule(self, pid, less_than, bigger_than):
+    __instance = None
 
+    @staticmethod
+    def getInstance():
+        """ Static access method. """
+        if ruleCreator.__instance is None:
+            ruleCreator()
+        return ruleCreator.__instance
+
+    def __init__(self):
+        if ruleCreator.__instance is None:
+            ruleCreator.__instance = self
+
+    def createProductWeightRule(self, pid, less_than, bigger_than):
         f = lambda bag: self.weightHelper(pid, less_than, bag) and not self.weightHelper(pid, bigger_than, bag)
         return f
 

@@ -125,12 +125,12 @@ class IStore(Interface):
     def addConditionDiscountMax(self, user, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountOr(self, user, dId, dId1, dId2):
+    def addConditionDiscountOr(self, user, dId, pred1, pred2):
         pass
 
-    def addConditionDiscountAnd(self, user, dId, dId1, dId2):
+    def addConditionDiscountAnd(self, user, dId, pred1, pred2):
         pass
 
-    def addConditionDiscountXor(self, user, dId, dId1, dId2):
+    def addConditionDiscountXor(self, user, dId, pred1, pred2):
         pass
 

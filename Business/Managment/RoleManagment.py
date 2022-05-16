@@ -4,6 +4,7 @@ from datetime import datetime
 from Business.DiscountPackage.DiscountInfo import DiscountInfo
 from Business.DiscountPackage.DiscountManagement import DiscountManagement
 from Business.DiscountRules import DiscountRules, ruleType
+from Business.Rules.ruleCreator import ruleCreator
 from Business.DiscountPackage.Discount import Discount
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
@@ -398,7 +399,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             member = self.__memberManagement.getMembersFromUser().get(userId)
@@ -408,14 +409,14 @@ class RoleManagment:
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
             discountId = self.__getDiscountId()
-            member.addConditionDiscountXor(storeId, discountId, dId1, dId2)
+            member.addConditionDiscountXor(storeId, discountId, dId, pred1, pred2)
 
             return discountId
 
         except Exception as e:
             raise Exception(e)
 
-    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountAnd(self, userId, storeId, dId, pred1, pred2):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             member = self.__memberManagement.getMembersFromUser().get(userId)
@@ -425,14 +426,14 @@ class RoleManagment:
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
             discountId = self.__getDiscountId()
-            member.addConditionDiscountAnd(storeId, discountId, dId1, dId2)
+            member.addConditionDiscountAnd(storeId, discountId, dId, pred1, pred2)
 
             return discountId
 
         except Exception as e:
             raise Exception(e)
 
-    def addConditionDiscountOr(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             member = self.__memberManagement.getMembersFromUser().get(userId)
@@ -442,7 +443,7 @@ class RoleManagment:
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
             discountId = self.__getDiscountId()
-            member.addConditionDiscountOr(storeId, discountId, dId1, dId2)
+            member.addConditionDiscountOr(storeId, discountId, dId, pred1, pred2)
 
             return discountId
 
@@ -473,3 +474,6 @@ class RoleManagment:
             dId = self.__discountId
             self.__discountId += 1
             return dId
+
+    def createProductWeightRule(self,pid, less_than, more_than):
+        return ruleCreator.createProductWeightRule(pid,less_than,more_than)

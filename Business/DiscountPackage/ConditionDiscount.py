@@ -46,7 +46,7 @@ class ConditionDiscount(Discount):
 
     def conditionOR(self, second_rule):
         condition_discount = ConditionDiscount(DiscountCalc(self.__calc_discount))
-        orRule = second_rule.OrRules(self.__rule, second_rule)
+        orRule = self.__rule.OrRules(second_rule)
         condition_discount.setRule(orRule)
         return condition_discount
 
