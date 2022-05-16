@@ -142,20 +142,20 @@ class IMarket(Interface):
     def removeDiscount(self, storeId, user, discountId):
         pass
 
-    def addConditionDiscountAdd(self, storeId, user, dId1, dId2):
+    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountMax(self, storeId, user, dId1, dId2):
+    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
         pass
 
     def updateCart(self, cart1, cart2):
         pass
 
-    def addConditionDiscountOr(self, storeId, user, dId1, dId2):
+    def addConditionDiscountOr(self, storeId, user, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountAnd(self, storeId, user, dId1, dId2):
+    def addConditionDiscountAnd(self, storeId, user, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountXor(self, storeId, user, dId1, dId2):
+    def addConditionDiscountXor(self, storeId, user, dId, dId1, dId2):
         pass

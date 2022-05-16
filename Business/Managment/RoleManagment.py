@@ -373,10 +373,8 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountAdd(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountAdd(storeId, discountId, dId1, dId2)
 
             return discountId
 
@@ -392,10 +390,8 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountMax(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountMax(storeId, discountId, dId1, dId2)
 
             return discountId
 
@@ -411,10 +407,8 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountXor(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountXor(storeId, discountId, dId1, dId2)
 
             return discountId
 
@@ -430,10 +424,8 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountAnd(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountAnd(storeId, discountId, dId1, dId2)
 
             return discountId
 
@@ -449,17 +441,13 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountOr(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountOr(storeId, discountId, dId1, dId2)
 
             return discountId
 
         except Exception as e:
             raise Exception(e)
-
-
 
     def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
         try:
@@ -473,8 +461,6 @@ class RoleManagment:
             return updatedDiscount
         except Exception as e:
             raise Exception(e)
-
-
 
     def __getProductId(self):
         with self.__productId_lock:

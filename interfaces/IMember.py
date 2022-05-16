@@ -75,10 +75,10 @@ class IMember(Interface):
     def removeDiscount(self, storeId, discountId):
         pass
 
-    def addConditionDiscountAdd(storeId, dId1, dId2):
+    def addConditionDiscountAdd(self, storeId, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountMax(storeId, dId1, dId2):
+    def addConditionDiscountMax(self, storeId, dId, dId1, dId2):
         pass
 
     def updateCart(self, cart):
@@ -87,13 +87,13 @@ class IMember(Interface):
     def hasRole(self):
         pass
 
-    def addConditionDiscountOr(self, storeId, dId1, dId2):
+    def addConditionDiscountOr(self, storeId, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountAnd(self, storeId, dId1, dId2):
+    def addConditionDiscountAnd(self, storeId, dId, dId1, dId2):
         pass
 
-    def addConditionDiscountXor(self, storeId, dId1, dId2):
+    def addConditionDiscountXor(self, storeId, dId, dId1, dId2):
         pass
 
 

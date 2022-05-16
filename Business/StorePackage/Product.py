@@ -1,9 +1,6 @@
-import sys
 from typing import List
-from Business.DiscountPackage.DiscountsOfProducts import DiscountOfProducts
 import zope
 from zope.interface import implements
-from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 from interfaces.IProduct import IProduct
 
 
@@ -66,26 +63,4 @@ class Product:
             if keyw.lower() == keyword.lower():
                 return True
         return False
-
-    def applyDiscount(self, bag):
-        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        if discounts is None:
-            newPrices = {}
-            for product in self.__products:
-                newPrices[product] = product.getProductPrice() * self.__products[product]
-            return newPrices
-        f = lambda discount: discount.getRule().check(self)
-        available_products_values = []
-        available_products = []
-        min = sys.maxsize
-        for discount in discounts:
-            discount_of_product = discount.makeDiscount(bag)
-            product_price = discount_of_product.getProductPrice(self.__id)
-            if  f(discount) and product_price is not None:
-                if min > product_price:
-                    min = product_price
-        if min == sys.maxsize:
-            return self.getProductPrice()*bag.getProductQuantity(self)
-        return min
-
 

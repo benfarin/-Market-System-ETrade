@@ -17,15 +17,15 @@ class ProductDiscount:
 
     def calculate(self, bag: Bag, product_ID, percent): # each of the products got an percent from the owner of the store, this function get bag and check over it if this product in his bag , the function return an object ProductOfDiscount which contain Dict <product_id, price> all of the products and their price calculated after the discount this specific product brought.
         to_return = DiscountOfProducts()
-        discount = 0
+        # discount = 0
         products: Dict[Product, int] = bag.getProducts()
         for prod, quantity in products.items():
             if prod.getProductId() == product_ID:
-                discount += quantity*prod.getProductPrice()*percent
-                to_return.addProduct(prod.getProductId(), quantity*(1-percent)*prod.getProductPrice())
+                # discount += percent
+                to_return.addProduct(prod, (1-percent))
             else:
-                to_return.addProduct(prod.getProductId(), prod.getProductPrice())
-            to_return.setDiscount(discount)
+                to_return.addProduct(prod, 1.0)
+            # to_return.setDiscount(discount)
         return to_return
 
     def calcDiscount(self, bag):

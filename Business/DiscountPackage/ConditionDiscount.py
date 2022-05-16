@@ -55,11 +55,3 @@ class ConditionDiscount(Discount):
         orRule = second_rule.AndRules(self.__rule, second_rule)
         condition_discount.setRule(orRule)
         return condition_discount
-
-    # max between self and second_rule
-    def conditionMax(self, second_calc):
-        return super().getCalc().max(second_calc)
-
-    # add self and second_rule
-    def conditionADD(self, second_calc):
-        return super().getCalc().add(second_calc)

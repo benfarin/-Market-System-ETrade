@@ -20,9 +20,6 @@ class ruleCreator:
                 sum_product_weight += prod.getProductWeight() * quantity
         return sum_product_weight < less_than
 
-
-
-
     def createProductRule(self, pid, less_than, bigger_than):
         f = lambda bag: self.productRuleHelper(bag, less_than, pid) and not self.productRuleHelper(bag, bigger_than,
                                                                                                    pid)

@@ -16,12 +16,12 @@ class StoreDiscount:
 
     def calculate(self, bag: Bag, percent):  # get store's percent and bag and return an object DiscountOfProducts which contain a Dict with <pid,price> , price was calculated afther the percent
         to_return: DiscountOfProducts = DiscountOfProducts()
-        discount = 0
+        # discount = 0
         products: Dict[Product, int] = bag.getProducts()
         for prod, quantity in products.items():
-            discount += quantity * prod.getProductPrice() * percent
-            to_return.addProduct(prod.getProductId(), quantity*(1 - percent) * prod.getProductPrice())
-        to_return.increaseDiscount(discount)
+            # discount += prod.getProductPrice()
+            to_return.addProduct(prod, 1 - percent)
+        # to_return.increaseDiscount(discount)
         return to_return
 
     def calcDiscount(self, bag):

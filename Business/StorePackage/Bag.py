@@ -78,18 +78,45 @@ class Bag:
                 product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print
 
+    def __searchProductByProductId(self, pId):
+        for product in self.__products.keys():
+            if product.getProductId() == pId:
+                return product
+        return None
+
     def applyDiscount(self):
+        # discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        # if discounts is None:
+        #     newPrices = {}
+        #     for product in self.__products:
+        #         newPrices[product] = product.getProductPrice() * self.__products[product]
+        #     return newPrices
+        # discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        # for product in self.__products:
+        #     sum += product.applyDiscount(self)
+        # return sum
+
         discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
         if discounts is None:
             newPrices = {}
             for product in self.__products:
                 newPrices[product] = product.getProductPrice() * self.__products[product]
             return newPrices
-        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        sum = 0
-        for product in self.__products:
-            sum += product.applyDiscount(self)
-        return sum
+        f = lambda discount: discount.getRule().check(self)
+        minPrice = float('inf')
+        for discount in discounts:
+            if f(discount):
+                newPrice = self.findMinBagPrice(discount.makeDiscount(self))
+                if newPrice < minPrice:
+                    minPrice = newPrice
+        return minPrice
+
+    def findMinBagPrice(self, discount_of_product):
+        newPrices = discount_of_product.getProducts()
+        s = 0
+        for prod in newPrices.keys():
+            s += newPrices[prod] * prod.getProductPrice() * self.__products.get(prod)
+        return s
 
 
 

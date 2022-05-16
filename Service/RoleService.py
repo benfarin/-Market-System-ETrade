@@ -339,46 +339,46 @@ class RoleService:
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
         try:
             isRemoved = self.__roleManagment.addConditionDiscountAdd(userId, storeId, dId1, dId2)
-            logging.info("success to add the add condition discount with:  " + str(dId1) + ", " + str(dId2))
+            logging.info("success to add the add discount with:  " + str(dId1) + ", " + str(dId2))
             return Response(isRemoved)
         except Exception as e:
-            logging.error("Failed to add the add condition discount! ")
+            logging.error("Failed to add the add discount! ")
             return Response(e.__str__())
 
     def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
         try:
             isRemoved = self.__roleManagment.addConditionDiscountMax(userId, storeId, dId1, dId2)
-            logging.info("success to add the max condition discount with:  " + str(dId1) + ", " + str(dId2))
+            logging.info("success to add the max condition discount with:  " + str(userId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to add the max condition discount! ")
             return Response(e.__str__())
 
-    def addConditionDiscountXor(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2):
         try:
-            isRemoved = self.__roleManagment.addConditionDiscountXor(userId, storeId, dId1, dId2)
-            logging.info("success to add the max condition discount with:  " + str(dId1) + ", " + str(dId2))
+            isRemoved = self.__roleManagment.addConditionDiscountXor(userId, storeId, dId, pred1, pred2)
+            logging.info("success to add the xor condition discount with:  " + str(userId))
             return Response(isRemoved)
         except Exception as e:
-            logging.error("Failed to add the max condition discount! ")
+            logging.error("Failed to add the xor condition discount! ")
             return Response(e.__str__())
 
-    def addConditionDiscountAnd(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountAnd(self, userId, storeId,  dId, pred1, pred2):
         try:
             isRemoved = self.__roleManagment.addConditionDiscountAnd(userId, storeId, dId1, dId2)
-            logging.info("success to add the max condition discount with:  " + str(dId1) + ", " + str(dId2))
+            logging.info("success to add the and condition discount with:  " + str(dId1) + ", " + str(dId2))
             return Response(isRemoved)
         except Exception as e:
-            logging.error("Failed to add the max condition discount! ")
+            logging.error("Failed to add the and condition discount! ")
             return Response(e.__str__())
 
-    def addConditionDiscountOr(self, userId, storeId, dId1, dId2):
+    def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         try:
             isRemoved = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId1, dId2)
-            logging.info("success to add the max condition discount with:  " + str(dId1) + ", " + str(dId2))
+            logging.info("success to add the or condition discount with:  " + str(dId1) + ", " + str(dId2))
             return Response(isRemoved)
         except Exception as e:
-            logging.error("Failed to add the max condition discount! ")
+            logging.error("Failed to add the or condition discount! ")
             return Response(e.__str__())
 
 
