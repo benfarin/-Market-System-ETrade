@@ -29,6 +29,7 @@ from .views import (
     add_store_simple_condition_discount, add_category_simple_discount, add_category_simple_condition_discount,
     add_product_simple_discount, add_product_simple_condition_discount, remove_condition, remove_Owner, remove_member,
     all_stores_transactions, all_user_transactions, store_transactions, user_transactions, store_transactions_ID,
+    show_store_transactions_ID, show_user_transactions, show_store_transactions,
 )
 
 urlpatterns = [
@@ -52,6 +53,9 @@ urlpatterns = [
     path('store_transactions/', store_transactions),
     path('user_transactions/', user_transactions),
     path('store_transactions_ID/', store_transactions_ID),
+    path('<str:slug>/storesTransactions/', show_store_transactions),
+    path('<str:slug>/userTransactions/', show_user_transactions),
+    path('<str:slug>/storesTransactionsID/', show_store_transactions_ID),
     path('store/<str:slug>/discounts/add_store_simple_discount/', add_store_simple_discount),
     path('store/<str:slug>/discounts/add_store_simple_condition_discount/', add_store_simple_condition_discount),
     path('store/<str:slug>/discounts/add_category_simple_discount/', add_category_simple_discount),

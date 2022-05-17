@@ -26,7 +26,7 @@ class StoreDTO:
             self.__products[productId] = ProductDTO(store.getProducts().get(productId))
         self.__productsQuantity = store.getProductQuantity()
         self.__transactions = {}
-        for tId in store.getTransactionForDTO().values():
+        for tId in store.getTransactionForDTO().keys():
             self.__transactions[tId] = storeTransactionDTO(store.getTransactionForDTO().get(tId))
         self.__permissions = {}
         for member in store.getPermissionForDto().keys():
