@@ -412,6 +412,12 @@ def remove_product_from_cart(request, slug):
         return HttpResponseRedirect("/cart/")
     messages.warning(request, answer.getError())
 
+def remove_product_from_cart_with_store(request, slug, slug2):
+    answer = user_service.removeProductFromCart(user.getUserID(), int(slug2), int(slug))
+    if not answer.isError():
+        return HttpResponseRedirect("/cart/")
+    messages.warning(request, answer.getError())
+
 
 def close_store(request, slug):
     answer = member_service.removeStore(int(slug), user.getUserID())
@@ -598,7 +604,7 @@ def add_product_simple_discount(request, slug):
     percent = request.POST.get("percent")
     product_id = request.POST.get("product_ID")
     if percent is not None:
-        answer = role_service.addSimpleDiscount_Category(user.getUserID(), int(slug), float(percent), product_id)
+        answer = role_service.addSimpleDiscount_Product(user.getUserID(), int(slug), float(percent), int(product_id))
         if not answer.isError():
             return HttpResponseRedirect("/store/" + slug + "/")
         messages.warning(request, answer.getError())

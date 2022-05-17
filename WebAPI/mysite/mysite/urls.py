@@ -29,7 +29,8 @@ from .views import (
     add_store_simple_condition_discount, add_category_simple_discount, add_category_simple_condition_discount,
     add_product_simple_discount, add_product_simple_condition_discount, remove_condition, remove_Owner, remove_member,
     all_stores_transactions, all_user_transactions, store_transactions, user_transactions, store_transactions_ID,
-    show_store_transactions_ID, show_user_transactions, show_store_transactions,
+    show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
+    add_condition_or, add_condition_xor, add_condition_and,
 )
 
 urlpatterns = [
@@ -64,9 +65,9 @@ urlpatterns = [
     path('store/<str:slug>/discounts/add_product_simple_condition_discount/', add_product_simple_condition_discount),
     path('store/<str:slug>/discounts/add_condition_max/', add_condition_max),
     path('store/<str:slug>/discounts/add_condition_add/', add_condition_add),
-    path('store/<str:slug>/discounts/add_condition_or/', add_condition_add),
-    path('store/<str:slug>/discounts/add_condition_xor/', add_condition_add),
-    path('store/<str:slug>/discounts/add_condition_and/', add_condition_add),
+    path('store/<str:slug>/discounts/add_condition_or/', add_condition_or),
+    path('store/<str:slug>/discounts/add_condition_xor/', add_condition_xor),
+    path('store/<str:slug>/discounts/add_condition_and/', add_condition_and),
     path('store/<str:slug>/discounts/remove_discount/', remove_condition),
     path('store/<str:slug>/discounts/add_rule/', add_rule),
     # path('store/<str:slug>/stuff/', show_stuff),
@@ -77,6 +78,7 @@ urlpatterns = [
     path('logout/', logout),
     path('cart/', get_cart),
     path('cart/<str:slug>/remove_product/', remove_product_from_cart),
+    path('cart/<str:slug>/<str:slug2>/remove_product/', remove_product_from_cart_with_store),
     path('cart/purchase_cart/', purchase_cart),
     path('store/<str:slug>/add_to_cart/<str:slug2>/', add_to_cart_page),
     path('search/', search_view),
