@@ -484,7 +484,7 @@ class RoleManagment:
 
     def createStoreQuantityLessThanRule(self,userId, pid, less_than, bigger_than):
         try:
-            self.rule_creator.createStoreQuantityLessThanRule(pid, less_than, bigger_than)
+            return self.rule_creator.createStoreQuantityLessThanRule(pid, less_than, bigger_than)
         except Exception as e:
             raise Exception(e)
 

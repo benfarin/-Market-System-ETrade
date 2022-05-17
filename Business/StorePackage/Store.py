@@ -547,7 +547,7 @@ class Store:
         discount_rule = discount.getRule()  # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionXOR(pred2, decide)
-        predi.removeDiscount(self.getStoreId(), discount)
+        predi.removeDiscount(self.getStoreId(), dId)
         predi.addDiscount(self.getStoreId(), condition_discount)
 
     def addConditionDiscountAnd(self, user, discountId, dId, pred1, pred2):
@@ -564,7 +564,7 @@ class Store:
         discount_rule = discount.getRule()   # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionAND(pred2)
-        predi.removeDiscount(self.getStoreId(), discount)
+        predi.removeDiscount(self.getStoreId(), discountId)
         predi.addDiscount(self.getStoreId(), condition_discount)
 
     def addConditionDiscountOr(self, user, discountId, dId, pred1, pred2):
@@ -581,5 +581,5 @@ class Store:
         discount_rule = discount.getRule()   # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionOR(pred2)
-        predi.removeDiscount(self.getStoreId(), discount)
+        predi.removeDiscount(self.getStoreId(), dId)
         predi.addDiscount(self.getStoreId(), condition_discount)

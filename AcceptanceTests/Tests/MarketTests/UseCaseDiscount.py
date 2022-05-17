@@ -97,21 +97,23 @@ class UseCaseDiscount(unittest.TestCase):
 
     def test_addSimpleDiscountStoreOr(self):
         dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData()
-        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, 0.1, "testCategory1").getData()
 
-        self.rule_creator: ruleCreator = ruleCreator.getInstance()
+        # self.rule_creator: ruleCreator = ruleCreator.getInstance()
+        #
+        # rule1 = self.rule_creator.createProductRule(self.product_id, 100, 11)
+        #
+        # rule2 = self.rule_creator.createProductRule(self.product_id_2, 100, 11)
 
-        rule1 = self.rule_creator.createProductRule(self.product_id, 100, 11)
+        rule1 = self.proxy_market.createProductRule(self.user_id1, self.product_id, 100, 11).getData()
+        rule2 = self.proxy_market.createProductRule(self.user_id1, self.product_id_2, 100, 11).getData()
 
-        rule2 = self.rule_creator.createProductRule(self.product_id_2, 100, 9)
         self.proxy_market.addConditionDiscountOr(self.user_id1, self.store_id1, dId1, rule1, rule2)
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
-        print(userTransaction.__str__())
-        self.assertEqual(990, userTransaction.getData().getTotalAmount())
+        self.assertEqual(1100, userTransaction.getData().getTotalAmount())
 
     def test_remove_Discount(self):
         dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData()
@@ -122,7 +124,7 @@ class UseCaseDiscount(unittest.TestCase):
         self.proxy_market.removeDiscount(self.user_id1, self.store_id1, dId1)
 
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
-        self.assertEqual(1100, userTransaction.getData().getTotalAmount())
+        self.assertEqual(1100, userTransaction.getData())
 
 
 if __name__ == '__main__':
