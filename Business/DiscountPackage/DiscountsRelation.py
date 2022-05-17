@@ -10,7 +10,7 @@ class DiscountRelation:
         self.__decide = decide
 
     def getUserID(self):
-        return  self.__userID
+        return self.__userID
 
     def getDiscountID(self):
         return self.__discountID
@@ -19,7 +19,7 @@ class DiscountRelation:
         return self.__discountRuleRelation
 
     def getStoreID(self):
-        return  self.__storeID
+        return self.__storeID
 
     def getIdDiscount1(self):
         return self.__id_discount1
@@ -28,27 +28,25 @@ class DiscountRelation:
         return self.__id_discount2
 
     def getDecide(self):
-        return  self.__decide
+        return self.__decide
 
-    def setUserID(self,uid):
-          self.__userID = uid
+    def setUserID(self, uid):
+        self.__userID = uid
 
     def setDiscountID(self, discountID):
-         self.__discountID = discountID
+        self.__discountID = discountID
 
     def setDiscountRuleRelation(self, discountRule):
-         self.__discountRuleRelation = discountRule
+        self.__discountRuleRelation = discountRule
 
     def setStoreID(self, sid):
-          self.__storeID = sid
+        self.__storeID = sid
 
     def setIdDiscount1(self, discountID1):
-         self.__id_discount1 = discountID1
+        self.__id_discount1 = discountID1
 
     def setIdDiscount2(self, discountID2):
-         self.__id_discount2 = discountID2
+        self.__id_discount2 = discountID2
 
     def setDecide(self, decide):
-          self.__decide = decide
-
-
+        self.__decide = decide

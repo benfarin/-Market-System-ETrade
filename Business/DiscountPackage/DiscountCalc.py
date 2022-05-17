@@ -19,16 +19,18 @@ class DiscountCalc:
     def maxDiscount(self, bag: Bag, discount_calc_1, discount_calc_2):
         calc_1 = discount_calc_1.calcDiscount(bag)
         calc_2 = discount_calc_2.calcDiscount(bag)
-        if calc_1.getDiscount() < calc_2.getDiscount():
+        if calc_1.getTotalDiscountPrice() < calc_2.getTotalDiscountPrice():
             return calc_2
         return calc_1
 
     def add(self, additional_DiscountCalc):
-        f = lambda bag: self.addDiscount(bag, additional_DiscountCalc, self)
+        f = lambda bag: self.addDiscount(bag, self, additional_DiscountCalc)
         return DiscountCalc(f)
 
-    def addDiscount(self, bag: Bag, discount_calc_1: IDiscount, discount_calc_2: IDiscount):
+    def addDiscount(self, bag: Bag, discount_calc_1, discount_calc_2):
         calc_1 = discount_calc_1.calcDiscount(bag)
         calc_2 = discount_calc_2.calcDiscount(bag)
-        discountOfProducts_to_return = calc_1.addDiscount(calc_2.getDiscount, calc_2.getProducts())
+        # discounts = calc_2.getDiscount()
+        products = calc_2.getProducts()
+        discountOfProducts_to_return = calc_1.addDiscount(products)
         return discountOfProducts_to_return

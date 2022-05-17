@@ -1,7 +1,7 @@
 from typing import Dict
 
-class storePredicateManager:
 
+class storePredicateManager:
     __instance = None
 
     @staticmethod
@@ -12,14 +12,14 @@ class storePredicateManager:
         return storePredicateManager.__instance
 
     def __init__(self):
-        self.__discount_store: Dict[int: []] = {}    #[id_store,[] Discount]
-        self.__store_policies = {}  #implement next by kfir
+        self.__discount_store: Dict[int: []] = {}  # [id_store,[] Discount]
+        self.__store_policies = {}  # implement next by kfir
         if storePredicateManager.__instance is None:
             storePredicateManager.__instance = self
 
     def addDiscount(self, id_store, discount):
         if self.__discount_store.get(id_store) is not None:
-            self.__discount_store.get(id_store).append(discount)
+            self.__discount_store[id_store] += 1 * [discount]
         else:
             self.__discount_store[id_store] = [discount]
 
@@ -27,25 +27,18 @@ class storePredicateManager:
         return self.__discount_store.get(id_store)  # if its empty will return None
 
     def getSingleDiscountByID(self, id_store, id_discount):
-        discounts =  self.__discount_store.get(id_store)
-        if discounts is not None :
+        discounts = self.__discount_store.get(id_store)
+        if discounts is not None:
             for discount in discounts:
-                if discount.getIdDiscount() == id_discount:
+                if id_discount == discount.getIdDiscount():
                     return discount
         return None
 
-    def removeDiscount(self, sid, discount):
+    def removeDiscount(self, sid, discountId):
         if self.__discount_store.get(sid) is not None:
-            self.__discount_store.get(sid).remove(discount)
-        else:
-            self.__discount_store[sid] = []
-            self.__discount_store.get(sid).remove(discount)
-
-
-
-
-
-
-
-
+            lst = self.__discount_store.get(sid)
+            for i in range(len(lst)):
+                if lst[i].getIdDiscount() == discountId:
+                    self.__discount_store.get(sid).remove(lst[i])
+                    break
 

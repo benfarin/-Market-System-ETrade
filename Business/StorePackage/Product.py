@@ -1,8 +1,6 @@
 from typing import List
-
 import zope
 from zope.interface import implements
-
 from interfaces.IProduct import IProduct
 
 
@@ -65,3 +63,4 @@ class Product:
             if keyw.lower() == keyword.lower():
                 return True
         return False
+

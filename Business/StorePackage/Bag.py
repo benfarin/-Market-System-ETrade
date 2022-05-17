@@ -66,8 +66,7 @@ class Bag:
         return self.__products[product]
 
     def calcSum(self):
-        newPrices = self.applyDiscount()
-        return sum(newPrices.values())
+        return self.applyDiscount()
 
     def cleanBag(self):
         self.__products = {}
@@ -79,35 +78,40 @@ class Bag:
                 product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print
 
+    def __searchProductByProductId(self, pId):
+        for product in self.__products.keys():
+            if product.getProductId() == pId:
+                return product
+        return None
+
     def applyDiscount(self):
         discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        if discounts is None:
-            newPrices = {}
-            for product in self.__products:
-                newPrices[product] = product.getProductPrice() * self.__products[product]
-            return newPrices
-        f = lambda discount: discount.getRule().check(self)
-        available_discount_values = []
-        available_discount = []
+        if discounts is None or discounts == []:
+            return self.calc()
+        f = lambda discount: discount.check(self)
+        minPrice = float('inf')
         for discount in discounts:
-             if f(discount):
-                 available_discount_values.append(discount.makeDiscount(self).getDiscount())  # brings us all of the discounts of this bag
-                 available_discount.append(discount)
+            if f(discount):
+                newPrice = self.findMinBagPrice(discount.makeDiscount(self))
+                if newPrice < minPrice:
+                    minPrice = newPrice
+        if minPrice < float('inf'):
+            return minPrice
+        else:
+            return self.calc()
 
-        m = max(available_discount_values)
-        g = lambda d: d.makeDiscount(self).getDiscount() >= m
-        max_chosen = None
-        for available in available_discount:
-             if g(available):
-                 max_chosen = available
-        discount_of_products = max_chosen.getCalc().calcDiscount(self)
+    def findMinBagPrice(self, discount_of_product):
+        newPrices = discount_of_product.getProducts()
+        s = 0
+        for prod in newPrices.keys():
+            s += newPrices[prod] * prod.getProductPrice() * self.__products.get(prod)
+        return s
 
-        newPrices = {}
+    def calc(self):
+        s = 0.0
         for product in self.__products:
-            pId = product.getProductId()
-            if pId in discount_of_products.getProducts():
-                newPrices[product] = discount_of_products.getProducts()[pId]
-        return newPrices
+            s += product.getProductPrice() * self.__products[product]
+        return s
 
 
 

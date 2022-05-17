@@ -29,3 +29,9 @@ class BagDTO:
             toReturn += "\n\t\t\t\t\t" + product.printInBag()
             toReturn += "\n\t\t\t\t\t\tquantity: " + str(self.__products.get(product))
         return toReturn
+
+    def getAllProductsAsList(self):
+        products = []
+        for product in self.__products.values():
+            products.append(product)
+        return products

@@ -143,3 +143,9 @@ class StoreDTO:
         for member in self.__permissions.keys():
             toReturn += "\n\t\t" + self.__permissions.get(member).__str__()
         return toReturn
+
+    def getProductsAsList(self):
+        products_list = []
+        for product in self.__products.values():
+            products_list.append(product)
+        return products_list

@@ -18,16 +18,16 @@ class CataoryDiscount:
 
     def calculate(self, bag, category, percent):  # (bag,catagory,percent) --> DiscountOfProducts which contain all of the product which answer on the catagory, the products is calaculated after the discount and held the price after discount <pid,price>
         to_return = DiscountOfProducts()
-        discount = 0
+        # discount = 0
         products: Dict[Product, int] = bag.getProducts()
         for prod, quantity in products.items():
             if prod.getProductCategory() == category:
-                discount += quantity * prod.getProductPrice() * percent
-                to_return.addProduct(prod.getProductId(), (1 - percent) * prod.getProductPrice())
+                # discount += percent
+                to_return.addProduct(prod, 1 - percent)
             else:
-                to_return.addProduct(prod.getProductId(), prod.getProductPrice())
-            to_return.setDiscount(discount)
-            return to_return
+                to_return.addProduct(prod, 1.0)
+            # to_return.setDiscount(discount)
+        return to_return
 
     def calcDiscount(self, bag):
         return self.__discountCalc.calcDiscount(bag)

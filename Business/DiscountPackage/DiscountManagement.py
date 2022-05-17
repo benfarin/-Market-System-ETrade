@@ -12,6 +12,7 @@ class DiscountManagement:
 
     def removeDiscount(self,discount):
         self.__discount_info.remove(discount)
+
     def getDiscountById(self,discount_id):
         for discount_info in self.__discount_info:
             if discount_info.getIdDiscount() == discount_id:
@@ -42,4 +43,4 @@ class DiscountManagement:
         for discount_info in self.__discount_info:
             if discount_info.getIdDiscount1() == discount_id or discount_info.getIdDiscount2() == discount_id:
                 return True
-        return  False
+        return False

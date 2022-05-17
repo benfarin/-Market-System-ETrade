@@ -3,7 +3,8 @@ from datetime import datetime
 
 from Business.DiscountPackage.DiscountInfo import DiscountInfo
 from Business.DiscountPackage.DiscountManagement import DiscountManagement
-from Business.DiscountRules import DiscountRules
+from Business.DiscountRules import DiscountRules, ruleType
+from Business.Rules.ruleCreator import ruleCreator
 from Business.DiscountPackage.Discount import Discount
 from Business.Managment.UserManagment import UserManagment
 from Business.UserPackage.Member import Member
@@ -29,10 +30,14 @@ class RoleManagment:
         self.__discountRules = DiscountRules()
         self.__discountManager = DiscountManagement()
         self.__memberManagement = MemberManagment.getInstance()
+        self.rule_creator = ruleCreator.getInstance()
+        self.__rules = {}
         self.__productId = 0
         self.__discountId = 0
+        self.__ruleId = 0
         self.__productId_lock = threading.Lock()
         self.__discountId_lock = threading.Lock()
+        self.__ruleId_lock = threading.Lock()
         if RoleManagment.__instance is None:
             RoleManagment.__instance = self
 
@@ -327,7 +332,7 @@ class RoleManagment:
             raise Exception(e)
 
     def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
-                          value_less_than, value_grather_than, time_from, time_until):
+                          value_less_than, value_grather_than):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)
             member = self.__memberManagement.getMembersFromUser().get(userId)
@@ -335,12 +340,13 @@ class RoleManagment:
                 raise NoSuchMemberException("user: " + str(userId) + "is not a member")
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
             discountId = self.__getDiscountId()
             discount = self.__discountRules.createSimpleDiscount(discountId, ruleContext, precent,
                                                                  category, productId)
 
             discountInfo = DiscountInfo(discountId, userId, storeId, ruleContext, ruleType, precent, category,
-                                        productId, value_less_than, value_grather_than, time_from, time_until)
+                                        productId, value_less_than, value_grather_than)
             self.__discountManager.addDiscount(discountInfo)
 
             member.addDiscount(storeId, discount)
@@ -373,10 +379,8 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountAdd(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountAdd(storeId, discountId, dId1, dId2)
 
             return discountId
 
@@ -392,32 +396,82 @@ class RoleManagment:
             if not member.isStoreExists(storeId):
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
-            discountCalc = member.addConditionDiscountMax(storeId, dId1, dId2)
             discountId = self.__getDiscountId()
-            discount = Discount(discountId, discountCalc)
-            member.addDiscount(userId, storeId, discount)
+            member.addConditionDiscountMax(storeId, discountId, dId1, dId2)
 
             return discountId
 
         except Exception as e:
             raise Exception(e)
 
-    # def updateDiscount(self, existsDiscount , userId, store,ruleContext,discountPercentage, catagory, productId):
-    #     try:
-    #         self.__memberManagement.checkOnlineUserFromUser(userId)
-    #         if self.__discountManager.isComplex(existsDiscount):
-    #             raise ComplexDiscountException("Can't update this type of discount!")
-    #         updatedDiscount = self.__discountRules.updateDiscount(existsDiscount,userId,store,ruleContext,discountPercentage, catagory, productId)
-    #         #StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateSimpleDiscountAsync",
-    #                                                           #username, storeId, discountType, precent, category, productId,
-    #                                                           #discountId);
-    #
-    #         discountData = DiscountInfo(updatedDiscount, userId, store.getStoreId(), ruleContext, ruleType.simple, discountPercentage, catagory, productId,sys.maxsize,0,datetime.datetime.now(),datetime.datetime.now())
-    #         self.__discountManager.removeDiscount(updatedDiscount); # check if id or object of discount
-    #         self.__discountManager.addDiscount(discountData);
-    #         return updatedDiscount
-    #     except Exception as e:
-    #         raise Exception(e)
+    def addConditionDiscountXor(self, userId, storeId, dId, pred1_id, pred2_id, decide):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountId = self.__getDiscountId()
+            pred1 = self.__rules.get(pred1_id)
+            pred2 = self.__rules.get(pred2_id)
+            if pred1 is None:
+                raise Exception("first rule doesnt exists")
+            if pred2 is None:
+                raise Exception("second rule doesnt exists")
+            member.addConditionDiscountXor(storeId, discountId, dId, pred1, pred2, decide)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountAnd(self, userId, storeId, dId, pred1_id, pred2_id):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountId = self.__getDiscountId()
+            pred1 = self.__rules.get(pred1_id)
+            pred2 = self.__rules.get(pred2_id)
+            if pred1 is None:
+                raise Exception("first rule doesnt exists")
+            if pred2 is None:
+                raise Exception("second rule doesnt exists")
+            member.addConditionDiscountAnd(storeId, discountId, dId, pred1, pred2)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountOr(self, userId, storeId, dId, pred1_id, pred2_id):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountId = self.__getDiscountId()
+            pred1 = self.__rules.get(pred1_id)
+            pred2 = self.__rules.get(pred2_id)
+            if pred1 is None:
+                raise Exception("first rule doesnt exists")
+            if pred2 is None:
+                raise Exception("second rule doesnt exists")
+            member.addConditionDiscountOr(storeId, discountId, dId, pred1, pred2)
+
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
 
     def __getProductId(self):
         with self.__productId_lock:
@@ -430,3 +484,139 @@ class RoleManagment:
             dId = self.__discountId
             self.__discountId += 1
             return dId
+
+    def __getRuleId(self):
+        with self.__ruleId_lock:
+            rId = self.__ruleId
+            self.__ruleId += 1
+            return rId
+
+    def createStoreWeightRule(self, userId, storeId, less_than, bigger_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                rId = self.__getRuleId()
+                rule = self.rule_creator.createStoreWeightRule(storeId, less_than, bigger_than)
+                self.__rules[rId] = rule
+                return [rId, rule]
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)
+
+    def createProductWeightRule(self, userId, storeId, pid, less_than, bigger_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                rId = self.__getRuleId()
+                rule = self.rule_creator.createProductWeightRule(pid, storeId, less_than, bigger_than)
+                self.__rules[rId] = rule
+                return [rId, rule]
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)
+
+    def createStoreQuantityRule(self, userId, storeId, less_than, bigger_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                rId = self.__getRuleId()
+                rule = self.rule_creator.createStoreQuantityRule(storeId, less_than, bigger_than)
+                self.__rules[rId] = rule
+                return [rId, rule]
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)
+
+    def createCategoryRule(self, userId, storeId, category, less_than, bigger_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                rId = self.__getRuleId()
+                rule = self.rule_creator.createCategoryRule(storeId, category, less_than, bigger_than)
+                self.__rules[rId] = rule
+                return [rId, rule]
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)
+
+    def createProductRule(self, userId, storeId, pid, less_than, bigger_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                rId = self.__getRuleId()
+                rule = self.rule_creator.createProductRule(storeId, pid, less_than, bigger_than)
+                self.__rules[rId] = rule
+                return [rId, rule]
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)
+
+    def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                rId = self.__getRuleId()
+                rule = self.rule_creator.createStorePriceRule(storeId, less_than, bigger_than)
+                self.__rules[rId] = rule
+                return [rId, rule]
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllRules(self, userId, storeId):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            if member.hasDiscountPermission(storeId):
+                return self.__rules
+            else:
+                raise Exception("user: " + member.getUserID() + " doesnt have the permission to add a rule")
+        except Exception as e:
+            raise Exception(e)

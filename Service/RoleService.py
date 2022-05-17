@@ -14,6 +14,7 @@ from Service.DTO.StorePermissionDTO import StorePermissionDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.StoreDTO import StoreDTO
 from Service.DTO.ProductDTO import ProductDTO
+from Service.DTO.RuleDTO import RuleDTO
 import logging
 
 logging.basicConfig(
@@ -25,7 +26,6 @@ logging.basicConfig(
 class RoleService:
 
     def __init__(self):
-
 
         self.__marketManage = MemberManagment.getInstance()
         self.__roleManagment = RoleManagment.getInstance()
@@ -316,11 +316,63 @@ class RoleService:
             logging.error("Failed to get store transaction by id " + str(self))
             return Response(e.__str__())
 
-    def addSimpleDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
-                          value_less_than, value_grather_than, time_from, time_until):
+    # action on discounts
+    def addSimpleDiscount_Store(self, userId, storeId, precent):
         try:
-            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, ruleContext, ruleType, precent, category, productId,
-                                                              value_less_than, value_grather_than, time_from, time_until)
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "store", "simple", precent, None,
+                                                                None, None, None)
+            logging.info("success to add discount")
+            return Response(discountId)
+        except Exception as e:
+            logging.error("Failed to add discount! ")
+            return Response(e.__str__())
+
+    # condition = weight/price/quantity
+    def addSimpleConditionDiscount_Store(self, userId, storeId, condition, precent, fromVal, toVal):
+        try:
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "store", condition, precent, None,
+                                                                None, fromVal, toVal)
+            logging.info("success to add discount")
+            return Response(discountId)
+        except Exception as e:
+            logging.error("Failed to add discount! ")
+            return Response(e.__str__())
+
+    def addSimpleDiscount_Category(self, userId, storeId, precent, category):
+        try:
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "category", "simple", precent,
+                                                                category,
+                                                                None, None, None)
+            logging.info("success to add discount")
+            return Response(discountId)
+        except Exception as e:
+            logging.error("Failed to add discount! ")
+            return Response(e.__str__())
+
+    def addSimpleConditionDiscount_Category(self, userId, storeId, precent, condition, category, fromVal, toVal):
+        try:
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "category", condition, precent,
+                                                                category, None, fromVal, toVal)
+            logging.info("success to add discount")
+            return Response(discountId)
+        except Exception as e:
+            logging.error("Failed to add discount! ")
+            return Response(e.__str__())
+
+    def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
+        try:
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "product", "simple", precent, None,
+                                                                productId, None, None)
+            logging.info("success to add discount")
+            return Response(discountId)
+        except Exception as e:
+            logging.error("Failed to add discount! ")
+            return Response(e.__str__())
+
+    def addSimpleConditionDiscount_Product(self, userId, storeId, precent, condition, productId, fromVal, toVal):
+        try:
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "product", condition, precent, None,
+                                                                productId, fromVal, toVal)
             logging.info("success to add discount")
             return Response(discountId)
         except Exception as e:
@@ -338,31 +390,123 @@ class RoleService:
 
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
         try:
-            isRemoved = self.__roleManagment.addConditionDiscountAdd(userId, storeId, dId1, dId2)
-            logging.info("success to add the add condition discount with:  " + str(dId1) + ", " + str(dId2))
-            return Response(isRemoved)
+            isAdded = self.__roleManagment.addConditionDiscountAdd(userId, storeId, dId1, dId2)
+            logging.info("success to add the add discount with:  " + str(dId1) + ", " + str(dId2))
+            return Response(isAdded)
         except Exception as e:
-            logging.error("Failed to add the add condition discount! ")
+            logging.error("Failed to add the add discount! ")
             return Response(e.__str__())
 
     def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
         try:
-            isRemoved = self.__roleManagment.addConditionDiscountMax(userId, storeId, dId1, dId2)
-            logging.info("success to add the max condition discount with:  " + str(dId1) + ", " + str(dId2))
-            return Response(isRemoved)
+            isAdded = self.__roleManagment.addConditionDiscountMax(userId, storeId, dId1, dId2)
+            logging.info("success to add the max condition discount with:  " + str(userId))
+            return Response(isAdded)
         except Exception as e:
             logging.error("Failed to add the max condition discount! ")
             return Response(e.__str__())
 
+    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2, decide):
+        try:
+            isAdded = self.__roleManagment.addConditionDiscountXor(userId, storeId, dId, pred1, pred2, decide)
+            logging.info("success to add the xor condition discount with:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to add the xor condition discount! ")
+            return Response(e.__str__())
 
-    # def updateDiscount(self, existsDiscount, userId, storeId, ruleContext, discountPercentage, catagory, productId):
+    def addConditionDiscountAnd(self, userId, storeId, dId, pred1, pred2):
+        try:
+            isAdded = self.__roleManagment.addConditionDiscountAnd(userId, storeId, dId, pred1, pred2)
+            logging.info("success to add the and condition discount with:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to add the and condition discount! ")
+            return Response(e.__str__())
+
+    def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
+        try:
+            isAdded = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
+            logging.info("success to add the or condition discount with:  " + str(userId))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed to add the or condition discount! ")
+            return Response(e.__str__())
+
+    # def addConditionDiscount(self, userId, storeId, dId, pred):
     #     try:
-    #
-    #         discountId = self.__roleManagment.updateDiscount(existsDiscount, userId, self.getStore(storeId).getData(),
-    #                                                          ruleContext,
-    #                                                          discountPercentage, catagory, productId)
-    #         logging.info("success to get user Transaction " + str(discountId))
-    #         return Response(discountId)
+    #         isAdded = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId, pred)
+    #         logging.info("success to add the condition discount:  " + str(userId))
+    #         return Response(isAdded)
     #     except Exception as e:
-    #         logging.error("Failed to make discount! ")
+    #         logging.error("Failed to add the condition discount! ")
     #         return Response(e.__str__())
+
+    def createStoreWeightRule(self, userId, storeId, less_than, bigger_than):  # store total weight
+        try:
+            rule = self.__roleManagment.createStoreWeightRule(userId, storeId, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createProductWeightRule(self, userId, storeId, pid, less_than, bigger_than):  # product total weight
+        try:
+            rule = self.__roleManagment.createProductWeightRule(userId, storeId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createStoreQuantityRule(self, userId, storeId, less_than, bigger_than):  # store total quantity
+        try:
+            rule = self.__roleManagment.createStoreQuantityRule(userId, storeId, less_than, bigger_than)
+            logging.info("success to create StoreWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create StoreWeightRule! ")
+            return Response(e.__str__())
+
+    def createCategoryRule(self, userId, storeId, category, less_than, bigger_than):  # category total quantity
+        try:
+            rule = self.__roleManagment.createCategoryRule(userId, storeId, category, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createProductRule(self, userId, storeId, pid, less_than, bigger_than):  # category total quantity
+        try:
+            rule = self.__roleManagment.createProductRule(userId, storeId, pid, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):  # category total quantity
+        try:
+            rule = self.__roleManagment.createStoreTotalAmountRule(userId, storeId, less_than, bigger_than)
+            logging.info("success to create ProductWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create ProductWeightRule! ")
+            return Response(e.__str__())
+
+    def getAllRules(self, userId, storeId):
+        try:
+            rules = self.__roleManagment.getAllRules(userId, storeId)
+            logging.info("success to get all rules:  " + str(userId))
+
+            DtoRules = []
+            for rId in rules.keys():
+                DtoRules.append(RuleDTO(rId, rules.get(rId)))
+
+            return Response(DtoRules)
+        except Exception as e:
+            logging.error("Failed to get all rules! ")
+            return Response(e.__str__())
+
