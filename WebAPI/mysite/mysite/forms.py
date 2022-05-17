@@ -41,6 +41,22 @@ class RemoveForm(forms.Form):
     owner_name = forms.CharField()
 
 
+class RemoveMemberForm(forms.Form):
+    member_name = forms.CharField()
+
+
+class StoreTransactions(forms.Form):
+    transactions_ID = forms.IntegerField()
+
+
+class UserTransactions(forms.Form):
+    user_ID = forms.CharField()
+
+
+class StoreTransactionsByID(forms.Form):
+    store_ID = forms.IntegerField()
+
+
 class UpdateProductForm(forms.Form):
     name = forms.CharField()
     category = forms.CharField()

@@ -36,6 +36,7 @@ def initialize_system():
     user_service.memberSignUp("ori", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva", "Rager", 1, 1)
     user_service.memberSignUp("rotem", "1234", "0540000000", 123, 2, "Israel", "Beer Sheva", "Rager", 1, 1)
     user_service.memberSignUp("bar", "1234", "0540000000", 123, 3, "Israel", "Beer Sheva", "Rager", 1, 1)
+    user_service.memberSignUp("kfir", "1234", "0540000000", 123, 3, "Israel", "Beer Sheva", "Rager", 1, 1)
     user1: MemberDTO = user_service.memberLogin(guest.getUserID(), "ori", "1234").getData()
     user1Id = user1.getUserID()
     user1name = user1.getMemberName()
@@ -84,6 +85,10 @@ def initialize_system():
     role_service.appointManagerToStore(store5.getStoreId(), user.getUserID(), user1name)
     role_service.setRolesInformationPermission(store5.getStoreId(), user.getUserID(), user1name)
     member_service.logoutMember("rotem")
+    kfir: MemberDTO = user_service.memberLogin(guest.getUserID(), "kfir", "1234").getData()
+    user_service.addProductToCart(kfir.getUserID(), 0, 0, 2)
+    user_service.purchaseCart(kfir.getUserID(), 1, 1)
+    member_service.logoutMember("kfir")
 
 
 def main():

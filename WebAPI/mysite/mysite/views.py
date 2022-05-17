@@ -25,7 +25,8 @@ from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdatePr
     AddProductToCartForm, PurchaseProductForm, AddProductQuantity, AddCondition, AddRule, \
     AddSimpleDiscount_Store, AddSimpleConditionDiscount_Store, AddConditionDiscountXor, AddConditionDiscountAndOr, \
     AddSimpleDiscount_Category, AddSimpleConditionDiscount_Category, AddSimpleDiscount_Product, \
-    AddSimpleConditionDiscount_Product, RemoveDiscount, RemoveForm
+    AddSimpleConditionDiscount_Product, RemoveDiscount, RemoveForm, RemoveMemberForm, StoreTransactions, \
+    UserTransactions, StoreTransactionsByID
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -34,12 +35,14 @@ stores = []
 def home_page(request):
     global user
     # print(user)
+    is_admin = False
     if isinstance(user, GuestDTO):
         title = "Welcome Guest!"
     else:
         title = "Welcome " + user.getMemberName() + "!"
+        is_admin = member_service.isSystemManger(user.getMemberName()).getData()
     all_stores = role_service.getAllStores().getData()
-    context = {"title": title, "user": user, "stores": all_stores}
+    context = {"title": title, "user": user, "stores": all_stores, "is_admin" : is_admin}
     return render(request, "home.html", context)
 
 
@@ -717,6 +720,94 @@ def remove_Owner(request, slug):
         messages.warning(request, answer.getError())
     context = {
         "title": "Remove Store Owner",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def remove_member(request):
+    global user
+    form = RemoveMemberForm(request.POST or None)
+    if form.is_valid():
+        form = RemoveMemberForm()
+    member_name = request.POST.get("member_name")
+    if member_name is not None:
+        answer = role_service.removeMember(user.getMemberName(), member_name)
+        if not answer.isError():
+            return HttpResponseRedirect("/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Remove Member Owner",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def all_stores_transactions(request):
+    answer = role_service.getAllStoreTransactions(user.getMemberName())
+    stores_transactions = []
+    if not answer.isError():
+        stores_transactions = answer.getData()
+    context = {"title": "All Stores Transaction", "transactions": stores_transactions}
+    return render(request, "transactions.html", context)
+
+
+def all_user_transactions(request):
+    answer = role_service.getAllUserTransactions(user.getMemberName())
+    user_transactions = []
+    if not answer.isError():
+        user_transactions = answer.getData()
+    context = {"title": "All Users Transaction", "transactions": user_transactions}
+    return render(request, "transactions.html", context)
+
+
+def store_transactions(request):
+    global user
+    form = StoreTransactions(request.POST or None)
+    if form.is_valid():
+        form = StoreTransactions()
+    transactions_ID = request.POST.get("transactions_ID")
+    if transactions_ID is not None:
+        answer = role_service.getStoreTransaction(user.getMemberName(), int(transactions_ID))
+        if not answer.isError():
+            return HttpResponseRedirect("/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Stores Transactions",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+def user_transactions(request):
+    global user
+    form = UserTransactions(request.POST or None)
+    if form.is_valid():
+        form = UserTransactions()
+    user_ID = request.POST.get("user_ID")
+    if user_ID is not None:
+        answer = role_service.getUserTransaction(user.getMemberName(), user_ID)
+        if not answer.isError():
+            return HttpResponseRedirect("/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "User Transactions",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+def store_transactions_ID(request):
+    global user
+    form = StoreTransactionsByID(request.POST or None)
+    if form.is_valid():
+        form = StoreTransactionsByID()
+    store_ID = request.POST.get("store_ID")
+    if store_ID is not None:
+        answer = role_service.getStoreTransactionByStoreId(user.getMemberName(), int(store_ID))
+        if not answer.isError():
+            return HttpResponseRedirect("/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Stores Transactions By StoreID",
         "form": form
     }
     return render(request, "form.html", context)

@@ -13,5 +13,16 @@
             </div>
         </div>
     {% endfor %}
+    {% if is_admin %}
+        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+        <a class="btn btn-primary" href="remove_member/" role="button">Remove Member</a>
+        <a class="btn btn-primary" href="all_stores_transactions/" role="button">Get All Stores Transactions</a>
+        <a class="btn btn-primary" href="all_users_transactions/" role="button">Get All Users Transactions</a>
+        <a class="btn btn-primary" href="store_transactions/" role="button">Get Store Transactions</a>
+        <a class="btn btn-primary" href="user_transactions/" role="button">Get User Transactions</a>
+        <a class="btn btn-primary" href="store_transactions_ID/" role="button">Get Store Transactions By StoreID</a>
+        </div>
+    {% endif %}
+
     </div>
 {% endblock %}
