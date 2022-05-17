@@ -95,7 +95,9 @@ class UserManagment(object):
                     system_manager.setLoggedIn(True)
                     system_manager.setMemberCheck(True)
                     system_manager.loginUpdates()
-            if member is not None:
+                    system_manager.updateCart(self.__getUserCart(oldUserId))
+                    return system_manager
+            elif member is not None:
                 if bcrypt.checkpw(password.encode('utf-8'), member.getPassword()):
                     self.__activeUsers[member.getUserID()] = member
                     member.setLoggedIn(True)
