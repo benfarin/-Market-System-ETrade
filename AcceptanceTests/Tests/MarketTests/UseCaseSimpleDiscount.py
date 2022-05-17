@@ -36,7 +36,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                                                  "testCategory1",17, ["test"]).getData().getProductId()
         cls.product_id_3 = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct3", 20,
                                                                  "testCategory",15, ["test"]).getData().getProductId()
-        cls.product_id_4 = cls.proxy_market.add_product_to_store(cls.store_id2, cls.user_id1, "testProduct3", 10,
+        cls.product_id_4 = cls.proxy_market.add_product_to_store(cls.store_id2, cls.user_id1, "testProduct4", 10,
                                                                  "testCategory",15, ["test"]).getData().getProductId()
 
         cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id, 100)
@@ -74,10 +74,8 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.assertEqual(1190, userTransaction.getData().getTotalAmount())
 
     def test_addCoupleOfSimpleDiscount(self):
-        self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "category", "simple", 0.1, "testCategory",
-                                            None, None, None, None, None)
-        self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "product", "simple", 0.5, None,
-                                            self.product_id_3, None, None, None, None)
+        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, 0.1, "testCategory")
+        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, 0.5, self.product_id_3).getData()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
@@ -88,16 +86,13 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.assertTrue(True)
 
     def test_addCoupleOfSimpleDiscountFromDiffrenceStores(self):
-        self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id1, "category", "simple", 0.1, "testCategory",
-                                            None, None, None, None, None)
-        self.proxy_market.addSimpleDiscount(self.user_id1, self.store_id2, "product", "simple", 0.5, None,
-                                            self.product_id_4, None, None, None, None)
+        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, 0.1, "testCategory")
+        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id2, 0.5, self.product_id_4).getData()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id2, self.product_id_4, 10)
 
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
-
 
         self.assertEqual(140, userTransaction.getData().getTotalAmount())
         self.assertTrue(True)

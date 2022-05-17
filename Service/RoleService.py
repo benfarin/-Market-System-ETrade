@@ -359,7 +359,7 @@ class RoleService:
 
     def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
         try:
-            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "store", "product", precent, None,
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "product", "simple", precent, None,
                                                                      productId, None, None)
             logging.info("success to add discount")
             return Response(discountId)
@@ -369,7 +369,7 @@ class RoleService:
 
     def addSimpleConditionDiscount_Product(self, userId, storeId, precent, condition, productId, fromVal, toVal):
         try:
-            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "store", condition, precent, None,
+            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "product", condition, precent, None,
                                                                 productId, fromVal, toVal)
             logging.info("success to add discount")
             return Response(discountId)
