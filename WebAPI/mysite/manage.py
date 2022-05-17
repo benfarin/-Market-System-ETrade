@@ -37,6 +37,7 @@ def initialize_system():
     user_service.memberSignUp("rotem", "1234", "0540000000", 123, 2, "Israel", "Beer Sheva", "Rager", 1, 1)
     user_service.memberSignUp("bar", "1234", "0540000000", 123, 3, "Israel", "Beer Sheva", "Rager", 1, 1)
     user_service.memberSignUp("kfir", "1234", "0540000000", 123, 3, "Israel", "Beer Sheva", "Rager", 1, 1)
+    user_service.memberSignUp("niv", "1234", "0540000000", 123, 3, "Israel", "Beer Sheva", "Rager", 1, 1)
     user1: MemberDTO = user_service.memberLogin(guest.getUserID(), "ori", "1234").getData()
     user1Id = user1.getUserID()
     user1name = user1.getMemberName()
@@ -89,6 +90,11 @@ def initialize_system():
     user_service.addProductToCart(kfir.getUserID(), 0, 0, 2)
     user_service.purchaseCart(kfir.getUserID(), 1, 1)
     member_service.logoutMember("kfir")
+    niv: MemberDTO = user_service.memberLogin(guest.getUserID(), "niv", "1234").getData()
+    user_service.addProductToCart(niv.getUserID(), 0, 0, 1)
+    user_service.addProductToCart(niv.getUserID(), store3.getStoreId(), cola.getProductId(), 10)
+    user_service.purchaseCart(niv.getUserID(), 1, 1)
+    member_service.logoutMember("niv")
 
 
 def main():
