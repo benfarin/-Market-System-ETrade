@@ -544,7 +544,7 @@ class Store:
         predi: storePredicateManager = storePredicateManager.getInstance()
         discount = predi.getSingleDiscountByID(self.__id, dId)
         discountcalc = discount.getCalc()
-        discount_rule = discount.getRule()  # need to fix
+        # discount_rule = discount.getRule()  # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionXOR(pred2, decide)
         predi.removeDiscount(self.getStoreId(), dId)
@@ -561,7 +561,7 @@ class Store:
         predi: storePredicateManager = storePredicateManager.getInstance()
         discount = predi.getSingleDiscountByID(self.__id, dId)
         discountcalc = discount.getCalc()
-        discount_rule = discount.getRule()   # need to fix
+        # discount_rule = discount.getRule()   # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionAND(pred2)
         predi.removeDiscount(self.getStoreId(), dId)
@@ -578,7 +578,7 @@ class Store:
         predi: storePredicateManager = storePredicateManager.getInstance()
         discount = predi.getSingleDiscountByID(self.__id, dId)
         discountcalc = discount.getCalc()
-        discount_rule = discount.getRule()   # need to fix
+        # discount_rule = discount.getRule()   # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionOR(pred2)
         predi.removeDiscount(self.getStoreId(), dId)

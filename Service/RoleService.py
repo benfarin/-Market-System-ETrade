@@ -445,7 +445,7 @@ class RoleService:
     def createStoreWeightRule(self, userId, storeId, less_than, bigger_than):  # store total weight
         try:
             rule = self.__roleManagment.createStoreWeightRule(userId, storeId, less_than, bigger_than)
-            logging.info("success to create ProductWeightRule:  " + str(userId))
+            logging.info("success to create ProductWeightRule:  " + str(rule[0]))
             return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
@@ -454,7 +454,7 @@ class RoleService:
     def createProductWeightRule(self, userId, storeId, pid, less_than, bigger_than):  # product total weight
         try:
             rule = self.__roleManagment.createProductWeightRule(userId, storeId, pid, less_than, bigger_than)
-            logging.info("success to create ProductWeightRule:  " + str(userId))
+            logging.info("success to create ProductWeightRule:  " + str(rule[0]))
             return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
@@ -463,7 +463,7 @@ class RoleService:
     def createStoreQuantityRule(self, userId, storeId, less_than, bigger_than):  # store total quantity
         try:
             rule = self.__roleManagment.createStoreQuantityRule(userId, storeId, less_than, bigger_than)
-            logging.info("success to create StoreWeightRule:  " + str(userId))
+            logging.info("success to create StoreWeightRule:  " + str(rule[0]))
             return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create StoreWeightRule! ")
@@ -472,7 +472,7 @@ class RoleService:
     def createCategoryRule(self, userId, storeId, category, less_than, bigger_than):  # category total quantity
         try:
             rule = self.__roleManagment.createCategoryRule(userId, storeId, category, less_than, bigger_than)
-            logging.info("success to create ProductWeightRule:  " + str(userId))
+            logging.info("success to create ProductWeightRule:  " + str(rule[0]))
             return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
@@ -481,7 +481,7 @@ class RoleService:
     def createProductRule(self, userId, storeId, pid, less_than, bigger_than):  # category total quantity
         try:
             rule = self.__roleManagment.createProductRule(userId, storeId, pid, less_than, bigger_than)
-            logging.info("success to create ProductWeightRule:  " + str(userId))
+            logging.info("success to create ProductWeightRule:  " + str(rule[0]))
             return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
@@ -490,7 +490,7 @@ class RoleService:
     def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):  # category total quantity
         try:
             rule = self.__roleManagment.createStoreTotalAmountRule(userId, storeId, less_than, bigger_than)
-            logging.info("success to create ProductWeightRule:  " + str(userId))
+            logging.info("success to create ProductWeightRule:  " + str(rule[0]))
             return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")

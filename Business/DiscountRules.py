@@ -76,33 +76,33 @@ class DiscountRules:
                 return self.__rules_creator.createStoreWeightRule(rId, storeId, value_less_than, value_greater_than)
             return self.__rules_creator.createProductWeightRule(rId, storeId, pid, value_less_than, value_greater_than)
 
-    def addDiscountOrRule(self, store: Store, discount_id1, discount_id2, original_discount_id):
-        predicate: storePredicateManager = storePredicateManager.getInstance()
-        discounts1: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
-        discount2: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
-        rule1 = discounts1.getRule()
-        rule2 = discount2.getRule()
-        orRule = rule1.OrRule(rule2)
-        condition_discount = ConditionDiscount(
-            predicate.getSingleDiscountByID(store.getStoreId(), original_discount_id))
-        condition_discount.setRule(orRule)
-        store.addDicount(condition_discount)
-
-    def addDiscountAndRule(self, store: Store, discount_id1, discount_id2, original_discount_id):
-        predicate: storePredicateManager = storePredicateManager.getInstance()
-        discounts1: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
-        discount2: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
-        rule1 = discounts1.getRule()
-        rule2 = discount2.getRule()
-        andRule = rule1.AddRules(rule2)
-        condition_discount = ConditionDiscount(
-            predicate.getSingleDiscountByID(store.getStoreId(), original_discount_id))
-        condition_discount.setRule(andRule)
-        store.addDicount(condition_discount)
-
-    def addDiscountXorRule(self, store: Store, discount_id1, discount_id2, decide):
-        predicate: storePredicateManager = storePredicateManager.getInstance()
-        discounts1: ConditionDiscount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
-        discount2: ConditionDiscount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
-        xor: ConditionDiscount = discounts1.conditionXOR(discount2, decide)
-        store.addDicount(xor)
+    # def addDiscountOrRule(self, store: Store, discount_id1, discount_id2, original_discount_id):
+    #     predicate: storePredicateManager = storePredicateManager.getInstance()
+    #     discounts1: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
+    #     discount2: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
+    #     rule1 = discounts1.getRule()
+    #     rule2 = discount2.getRule()
+    #     orRule = rule1.OrRule(rule2)
+    #     condition_discount = ConditionDiscount(
+    #         predicate.getSingleDiscountByID(store.getStoreId(), original_discount_id))
+    #     condition_discount.setRule(orRule)
+    #     store.addDicount(condition_discount)
+    #
+    # def addDiscountAndRule(self, store: Store, discount_id1, discount_id2, original_discount_id):
+    #     predicate: storePredicateManager = storePredicateManager.getInstance()
+    #     discounts1: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
+    #     discount2: Discount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
+    #     rule1 = discounts1.getRule()
+    #     rule2 = discount2.getRule()
+    #     andRule = rule1.AddRules(rule2)
+    #     condition_discount = ConditionDiscount(
+    #         predicate.getSingleDiscountByID(store.getStoreId(), original_discount_id))
+    #     condition_discount.setRule(andRule)
+    #     store.addDicount(condition_discount)
+    #
+    # def addDiscountXorRule(self, store: Store, discount_id1, discount_id2, decide):
+    #     predicate: storePredicateManager = storePredicateManager.getInstance()
+    #     discounts1: ConditionDiscount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id1)
+    #     discount2: ConditionDiscount = predicate.getSingleDiscountByID(store.getStoreId(), discount_id2)
+    #     xor: ConditionDiscount = discounts1.conditionXOR(discount2, decide)
+    #     store.addDicount(xor)
