@@ -33,3 +33,6 @@ class IBag(Interface):
     def printProducts(self):
         pass
 
+    def addBag(self, bag):
+        pass
+

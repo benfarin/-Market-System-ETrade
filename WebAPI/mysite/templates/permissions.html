@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+{% if title %}
+    <h1 style="text-align:center;">{{ title }}</h1>
+{% endif %}
+
+{% if messages %}
+<div class="messages" style="text-align:center;">
+    {% for message in messages %}
+    <li>{% if message.tags %} {{ message }} {% endif %}</li>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form style="text-align:center;" method="POST" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    <table style="margin-left:auto;margin-right:auto;">
+        {{ form.as_table }}
+    </table>
+    <button style="text-align:row mb-3;" class="btn btn-secondary" type="submit" name="btn1">Set Stock Manager Permission</button>
+    <button style="text-align:row mb-3;" class="btn btn-secondary" type="submit" name="btn2">Set Permission For Appointing Owner</button>
+    <button style="text-align:row mb-3;" class="btn btn-secondary" type="submit" name="btn4">Set Permission For Changing Permissions</button>
+    <button style="text-align:row mb-3;" class="btn btn-secondary" type="submit" name="btn5">Set Permission For Purchase History</button>
+</form>
+
+
+
+{% endblock %}

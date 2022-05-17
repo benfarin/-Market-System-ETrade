@@ -1,4 +1,3 @@
-import numpy as np
 
 from Exceptions.CustomExceptions import PaymentException
 
@@ -18,8 +17,8 @@ class PaymentSystem:
             PaymentSystem.__instance = self
 
     def CreatePayment(self, clientId, accountNumber1, branch1, accountNumber2, branch2, paymentAmount):
-        if np.random.random() < 0.05:
-            raise PaymentException("payment failed")
+        # if np.random.random() < 0.05:
+        #     raise PaymentException("payment failed")
         return True
 
     def CancelPayment(self, paymentId):

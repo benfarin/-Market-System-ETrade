@@ -41,6 +41,15 @@ class MemberService:
             logging.error("Failed remove the store: " + str(storeId))
             return Response(e.__str__())
 
+    def recreateStore(self, founderId, storeId):
+        try:
+            isRemoved = self.__memberManage.recreateStore(founderId, storeId)
+            logging.info("recreate store: " + founderId)
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed recreate the store: " + str(storeId))
+            return Response(e.__str__())
+
     def logoutMember(self, userName):
         try:
             isLoggedOut = self.__memberManage.logoutMember(userName)
@@ -54,8 +63,22 @@ class MemberService:
         try:
             transactions = self.__memberManage.getMemberTransactions(userID)
             logging.info("")
-            return Response(userTransactionDTO(transactions))
+            transaction_DTO = []
+            for transaction in transactions:
+                transaction_DTO.append(userTransactionDTO(transaction))
+            return Response(transaction_DTO)
         except Exception as e:
             logging.error("Failed opening a new store")
             return Response(e.__str__())
+
+    def isSystemManger(self, userName):
+        try:
+            isSM = self.__memberManage.isSystemManger(userName)
+            logging.info("success to get is system manager:  " + str(userName))
+            return Response(isSM)
+        except Exception as e:
+            logging.error("Failed to get system manager! ")
+            return Response(e.__str__())
+
+
 

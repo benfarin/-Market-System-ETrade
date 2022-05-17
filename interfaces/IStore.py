@@ -30,6 +30,9 @@ class IStore(Interface):
     def setPurchaseHistoryInformationPermission(self, assigner, assignee):
         pass
 
+    def setDiscountPermission(self, assigner, assignee):
+        pass
+
     def addProductToStore(self, user, product):
         pass
 
@@ -46,6 +49,9 @@ class IStore(Interface):
         pass
 
     def updateProductCategory(self, user, productId, newCategory):
+        pass
+
+    def updateProductWeight(self, user, productID, newWeight):
         pass
 
     def appointManagerToStore(self, assigner, assignee):
@@ -93,5 +99,41 @@ class IStore(Interface):
         pass
 
     def removeProductFromBag(self, productId, quantity):
+        pass
+
+    def hasPermissions(self, user):
+        pass
+
+    def removeStoreOwner(self, assigner, assignee):
+        pass
+
+    def hasRole(self, user):
+        pass
+
+    def getTransactionsForSystemManager(self):
+        pass
+
+    def addDiscount(self, user, discount):
+        pass
+
+    def removeDiscount(self, user, discountId):
+        pass
+
+    def addConditionDiscountAdd(self, user, dId, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(self, user, dId, dId1, dId2):
+        pass
+
+    def addConditionDiscountOr(self, user, discountId, dId, pred1, pred2):
+        pass
+
+    def addConditionDiscountAnd(self, user, discountId, dId, pred1, pred2):
+        pass
+
+    def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2, decide):
+        pass
+
+    def hasDiscountPermission(self, user):
         pass
 

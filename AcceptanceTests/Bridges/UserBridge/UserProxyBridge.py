@@ -30,11 +30,11 @@ class UserProxyBridge:
         else:
             return self._real_subject.login_guest()
 
-    def login_member(self, user_name, password):
+    def login_member(self, oldUserId, user_name, password):
         if self.check_access():
             return True
         else:
-            return self._real_subject.login_member(user_name, password)
+            return self._real_subject.login_member(oldUserId, user_name, password)
 
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         if self.check_access():
@@ -52,13 +52,35 @@ class UserProxyBridge:
         else:
             return self._real_subject.logout_member(user_id)
 
+    def removeMember(self, systemManagerName, memberName):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.removeMember(systemManagerName, memberName)
+
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         if self.check_access():
             return True
         return self._real_subject.open_store(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
+
+    def removeStore(self,store_id, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.removeStore(store_id, user_id)
+
+    def recreateStore(self,user_id, store_id):
+        if self.check_access():
+            return True
+        return self._real_subject.recreateStore(user_id, store_id)
 
     def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         if self.check_access():
             return True
         return self._real_subject.appoint_system_manager(userName, password, phone, accountNumber, brunch,
                                                          country, city, street, apartmentNum, zipCode)
+
+    # def logout_member(self, user_id,password):
+    #     if self.check_access():
+    #         return True
+    #     else:
+    #         return self._real_subject.logout_member(user_id,password)

@@ -1,5 +1,7 @@
 from Business.Managment.UserManagment import UserManagment
+from Business.Managment.GetterManagment import GetterManagment
 from Business.UserPackage.User import User
+from Service.DTO.StoreDTO import StoreDTO
 from Service.Response import Response
 from Service.DTO.GuestDTO import GuestDTO
 from Service.DTO.MemberDTO import MemberDTO
@@ -8,6 +10,8 @@ from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.CartDTO import CartDTO
 from typing import Dict
 import logging
+
+from interfaces.IStore import IStore
 
 firstAdminRegistered = False
 
@@ -22,6 +26,7 @@ class UserService:
     def __init__(self):
         global firstAdminRegistered
         self.__userManagment = UserManagment.getInstance()
+        self.__getterManagment = GetterManagment.getInstance()
         self.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva", "Ben-Gurion", 0,
                                  999999)
         # self.__users: Dict[str : User] = {}
@@ -62,9 +67,9 @@ class UserService:
             logging.warning("There was a problem during registration process")
             return Response(e.__str__())
 
-    def memberLogin(self, userName, password):
+    def memberLogin(self, oldUserId, userName, password):
         try:
-            member = self.__userManagment.memberLogin(userName, password)
+            member = self.__userManagment.memberLogin(oldUserId, userName, password)
             logging.info("success to login user " + userName)
             return Response(MemberDTO(member))
         except Exception as e:
@@ -78,15 +83,24 @@ class UserService:
             address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
             systemManager = self.__userManagment.systemManagerSignUp(userName, password, phone, address, bank)
             logging.info("success to sign new system manager " + userName)
-            return MemberDTO(systemManager)
+            return Response(MemberDTO(systemManager))
         except Exception as e:
             logging.error("Cannot signup new System Manager")
-            return e
+            return Response(e.__str__())
 
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
             isAdded = self.__userManagment.addProductToCart(userID, storeId, productId, quantity)
             logging.info("added product " + str(productId) + "to cart for user " + str(userID))
+            return Response(isAdded)
+        except Exception as e:
+            logging.error("Failed add product to cart")
+            return Response(e.__str__())
+
+    def addProductToCartWithoutStore(self, userID, productID, quantity):
+        try:
+            isAdded = self.__userManagment.addProductToCartWithoutStore(userID, productID, quantity)
+            logging.info("added product " + str(productID) + "to cart for user " + str(userID))
             return Response(isAdded)
         except Exception as e:
             logging.error("Failed add product to cart")
@@ -112,7 +126,7 @@ class UserService:
 
     def getProductByCategory(self, category):
         try:
-            products = self.__userManagment.getProductByCategory(category)
+            products = self.__getterManagment.getProductByCategory(category)
             logging.info("success to get product by category " + category)
 
             productsDTOs = []
@@ -125,7 +139,7 @@ class UserService:
 
     def getProductByName(self, nameProduct):
         try:
-            products = self.__userManagment.getProductsByName(nameProduct)
+            products = self.__getterManagment.getProductsByName(nameProduct)
             logging.info("success to get product by name " + nameProduct)
 
             productsDTOs = []
@@ -138,7 +152,7 @@ class UserService:
 
     def getProductByKeyword(self, keyword):
         try:
-            products = self.__userManagment.getProductByKeyWord(keyword)
+            products = self.__getterManagment.getProductByKeyWord(keyword)
             logging.info("success to get product by keyword " + keyword)
 
             productsDTOs = []
@@ -151,7 +165,7 @@ class UserService:
 
     def getProductPriceRange(self, minPrice, highPrice):
         try:
-            products = self.__userManagment.getProductPriceRange(minPrice, highPrice)
+            products = self.__getterManagment.getProductPriceRange(minPrice, highPrice)
             logging.info("success to get product by price range")
 
             productsDTOs = []
@@ -180,3 +194,15 @@ class UserService:
         except Exception as e:
             logging.error("Failed to get cart for user" + str(userID))
             return Response(e.__str__())
+
+    def getSumAfterDiscount(self, userId):
+        try:
+            totalAmount = self.__userManagment.getSumAfterDiscount(userId)
+            logging.info("success get sum after discount " + str(userId))
+            return Response(totalAmount)
+        except Exception as e:
+            logging.error("Failed to get sum after discount" + str(userId))
+            return Response(e.__str__())
+
+
+

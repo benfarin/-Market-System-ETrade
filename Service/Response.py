@@ -20,4 +20,4 @@ class Response:
     def __str__(self):
         if self.isError():
             return self.__error
-        return self.__data.__str__
+        return self.__data.__str__()

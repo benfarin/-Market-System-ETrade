@@ -6,6 +6,9 @@ class IMarket(Interface):
     def getUserID(self):
         pass
 
+    def isStoreExists(self, storeId):
+        pass
+
     def createStore(self, storeName, user, bank, address):  # change test!
         pass
 
@@ -28,12 +31,6 @@ class IMarket(Interface):
         pass
 
     def getProductByPriceRange(self, minPrice, highPrice):
-        pass
-
-    def addTransaction(self, storeID, transaction):
-        pass
-
-    def removeTransaction(self, storeID, transactionId):
         pass
 
     def purchaseCart(self, user, bank):
@@ -60,10 +57,16 @@ class IMarket(Interface):
     def setPurchaseHistoryInformationPermission(self, storeID, assigner, assignee):
         pass
 
+    def setDiscountPermission(self, storeID, assigner, assignee):
+        pass
+
     def addProductToStore(self, storeID, user, product):  # Tested
         pass
 
     def updateProductPrice(self, storeID, user, productId, mewPrice):
+        pass
+
+    def updateProductWeight(self, user, storeID, productID, newWeight):
         pass
 
     def addProductQuantityToStore(self, storeID, user, productId, quantity):
@@ -101,4 +104,61 @@ class IMarket(Interface):
         pass
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
+        pass
+
+    def addProductToCartWithoutStore(self, user, productID, quantity):
+        pass
+
+    def getUserStores(self, user):
+        pass
+
+    def removeStoreOwner(self, storeID, assigner, assignee):
+        pass
+
+    def hasRole(self, user):
+        pass
+
+    def getAllStoreTransactions(self):
+        pass
+
+    def getAllUserTransactions(self):
+        pass
+
+    def getStoreTransaction(self, transactionId):
+        pass
+
+    def getUserTransaction(self, transactionId):
+        pass
+
+    def getStoreTransactionByStoreId(self, storeId):
+        pass
+
+    def recreateStore(self, storeID, founder):
+        pass
+
+    def addDiscount(self, storeId, user, discount):
+        pass
+
+    def removeDiscount(self, storeId, user, discountId):
+        pass
+
+    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
+        pass
+
+    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
+        pass
+
+    def updateCart(self, cart1, cart2):
+        pass
+
+    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
+        pass
+
+    def addConditionDiscountAnd(self, storeId, user, dId, discountId, pred1, pred2):
+        pass
+
+    def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2, decide):
+        pass
+
+    def hasDiscountPermission(self, user, storeId):
         pass

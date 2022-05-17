@@ -29,3 +29,12 @@ class AddressDTO:
 
     def getApartmentNum(self):
         return self.__apartmentNum
+
+    def __str__(self):
+        toReturn = "address: "
+        toReturn += "\n\t\tcountry: " + self.__country
+        toReturn += "\n\t\tcity: " + self.__city
+        toReturn += "\n\t\tstreet: " + self.__street
+        toReturn += "\n\t\tapartment number: " + str(self.__apartmentNum)
+        return toReturn + "\n\t\tzip code: " + str(self.__zipCode)
+

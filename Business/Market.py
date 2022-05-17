@@ -10,6 +10,7 @@ from interfaces.IStore import IStore
 from interfaces.IMember import IMember
 from interfaces.IUser import IUser
 from Payment.PaymentStatus import PaymentStatus
+from Business.Transactions.TransactionHistory import TransactionHistory
 from Payment.PaymentDetails import PaymentDetails
 from Payment.paymentlmpl import Paymentlmpl
 from Business.Transactions.StoreTransaction import StoreTransaction
@@ -33,10 +34,16 @@ class Market:
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
+        self.__transactionHistory = TransactionHistory.getInstance()
+        self.__removedStores: Dict[str: IStore] = {}
+
         self.__globalStore = 0
-        self._transactionIdCounter = 0
+        self.__storeTransactionIdCounter = 0
+        self.__userTransactionIdCounter = 0
         self.__storeId_lock = threading.Lock()
-        self.__transactionId_lock = threading.Lock()
+        self.__StoreTransactionId_lock = threading.Lock()
+        self.__UserTransactionId_lock = threading.Lock()
+
         if Market.__instance is None:
             Market.__instance = self
 
@@ -45,6 +52,24 @@ class Market:
         newStore = Store(storeID, storeName, user, bank, address)
         self.__stores[storeID] = newStore
         return newStore
+
+    def isStoreExists(self, storeId):
+        return storeId in self.__stores.keys()
+
+    def getStore(self, storeId):
+        if storeId in self.__stores.keys():
+            return self.__stores.get(storeId)
+        raise NoSuchStoreException("store: " + str(storeId) + " doesnt exists in the market")
+
+    def getUserStores(self, user):
+        allStores = []
+        for store in self.__stores.values():
+            if store.hasPermissions(user):
+                allStores.append(store)
+        return allStores
+
+    def getAllStores(self):
+        return self.__stores.values()
 
     def addProductToCart(self, user, storeID, productID, quantity):  # Tested
         try:
@@ -56,6 +81,25 @@ class Market:
                 return True
             else:
                 raise QuantityException("The quantity " + quantity + " is not available")
+        except Exception as e:
+            raise Exception(e)
+
+    def __getStoreByProductID(self, productID):
+        for store in self.__stores.values():
+            if store.getProductFromStore(productID) is not None:
+                return store
+        raise ProductException("There no product id :" + productID + " in the market!")
+
+    def addProductToCartWithoutStore(self, user, productID, quantity):  # Tested
+        try:
+            store = self.__getStoreByProductID(productID)
+            if store is not None:
+                if self.__stores.get(store.getStoreId()).addProductToBag(productID, quantity):
+                    product = self.__stores.get(store.getStoreId()).getProduct(productID)
+                    user.getCart().addProduct(store.getStoreId(), product, quantity)
+                    return True
+                else:
+                    raise QuantityException("The quantity " + quantity + " is not available")
         except Exception as e:
             raise Exception(e)
 
@@ -114,18 +158,7 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
-    def addTransaction(self, storeID, transaction):
-        try:
-            self.__stores.get(storeID).addTransaction(transaction)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeTransaction(self, storeID, transactionId):
-        try:
-            self.__stores.get(storeID).removeTransaction(transactionId)
-        except Exception as e:
-            raise Exception(e)
-
+    # need to remember that if a user add the product to the cart, then the product is in the stock.
     def purchaseCart(self, user, bank):
         try:
             cart = user.getCart()
@@ -148,19 +181,22 @@ class Market:
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
                     # user.addPaymentStatus(paymentStatus)
-                    transactionId = self.__getTransactionId()
+                    transactionId = self.__getStoreTransactionId()
                     storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
+                    self.__transactionHistory.addStoreTransaction(storeTransaction)
                     storeTransactions[storeId] = storeTransaction
+                    cart.cleanBag(storeId)
                 else:
                     storeFailed.append(storeId)
 
             userPaymentId = Paymentlmpl.getInstance().getPaymentId()
-            user.addPayment(userPaymentId)
-            userTransaction = UserTransaction(user.getUserID(), self.__getTransactionId(), storeTransactions, userPaymentId)
+            userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(), storeTransactions,
+                                              userPaymentId, totalAmount)
             user.addTransaction(userTransaction)
+            self.__transactionHistory.addUserTransaction(userTransaction)
 
             # need to think what should we do if some of the payments failed
             if len(storeFailed) == 0:
@@ -187,6 +223,13 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def removeStoreOwner(self, storeID, assigner, assignee):  # unTested
+        try:
+            self.__stores.get(storeID).removeStoreOwner(assigner, assignee)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def setStockManagerPermission(self, storeID, assigner, assignee):  # Tested
         try:
             self.__stores.get(storeID).setStockManagementPermission(assigner, assignee)
@@ -202,6 +245,7 @@ class Market:
             raise Exception(e)
 
     def setChangePermission(self, storeID, assigner, assignee):
+        self.__removeStoreLock.acquire(False)
         try:
             self.__stores.get(storeID).setChangePermission(assigner, assignee)
             return True
@@ -222,6 +266,13 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def setDiscountPermission(self, storeID, assigner, assignee):
+        try:
+            self.__stores.get(storeID).setDiscountPermission(assigner, assignee)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def addProductToStore(self, storeID, user, product):  # Tested
         try:
             self.__stores.get(storeID).addProductToStore(user, product)
@@ -231,8 +282,7 @@ class Market:
 
     def updateProductPrice(self, storeID, user, productId, mewPrice):
         try:
-            self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
-            return True
+            return self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
         except Exception as e:
             raise Exception(e)
 
@@ -284,9 +334,25 @@ class Market:
         try:
             if self.__stores.get(storeID) is None:
                 raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
-            if self.__stores.get(storeID).getStoreFounderId() != user.getUserID():
+            founderId = self.__stores.get(storeID).getStoreFounderId()
+            if founderId != user.getUserID():
                 raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__removedStores[storeID] = self.__stores.get(storeID)
             self.__stores.pop(storeID)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def recreateStore(self, storeID, founder):
+        try:
+            if self.__removedStores.get(storeID) is None:
+                raise NoSuchStoreException("Store " + str(storeID) + " is not removed from the system")
+            founderId = self.__removedStores.get(storeID).getStoreFounderId()
+            if founderId != founder.getUserID():
+                raise NotFounderException(
+                    "user: " + founder.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__stores[storeID] = self.__removedStores.get(storeID)
+            self.__removedStores.pop(storeID)
             return True
         except Exception as e:
             raise Exception(e)
@@ -299,15 +365,124 @@ class Market:
 
     def updateProductName(self, user, storeID, productID, newName):
         try:
-            self.__stores.get(storeID).updateProductName(user, productID, newName)
-            return True
+            return self.__stores.get(storeID).updateProductName(user, productID, newName)
         except Exception as e:
             raise Exception(e)
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         try:
-            self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
-            return True
+            return self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateProductWeight(self, user, storeId, productID, newWeight):
+        try:
+            return self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
+        except Exception as e:
+            raise Exception(e)
+
+    def updateCart(self, cart1, cart2):
+        cart1.updateCart(cart2)
+
+    def hasRole(self, user):
+        for store in self.__stores.values():
+            if store.hasRole(user):
+                return True
+        return False
+
+    def getAllStoreTransactions(self):
+        try:
+            return self.__transactionHistory.getAllStoreTransactions()
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllUserTransactions(self):
+        try:
+            return self.__transactionHistory.getAllUserTransactions()
+        except Exception as e:
+            raise Exception(e)
+
+    def getStoreTransaction(self, transactionId):
+        try:
+            return self.__transactionHistory.getStoreTransactionById(transactionId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getUserTransaction(self, transactionId):
+        try:
+            return self.__transactionHistory.getUserTransactionById(transactionId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getStoreTransactionByStoreId(self, storeId):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getTransactionsForSystemManager()
+        except Exception as e:
+            raise Exception(e)
+
+    def addDiscount(self, storeId, user, discount):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addDiscount(user, discount)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeDiscount(self, storeId, user, discountId):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).removeDiscount(user, discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountAdd(user, dId, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountMax(user, dId, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountXor(self, storeId, user, discountId, dId, pred1, pred2, decide):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountXor(user, discountId, dId, pred1, pred2, decide)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountAnd(self, storeId, user, discountId, dId, pred1, pred2):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountAnd(user, discountId, dId, pred1, pred2)
+        except Exception as e:
+            raise Exception(e)
+
+    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            self.__stores.get(storeId).addConditionDiscountOr(user, discountId, dId, pred1, pred2)
+        except Exception as e:
+            raise Exception(e)
+
+    def hasDiscountPermission(self, user, storeId):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).hasDiscountPermission(user)
         except Exception as e:
             raise Exception(e)
 
@@ -317,8 +492,14 @@ class Market:
             self.__globalStore += 1
             return storeId
 
-    def __getTransactionId(self):
-        with self.__transactionId_lock:
-            transactionId = self._transactionIdCounter
-            self._transactionIdCounter += 1
-            return transactionId
+    def __getStoreTransactionId(self):
+        with self.__StoreTransactionId_lock:
+            stId = self.__storeTransactionIdCounter
+            self.__storeTransactionIdCounter += 1
+            return stId
+
+    def __getUserTransactionId(self):
+        with self.__UserTransactionId_lock:
+            utId = self.__userTransactionIdCounter
+            self.__userTransactionIdCounter += 1
+            return utId

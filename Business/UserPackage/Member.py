@@ -2,7 +2,7 @@ from Business.UserPackage.User import User
 import bcrypt
 import threading
 
-from Exceptions.CustomExceptions import NoSuchMemberException
+from Exceptions.CustomExceptions import NoSuchMemberException, PasswordException
 from interfaces.IMarket import IMarket
 from Business.Market import Market
 from concurrent.futures import Future
@@ -38,7 +38,6 @@ class Member(User):
         self.__address = address  # type address class
         self.__bank = bank  # type bank
         self.__market: IMarket = Market.getInstance()
-        exc = None
 
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
@@ -61,11 +60,30 @@ class Member(User):
     def getMemberName(self):
         return self.__userName
 
+    def getMemberTransactions(self):
+        return super().getTransactions().values()
+
+    def setCart(self, cart):
+        self._cart = cart
+
+    def updateCart(self, cart):
+        self.__market.updateCart(self._cart, cart)
+
+    def isStoreExists(self, storeId):
+        return self.__market.isStoreExists(storeId)
+
     def loginUpdates(self):
         try:
             return self.__market.loginUpdates(self)
         except Exception as e:
             raise Exception(e)
+
+    def change_password(self, old_password, new_password):
+        if bcrypt.checkpw(old_password.encode('utf-8'), self.__password):
+            self.__password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            return "Password changed succesfully!"
+        else:
+            raise PasswordException("password not good!")
 
     @threaded
     def createStore(self, storeName, bank, address):
@@ -78,6 +96,13 @@ class Member(User):
     def removeStore(self, storeId):
         try:
             return self.__market.removeStore(storeId, self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def recreateStore(self, storeId):
+        try:
+            return self.__market.recreateStore(storeId, self)
         except Exception as e:
             raise Exception(e)
 
@@ -131,6 +156,13 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def setDiscountPermission(self, storeID, assignee):
+        try:
+            return self.__market.setDiscountPermission(storeID, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def addProductToStore(self, storeID, product):
         try:
             return self.__market.addProductToStore(storeID, self, product)
@@ -173,6 +205,13 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def updateProductWeight(self, storeID, productID, newWeight):
+        try:
+            return self.__market.updateProductWeight(self, storeID, productID, newWeight)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def getRolesInformation(self, storeID):
         try:
             return self.__market.getRolesInformation(storeID, self)
@@ -183,5 +222,81 @@ class Member(User):
     def getPurchaseHistoryInformation(self, storeID):
         try:
             return self.__market.printPurchaseHistoryInformation(storeID, self)
+        except Exception as e:
+            raise Exception(e)
+
+    def getUserStores(self):
+        try:
+            return self.__market.getUserStores(self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeStoreOwner(self, storeId, assignee):
+        try:
+            return self.__market.removeStoreOwner(storeId, self, assignee)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addDiscount(self, storeId, discount):
+        try:
+            return self.__market.addDiscount(storeId, self, discount)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeDiscount(self, storeId, discountId):
+        try:
+            return self.__market.removeDiscount(storeId, self, discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountAdd(self, storeId, dId, dId1, dId2):
+        try:
+            return self.__market.addConditionDiscountAdd(storeId, self, dId, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountMax(self, storeId, dId, dId1, dId2):
+        try:
+            return self.__market.addConditionDiscountMax(storeId, self, dId, dId1, dId2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2, decide):
+        try:
+            return self.__market.addConditionDiscountXor(storeId, self, discountId, dId, pred1, pred2, decide)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountAnd(self, storeId, discountId, dId, pred1, pred2):
+        try:
+            return self.__market.addConditionDiscountAnd(storeId, self, discountId, dId, pred1, pred2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addConditionDiscountOr(self, storeId, discountId, dId, pred1, pred2):
+        try:
+            return self.__market.addConditionDiscountOr(storeId, self, discountId, dId, pred1, pred2)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def hasRole(self):
+        try:
+            return self.__market.hasRole(self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def hasDiscountPermission(self, storeId):
+        try:
+            return self.__market.hasDiscountPermission(self, storeId)
         except Exception as e:
             raise Exception(e)

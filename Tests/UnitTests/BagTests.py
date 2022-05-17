@@ -35,10 +35,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(80.0, self.bag.calcSum())
         self.assertEqual(2, self.bag.removeProduct(self.p1.getProductId()))
 
-        self.bag.updateProduct(self.p2.getProductId(), 2)
+        self.bag.updateBag(self.p2.getProductId(), 2)
         self.assertEqual(100.0, self.bag.calcSum())
 
-        self.bag.updateProduct(self.p2.getProductId(), -2)
+        self.bag.updateBag(self.p2.getProductId(), -2)
         self.assertEqual(60.0, self.bag.calcSum())
 
 

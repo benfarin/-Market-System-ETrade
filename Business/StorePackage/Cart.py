@@ -34,6 +34,21 @@ class Cart:
         else:
             return False
 
+    def cleanBag(self, storeId):
+        if self.__bags.get(storeId) is not None:
+            self.__bags.get(storeId).cleanBag()
+        else:
+            raise NoSuchStoreException("storeId does not exists, can't clean the bag from the cart")
+
+    def updateCart(self, cart):
+        for storeId in cart.getAllBags().keys():
+            if storeId in self.__bags.keys():
+                self.__bags[storeId] = self.__bags[storeId].addBag(cart.getAllBags()[storeId])
+            else:
+                self.__bags[storeId] = cart.getAllBags()[storeId]
+
+
+
     def updateBag(self, bag):
         if self.__bags.get(bag.getStoreId()) is not None:
             self.__bags[bag.getStoreId()] = bag
@@ -97,3 +112,7 @@ class Cart:
             printBags += "\n\t\t\tStore id:" + str(
                 bag.getStoreId()) + " store products:" + "\t\t\t\t\t\t\t\t\t" + bag.printProducts()
         return printBags
+
+    def applyDiscount(self, bag: Bag):
+        bag.applyDiscount()
+

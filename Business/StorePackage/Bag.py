@@ -3,6 +3,7 @@ from zope.interface import implements
 
 from Exceptions.CustomExceptions import QuantityException, ProductException
 from interfaces.IBag import IBag
+from Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 
 
 @zope.interface.implementer(IBag)
@@ -41,7 +42,7 @@ class Bag:
                 return quantity
         raise ProductException("no such product in the Bag")
 
-    def updateProduct(self, productId, quantity):
+    def updateBag(self, productId, quantity):
         for product in self.__products.keys():
             if product.getProductId() == productId:
                 self.__products[product] += quantity
@@ -53,14 +54,19 @@ class Bag:
     def getProducts(self):
         return self.__products
 
+    def addBag(self, bag):
+        for product in bag.__products.keys():
+            if product in self.__products:
+                self.__products[product] += bag.getProducts()[product]
+            else:
+                self.__products[product] = bag.getProducts()[product]
+        return True
+
     def getProductQuantity(self, product):
         return self.__products[product]
 
     def calcSum(self):
-        s = 0.0
-        for p in self.__products.keys():
-            s += p.getProductPrice() * self.__products[p]
-        return s
+        return self.applyDiscount()
 
     def cleanBag(self):
         self.__products = {}
@@ -71,3 +77,43 @@ class Bag:
             products_print += "\n\t\t\tid product:" + str(product.getProductId()) + " name:" + str(
                 product.getProductName()) + " quantity:" + str(self.__products.get(product))
         return products_print
+
+    def __searchProductByProductId(self, pId):
+        for product in self.__products.keys():
+            if product.getProductId() == pId:
+                return product
+        return None
+
+    def applyDiscount(self):
+        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        if discounts is None or discounts == []:
+            return self.calc()
+        f = lambda discount: discount.check(self)
+        minPrice = float('inf')
+        for discount in discounts:
+            if f(discount):
+                newPrice = self.findMinBagPrice(discount.makeDiscount(self))
+                if newPrice < minPrice:
+                    minPrice = newPrice
+        if minPrice < float('inf'):
+            return minPrice
+        else:
+            return self.calc()
+
+    def findMinBagPrice(self, discount_of_product):
+        newPrices = discount_of_product.getProducts()
+        s = 0
+        for prod in newPrices.keys():
+            s += newPrices[prod] * prod.getProductPrice() * self.__products.get(prod)
+        return s
+
+    def calc(self):
+        s = 0.0
+        for product in self.__products:
+            s += product.getProductPrice() * self.__products[product]
+        return s
+
+
+
+
+

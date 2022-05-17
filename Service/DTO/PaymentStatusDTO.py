@@ -31,4 +31,9 @@ class PaymentStatusDTO:
     def setPaymentID(self, paymentID):
         self.paymentId = paymentID
 
+    def __str__(self):
+        toReturn = "payment" + str(self.paymentId) + ":"
+        toReturn += "\n\tuserId: " + str(self.clientId)
+        return toReturn + "\n\tstatus: " + str(self.status)
+
 

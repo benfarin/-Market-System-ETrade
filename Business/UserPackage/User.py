@@ -35,7 +35,6 @@ class User:
         self.__id = str(uuid.uuid4())  # unique id
         self._cart = Cart(self.__id)
         self.__memberCheck = False
-        self.__paymentsId: [int] = []
         self.__transactions: Dict[int: UserTransaction] = {}
         self.__market: IMarket = Market.getInstance()
         # self.start()
@@ -52,15 +51,6 @@ class User:
 
     def getTransactionById(self, transactionId):
         return self.__transactions[transactionId]
-
-    def getPaymentsIds(self):
-        return self.__paymentsId
-
-    def addPayment(self, paymentId):
-        self.__paymentsId.append(paymentId)
-
-    def removePayment(self, paymentId):
-        self.__paymentsId.pop(paymentId)
 
     def getUserID(self):
         return self.__id
@@ -85,9 +75,17 @@ class User:
             raise Exception(e)
 
     @threaded
+    def addProductToCartWithoutStore(self, product, quantity):
+        try:
+            return self.__market.addProductToCartWithoutStore(self, product, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+
+    @threaded
     def removeProductFromCart(self, storeID, productId):
         try:
-            return self.__market.removeProductFromCart(self, storeID, productId)
+            return self.__market.removeProductFromCart(storeID, self,  productId)
         except Exception as e:
             raise Exception(e)
 
