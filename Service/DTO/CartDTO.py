@@ -26,6 +26,9 @@ class CartDTO:
     def getBagByStoreID(self, storeid):
         return self.__bags.get(storeid)
 
+    def getSum(self):
+        return self.__sum
+
     def __str__(self):
         toReturn = "cart of user " + str(self.__userId) + " :"
         toReturn += "\n\t\tbags: "

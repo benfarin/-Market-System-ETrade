@@ -22,7 +22,10 @@ role_service = RoleService()
 member_service = MemberService()
 user_service = UserService()
 from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdateProductForm, AddProductForm, \
-    AddProductToCartForm, PurchaseProductForm, AddProductQuantity, AddDiscountForm, AddCondition, AddRule
+    AddProductToCartForm, PurchaseProductForm, AddProductQuantity, AddCondition, AddRule, \
+    AddSimpleDiscount_Store, AddSimpleConditionDiscount_Store, AddConditionDiscountXor, AddConditionDiscountAndOr, \
+    AddSimpleDiscount_Category, AddSimpleConditionDiscount_Category, AddSimpleDiscount_Product, \
+    AddSimpleConditionDiscount_Product
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -417,30 +420,30 @@ def discounts_page(request, slug):
     return render(request, "discounts.html")
 
 
-def add_discount_page(request, slug):
-    form = AddDiscountForm(request.POST or None)
-    if form.is_valid():
-        form = AddDiscountForm()
-    rule_context = request.POST.get("rule_context")
-    rule_type = request.POST.get("rule_type")
-    percent = request.POST.get("percent")
-    category = request.POST.get("category")
-    productID = request.POST.get("productID")
-    min_value = request.POST.get("min_value")
-    max_value = request.POST.get("max_value")
-    start_time = request.POST.get("start_time")
-    end_time = request.POST.get("end_time")
-    if rule_context is not None:
-        answer = role_service.addSimpleDiscount(user.getUserID(), int(slug), rule_context, rule_type, percent,
-                                                category, productID, min_value, max_value, start_time, end_time)
-        if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
-        messages.warning(request, answer.getError())
-    context = {
-        "title": "Add Discount",
-        "form": form
-    }
-    return render(request, "form.html", context)
+# def add_discount_page(request, slug):
+#     form = AddDiscountForm(request.POST or None)
+#     if form.is_valid():
+#         form = AddDiscountForm()
+#     rule_context = request.POST.get("rule_context")
+#     rule_type = request.POST.get("rule_type")
+#     percent = request.POST.get("percent")
+#     category = request.POST.get("category")
+#     productID = request.POST.get("productID")
+#     min_value = request.POST.get("min_value")
+#     max_value = request.POST.get("max_value")
+#     start_time = request.POST.get("start_time")
+#     end_time = request.POST.get("end_time")
+#     if rule_context is not None:
+#         answer = role_service.addSimpleDiscount(user.getUserID(), int(slug), rule_context, rule_type, percent,
+#                                                 category, productID, min_value, max_value, start_time, end_time)
+#         if not answer.isError():
+#             return HttpResponseRedirect("/store/" + slug + "/")
+#         messages.warning(request, answer.getError())
+#     context = {
+#         "title": "Add Discount",
+#         "form": form
+#     }
+#     return render(request, "form.html", context)
 
 
 def add_condition_add(request, slug):
@@ -478,65 +481,232 @@ def add_condition_max(request, slug):
     }
     return render(request, "form.html", context)
 
-# def add_rule(request, slug):
-#     form = AddRule(request.POST or None)
-#     if form.is_valid():
-#         form = AddRule()
-#     rule_context = request.POST.get("rule_context")
-#     rule_type = request.POST.get("rule_type")
-#     less_then = request.POST.get("min_value")
-#     bigger_then = request.POST.get("max_value")
-#     if rule_context == "store":
-#         if rule_type == "price":
-#             answer = role_service.createStoreTotalPriceLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         if rule_type == "quantity":
-#             answer = role_service.createStoreQuantityLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         if rule_type == "weight":
-#             answer = role_service.createStoreWeightLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         messages.warning(request, answer.getError())
-#     if rule_context == "category":
-#             answer = role_service.createStoreTotalPriceLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         if rule_type == "quantity":
-#             answer = role_service.createStoreQuantityLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         if rule_type == "weight":
-#             answer = role_service.createStoreWeightLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         messages.warning(request, answer.getError())
-#     if rule_context == "product":
-#             answer = role_service.createStoreTotalPriceLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         if rule_type == "quantity":
-#             answer = role_service.createStoreQuantityLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         if rule_type == "weight":
-#             answer = role_service.createStoreWeightLessThanRule(user.getUserID(), int(slug), less_then, bigger_then)
-#             if not answer.isError():
-#                 return HttpResponseRedirect("/store/" + slug + "/")
-#             messages.warning(request, answer.getError())
-#         messages.warning(request, answer.getError())
-#     context = {
-#         "title": "Add Condition MAX",
-#         "form": form
-#     }
-#     return render(request, "form.html", context)
+
+def add_rule(request, slug):
+    form = AddRule(request.POST or None)
+    if form.is_valid():
+        form = AddRule()
+    rule_context = request.POST.get("rule_context")
+    rule_type = request.POST.get("rule_type")
+    category = request.POST.get("category")
+    product_ID = request.POST.get("product_ID")
+    less_then = request.POST.get("max_value")
+    bigger_then = request.POST.get("min_value")
+    if rule_context == "store":
+        if rule_type == "price":
+            answer = role_service.createStoreTotalAmountRule(user.getUserID(), int(slug), less_then, bigger_then)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+        if rule_type == "quantity":
+            answer = role_service.createStoreQuantityRule(user.getUserID(), int(slug), less_then, bigger_then)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+        if rule_type == "weight":
+            answer = role_service.createStoreWeightRule(user.getUserID(), int(slug), less_then, bigger_then)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+    if rule_context == "category":
+        if rule_type == "weight":
+            answer = role_service.createCategoryRule(user.getUserID(), int(slug), category, less_then, bigger_then)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+    if rule_context == "product":
+        if rule_type == "quantity":
+            answer = role_service.createProductRule(user.getUserID(), int(slug), int(product_ID), less_then,
+                                                    bigger_then)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+        if rule_type == "weight":
+            answer = role_service.createProductWeightRule(user.getUserID(), int(slug), int(product_ID), less_then,
+                                                          bigger_then)
+            if not answer.isError():
+                return HttpResponseRedirect("/store/" + slug + "/")
+            messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Rule",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_store_simple_discount(request, slug):
+    form = AddSimpleDiscount_Store(request.POST or None)
+    if form.is_valid():
+        form = AddSimpleDiscount_Store()
+    percent = request.POST.get("percent")
+    if percent is not None:
+        answer = role_service.addSimpleDiscount_Store(user.getUserID(), int(slug), float(percent))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Simple Store Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_store_simple_condition_discount(request, slug):
+    form = AddSimpleConditionDiscount_Store(request.POST or None)
+    if form.is_valid():
+        form = AddSimpleConditionDiscount_Store()
+    rule_type = request.POST.get("rule_type")
+    percent = request.POST.get("percent")
+    less_then = request.POST.get("max_value")
+    more_then = request.POST.get("min_value")
+    if rule_type is not None:
+        answer = role_service.addSimpleConditionDiscount_Store(user.getUserID(), int(slug), rule_type, float(percent),
+                                                               less_then, more_then)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Simple Condition Store Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_category_simple_discount(request, slug):
+    form = AddSimpleDiscount_Category(request.POST or None)
+    if form.is_valid():
+        form = AddSimpleDiscount_Category()
+    percent = request.POST.get("percent")
+    category = request.POST.get("category")
+    if percent is not None:
+        answer = role_service.addSimpleDiscount_Category(user.getUserID(), int(slug), float(percent), category)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Simple Category Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_category_simple_condition_discount(request, slug):
+    form = AddSimpleConditionDiscount_Category(request.POST or None)
+    if form.is_valid():
+        form = AddSimpleConditionDiscount_Category()
+    rule_type = request.POST.get("rule_type")
+    percent = request.POST.get("percent")
+    category = request.POST.get("category")
+    less_then = request.POST.get("max_value")
+    more_then = request.POST.get("min_value")
+    if rule_type is not None:
+        answer = role_service.addSimpleConditionDiscount_Category(user.getUserID(), int(slug), float(percent), rule_type,
+                                                                  category, less_then, more_then)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Simple Condition Category Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_product_simple_discount(request, slug):
+    form = AddSimpleDiscount_Product(request.POST or None)
+    if form.is_valid():
+        form = AddSimpleDiscount_Product()
+    percent = request.POST.get("percent")
+    product_id = request.POST.get("product_ID")
+    if percent is not None:
+        answer = role_service.addSimpleDiscount_Category(user.getUserID(), int(slug), float(percent), product_id)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Simple Product Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_product_simple_condition_discount(request, slug):
+    form = AddSimpleConditionDiscount_Product(request.POST or None)
+    if form.is_valid():
+        form = AddSimpleConditionDiscount_Product()
+    rule_type = request.POST.get("rule_type")
+    percent = request.POST.get("percent")
+    product_id = request.POST.get("product_ID")
+    less_then = request.POST.get("max_value")
+    more_then = request.POST.get("min_value")
+    if rule_type is not None:
+        answer = role_service.addSimpleConditionDiscount_Product(user.getUserID(), int(slug), float(percent), rule_type,
+                                                                 product_id, less_then, more_then)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Simple Condition Product Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_condition_or(request, slug):
+    form = AddConditionDiscountAndOr(request.POST or None)
+    if form.is_valid():
+        form = AddConditionDiscountAndOr()
+    discount_ID = request.POST.get("discount_ID")
+    rule_ID1 = request.POST.get("rule_ID1")
+    rule_ID2 = request.POST.get("rule_ID2")
+    if discount_ID is not None:
+        answer = role_service.addConditionDiscountOr(user.getUserID(), int(slug), discount_ID, rule_ID1, rule_ID2)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Condition OR",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_condition_xor(request, slug):
+    form = AddConditionDiscountXor(request.POST or None)
+    if form.is_valid():
+        form = AddConditionDiscountXor()
+    discount_ID = request.POST.get("discount_ID")
+    rule_ID1 = request.POST.get("rule_ID1")
+    rule_ID2 = request.POST.get("rule_ID2")
+    decide = request.POST.get("decide")
+    if discount_ID is not None:
+        answer = role_service.addConditionDiscountXor(user.getUserID(), int(slug), int(discount_ID), int(rule_ID1),
+                                                      int(rule_ID2), int(decide))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Condition XOR",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def add_condition_and(request, slug):
+    form = AddConditionDiscountAndOr(request.POST or None)
+    if form.is_valid():
+        form = AddConditionDiscountAndOr()
+    discount_ID = request.POST.get("discount_ID")
+    rule_ID1 = request.POST.get("rule_ID1")
+    rule_ID2 = request.POST.get("rule_ID2")
+    if discount_ID is not None:
+        answer = role_service.addConditionDiscountAnd(user.getUserID(), int(slug), int(discount_ID), int(rule_ID1),
+                                                      int(rule_ID2))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Add Condition AND",
+        "form": form
+    }
+    return render(request, "form.html", context)

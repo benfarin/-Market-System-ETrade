@@ -31,7 +31,4 @@ class BagDTO:
         return toReturn
 
     def getAllProductsAsList(self):
-        products = []
-        for product in self.__products.values():
-            products.append(product)
-        return products
+        return self.__products.keys()
