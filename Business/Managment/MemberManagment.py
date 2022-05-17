@@ -122,6 +122,9 @@ class MemberManagment(UserManagment):
             raise NoSuchMemberException("user: " + str(userID) + "is not a member")
         return member.getMemberTransactions()
 
+    def isSystemManger(self, userName):
+        return self.getSystemManagers().get(userName) is not None
+
 
 
 # NOT IMPORTANT FUNCTION ---

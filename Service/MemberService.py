@@ -71,4 +71,14 @@ class MemberService:
             logging.error("Failed opening a new store")
             return Response(e.__str__())
 
+    def isSystemManger(self, userName):
+        try:
+            isSM = self.__memberManage.isSystemManger(userName)
+            logging.info("success to get is system manager:  " + str(userName))
+            return Response(isSM)
+        except Exception as e:
+            logging.error("Failed to get system manager! ")
+            return Response(e.__str__())
+
+
 
