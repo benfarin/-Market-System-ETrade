@@ -85,6 +85,7 @@ def initialize_system():
     role_service.addProductQuantityToStore(store5.getStoreId(), user.getUserID(), product2.getProductId(), 100)
     role_service.appointManagerToStore(store5.getStoreId(), user.getUserID(), user1name)
     role_service.setRolesInformationPermission(store5.getStoreId(), user.getUserID(), user1name)
+    role_service.setStockManagerPermission(store5.getStoreId(), user.getUserID(), user1name)
     member_service.logoutMember("rotem")
     kfir: MemberDTO = user_service.memberLogin(guest.getUserID(), "kfir", "1234").getData()
     user_service.addProductToCart(kfir.getUserID(), 0, 0, 2)

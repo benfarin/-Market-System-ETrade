@@ -785,11 +785,11 @@ def user_transactions(request):
     form = UserTransactions(request.POST or None)
     if form.is_valid():
         form = UserTransactions()
-    user_ID = request.POST.get("user_ID")
-    if user_ID is not None:
-        answer = role_service.getUserTransaction(user.getMemberName(), user_ID)
+    transactions_ID = request.POST.get("transactions_ID")
+    if transactions_ID is not None:
+        answer = role_service.getUserTransaction(user.getMemberName(), int(transactions_ID))
         if not answer.isError():
-            return HttpResponseRedirect("/" + user_ID + "/userTransactions")
+            return HttpResponseRedirect("/" + transactions_ID + "/userTransactions")
         messages.warning(request, answer.getError())
     context = {
         "title": "User Transactions",
@@ -829,7 +829,7 @@ def show_user_transactions(request, slug):
     answer = role_service.getUserTransaction(user.getMemberName(), slug)
     user_transactions = []
     if not answer.isError():
-        user_transactions.append(answer.getData())
+        user_transactions += (answer.getData())
     context = {"title": "Users Transaction", "transactions": user_transactions}
     return render(request, "transactions.html", context)
 
@@ -838,6 +838,6 @@ def show_store_transactions_ID(request, slug):
     answer = role_service.getStoreTransactionByStoreId(user.getMemberName(), int(slug))
     stores_transactions = []
     if not answer.isError():
-        stores_transactions.append(answer.getData())
+        stores_transactions += (answer.getData())
     context = {"title": "Store Transaction", "transactions": stores_transactions}
     return render(request, "transactions.html", context)

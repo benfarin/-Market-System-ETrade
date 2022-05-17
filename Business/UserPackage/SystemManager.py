@@ -33,6 +33,6 @@ class SystemManager(Member):
 
     def getStoreTransactionByStoreId(self, storeId):
         try:
-            return self.__market.getStoreTransaction(storeId)
+            return self.__market.getStoreTransactionByStoreId(storeId)
         except Exception as e:
             raise Exception(e)
