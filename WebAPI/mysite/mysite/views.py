@@ -25,7 +25,7 @@ from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdatePr
     AddProductToCartForm, PurchaseProductForm, AddProductQuantity, AddCondition, AddRule, \
     AddSimpleDiscount_Store, AddSimpleConditionDiscount_Store, AddConditionDiscountXor, AddConditionDiscountAndOr, \
     AddSimpleDiscount_Category, AddSimpleConditionDiscount_Category, AddSimpleDiscount_Product, \
-    AddSimpleConditionDiscount_Product
+    AddSimpleConditionDiscount_Product, RemoveDiscount, RemoveForm
 
 user = user_service.enterSystem().getData()
 stores = []
@@ -421,31 +421,6 @@ def discounts_page(request, slug):
     return render(request, "discounts.html")
 
 
-# def add_discount_page(request, slug):
-#     form = AddDiscountForm(request.POST or None)
-#     if form.is_valid():
-#         form = AddDiscountForm()
-#     rule_context = request.POST.get("rule_context")
-#     rule_type = request.POST.get("rule_type")
-#     percent = request.POST.get("percent")
-#     category = request.POST.get("category")
-#     productID = request.POST.get("productID")
-#     min_value = request.POST.get("min_value")
-#     max_value = request.POST.get("max_value")
-#     start_time = request.POST.get("start_time")
-#     end_time = request.POST.get("end_time")
-#     if rule_context is not None:
-#         answer = role_service.addSimpleDiscount(user.getUserID(), int(slug), rule_context, rule_type, percent,
-#                                                 category, productID, min_value, max_value, start_time, end_time)
-#         if not answer.isError():
-#             return HttpResponseRedirect("/store/" + slug + "/")
-#         messages.warning(request, answer.getError())
-#     context = {
-#         "title": "Add Discount",
-#         "form": form
-#     }
-#     return render(request, "form.html", context)
-
 
 def add_condition_add(request, slug):
     form = AddCondition(request.POST or None)
@@ -708,6 +683,40 @@ def add_condition_and(request, slug):
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Condition AND",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def remove_condition(request, slug):
+    form = RemoveDiscount(request.POST or None)
+    if form.is_valid():
+        form = RemoveDiscount()
+    discount_ID = request.POST.get("discount_ID")
+    if discount_ID is not None:
+        answer = role_service.removeDiscount(user.getUserID(), int(slug), int(discount_ID))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Remove Discount",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+def remove_Owner(request, slug):
+    global user
+    form = RemoveForm(request.POST or None)
+    if form.is_valid():
+        form = RemoveForm()
+    owner_name = request.POST.get("owner_name")
+    if owner_name is not None:
+        answer = role_service.removeStoreOwner(int(slug), user.getUserID(), owner_name)
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Remove Store Owner",
         "form": form
     }
     return render(request, "form.html", context)

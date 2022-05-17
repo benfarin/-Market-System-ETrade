@@ -27,7 +27,7 @@ from .views import (
     add_quantity, purchases_page, permissions_page, remove_product_from_cart, close_store, discounts_page,
     add_condition_add, add_condition_max, add_rule, add_store_simple_discount,
     add_store_simple_condition_discount, add_category_simple_discount, add_category_simple_condition_discount,
-    add_product_simple_discount, add_product_simple_condition_discount,
+    add_product_simple_discount, add_product_simple_condition_discount, remove_condition, remove_Owner,
 )
 
 urlpatterns = [
@@ -42,6 +42,7 @@ urlpatterns = [
     path('store/<str:slug>/close/', close_store),
     path('store/<str:slug>/appoint_manager/', appoint_manager),
     path('store/<str:slug>/appoint_owner/', appoint_Owner),
+    path('store/<str:slug>/remove_owner/', remove_Owner),
     path('store/<str:slug>/stuff_permissions/', permissions_page),
     path('store/<str:slug>/discounts/', discounts_page),
     path('store/<str:slug>/discounts/add_store_simple_discount/', add_store_simple_discount),
@@ -55,6 +56,7 @@ urlpatterns = [
     path('store/<str:slug>/discounts/add_condition_or/', add_condition_add),
     path('store/<str:slug>/discounts/add_condition_xor/', add_condition_add),
     path('store/<str:slug>/discounts/add_condition_and/', add_condition_add),
+    path('store/<str:slug>/discounts/remove_discount/', remove_condition),
     path('store/<str:slug>/discounts/add_rule/', add_rule),
     # path('store/<str:slug>/stuff/', show_stuff),
     path('store/<str:slug>/history/', show_history),

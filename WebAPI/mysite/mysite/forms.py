@@ -37,6 +37,10 @@ class AppointForm(forms.Form):
     assignee_name = forms.CharField()
 
 
+class RemoveForm(forms.Form):
+    owner_name = forms.CharField()
+
+
 class UpdateProductForm(forms.Form):
     name = forms.CharField()
     category = forms.CharField()
@@ -92,13 +96,13 @@ class AddRule(forms.Form):
     max_value = forms.IntegerField()
 
 
-class AddSimpleDiscount_Store(forms.Form): #done
+class AddSimpleDiscount_Store(forms.Form):  # done
     # rule_context = forms.ChoiceField(choices=rules, widget=forms.Select(attrs={'style': 'width:190px'}))
     # rule_type = forms.ChoiceField(choices=types, widget=forms.Select(attrs={'style': 'width:190px'}))
     percent = forms.FloatField()
 
 
-class AddSimpleConditionDiscount_Store(forms.Form): #done
+class AddSimpleConditionDiscount_Store(forms.Form):  # done
     # rule_context = forms.ChoiceField(choices=rules, widget=forms.Select(attrs={'style': 'width:190px'}))
     rule_type = forms.ChoiceField(choices=types, widget=forms.Select(attrs={'style': 'width:190px'}))
     percent = forms.FloatField()
@@ -106,12 +110,12 @@ class AddSimpleConditionDiscount_Store(forms.Form): #done
     max_value = forms.IntegerField()
 
 
-class AddSimpleDiscount_Category(forms.Form): #done
+class AddSimpleDiscount_Category(forms.Form):  # done
     percent = forms.FloatField()
     category = forms.CharField()
 
 
-class AddSimpleConditionDiscount_Category(forms.Form): #done
+class AddSimpleConditionDiscount_Category(forms.Form):  # done
     rule_type = forms.ChoiceField(choices=types, widget=forms.Select(attrs={'style': 'width:190px'}))
     percent = forms.FloatField()
     category = forms.CharField()
@@ -119,12 +123,12 @@ class AddSimpleConditionDiscount_Category(forms.Form): #done
     max_value = forms.IntegerField()
 
 
-class AddSimpleDiscount_Product(forms.Form): #done
+class AddSimpleDiscount_Product(forms.Form):  # done
     percent = forms.FloatField()
     product_ID = forms.IntegerField(required=False, label="Product ID")
 
 
-class AddSimpleConditionDiscount_Product(forms.Form): #done
+class AddSimpleConditionDiscount_Product(forms.Form):  # done
     rule_type = forms.ChoiceField(choices=types, widget=forms.Select(attrs={'style': 'width:190px'}))
     percent = forms.FloatField()
     product_ID = forms.IntegerField(required=False, label="Product ID")
@@ -143,3 +147,7 @@ class AddConditionDiscountAndOr(forms.Form):
     discount_ID = forms.IntegerField()
     rule_ID1 = forms.IntegerField()
     rule_ID2 = forms.IntegerField()
+
+
+class RemoveDiscount(forms.Form):
+    discount_ID = forms.IntegerField()
