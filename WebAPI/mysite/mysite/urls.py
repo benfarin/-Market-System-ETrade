@@ -13,8 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import notifications
 from django.contrib import admin
-from django.urls import path
+from django.template.defaulttags import url
+from django.urls import path, include
 
 from .views import (
     home_page,
@@ -22,7 +24,8 @@ from .views import (
     login_page,
     my_stores_page, create_store_page, store_page, store_products_management, appoint_manager, appoint_Owner, logout,
     add_product, get_cart, add_to_cart_page, purchase_cart, search_view, show_history, product_update, remove_product,
-    add_quantity, purchases_page, permissions_page, remove_product_from_cart, close_store,
+    add_quantity, purchases_page, permissions_page, remove_product_from_cart, close_store, discounts_page,
+    add_discount_page, add_condition_add, add_condition_max,
 )
 
 urlpatterns = [
@@ -38,6 +41,11 @@ urlpatterns = [
     path('store/<str:slug>/appoint_manager/', appoint_manager),
     path('store/<str:slug>/appoint_owner/', appoint_Owner),
     path('store/<str:slug>/stuff_permissions/', permissions_page),
+    path('store/<str:slug>/discounts/', discounts_page),
+    path('store/<str:slug>/discounts/add_discount/', add_discount_page),
+    path('store/<str:slug>/discounts/add_condition_max/', add_condition_max),
+    path('store/<str:slug>/discounts/add_condition_add/', add_condition_add),
+    # path('store/<str:slug>/discounts/add_rule/', add_rule),
     # path('store/<str:slug>/stuff/', show_stuff),
     path('store/<str:slug>/history/', show_history),
     path('addstore/', create_store_page),
@@ -49,6 +57,7 @@ urlpatterns = [
     path('cart/purchase_cart/', purchase_cart),
     path('store/<str:slug>/add_to_cart/<str:slug2>/', add_to_cart_page),
     path('search/', search_view),
+    path('search/add_to_cart/<str:slug>/<str:slug2>/', add_to_cart_page),
     path('purchases/', purchases_page),
     path('admin/', admin.site.urls),
 ]

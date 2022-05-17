@@ -37,6 +37,9 @@
         {% if permissions.hasPermission_StockManagement %}
                 <a class="btn btn-primary" href="addproduct/" role="button">Add New Product</a>
         {% endif %}
+        {% if permissions.hasPermission_Discount %}
+                <a class="btn btn-primary" href="discounts/" role="button">Discounts</a>
+        {% endif %}
         {% if permissions.hasPermission_CloseStore %}
                 <a class="btn btn-danger" href="close/" role="button">Close Store</a>
         {% endif %}
