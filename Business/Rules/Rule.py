@@ -3,12 +3,14 @@ import uuid
 
 class Rule:
 
-    def __init__(self, f):
+    def __init__(self, ruleId, f):
         self.__f = f  # Bag --> bool
+        self.__ruleId = ruleId
+
+    def getRuleId(self):
+        return self.__ruleId
 
     def check(self, bag):
-        if isinstance(self.__f, Rule):
-            return self.__f.check(bag)
         return self.__f(bag)
 
     def AndRules(self, rule2):
@@ -23,5 +25,3 @@ class Rule:
 
     def AddRules(self, rule2):
         return lambda bag: self.check(bag) and rule2.check(bag)
-
-    def

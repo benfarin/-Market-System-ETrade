@@ -18,10 +18,10 @@ class ruleCreator:
         if ruleCreator.__instance is None:
             ruleCreator.__instance = self
 
-    def createStoreWeightRule(self, storeid, less_than, bigger_than):  # weight of the products in store
+    def createStoreWeightRule(self, rId, storeid, less_than, bigger_than):  # weight of the products in store
         f = lambda bag: self.weightStoreHelper(storeid, less_than, bag) and not self.weightStoreHelper(storeid,
                                                                                                        bigger_than, bag)
-        return Rule(f)
+        return Rule(rId, f)
 
     def weightStoreHelper(self, sid, less_than, bag: Bag):
         if bag.getStoreId() == sid:
@@ -33,10 +33,10 @@ class ruleCreator:
         else:
             return False
 
-    def createProductWeightRule(self, pid, storeId, less_than, bigger_than):  # weight of 1 product
+    def createProductWeightRule(self, rId, pid, storeId, less_than, bigger_than):  # weight of 1 product
         f = lambda bag: self.weightProductHelper(pid, storeId, less_than, bag) and not \
                         self.weightProductHelper(pid, storeId, bigger_than, bag)
-        return Rule(f)
+        return Rule(rId, f)
 
     def weightProductHelper(self, pid, storeId, less_than, bag: Bag):
         if bag.getStoreId() == storeId:
@@ -49,10 +49,10 @@ class ruleCreator:
         else:
             return False
 
-    def createStoreQuantityRule(self, storeId, less_than, bigger_than):
-        f = lambda bag: self.storeTotalPriceRuleHelper(bag, storeId, less_than) and not self.storeTotalPriceRuleHelper(
+    def createStoreQuantityRule(self, rId, storeId, less_than, bigger_than):
+        f = lambda bag: self.storeQuantityRuleHelper(bag, storeId, less_than) and not self.storeQuantityRuleHelper(
             bag, storeId, bigger_than)
-        return Rule(f)
+        return Rule(rId, f)
 
     def storeQuantityRuleHelper(self, bag, storeId, less_than):
         if bag.getStoreId() == storeId:
@@ -64,10 +64,10 @@ class ruleCreator:
         else:
             return False
 
-    def createCategoryRule(self, storeId, category, less_than, bigger_than):  # quantity of catagory
+    def createCategoryRule(self, rId, storeId, category, less_than, bigger_than):  # quantity of catagory
         f = lambda bag: self.categoryRuleHelper(bag, storeId, category, less_than) and not \
                          self.categoryRuleHelper(bag, storeId, category, bigger_than)
-        return Rule(f)
+        return Rule(rId, f)
 
     def categoryRuleHelper(self, bag, storeId, category, less_than):
         if bag.getStoreId() == storeId:
@@ -80,10 +80,10 @@ class ruleCreator:
         else:
             return False
 
-    def createProductRule(self, storeId, pid, less_than, bigger_than):  # quantity of products
+    def createProductRule(self, rId, storeId, pid, less_than, bigger_than):  # quantity of products
         f = lambda bag: self.productRuleHelper(bag, storeId, less_than, pid) and not \
                         self.productRuleHelper(bag, storeId, bigger_than, pid)
-        return Rule(f)
+        return Rule(rId, f)
 
     def productRuleHelper(self, bag, storeId, less_than, pid):
         if bag.getStoreId() == storeId:
@@ -96,10 +96,10 @@ class ruleCreator:
         else:
             return False
 
-    def createStorePriceRule(self, storeId, less_than, bigger_than):  # total price of store
+    def createStorePriceRule(self, rId, storeId, less_than, bigger_than):  # total price of store
         f = lambda bag: self.storeTotalPriceRuleHelper(bag, storeId, less_than) and not self.storeTotalPriceRuleHelper(
             bag, storeId, bigger_than)
-        return Rule(f)
+        return Rule(rId, f)
 
     def storeTotalPriceRuleHelper(self, bag, storeId, less_than):
         if bag.getStoreId() == storeId:

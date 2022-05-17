@@ -21,6 +21,8 @@ class ConditionDiscount(Discount):
         self.__rule = f
 
     def check(self, bag):
+        if isinstance(self.__rule, Rule):
+            return self.__rule.check(bag)
         return self.__rule(bag)
 
     def getRule(self):

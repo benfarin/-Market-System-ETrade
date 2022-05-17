@@ -366,7 +366,8 @@ class RoleManagment:
                 raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
 
             discountId = self.__getDiscountId()
-            discount = self.__discountRules.createConditionalDiscount(storeId, discountId, ruleContext, ruleType, precent,
+            rId = self.__getRuleId()
+            discount = self.__discountRules.createConditionalDiscount(rId, storeId, discountId, ruleContext, ruleType, precent,
                                                                         category, productId, value_less_than, value_grather_than)
 
             discountInfo = DiscountInfo(discountId, userId, storeId, ruleContext, ruleType, precent, category,
@@ -526,7 +527,7 @@ class RoleManagment:
 
             if member.hasDiscountPermission(storeId):
                 rId = self.__getRuleId()
-                rule = self.rule_creator.createStoreWeightRule(storeId, less_than, bigger_than)
+                rule = self.rule_creator.createStoreWeightRule(rId, storeId, less_than, bigger_than)
                 self.__rules[rId] = rule
                 return [rId, rule]
             else:
@@ -545,7 +546,7 @@ class RoleManagment:
 
             if member.hasDiscountPermission(storeId):
                 rId = self.__getRuleId()
-                rule = self.rule_creator.createProductWeightRule(pid, storeId, less_than, bigger_than)
+                rule = self.rule_creator.createProductWeightRule(rId, pid, storeId, less_than, bigger_than)
                 self.__rules[rId] = rule
                 return [rId, rule]
             else:
@@ -564,7 +565,7 @@ class RoleManagment:
 
             if member.hasDiscountPermission(storeId):
                 rId = self.__getRuleId()
-                rule = self.rule_creator.createStoreQuantityRule(storeId, less_than, bigger_than)
+                rule = self.rule_creator.createStoreQuantityRule(rId, storeId, less_than, bigger_than)
                 self.__rules[rId] = rule
                 return [rId, rule]
             else:
@@ -583,7 +584,7 @@ class RoleManagment:
 
             if member.hasDiscountPermission(storeId):
                 rId = self.__getRuleId()
-                rule = self.rule_creator.createCategoryRule(storeId, category, less_than, bigger_than)
+                rule = self.rule_creator.createCategoryRule(rId, storeId, category, less_than, bigger_than)
                 self.__rules[rId] = rule
                 return [rId, rule]
             else:
@@ -602,7 +603,7 @@ class RoleManagment:
 
             if member.hasDiscountPermission(storeId):
                 rId = self.__getRuleId()
-                rule = self.rule_creator.createProductRule(storeId, pid, less_than, bigger_than)
+                rule = self.rule_creator.createProductRule(rId, storeId, pid, less_than, bigger_than)
                 self.__rules[rId] = rule
                 return [rId, rule]
             else:
@@ -621,7 +622,7 @@ class RoleManagment:
 
             if member.hasDiscountPermission(storeId):
                 rId = self.__getRuleId()
-                rule = self.rule_creator.createStorePriceRule(storeId, less_than, bigger_than)
+                rule = self.rule_creator.createStorePriceRule(rId, storeId, less_than, bigger_than)
                 self.__rules[rId] = rule
                 return [rId, rule]
             else:
