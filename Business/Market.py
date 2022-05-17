@@ -408,13 +408,13 @@ class Market:
 
     def getStoreTransaction(self, transactionId):
         try:
-            return self.__transactionHistory.getStoreTransaction(transactionId)
+            return self.__transactionHistory.getStoreTransactionById(transactionId)
         except Exception as e:
             raise Exception(e)
 
     def getUserTransaction(self, transactionId):
         try:
-            return self.__transactionHistory.getUserTransaction(transactionId)
+            return self.__transactionHistory.getUserTransactionById(transactionId)
         except Exception as e:
             raise Exception(e)
 
@@ -422,7 +422,7 @@ class Market:
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).getTransactionsForSystemManager()
+            return self.__stores.get(storeId).getTransactionsForSystemManager()
         except Exception as e:
             raise Exception(e)
 

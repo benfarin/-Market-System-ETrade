@@ -45,6 +45,19 @@ class TransactionHistory:
             raise Exception("transaction with Id: " + str(transactionId) + "is all ready exists")
         return self.__userTransaction.get(transactionId)
 
+    def getStoreTransactionById(self, transactionId):
+        transaction = self.__storeTransactions.get(transactionId)
+        if transaction is None:
+            raise Exception("transaction with Id: " + str(transactionId) + "doesn't exists")
+        return transaction
+
+    def getUserTransactionById(self, transactionId):
+        transaction = self.__userTransaction.get(transactionId)
+        if transaction is None:
+            raise Exception("transaction with Id: " + str(transactionId) + "doesn't exists")
+        return transaction
+
+
     def __createStoreTransaction(self, st):
         return StoreTransaction(st.getStoreId(), st.getStoreName(), st.getTransactionID(),
                                 st.getPaymentId(), st.getProducts(), st.getAmount())
