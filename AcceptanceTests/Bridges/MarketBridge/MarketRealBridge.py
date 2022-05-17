@@ -120,8 +120,8 @@ class MarketRealBridge:
     def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
         return self._roleService.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
 
-    def removeDiscount(self, dId):
-        return self._roleService.removeDiscount(dId)
+    def removeDiscount(self,  userId, storeId, discountId):
+        return self._roleService.removeDiscount(userId, storeId, discountId)
 
     def createProductWeightRule(self, sid, pid, less_than, bigger_than):
         return self._roleService.createProductWeightRule(sid, pid, less_than, bigger_than)

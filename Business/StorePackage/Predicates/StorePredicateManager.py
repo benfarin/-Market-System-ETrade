@@ -34,11 +34,11 @@ class storePredicateManager:
                     return discount
         return None
 
-    def removeDiscount(self, sid, discount):
+    def removeDiscount(self, sid, discountId):
         if self.__discount_store.get(sid) is not None:
             lst = self.__discount_store.get(sid)
             for i in range(len(lst)):
-                if lst[i] == discount:
-                    self.__discount_store.get(sid).remove(discount)
+                if lst[i].getIdDiscount() == discountId:
+                    self.__discount_store.get(sid).remove(lst[i])
                     break
 

@@ -199,10 +199,10 @@ class MarketProxyBridge:
             return True
         return self._real_subject.createProductWeightRule(uid ,pid, less_than, more_than)
 
-    def removeDiscount(self, dId):
+    def removeDiscount(self,  userId, storeId, discountId):
         if self.check_access():
             return True
-        return self._real_subject.removeDiscount(dId)
+        return self._real_subject.removeDiscount( userId, storeId, discountId)
 
     def createProductWeightRule(self, sid, pid, less_than, bigger_than):
         if self.check_access():
