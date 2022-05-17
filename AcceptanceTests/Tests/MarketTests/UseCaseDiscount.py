@@ -72,6 +72,7 @@ class UseCaseDiscount(unittest.TestCase):
         rule2 = self.proxy_market.createProductRule(self.product_id_2, 100, 11, sys.maxsize).getData()
         self.proxy_market.addConditionDiscountXor(self.user_id1, self.store_id1, dId1, rule1, rule2, 0)
 
+
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
