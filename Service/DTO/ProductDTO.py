@@ -4,6 +4,7 @@ from Business.StorePackage.Product import Product
 
 
 class ProductDTO:
+
     def __init__(self, product: Product):
         self.__productId = product.getProductId()
         self.__storeId = product.getProductStoreId()
@@ -28,6 +29,9 @@ class ProductDTO:
     def getProductCategory(self):
         return self.__category
 
+    def getProductWeight(self):
+        return self.__wight
+
     def getKeyWords(self):
         return self.__keywords
 
@@ -49,7 +53,7 @@ class ProductDTO:
     def setKeyWords(self, keywords):
         self.__keywords = keywords
 
-    def __str__(self):
+    def _str_(self):
         toReturn = "product: " + str(self.__productId) + ":"
         toReturn += "\n\tname: " + self.__name
         toReturn += "\n\tprice: " + str(self.__price)

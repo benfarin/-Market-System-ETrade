@@ -14,19 +14,19 @@ class UseCasePurchaseProduct(unittest.TestCase):
     def setUpClass(cls):
         cls.market_proxy = MarketProxyBridge(MarketRealBridge())
         cls.user_proxy = UserProxyBridge(UserRealBridge())
-        cls.user_proxy.appoint_system_manager("user1", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                              "Ben Gurion", 1, 1)
-        cls.__guestId = cls.user_proxy.login_guest().getData().getUserID()
+
+        cls.guest_id = cls.user_proxy.login_guest().getData().getUserID()
+
         cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
-        cls.user_id = cls.user_proxy.login_member(cls.__guestId, "user1", "1234").getData().getUserID()
+        cls.user_id = cls.user_proxy.login_member(cls.guest_id, "user1", "1234").getData().getUserID()
 
         cls.store_0 = cls.user_proxy.open_store("s0", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                0, "000000").getData().getStoreId()
+                                                0, 0).getData().getStoreId()
         cls.store_1 = cls.user_proxy.open_store("s1", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                0, "000000").getData().getStoreId()
+                                                0, 0).getData().getStoreId()
         cls.store_2 = cls.user_proxy.open_store("s2", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                0, "000000").getData().getStoreId()
+                                                0, 0).getData().getStoreId()
 
         cls.product01 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-01", 100,
                                                               "Category", 8,["Test1", "Test2"]).getData().getProductId()

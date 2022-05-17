@@ -26,7 +26,6 @@ class MarketTests(unittest.TestCase):
 
         self.__storeId1 = self.__market.createStore("foot-locker", self.__member1, self.__bank1, self.__address2).getStoreId()
 
-
         self.__product1 = Product(1,0, "tara milk 5%", 5.5, "dairy", 10 ,["tara", "dairy drink", "5%"])
         self.__product2 = Product(2,0, "shoko", 6.90, "dairy",15, ["sugar", "chocolate", "dairy drink"])
         self.__product3 = Product(3,0, "dress", 199.99, "cloth",7, ["short sleeve", "red"])
@@ -47,7 +46,6 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product1))
         self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product2))
         self.assertTrue(self.__market.addProductToStore(1, self.__member2, self.__product3))
-
 
     def test_addProductToStore_FAIL(self):
         # try to add a product to a non-existing store
@@ -103,7 +101,7 @@ class MarketTests(unittest.TestCase):
         # trying to add quantity < 0
         self.assertRaises(Exception, lambda: self.__market.addProductQuantityToStore(0, self.__member1,
                                                                                      self.__product1.getProductId(),
-                                                                                     -3))
+                                                                             -3))
     def test_addProductToCart(self):
         self.test_addProductQuantity()
         self.assertTrue(self.__market.addProductToCart(self.__member1, 0, self.__product1.getProductId(), 7))

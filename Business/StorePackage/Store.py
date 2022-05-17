@@ -388,7 +388,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return self.__permissions.values()
+        return permissions
 
     def addTransaction(self, transaction):
         with self.__transactionLock:

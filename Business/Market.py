@@ -282,8 +282,7 @@ class Market:
 
     def updateProductPrice(self, storeID, user, productId, mewPrice):
         try:
-            self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
-            return True
+            return self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
         except Exception as e:
             raise Exception(e)
 
@@ -366,22 +365,19 @@ class Market:
 
     def updateProductName(self, user, storeID, productID, newName):
         try:
-            self.__stores.get(storeID).updateProductName(user, productID, newName)
-            return True
+            return self.__stores.get(storeID).updateProductName(user, productID, newName)
         except Exception as e:
             raise Exception(e)
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         try:
-            self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
-            return True
+            return self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 
     def updateProductWeight(self, user, storeId, productID, newWeight):
         try:
-            self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
-            return True
+            return self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
         except Exception as e:
             raise Exception(e)
 

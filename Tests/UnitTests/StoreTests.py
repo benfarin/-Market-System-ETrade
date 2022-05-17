@@ -21,11 +21,11 @@ class MyTestCase(unittest.TestCase):
         self.member3 = Member("kfir3", "1234", "012", address, bank)
         self.member4 = Member("kfir4", "1234", "012", address, bank)
 
-        self.product1 = Product(0, 0, "tara milk 5%", 10.0, "dairy", ["drink", "tara", "5%"])
-        self.product2 = Product(1, 0,  "beef", 20.0, "meat", ["cow"])
-        self.product3 = Product(2, 0,  "milk", 7.0, "dairy", ["drink"])
-        self.product4 = Product(3, 0, "yogurt", 15.5, "dairy", ["goat"])
-        self.product5 = Product(4, 0, "milk", 1.0, "dairy", [])
+        self.product1 = Product(0, 0, "tara milk 5%", 10.0, "dairy", 10, ["drink", "tara", "5%"])
+        self.product2 = Product(1, 0,  "beef", 20.0, "meat", 10, ["cow"])
+        self.product3 = Product(2, 0,  "milk", 7.0, "dairy", 10, ["drink"])
+        self.product4 = Product(3, 0, "yogurt", 15.5, "dairy", 10, ["goat"])
+        self.product5 = Product(4, 0, "milk", 1.0, "dairy", 10, [])
 
         # after the appointers we will get: manager = [user1->user2, founder->user1],
         #                                   owners = [founder, founder -> user1, user1->user3]
@@ -86,7 +86,7 @@ class MyTestCase(unittest.TestCase):
         # because all the set-permission have the same code, we will only test once
         self.test_appoint_managers()
         self.store.setStockManagementPermission(self.member1, self.member3)
-        self.assertTrue(self.store.getPermissions(self.member1).get(self.member3).hasPermission_StockManagement())
+        self.assertTrue(self.store.getPermissions(self.member3).hasPermission_StockManagement())
 
     def test_set_Permission_Fail(self):
         # not an owner
@@ -164,7 +164,6 @@ class MyTestCase(unittest.TestCase):
             self.assertTrue(False)
         except:
             self.assertTrue(True)
-
 
     def test_remove_quantity_product(self):
         self.test_add_product_quantity()

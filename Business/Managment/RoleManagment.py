@@ -166,6 +166,8 @@ class RoleManagment:
 
     def updateProductPrice(self, storeID, userID, productId, newPrice):
         try:
+            if newPrice < 0:
+                raise Exception("new price cannot be negative")
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
             if userID not in self.__memberManagement.getMembersFromUser().keys():
@@ -196,6 +198,8 @@ class RoleManagment:
 
     def updateProductWeight(self, userID, storeID, productID, newWeight):
         try:
+            if newWeight < 0:
+                raise Exception("new weight cannot be negative")
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
             if userID not in self.__memberManagement.getMembersFromUser().keys():
@@ -203,7 +207,6 @@ class RoleManagment:
             return member.updateProductWeight(storeID, productID, newWeight)
         except Exception as e:
             raise Exception(e)
-
 
     def getRolesInformation(self, storeID, userID):
         try:
