@@ -172,6 +172,13 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
+    def getSumAfterDiscount(self, userId):
+        try:
+            self.checkOnlineUser(userId)
+            return self.__activeUsers.get(userId).getCart().calcSum()
+        except Exception as e:
+            raise Exception(e)
+
     def createBankAcount(self, accountNumber, branch):
         return Bank(accountNumber, branch)
 

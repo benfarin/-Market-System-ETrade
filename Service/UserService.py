@@ -195,3 +195,14 @@ class UserService:
             logging.error("Failed to get cart for user" + str(userID))
             return Response(e.__str__())
 
+    def getSumAfterDiscount(self, userId):
+        try:
+            totalAmount = self.__userManagment.getSumAfterDiscount(userId)
+            logging.info("success get sum after discount " + str(userId))
+            return Response(totalAmount)
+        except Exception as e:
+            logging.error("Failed to get sum after discount" + str(userId))
+            return Response(e.__str__())
+
+
+
