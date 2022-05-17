@@ -42,7 +42,7 @@ def home_page(request):
         title = "Welcome " + user.getMemberName() + "!"
         is_admin = member_service.isSystemManger(user.getMemberName()).getData()
     all_stores = role_service.getAllStores().getData()
-    context = {"title": title, "user": user, "stores": all_stores, "is_admin" : is_admin}
+    context = {"title": title, "user": user, "stores": all_stores, "is_admin": is_admin}
     return render(request, "home.html", context)
 
 
@@ -412,6 +412,12 @@ def remove_product_from_cart(request, slug):
         return HttpResponseRedirect("/cart/")
     messages.warning(request, answer.getError())
 
+def remove_product_from_cart_with_store(request, slug, slug2):
+    answer = user_service.removeProductFromCart(user.getUserID(), int(slug2), int(slug))
+    if not answer.isError():
+        return HttpResponseRedirect("/cart/")
+    messages.warning(request, answer.getError())
+
 
 def close_store(request, slug):
     answer = member_service.removeStore(int(slug), user.getUserID())
@@ -422,7 +428,6 @@ def close_store(request, slug):
 
 def discounts_page(request, slug):
     return render(request, "discounts.html")
-
 
 
 def add_condition_add(request, slug):
@@ -579,7 +584,8 @@ def add_category_simple_condition_discount(request, slug):
     less_then = request.POST.get("max_value")
     more_then = request.POST.get("min_value")
     if rule_type is not None:
-        answer = role_service.addSimpleConditionDiscount_Category(user.getUserID(), int(slug), float(percent), rule_type,
+        answer = role_service.addSimpleConditionDiscount_Category(user.getUserID(), int(slug), float(percent),
+                                                                  rule_type,
                                                                   category, less_then, more_then)
         if not answer.isError():
             return HttpResponseRedirect("/store/" + slug + "/")
@@ -598,7 +604,7 @@ def add_product_simple_discount(request, slug):
     percent = request.POST.get("percent")
     product_id = request.POST.get("product_ID")
     if percent is not None:
-        answer = role_service.addSimpleDiscount_Category(user.getUserID(), int(slug), float(percent), product_id)
+        answer = role_service.addSimpleDiscount_Product(user.getUserID(), int(slug), float(percent), int(product_id))
         if not answer.isError():
             return HttpResponseRedirect("/store/" + slug + "/")
         messages.warning(request, answer.getError())
@@ -707,6 +713,7 @@ def remove_condition(request, slug):
     }
     return render(request, "form.html", context)
 
+
 def remove_Owner(request, slug):
     global user
     form = RemoveForm(request.POST or None)
@@ -770,7 +777,7 @@ def store_transactions(request):
     if transactions_ID is not None:
         answer = role_service.getStoreTransaction(user.getMemberName(), int(transactions_ID))
         if not answer.isError():
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/" + transactions_ID + "/storesTransactions")
         messages.warning(request, answer.getError())
     context = {
         "title": "Stores Transactions",
@@ -778,22 +785,24 @@ def store_transactions(request):
     }
     return render(request, "form.html", context)
 
+
 def user_transactions(request):
     global user
     form = UserTransactions(request.POST or None)
     if form.is_valid():
         form = UserTransactions()
-    user_ID = request.POST.get("user_ID")
-    if user_ID is not None:
-        answer = role_service.getUserTransaction(user.getMemberName(), user_ID)
+    transactions_ID = request.POST.get("transactions_ID")
+    if transactions_ID is not None:
+        answer = role_service.getUserTransaction(user.getMemberName(), int(transactions_ID))
         if not answer.isError():
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/" + transactions_ID + "/userTransactions")
         messages.warning(request, answer.getError())
     context = {
         "title": "User Transactions",
         "form": form
     }
     return render(request, "form.html", context)
+
 
 def store_transactions_ID(request):
     global user
@@ -804,10 +813,37 @@ def store_transactions_ID(request):
     if store_ID is not None:
         answer = role_service.getStoreTransactionByStoreId(user.getMemberName(), int(store_ID))
         if not answer.isError():
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/" + store_ID + "/storesTransactionsID")
         messages.warning(request, answer.getError())
     context = {
         "title": "Stores Transactions By StoreID",
         "form": form
     }
     return render(request, "form.html", context)
+
+
+def show_store_transactions(request, slug):
+    answer = role_service.getStoreTransaction(user.getMemberName(), int(slug))
+    stores_transactions = []
+    if not answer.isError():
+        stores_transactions.append(answer.getData())
+    context = {"title": "Store Transaction", "transactions": stores_transactions}
+    return render(request, "transactions.html", context)
+
+
+def show_user_transactions(request, slug):
+    answer = role_service.getUserTransaction(user.getMemberName(), slug)
+    user_transactions = []
+    if not answer.isError():
+        user_transactions += (answer.getData())
+    context = {"title": "Users Transaction", "transactions": user_transactions}
+    return render(request, "transactions.html", context)
+
+
+def show_store_transactions_ID(request, slug):
+    answer = role_service.getStoreTransactionByStoreId(user.getMemberName(), int(slug))
+    stores_transactions = []
+    if not answer.isError():
+        stores_transactions += (answer.getData())
+    context = {"title": "Store Transaction", "transactions": stores_transactions}
+    return render(request, "transactions.html", context)

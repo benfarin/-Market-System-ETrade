@@ -85,7 +85,7 @@ class User:
     @threaded
     def removeProductFromCart(self, storeID, productId):
         try:
-            return self.__market.removeProductFromCart(self, storeID, productId)
+            return self.__market.removeProductFromCart(storeID, self,  productId)
         except Exception as e:
             raise Exception(e)
 

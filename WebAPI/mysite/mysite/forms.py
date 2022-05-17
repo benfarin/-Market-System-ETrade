@@ -50,7 +50,7 @@ class StoreTransactions(forms.Form):
 
 
 class UserTransactions(forms.Form):
-    user_ID = forms.CharField()
+    transactions_ID = forms.CharField()
 
 
 class StoreTransactionsByID(forms.Form):
