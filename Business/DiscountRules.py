@@ -56,29 +56,25 @@ class DiscountRules:
     def removeDiscount(self, discountId):
         pass
 
-    def createConditionalDiscount(self, store: Store, username, store_id, rule_context, rule_type: ruleType, percent,
-                                  catagory, product_id, value_less_than, value_bigger_than, time1, time2, discount_id):
-        if store is not None:
-            discount_calc = self.createCalc(rule_context, percent, catagory, product_id)
-            rule = self.createRule(rule_context, rule_type, catagory, product_id, value_less_than, value_bigger_than,
-                                   time1, time2)
-            conditional_discount = ConditionDiscount(discount_calc)
-            conditional_discount.setRule(rule)
-            store.addDicount(conditional_discount)
+    def createConditionalDiscount(self, storeId, discountId, rule_context, rule_type, percent,
+                                  catagory, product_id, value_less_than, value_bigger_than):
+        discount_calc = self.createCalc(rule_context, percent, catagory, product_id)
+        rule = self.createRule(storeId, rule_context, rule_type, catagory, product_id, value_less_than, value_bigger_than)
+        return ConditionDiscount(discountId, rule, discount_calc)
 
-    def createRule(self, discount_type, rule_type, catagory, pid, value_less_than, value_greater_than, time1, time2):
-        rule: Rule
-        if rule_type == ruleType.price:
-            return self.__rules_creator.createStorePriceRule(value_less_than, value_greater_than)
-        if rule_type == ruleType.quantity:
-            if discount_type == ruleContext.store:
-                return self.__rules_creator.createStorePriceRule(value_less_than, value_greater_than)
-            if discount_type == ruleContext.catagory:
-                return self.__rules_creator.createCatagoryRule(catagory, value_less_than, value_greater_than)
-            return self.__rules_creator.createProductRule(pid, value_less_than, value_greater_than)
-        if rule_type == ruleType.weight:
-            return self.__rules_creator.createWeightRule(pid, value_less_than, value_greater_than)
-        return self.__rules_creator.createTimeRule(time1, time2)
+    def createRule(self, storeId, discount_type, rule_type, catagory, pid, value_less_than, value_greater_than):
+        if rule_type == "price":
+            return self.__rules_creator.createStorePriceRule(storeId, value_less_than, value_greater_than)
+        if rule_type == "quantity":
+            if discount_type == "store":
+                return self.__rules_creator.createStoreQuantityRule(storeId, value_less_than, value_greater_than)
+            if discount_type == "category":
+                return self.__rules_creator.createCategoryRule(storeId, catagory, value_less_than, value_greater_than)
+            return self.__rules_creator.createProductRule(storeId, pid, value_less_than, value_greater_than)
+        if rule_type == "weight":
+            if discount_type == "store":
+                return self.__rules_creator.createStoreWeightRule(storeId, value_less_than, value_greater_than)
+            return self.__rules_creator.createProductWeightRule(storeId, pid, value_less_than, value_greater_than)
 
     def addDiscountOrRule(self, store: Store, discount_id1, discount_id2, original_discount_id):
         predicate: storePredicateManager = storePredicateManager.getInstance()

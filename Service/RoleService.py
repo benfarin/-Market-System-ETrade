@@ -330,7 +330,7 @@ class RoleService:
     # condition = weight/price/quantity
     def addSimpleConditionDiscount_Store(self, userId, storeId, condition, precent, fromVal, toVal):
         try:
-            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "store", condition, precent, None,
+            discountId = self.__roleManagment.addSimpleCondDiscount(userId, storeId, "store", condition, precent, None,
                                                                 None, fromVal, toVal)
             logging.info("success to add discount")
             return Response(discountId)
@@ -351,7 +351,7 @@ class RoleService:
 
     def addSimpleConditionDiscount_Category(self, userId, storeId, precent, condition, category, fromVal, toVal):
         try:
-            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "category", condition, precent,
+            discountId = self.__roleManagment.addSimpleCondDiscount(userId, storeId, "category", condition, precent,
                                                                 category, None, fromVal, toVal)
             logging.info("success to add discount")
             return Response(discountId)
@@ -371,7 +371,7 @@ class RoleService:
 
     def addSimpleConditionDiscount_Product(self, userId, storeId, precent, condition, productId, fromVal, toVal):
         try:
-            discountId = self.__roleManagment.addSimpleDiscount(userId, storeId, "product", condition, precent, None,
+            discountId = self.__roleManagment.addSimpleCondDiscount(userId, storeId, "product", condition, precent, None,
                                                                 productId, fromVal, toVal)
             logging.info("success to add discount")
             return Response(discountId)

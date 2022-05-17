@@ -355,6 +355,30 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def addSimpleCondDiscount(self, userId, storeId, ruleContext, ruleType, precent, category, productId,
+                          value_less_than, value_grather_than):
+        try:
+            self.__memberManagement.checkOnlineUserFromUser(userId)
+            member = self.__memberManagement.getMembersFromUser().get(userId)
+            if userId not in self.__memberManagement.getMembersFromUser().keys():
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+            if not member.isStoreExists(storeId):
+                raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+
+            discountId = self.__getDiscountId()
+            discount = self.__discountRules.createConditionalDiscount(storeId, discountId, ruleContext, ruleType, precent,
+                                                                        category, productId, value_less_than, value_grather_than)
+
+            discountInfo = DiscountInfo(discountId, userId, storeId, ruleContext, ruleType, precent, category,
+                                        productId, value_less_than, value_grather_than)
+            self.__discountManager.addDiscount(discountInfo)
+
+            member.addDiscount(storeId, discount)
+            return discountId
+
+        except Exception as e:
+            raise Exception(e)
+
     def removeDiscount(self, userId, storeId, discountId):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userId)

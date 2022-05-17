@@ -5,9 +5,10 @@ class Rule:
 
     def __init__(self, f):
         self.__f = f  # Bag --> bool
-        self.__id = str(uuid.uuid4())
 
     def check(self, bag):
+        if isinstance(self.__f, Rule):
+            return self.__f.check(bag)
         return self.__f(bag)
 
     def AndRules(self, rule2):
@@ -22,3 +23,5 @@ class Rule:
 
     def AddRules(self, rule2):
         return lambda bag: self.check(bag) and rule2.check(bag)
+
+    def
