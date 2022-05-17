@@ -134,3 +134,6 @@ class IStore(Interface):
     def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2, decide):
         pass
 
+    def hasDiscountPermission(self, user):
+        pass
+

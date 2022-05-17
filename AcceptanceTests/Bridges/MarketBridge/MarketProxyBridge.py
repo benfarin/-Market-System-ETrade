@@ -194,83 +194,39 @@ class MarketProxyBridge:
             return True
         return self._real_subject.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
 
-    def createProductWeightRule(self,uid,pid, less_than, more_than):
-        if self.check_access():
-            return True
-        return self._real_subject.createProductWeightRule(uid ,pid, less_than, more_than)
-
     def removeDiscount(self,  userId, storeId, discountId):
         if self.check_access():
             return True
         return self._real_subject.removeDiscount( userId, storeId, discountId)
 
-    def createProductWeightRule(self, sid, pid, less_than, bigger_than):
+    def createProductWeightRule(self, userId, sid, pid, less_than, bigger_than):
         if self.check_access():
             return True
-        return self._real_subject.createProductWeightRule( sid, pid, less_than, bigger_than)
+        return self._real_subject.createProductWeightRule(userId, sid, pid, less_than, bigger_than)
 
-    def createStoreWeightRule(self, uid, pid, less_than, bigger_than):
+    def createStoreWeightRule(self, uid, storeId, less_than, bigger_than):
         if self.check_access():
             return True
-        return self._real_subject.createStoreWeightRule(uid, pid, less_than, bigger_than)
+        return self._real_subject.createStoreWeightRule(uid, storeId, less_than, bigger_than)
 
-    def createProductWeightRule(self, userId, pid, less_than, bigger_than):
+    def createStoreQuantityRule(self, userId, storeId, less_than, bigger_than):
         if self.check_access():
             return True
-        return self._real_subject.createProductWeightRule(userId, pid, less_than, bigger_than)
+        return self._real_subject.createStoreQuantityRule(userId, storeId, less_than, bigger_than)
 
-    def createStoreTotalPriceLessThanRule(self, userId, pid, less_than, bigger_than):
+    def createCategoryRule(self, userId, storeId, category, less_than, bigger_than):
         if self.check_access():
             return True
-        return self._real_subject.createStoreTotalPriceLessThanRule(userId, pid, less_than, bigger_than)
+        return self._real_subject.createCategoryRule(userId, storeId, category, less_than, bigger_than)
 
-    def createStoreQuantityLessThanRule(self, userId, pid, less_than, bigger_than):
+    def createProductRule(self, userId, storeId, pid, less_than, bigger_than):
         if self.check_access():
             return True
-        return self._real_subject.createStoreQuantityLessThanRule(userId, pid, less_than, bigger_than)
+        return self._real_subject.createProductRule(userId, storeId, pid, less_than, bigger_than)
 
-    def createCategoryRule(self, userId, pid, less_than, bigger_than):
+    def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):
         if self.check_access():
             return True
-        return self._real_subject.createCategoryRule(userId, pid, less_than, bigger_than)
-
-    def createProductRule(self, userId, pid, less_than, bigger_than):
-        if self.check_access():
-            return True
-        return self._real_subject.createProductRule(userId, pid, less_than, bigger_than)
+        return self._real_subject.createStoreTotalAmountRule(userId, storeId, less_than, bigger_than)
 
 
-    # def define_purchase(self, store_id, purchase):
-    #     if self._real_subject is None:
-    #         if purchase is None or store_id < 0:
-    #             return False
-    #         return True
-    #     return self._real_subject.define_purchase(id, purchase)
-    #
-    # def discount_store(self, id, discount):
-    #     if self._real_subject is None:
-    #         if discount < 0:
-    #             return False
-    #         return True
-    #     return self._real_subject.discount_store(id, discount)
-    #
-    # def discount_prod(self, store_id, prod_id, discount):
-    #     if self._real_subject is None:
-    #         if discount < 0 or store_id < 0 or prod_id < 0:
-    #             return False
-    #         return True
-    #     return self._real_subject.discount_prod(store_id, prod_id , discount)
-
-    # def edit_purchase(self, store_id, new_purchase):
-    #     if self._real_subject is None:
-    #         if new_purchase is None:
-    #             return False
-    #         return True
-    #     return self._real_subject.edit_purchase(store_id, new_purchase)
-    #
-    # def edit_discount(self, store_id, new_discount):
-    #     if self._real_subject is None:
-    #         if new_discount < 0:
-    #             return False
-    #         return True
-    #     return self._real_subject.edit_discount(store_id, new_discount)

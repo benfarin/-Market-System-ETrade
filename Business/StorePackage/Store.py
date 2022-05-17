@@ -564,7 +564,7 @@ class Store:
         discount_rule = discount.getRule()   # need to fix
         condition_discount = ConditionDiscount(discountId, pred1, discountcalc)
         condition_discount.conditionAND(pred2)
-        predi.removeDiscount(self.getStoreId(), discountId)
+        predi.removeDiscount(self.getStoreId(), dId)
         predi.addDiscount(self.getStoreId(), condition_discount)
 
     def addConditionDiscountOr(self, user, discountId, dId, pred1, pred2):
@@ -583,3 +583,9 @@ class Store:
         condition_discount.conditionOR(pred2)
         predi.removeDiscount(self.getStoreId(), dId)
         predi.addDiscount(self.getStoreId(), condition_discount)
+
+    def hasDiscountPermission(self, user):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        return permissions.hasPermission_Discount()

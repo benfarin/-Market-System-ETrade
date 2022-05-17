@@ -14,6 +14,7 @@ from Service.DTO.StorePermissionDTO import StorePermissionDTO
 from Service.DTO.userTransactionDTO import userTransactionDTO
 from Service.DTO.StoreDTO import StoreDTO
 from Service.DTO.ProductDTO import ProductDTO
+from Service.DTO.RuleDTO import RuleDTO
 import logging
 
 logging.basicConfig(
@@ -432,65 +433,80 @@ class RoleService:
             logging.error("Failed to add the or condition discount! ")
             return Response(e.__str__())
 
-    def addConditionDiscount(self, userId, storeId, dId, pred):
-        try:
-            isAdded = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId, pred)
-            logging.info("success to add the condition discount:  " + str(userId))
-            return Response(isAdded)
-        except Exception as e:
-            logging.error("Failed to add the condition discount! ")
-            return Response(e.__str__())
+    # def addConditionDiscount(self, userId, storeId, dId, pred):
+    #     try:
+    #         isAdded = self.__roleManagment.addConditionDiscountOr(userId, storeId, dId, pred)
+    #         logging.info("success to add the condition discount:  " + str(userId))
+    #         return Response(isAdded)
+    #     except Exception as e:
+    #         logging.error("Failed to add the condition discount! ")
+    #         return Response(e.__str__())
 
-    def createStoreWeightRule(self, userId, pid, less_than, bigger_than):
+    def createStoreWeightRule(self, userId, storeId, less_than, bigger_than):  # store total weight
         try:
-            isAdded = self.__roleManagment.createStoreWeightRule(userId, pid, less_than, bigger_than)
+            rule = self.__roleManagment.createStoreWeightRule(userId, storeId, less_than, bigger_than)
             logging.info("success to create ProductWeightRule:  " + str(userId))
-            return Response(isAdded)
+            return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
             return Response(e.__str__())
 
-    def createProductWeightRule(self, userId, pid, less_than, bigger_than):
+    def createProductWeightRule(self, userId, storeId, pid, less_than, bigger_than):  # product total weight
         try:
-            isAdded = self.__roleManagment.createProductWeightRule(userId, pid, less_than, bigger_than)
+            rule = self.__roleManagment.createProductWeightRule(userId, storeId, pid, less_than, bigger_than)
             logging.info("success to create ProductWeightRule:  " + str(userId))
-            return Response(isAdded)
+            return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
             return Response(e.__str__())
 
-    def createStoreTotalPriceLessThanRule(self, userId, pid, less_than, bigger_than):
+    def createStoreQuantityRule(self, userId, storeId, less_than, bigger_than):  # store total quantity
         try:
-            isAdded = self.__roleManagment.createStoreTotalPriceLessThanRule(userId, pid, less_than, bigger_than)
+            rule = self.__roleManagment.createStoreQuantityRule(userId, storeId, less_than, bigger_than)
+            logging.info("success to create StoreWeightRule:  " + str(userId))
+            return Response(RuleDTO(rule[0], rule[1]))
+        except Exception as e:
+            logging.error("Failed to create StoreWeightRule! ")
+            return Response(e.__str__())
+
+    def createCategoryRule(self, userId, storeId, category, less_than, bigger_than):  # category total quantity
+        try:
+            rule = self.__roleManagment.createCategoryRule(userId, storeId, category, less_than, bigger_than)
             logging.info("success to create ProductWeightRule:  " + str(userId))
-            return Response(isAdded)
+            return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
             return Response(e.__str__())
 
-    def createStoreQuantityLessThanRule(self, userId, pid, less_than, bigger_than):
+    def createProductRule(self, userId, storeId, pid, less_than, bigger_than):  # category total quantity
         try:
-            isAdded = self.__roleManagment.createStoreQuantityLessThanRule(userId, pid, less_than, bigger_than)
+            rule = self.__roleManagment.createProductRule(userId, storeId, pid, less_than, bigger_than)
             logging.info("success to create ProductWeightRule:  " + str(userId))
-            return Response(isAdded)
+            return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
             return Response(e.__str__())
 
-    def createCategoryRule(self, userId, pid, less_than, bigger_than):
+    def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):  # category total quantity
         try:
-            isAdded = self.__roleManagment.createCategoryRule(userId, pid, less_than, bigger_than)
+            rule = self.__roleManagment.createStoreTotalAmountRule(userId, storeId, less_than, bigger_than)
             logging.info("success to create ProductWeightRule:  " + str(userId))
-            return Response(isAdded)
+            return Response(RuleDTO(rule[0], rule[1]))
         except Exception as e:
             logging.error("Failed to create ProductWeightRule! ")
             return Response(e.__str__())
 
-    def createProductRule(self, userId, pid, less_than, bigger_than):
+    def getAllRules(self, userId, storeId):
         try:
-            isAdded = self.__roleManagment.createProductRule(userId, pid, less_than, bigger_than)
-            logging.info("success to create ProductWeightRule:  " + str(userId))
-            return Response(isAdded)
+            rules = self.__roleManagment.getAllRules(userId, storeId)
+            logging.info("success to get all rules:  " + str(userId))
+
+            DtoRules = []
+            for rId in rules.keys():
+                DtoRules.append(RuleDTO(rId, rules.get(rId)))
+
+            return Response(DtoRules)
         except Exception as e:
-            logging.error("Failed to create ProductWeightRule! ")
+            logging.error("Failed to get all rules! ")
             return Response(e.__str__())
+

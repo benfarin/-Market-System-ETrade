@@ -290,3 +290,10 @@ class Member(User):
             return self.__market.hasRole(self)
         except Exception as e:
             raise Exception(e)
+
+    @threaded
+    def hasDiscountPermission(self, storeId):
+        try:
+            return self.__market.hasDiscountPermission(self, storeId)
+        except Exception as e:
+            raise Exception(e)

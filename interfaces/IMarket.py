@@ -159,3 +159,6 @@ class IMarket(Interface):
 
     def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2, decide):
         pass
+
+    def hasDiscountPermission(self, user, storeId):
+        pass

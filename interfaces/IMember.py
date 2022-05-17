@@ -96,4 +96,7 @@ class IMember(Interface):
     def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2, decide):
         pass
 
+    def hasDiscountPermission(self, storeId):
+        pass
+
 

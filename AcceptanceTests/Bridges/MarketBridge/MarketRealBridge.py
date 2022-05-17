@@ -123,25 +123,22 @@ class MarketRealBridge:
     def removeDiscount(self,  userId, storeId, discountId):
         return self._roleService.removeDiscount(userId, storeId, discountId)
 
-    def createProductWeightRule(self, sid, pid, less_than, bigger_than):
-        return self._roleService.createProductWeightRule(sid, pid, less_than, bigger_than)
+    def createProductWeightRule(self, uid, sid, pid, less_than, bigger_than):
+        return self._roleService.createProductWeightRule(uid, sid, pid, less_than, bigger_than)
 
-    def createStoreWeightRule(self,uid,pid, less_than, bigger_than):
-        return self._roleService.createStoreWeightRule(uid, pid, less_than, bigger_than)
+    def createStoreWeightRule(self,uid, storeId, less_than, bigger_than):
+        return self._roleService.createStoreWeightRule(uid, storeId, less_than, bigger_than)
 
-    def createProductWeightRule(self,userId, pid, less_than, bigger_than):
-        return self._roleService.createProductWeightRule(userId, pid, less_than, bigger_than)
+    def createStoreQuantityRule(self,userId, storeId, less_than, bigger_than):
+        return self._roleService.createStoreQuantityRule(userId, storeId, less_than, bigger_than)
 
-    def createStoreTotalPriceLessThanRule(self,userId, pid, less_than, bigger_than):
-        return self._roleService.createStoreTotalPriceLessThanRule(userId, pid, less_than, bigger_than)
+    def createCategoryRule(self,userId, storeId, category, less_than, bigger_than):
+        return self._roleService.createCategoryRule(userId, storeId, category, less_than, bigger_than)
 
-    def createStoreQuantityLessThanRule(self,userId, pid, less_than, bigger_than):
-        return self._roleService.createStoreQuantityLessThanRule(userId, pid, less_than, bigger_than)
+    def createProductRule(self,userId, storeId, pid, less_than, bigger_than):
+        return self._roleService.createProductRule(userId, storeId, pid, less_than, bigger_than)
 
-    def createCategoryRule(self,userId, pid, less_than, bigger_than):
-        return self._roleService.createCategoryRule(userId, pid, less_than, bigger_than)
-
-    def createProductRule(self,userId, pid, less_than, bigger_than):
-        return self._roleService.createProductRule(userId, pid, less_than, bigger_than)
+    def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):
+        return self._roleService.createStoreTotalAmountRule(userId, storeId, less_than, bigger_than)
 
 
