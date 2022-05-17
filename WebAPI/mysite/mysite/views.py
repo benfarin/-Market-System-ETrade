@@ -223,13 +223,14 @@ def add_product(request, slug):
 
 def get_cart(request):
     answer = user_service.getCart(user.getUserID())
+    cart_sum = user_service.getSumAfterDiscount(user.getUserID()).getData()
     bags = []
     cart = []
     if not answer.isError():
         cart = answer.getData()
         for bag in cart.getAllBags().values():
             bags.append(bag)
-    context = {"title": "Cart", "bags": bags, "cart": cart}
+    context = {"title": "Cart", "bags": bags, "cart": cart, "sum": cart_sum}
     return render(request, "cart.html", context)
 
 

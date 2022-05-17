@@ -32,7 +32,6 @@ def initialize_system():
     role_service = RoleService()
     member_service = MemberService()
     user_service = UserService()
-
     guest: GuestDTO = user_service.enterSystem().getData()
     user_service.memberSignUp("ori", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva", "Rager", 1, 1)
     user_service.memberSignUp("rotem", "1234", "0540000000", 123, 2, "Israel", "Beer Sheva", "Rager", 1, 1)

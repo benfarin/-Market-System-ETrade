@@ -504,7 +504,6 @@ class RoleService:
             DtoRules = []
             for rId in rules.keys():
                 DtoRules.append(RuleDTO(rId, rules.get(rId)))
-
             return Response(DtoRules)
         except Exception as e:
             logging.error("Failed to get all rules! ")

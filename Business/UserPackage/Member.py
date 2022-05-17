@@ -60,6 +60,9 @@ class Member(User):
     def getMemberName(self):
         return self.__userName
 
+    def getMemberTransactions(self):
+        return super().getTransactions().values()
+
     def setCart(self, cart):
         self._cart = cart
 
