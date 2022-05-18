@@ -79,6 +79,11 @@ class UserProxyBridge:
         return self._real_subject.appoint_system_manager(userName, password, phone, accountNumber, brunch,
                                                          country, city, street, apartmentNum, zipCode)
 
+    def removeMember(self, systemManagerName, memberName):
+        if self.check_access():
+            return True
+        return self._real_subject.removeMember(systemManagerName, memberName)
+
     # def logout_member(self, user_id,password):
     #     if self.check_access():
     #         return True

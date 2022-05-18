@@ -2,9 +2,9 @@ import zope
 
 
 from AcceptanceTests.Bridges.UserBridge.IUserBridge import IUserBridge
-from Service.MemberService import MemberService
-from Service.RoleService import RoleService
-from Service.UserService import UserService
+from Backend.Service.MemberService import MemberService
+from Backend.Service.RoleService import RoleService
+from Backend.Service.UserService import UserService
 
 
 @zope.interface.implementer(IUserBridge)
@@ -55,3 +55,9 @@ class UserRealBridge:
 
     def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         return self._userService.systemManagerSignUp(userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode)
+
+    def removeMember(self, systemManagerName, memberName):
+        return self._roleService.removeMember(systemManagerName, memberName)
+
+    # def logout_member(self, user_id, password):
+    #     return self._memberService.logoutMember(user_id, password)

@@ -3,8 +3,8 @@ import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
-from Service.MemberService import MemberService
-from Service.UserService import UserService
+from Backend.Service.MemberService import MemberService
+from Backend.Service.UserService import UserService
 
 
 class MyTestCase(unittest.TestCase):
