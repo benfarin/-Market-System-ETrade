@@ -1,6 +1,7 @@
 # WorkshopSoftwareEngineering
 
 To run the project:
+
 First make sure you have django installed on your computer.
 
 You can do this by visiting next website and follow the installation steps:
