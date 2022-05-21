@@ -2,7 +2,7 @@ import zope
 from zope.interface import implements
 
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
-from Backend.interfaces.ICart import ICart
+from Backend.Interfaces.ICart import ICart
 from Backend.Business.StorePackage.Bag import Bag
 from Backend.Business.StorePackage.Product import Product
 from typing import Dict

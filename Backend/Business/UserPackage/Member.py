@@ -3,7 +3,7 @@ import bcrypt
 import threading
 
 from Backend.Exceptions.CustomExceptions import NoSuchMemberException, PasswordException
-from Backend.interfaces.IMarket import IMarket
+from Backend.Interfaces.IMarket import IMarket
 from Backend.Business.Market import Market
 from concurrent.futures import Future
 

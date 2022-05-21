@@ -1,6 +1,6 @@
 import zope
 
-from Backend.interfaces.IDiscount import IDiscount
+from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Business.StorePackage.Product import Product
 from Backend.Business.StorePackage.Bag import Bag
 

@@ -2,7 +2,7 @@ import zope
 from zope.interface import implements
 
 from Backend.Exceptions.CustomExceptions import QuantityException, ProductException
-from Backend.interfaces.IBag import IBag
+from Backend.Interfaces.IBag import IBag
 from Backend.Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 
 

@@ -6,12 +6,12 @@ from Backend.Service.Response import Response
 from Backend.Service.DTO.GuestDTO import GuestDTO
 from Backend.Service.DTO.MemberDTO import MemberDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
-from Backend.Service.DTO.userTransactionDTO import userTransactionDTO
+from Backend.Service.DTO.UserTransactionDTO import userTransactionDTO
 from Backend.Service.DTO.CartDTO import CartDTO
 from typing import Dict
 import logging
 
-from Backend.interfaces.IStore import IStore
+from Backend.Interfaces.IStore import IStore
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -195,6 +195,17 @@ class UserService:
         except Exception as e:
             logging.error("Failed to get sum after discount" + str(userId))
             return Response(e.__str__())
+
+    def getUserByUserName(self, username):
+        try:
+            user = self.__userManagment.getUserByUserName(username)
+            logging.info("success get user " + str(username))
+            return Response(MemberDTO(user))
+        except Exception as e:
+            logging.error("Failed to get user" + str(username))
+            return Response(e.__str__())
+
+
 
 
 

@@ -4,7 +4,7 @@ from Backend.Business.DiscountPackage.ProductDiscount import ProductDiscount
 from Backend.Business.DiscountPackage.CatagoryDiscount import CataoryDiscount
 from Backend.Business.DiscountPackage.Discount import Discount
 from Backend.Business.StorePackage.Store import Store
-from Backend.interfaces.IDiscount import IDiscount
+from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Business.DiscountPackage.ConditionDiscount import ConditionDiscount
 from Backend.Business.Rules.Rule import Rule
 from Backend.Business.Rules.ruleCreator import ruleCreator

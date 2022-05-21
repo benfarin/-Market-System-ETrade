@@ -2,7 +2,7 @@ from Backend.Business.Managment.MemberManagment import MemberManagment
 from Backend.Business.Managment.RoleManagment import RoleManagment
 from Backend.Service.Response import Response
 from Backend.Service.DTO.StoreDTO import StoreDTO
-from Backend.Service.DTO.userTransactionDTO import userTransactionDTO
+from Backend.Service.DTO.UserTransactionDTO import userTransactionDTO
 from Backend.Service.DTO.StoreTransactionForUserDTO import storeTransactionForUserDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
 import logging

@@ -1,11 +1,20 @@
+import django
+
 from Backend.Business.StorePackage.Cart import Cart
 from Backend.Business.Transactions.UserTransaction import UserTransaction
-from Backend.interfaces.IMarket import IMarket
+from Backend.Interfaces.IMarket import IMarket
 from Backend.Business.Market import Market
 from typing import Dict
 import uuid
 import threading
 from concurrent.futures import Future
+import os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
+
+from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.models import User as m_User, Group
 
 
 def call_with_future(fn, future, args, kwargs):
@@ -28,7 +37,7 @@ def threaded(fn):
 # class User(threading.Thread):
 class User:
 
-    def __init__(self):
+    def __init__(self, model=None):
         #  threading.Thread.__init__(self, target=t, args=args)
         # threading.Thread.__init__(self)
 
@@ -37,6 +46,9 @@ class User:
         self.__memberCheck = False
         self.__transactions: Dict[int: UserTransaction] = {}
         self.__market: IMarket = Market.getInstance()
+        if model is not None:
+            self._model = model
+
         # self.start()
 
     # all the transaction should be access only from member !!!!
@@ -103,4 +115,30 @@ class User:
         except Exception as e:
             raise Exception(e)
 
+
+    @property
+    def pk(self):
+        return self.__id
+
+    @staticmethod
+    def get_user(username):
+        try:
+            if username is None:
+                model = m_User.objects.filter(username='AnonymousUser')[0]
+            else:
+                model = m_User.objects.get(username=username)
+            return model
+        except Exception as e:
+            return None
+
+    def is_authenticated(self):
+        return self._model.is_authenticated
+
+    @staticmethod
+    def save(username, password):
+        m_User.objects.create_user(username=username, password=password)
+
+    @staticmethod
+    def save_admin(username, password):
+        m_User.objects.create_superuser(username=username, password=password)
 

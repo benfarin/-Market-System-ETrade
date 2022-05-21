@@ -9,9 +9,9 @@ from Backend.Business.Managment.RoleManagment import RoleManagment
 from Backend.Business.Managment.GetterManagment import GetterManagment
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException
 from Backend.Service.Response import Response
-from Backend.Service.DTO.storeTransactionDTO import storeTransactionDTO
+from Backend.Service.DTO.StoreTransactionDTO import storeTransactionDTO
 from Backend.Service.DTO.StorePermissionDTO import StorePermissionDTO
-from Backend.Service.DTO.userTransactionDTO import userTransactionDTO
+from Backend.Service.DTO.UserTransactionDTO import userTransactionDTO
 from Backend.Service.DTO.StoreDTO import StoreDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
 from Backend.Service.DTO.RuleDTO import RuleDTO

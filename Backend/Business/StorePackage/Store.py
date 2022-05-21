@@ -2,9 +2,9 @@ import zope
 from zope.interface import implements
 
 from Backend.Exceptions.CustomExceptions import ProductException, PermissionException, TransactionException
-from Backend.interfaces.IMember import IMember
-from Backend.interfaces.IProduct import IProduct
-from Backend.interfaces.IStore import IStore
+from Backend.Interfaces.IMember import IMember
+from Backend.Interfaces.IProduct import IProduct
+from Backend.Interfaces.IStore import IStore
 from Backend.Business.StorePackage.StorePermission import StorePermission
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Business.DiscountPackage.Discount import Discount

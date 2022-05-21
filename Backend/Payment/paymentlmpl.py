@@ -1,7 +1,7 @@
 from Backend.Payment.PaymentSystem import PaymentSystem
 from Backend.Payment.PaymentStatus import PaymentStatus
 from Backend.Payment.PaymentDetails import PaymentDetails
-from Backend.interfaces.IPayment import IPayment
+from Backend.Interfaces.IPayment import IPayment
 
 
 class Paymentlmpl:

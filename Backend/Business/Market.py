@@ -5,10 +5,10 @@ import zope
 from Backend.Business.StorePackage.Store import Store
 from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
-from Backend.interfaces.IMarket import IMarket
-from Backend.interfaces.IStore import IStore
-from Backend.interfaces.IMember import IMember
-from Backend.interfaces.IUser import IUser
+from Backend.Interfaces.IMarket import IMarket
+from Backend.Interfaces.IStore import IStore
+from Backend.Interfaces.IMember import IMember
+from Backend.Interfaces.IUser import IUser
 from Backend.Payment.PaymentStatus import PaymentStatus
 from Backend.Business.Transactions.TransactionHistory import TransactionHistory
 from Backend.Payment.PaymentDetails import PaymentDetails

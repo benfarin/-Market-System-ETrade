@@ -1,7 +1,7 @@
 import zope
 
 from Backend.Business.StorePackage.Bag import Bag
-from Backend.interfaces.IDiscount import IDiscount
+from Backend.Interfaces.IDiscount import IDiscount
 
 @zope.interface.implementer(IDiscount)
 class DiscountCalc:

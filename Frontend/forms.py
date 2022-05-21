@@ -67,6 +67,7 @@ class AddProductForm(forms.Form):
     name = forms.CharField()
     category = forms.CharField()
     price = forms.IntegerField()
+    weight = forms.IntegerField()
     keywords = forms.CharField()
 
 

@@ -1,7 +1,7 @@
 from typing import List
 import zope
 from zope.interface import implements
-from Backend.interfaces.IProduct import IProduct
+from Backend.Interfaces.IProduct import IProduct
 
 
 @zope.interface.implementer(IProduct)

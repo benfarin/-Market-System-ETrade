@@ -2,7 +2,7 @@ from Backend.Business.StorePackage.Store import Store
 from Backend.Service.DTO.ProductDTO import ProductDTO
 from Backend.Service.DTO.MemberDTO import MemberDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
-from Backend.Service.DTO.storeTransactionDTO import storeTransactionDTO
+from Backend.Service.DTO.StoreTransactionDTO import storeTransactionDTO
 from Backend.Service.DTO.StorePermissionDTO import StorePermissionDTO
 from typing import List
 from typing import Dict

@@ -13,8 +13,9 @@ import os
 from pathlib import Path
 import sys
 from channels.routing import ProtocolTypeRouter
+import Backend
 
-sys.path.append('....')
+# sys.path.append('....')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

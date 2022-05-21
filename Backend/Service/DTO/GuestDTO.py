@@ -1,6 +1,9 @@
+from abc import ABC
+
 from Backend.Business.UserPackage.Guest import Guest
 from Backend.Service.DTO.CartDTO import CartDTO
 from typing import Dict
+from django.contrib.auth.models import User, AnonymousUser, AbstractUser
 
 
 class GuestDTO:
@@ -19,6 +22,7 @@ class GuestDTO:
 
     def setUserID(self, uid):
         self.__id = uid
+
 
     def __str__(self):
         toReturn = "guest:"

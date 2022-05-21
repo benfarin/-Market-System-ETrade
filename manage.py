@@ -11,14 +11,12 @@ from Backend.Service.DTO.GuestDTO import GuestDTO
 from Backend.Service.DTO.MemberDTO import MemberDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
 from Backend.Service.DTO.StoreDTO import StoreDTO
-from Backend.Service.MemberService import MemberService
-from Backend.Service.RoleService import RoleService
-from Backend.Service.UserService import UserService
 
 
 def web_run():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+    initialize_system()
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -102,7 +100,6 @@ def initialize_system():
 
 
 def main():
-    initialize_system()
     web_run()
 
 

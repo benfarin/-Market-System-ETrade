@@ -22,7 +22,7 @@ from .views import (
     home_page,
     signup_page,
     login_page,
-    my_stores_page, create_store_page, store_page, store_products_management, appoint_manager, appoint_Owner, logout,
+    my_stores_page, create_store_page, store_page, store_products_management, appoint_manager, appoint_Owner,
     add_product, get_cart, add_to_cart_page, purchase_cart, search_view, show_history, product_update, remove_product,
     add_quantity, purchases_page, permissions_page, remove_product_from_cart, close_store, discounts_page,
     add_condition_add, add_condition_max, add_rule, add_store_simple_discount,
@@ -30,7 +30,7 @@ from .views import (
     add_product_simple_discount, add_product_simple_condition_discount, remove_condition, remove_Owner, remove_member,
     all_stores_transactions, all_user_transactions, store_transactions, user_transactions, store_transactions_ID,
     show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
-    add_condition_or, add_condition_xor, add_condition_and,
+    add_condition_or, add_condition_xor, add_condition_and, logout_page,
 )
 
 urlpatterns = [
@@ -75,7 +75,7 @@ urlpatterns = [
     path('addstore/', create_store_page),
     path('signup/', signup_page),
     path('login/', login_page),
-    path('logout/', logout),
+    path('logout/', logout_page),
     path('cart/', get_cart),
     path('cart/<str:slug>/remove_product/', remove_product_from_cart),
     path('cart/<str:slug>/<str:slug2>/remove_product/', remove_product_from_cart_with_store),

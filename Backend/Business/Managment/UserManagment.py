@@ -7,7 +7,7 @@ from Backend.Business.UserPackage.User import User
 from Backend.Business.UserPackage.Guest import Guest
 from Backend.Exceptions.CustomExceptions import NoSuchUserException, PasswordException, NotOnlineException, \
     SystemManagerException, MemberAllReadyLoggedIn
-from Backend.interfaces import IMarket
+from Backend.Interfaces import IMarket
 from typing import Dict
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.SystemManager import SystemManager
@@ -66,6 +66,8 @@ class UserManagment(object):
             guest = Guest()
             self.__guests[guest.getUserID()] = guest
             self.__activeUsers[guest.getUserID()] = guest
+            if User.get_user("Guest") is None:
+                User.save(username="Guest", password="")
             return guest
         except Exception as e:
             raise Exception(e)
@@ -80,6 +82,8 @@ class UserManagment(object):
         if self.__isMemberExists(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[member.getUserID()] = member
+            if User.get_user(userName) is None:
+                User.save(username=userName, password=password)
             return True
         raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
 
@@ -128,6 +132,8 @@ class UserManagment(object):
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
             if systemManager:
                 self.__systemManager[userName] = systemManager
+                if User.get_user(userName) is None:
+                    User.save_admin(username=userName, password=password)
                 return systemManager
         return None
 
@@ -191,8 +197,19 @@ class UserManagment(object):
         if userId not in self.__guests.keys():
             raise NoSuchUserException("user: " + str(userId) + "is not exists")
         return self.__guests.get(userId).getCart()
+
     def getUser(self,uid):
         if uid not in self.__activeUsers:
             raise NoSuchUserException("user: " + str(uid) + "is not exists")
         return self.__activeUsers.get(uid)
+
+    def getUserByUserName(self, username):
+        for member in self.__members.values():
+            if member.getMemberName() == username:
+                return member
+        if username == "Guest":
+            lst = self.__guests.values()[0]
+            return lst
+        return None
+
 
