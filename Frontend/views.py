@@ -102,6 +102,8 @@ def login_page(request):
         # answer = user_service.memberLogin(user.getUserID(), username, password)
         # if not answer.isError():
         #     user = answer.getData()
+        user = user_service.getUserByUserName(request.user.username).getData()
+        user_service.memberLogin(user.getUserID(), username, password)
         django_user = User.get_user(username)
         login(request, django_user)
         # print(user.getUserID())
@@ -115,11 +117,11 @@ def login_page(request):
 
 
 def logout_page(request):
-    global user
-    logout(request)
-    if isinstance(user, MemberDTO):
-        member_service.logoutMember(user.getMemberName())
-        user = user_service.enterSystem().getData()
+    user = user_service.getUserByUserName(request.user.username).getData()
+    member_service.logoutMember(user.getMemberName())
+    # user = user_service.enterSystem().getData()
+    django_user = User.get_user("Guest")
+    login(request, django_user)
     return HttpResponseRedirect("/")
 
 

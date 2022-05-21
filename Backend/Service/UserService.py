@@ -1,6 +1,9 @@
 from Backend.Business.Managment.UserManagment import UserManagment
 from Backend.Business.Managment.GetterManagment import GetterManagment
+from Backend.Business.UserPackage.Member import Member
+
 from Backend.Business.UserPackage.User import User
+from Backend.Interfaces.IMember import IMember
 from Backend.Service.DTO.StoreDTO import StoreDTO
 from Backend.Service.Response import Response
 from Backend.Service.DTO.GuestDTO import GuestDTO
@@ -200,7 +203,9 @@ class UserService:
         try:
             user = self.__userManagment.getUserByUserName(username)
             logging.info("success get user " + str(username))
-            return Response(MemberDTO(user))
+            if isinstance(user, Member):
+                return Response(MemberDTO(user))
+            return Response(GuestDTO(user))
         except Exception as e:
             logging.error("Failed to get user" + str(username))
             return Response(e.__str__())

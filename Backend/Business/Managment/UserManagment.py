@@ -207,9 +207,12 @@ class UserManagment(object):
         for member in self.__members.values():
             if member.getMemberName() == username:
                 return member
+        for admin in self.__systemManager.values():
+            if admin.getMemberName() == username:
+                return admin
         if username == "Guest":
-            lst = self.__guests.values()[0]
-            return lst
+            lst = list(self.__guests.values())
+            return lst[0]
         return None
 
 
