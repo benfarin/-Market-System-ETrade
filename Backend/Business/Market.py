@@ -172,7 +172,8 @@ class Market:
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 storeName = self.__stores.get(storeId).getStoreName()
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
-                storeAmount = cart.calcSumOfBag(storeId)
+                discounts = self.__stores.get(storeId).getAllDiscounts(user)
+                storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
                 paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
