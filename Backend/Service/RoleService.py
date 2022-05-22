@@ -1,7 +1,6 @@
 import sys
 from datetime import datetime
 
-from Backend.Business.DiscountRules import DiscountRules, ruleType
 from Backend.Business.Managment.MemberManagment import MemberManagment
 from Backend.Business.Managment.RoleManagment import RoleManagment
 from Backend.Business.Managment.GetterManagment import GetterManagment
