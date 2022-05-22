@@ -239,55 +239,6 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def addDiscount(self, storeId, discount):
-        try:
-            return self.__market.addDiscount(storeId, self, discount)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def removeDiscount(self, storeId, discountId):
-        try:
-            return self.__market.removeDiscount(storeId, self, discountId)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountAdd(self, storeId, dId, dId1, dId2):
-        try:
-            return self.__market.addConditionDiscountAdd(storeId, self, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountMax(self, storeId, dId, dId1, dId2):
-        try:
-            return self.__market.addConditionDiscountMax(storeId, self, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2, decide):
-        try:
-            return self.__market.addConditionDiscountXor(storeId, self, discountId, dId, pred1, pred2, decide)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountAnd(self, storeId, discountId, dId, pred1, pred2):
-        try:
-            return self.__market.addConditionDiscountAnd(storeId, self, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountOr(self, storeId, discountId, dId, pred1, pred2):
-        try:
-            return self.__market.addConditionDiscountOr(storeId, self, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
     def hasRole(self):
         try:
             return self.__market.hasRole(self)

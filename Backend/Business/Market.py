@@ -426,62 +426,6 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addDiscount(self, storeId, user, discount):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addDiscount(user, discount)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeDiscount(self, storeId, user, discountId):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).removeDiscount(user, discountId)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountAdd(user, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountMax(user, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountXor(self, storeId, user, discountId, dId, pred1, pred2, decide):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountXor(user, discountId, dId, pred1, pred2, decide)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountAnd(self, storeId, user, discountId, dId, pred1, pred2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountAnd(user, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountOr(user, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
     def hasDiscountPermission(self, user, storeId):
         try:
             if storeId not in self.__stores.keys():

@@ -3,11 +3,11 @@ from zope.interface import Interface
 
 class IDiscount(Interface):
 
-    def calcDiscount(self, bag):
+    def calculate(self, bag):
         pass
 
-    def max(self, additional_DiscountCal):
+    def getTotalPrice(self, bag):
         pass
 
-    def add(self, discount_calc_2):
+    def getDiscountId(self):
         pass

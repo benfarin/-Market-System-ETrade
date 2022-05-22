@@ -3,7 +3,6 @@ from zope.interface import implements
 
 from Backend.Exceptions.CustomExceptions import QuantityException, ProductException
 from Backend.Interfaces.IBag import IBag
-from Backend.Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 
 
 @zope.interface.implementer(IBag)
@@ -85,20 +84,21 @@ class Bag:
         return None
 
     def applyDiscount(self):
-        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        if discounts is None or discounts == []:
-            return self.calc()
-        f = lambda discount: discount.check(self)
-        minPrice = float('inf')
-        for discount in discounts:
-            if f(discount):
-                newPrice = self.findMinBagPrice(discount.makeDiscount(self))
-                if newPrice < minPrice:
-                    minPrice = newPrice
-        if minPrice < float('inf'):
-            return minPrice
-        else:
-            return self.calc()
+        pass
+        # discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
+        # if discounts is None or discounts == []:
+        #     return self.calc()
+        # f = lambda discount: discount.check(self)
+        # minPrice = float('inf')
+        # for discount in discounts:
+        #     if f(discount):
+        #         newPrice = self.findMinBagPrice(discount.makeDiscount(self))
+        #         if newPrice < minPrice:
+        #             minPrice = newPrice
+        # if minPrice < float('inf'):
+        #     return minPrice
+        # else:
+        #     return self.calc()
 
     def findMinBagPrice(self, discount_of_product):
         newPrices = discount_of_product.getProducts()

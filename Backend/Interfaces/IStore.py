@@ -113,27 +113,6 @@ class IStore(Interface):
     def getTransactionsForSystemManager(self):
         pass
 
-    def addDiscount(self, user, discount):
-        pass
-
-    def removeDiscount(self, user, discountId):
-        pass
-
-    def addConditionDiscountAdd(self, user, dId, dId1, dId2):
-        pass
-
-    def addConditionDiscountMax(self, user, dId, dId1, dId2):
-        pass
-
-    def addConditionDiscountOr(self, user, discountId, dId, pred1, pred2):
-        pass
-
-    def addConditionDiscountAnd(self, user, discountId, dId, pred1, pred2):
-        pass
-
-    def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2, decide):
-        pass
-
     def hasDiscountPermission(self, user):
         pass
 

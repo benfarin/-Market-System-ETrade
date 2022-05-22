@@ -136,29 +136,5 @@ class IMarket(Interface):
     def recreateStore(self, storeID, founder):
         pass
 
-    def addDiscount(self, storeId, user, discount):
-        pass
-
-    def removeDiscount(self, storeId, user, discountId):
-        pass
-
-    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
-        pass
-
-    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
-        pass
-
     def updateCart(self, cart1, cart2):
-        pass
-
-    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
-        pass
-
-    def addConditionDiscountAnd(self, storeId, user, dId, discountId, pred1, pred2):
-        pass
-
-    def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2, decide):
-        pass
-
-    def hasDiscountPermission(self, user, storeId):
         pass
