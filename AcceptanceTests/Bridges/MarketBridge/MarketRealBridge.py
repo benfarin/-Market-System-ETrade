@@ -1,8 +1,8 @@
 import zope
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
-from Service.MemberService import MemberService
-from Service.RoleService import RoleService
-from Service.UserService import UserService
+from Backend.Service.MemberService import MemberService
+from Backend.Service.RoleService import RoleService
+from Backend.Service.UserService import UserService
 
 
 @zope.interface.implementer(IMarketBridge)
@@ -45,8 +45,8 @@ class MarketRealBridge:
     def remove_product_from_store(self, store_id, user_id, prod_id):
         return self._roleService.removeProductFromStore(store_id, user_id, prod_id)
 
-    def edit_product_price(self, user_id, store_id, prod_id, new_price):
-        return self._roleService.updateProductPrice(user_id, store_id, prod_id, new_price)
+    def edit_product_price(self, store_id, user_id, prod_id, new_price):
+        return self._roleService.updateProductPrice(store_id, user_id, prod_id, new_price)
 
     def edit_product_Weight(self, user_id, store_id, prod_id, new_weight):
         return self._roleService.updateProductWeight(user_id, store_id, prod_id, new_weight)

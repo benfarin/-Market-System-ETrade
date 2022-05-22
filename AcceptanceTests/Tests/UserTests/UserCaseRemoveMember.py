@@ -4,9 +4,9 @@ from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBr
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
-from Service.MemberService import MemberService
-from Service.UserService import UserService
-from Service.Response import Response
+from Backend.Service.MemberService import MemberService
+from Backend.Service.UserService import UserService
+from Backend.Service.Response import Response
 
 
 class UserCaseRemoveMember(unittest.TestCase):
@@ -18,14 +18,14 @@ class UserCaseRemoveMember(unittest.TestCase):
         cls.sm = cls.user_proxy.appoint_system_manager("user1", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                          "Ben Gurion", 1, 1).getData()
         cls.__guestId_1 = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        cls.user_proxy.register(cls.__guestId_1, "user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
-        cls.member1 = cls.user_proxy.login_member(cls.__guestId_1, "user1", "1234").getData()
+        cls.member1 = cls.user_proxy.login_member("user1", "1234").getData()
 
         cls.__guestId_2 = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        cls.user_proxy.register(cls.__guestId_2, "user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
-        cls.member2 = cls.user_proxy.login_member(cls.__guestId_2, "user2", "1234").getData()
+        cls.member2 = cls.user_proxy.login_member("user2", "1234").getData()
 
     def test_removeMember(self):
         self.assertTrue(self.user_proxy.removeMember(self.sm.getMemberName(), self.member1.getMemberName()).getData())
