@@ -33,3 +33,12 @@ class DiscountComposite:
 
     def getDiscountId(self):
         return self.__discountId
+
+    def getDiscount1(self):
+        return self.__discount1
+
+    def getDiscount2(self):
+        return self.__discount2
+
+    def getDiscountType(self):
+        return self.__discountType

@@ -31,3 +31,8 @@ class ProductDiscount:
     def getDiscountId(self):
         return self.__discountId
 
+    def getProductId(self):
+        return self.__productId
+
+    def getDiscountPercent(self):
+        return self.__percent

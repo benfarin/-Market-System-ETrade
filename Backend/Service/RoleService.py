@@ -6,6 +6,8 @@ from Backend.Business.Managment.MemberManagment import MemberManagment
 from Backend.Business.Managment.RoleManagment import RoleManagment
 from Backend.Business.Managment.GetterManagment import GetterManagment
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException
+from Backend.Service.DTO.compositeDiscountDTO import compositeDiscountDTO
+from Backend.Service.DTO.simpleDiscountDTO import simpleDiscountDTO
 from Backend.Service.Response import Response
 from Backend.Service.DTO.StoreTransactionDTO import storeTransactionDTO
 from Backend.Service.DTO.StorePermissionDTO import StorePermissionDTO
@@ -331,27 +333,53 @@ class RoleService:
         try:
             simpleDis = self.__roleManagment.addStoreDiscount(userId, storeId, percent)
             logging.info("success to create store discount to store id " + str(storeId))
-            DTOuserTransactuions = []
-            # for ut in userTransactions:
-            #     DTOuserTransactuions.append(userTransactionDTO(ut))
-
-            return Response(DTOuserTransactuions)
+            return Response(simpleDiscountDTO(simpleDis))
         except Exception as e:
-            logging.error("Failed to get all store transactions" + str(systemManagerName))
+            logging.error("Failed to make store discount to store id " + str(storeId))
             return Response(e.__str__())
 
     def addProductDiscount(self, userId, storeId, productId, percent):
-        pass
+        try:
+            simpleDis = self.__roleManagment.addProductDiscount(userId, storeId, productId, percent)
+            logging.info("success to create product discount to product id " + str(productId))
+            return Response(simpleDiscountDTO(simpleDis))
+        except Exception as e:
+            logging.error("Failed to make product discount to product id " + str(productId))
+            return Response(e.__str__())
 
     def addCategoryDiscount(self, userId, storeId, category, percent):
-        pass
+        try:
+            simpleDis = self.__roleManagment.addCategoryDiscount(userId, storeId,category , percent)
+            logging.info("success to create category discount to category id " + str(category))
+            return Response(simpleDiscountDTO(simpleDis))
+        except Exception as e:
+            logging.error("Failed to make category discount to category id " + str(category))
+            return Response(e.__str__())
 
     def addCompositeDiscountMax(self, userId, storeId, dId1, dId2):
-        pass
+        try:
+            simpleDis = self.__roleManagment.addCompositeDiscountMax(userId, storeId, dId1, dId2)
+            logging.info("success to create max discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
+            return Response(compositeDiscountDTO(simpleDis))
+        except Exception as e:
+            logging.error("Failed to make max discount to discount id "+ str(dId1) + " and to discount id " + str(dId2))
+            return Response(e.__str__())
 
     def addCompositeDiscountAdd(self, userId, storeId, dId1, dId2):
-        pass
+        try:
+            simpleDis = self.__roleManagment.addCompositeDiscountAdd(userId, storeId, dId1, dId2)
+            logging.info("success to create add discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
+            return Response(compositeDiscountDTO(simpleDis))
+        except Exception as e:
+            logging.error("Failed to make add discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
+            return Response(e.__str__())
 
     def removeDiscount(self, userId, storeId, discountId):
-        pass
+        try:
+            isRemoved = self.__roleManagment.removeDiscount(userId, storeId, discountId)
+            logging.info("success to remove discount id " + str(discountId))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to remove discount id " + str(discountId))
+            return Response(e.__str__())
 

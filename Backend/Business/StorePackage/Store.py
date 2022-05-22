@@ -526,6 +526,7 @@ class Store:
             raise Exception("the discount is not an existing discount")
         with self.__discountsLock:
             self.__discounts.pop(discount.getDiscountId())
+        return True
 
     def getAllDiscounts(self, user):
         permissions = self.__permissions.get(user)
