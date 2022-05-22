@@ -122,3 +122,6 @@ class IStore(Interface):
     def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType):
         pass
 
+    def getAllDiscounts(self, user):
+        pass
+
