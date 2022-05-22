@@ -47,8 +47,6 @@ class Cart:
             else:
                 self.__bags[storeId] = cart.getAllBags()[storeId]
 
-
-
     def updateBag(self, bag):
         if self.__bags.get(bag.getStoreId()) is not None:
             self.__bags[bag.getStoreId()] = bag
@@ -62,8 +60,8 @@ class Cart:
             s += bag.calcSum()
         return s
 
-    def calcSumOfBag(self, storeId):
-        return self.__bags.get(storeId).calcSum()
+    def calcSumOfBag(self, storeId, discounts):
+        return self.__bags.get(storeId).calcSum(discounts)
 
     def isEmpty(self):
         for bag in self.__bags.values():
