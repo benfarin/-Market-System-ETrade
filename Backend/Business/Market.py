@@ -274,6 +274,26 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def addSimpleDiscount(self,user, storeId, discount):
+        try:
+            self.__stores.get(storeId).addSimpleDiscount(user,discount)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+    def addCompositeDiscount(self, user,storeId, discountId, dId1, dId2, typeDiscount):
+        try:
+            return self.__stores.get(storeId).addCompositeDiscount(user,discountId, dId1, dId2, typeDiscount)
+        except Exception as e:
+            raise Exception(e)
+
+
+    def removeDiscount(self,user,storeId, discountId):
+        try:
+            return self.__stores.get(storeId).removeDiscount(user,discountId)
+        except Exception as e:
+            raise Exception(e)
+
     def addProductToStore(self, storeID, user, product):  # Tested
         try:
             self.__stores.get(storeID).addProductToStore(user, product)
@@ -452,3 +472,5 @@ class Market:
             utId = self.__userTransactionIdCounter
             self.__userTransactionIdCounter += 1
             return utId
+
+

@@ -138,3 +138,12 @@ class IMarket(Interface):
 
     def updateCart(self, cart1, cart2):
         pass
+
+    def addSimpleDiscount(self, user,storeId, discount):
+        pass
+
+    def addCompositeDiscount(self, user ,storeId, discountId, dId1, dId2, typeDiscount):
+        pass
+
+    def removeDiscount(self, user, storeId, discountId):
+        pass

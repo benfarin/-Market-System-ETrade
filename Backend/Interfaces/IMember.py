@@ -78,4 +78,13 @@ class IMember(Interface):
     def hasDiscountPermission(self, storeId):
         pass
 
+    def addSimpleDiscount(self, storeId, discount):
+        pass
+
+    def addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount):
+        pass
+
+    def removeDiscount(self, storeId, discountId):
+        pass
+
 

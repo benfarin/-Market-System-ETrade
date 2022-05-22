@@ -327,3 +327,31 @@ class RoleService:
             logging.error("Failed to get all rules! ")
             return Response(e.__str__())
 
+    def addStoreDiscount(self, userId, storeId, percent):
+        try:
+            simpleDis = self.__roleManagment.addStoreDiscount(userId, storeId, percent)
+            logging.info("success to create store discount to store id " + str(storeId))
+            DTOuserTransactuions = []
+            # for ut in userTransactions:
+            #     DTOuserTransactuions.append(userTransactionDTO(ut))
+
+            return Response(DTOuserTransactuions)
+        except Exception as e:
+            logging.error("Failed to get all store transactions" + str(systemManagerName))
+            return Response(e.__str__())
+
+    def addProductDiscount(self, userId, storeId, productId, percent):
+        pass
+
+    def addCategoryDiscount(self, userId, storeId, category, percent):
+        pass
+
+    def addCompositeDiscountMax(self, userId, storeId, dId1, dId2):
+        pass
+
+    def addCompositeDiscountAdd(self, userId, storeId, dId1, dId2):
+        pass
+
+    def removeDiscount(self, userId, storeId, discountId):
+        pass
+

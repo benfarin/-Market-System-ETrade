@@ -116,3 +116,9 @@ class IStore(Interface):
     def hasDiscountPermission(self, user):
         pass
 
+    def addSimpleDiscount(self, user, discount):
+        pass
+
+    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType):
+        pass
+

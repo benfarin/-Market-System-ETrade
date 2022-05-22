@@ -513,6 +513,7 @@ class Store:
             self.__discounts[discount] = discount
             self.__discounts.pop(dId1)
             self.__discounts.pop(dId2)
+        return discount
 
     def removeDiscount(self, user, discount):
         permissions = self.__permissions.get(user)

@@ -251,3 +251,24 @@ class Member(User):
             return self.__market.hasDiscountPermission(self, storeId)
         except Exception as e:
             raise Exception(e)
+
+    def addSimpleDiscount(self,storeId, discount):
+        try:
+            return self.__market.addSimpleDiscount(self, storeId,discount)
+        except Exception as e:
+            raise Exception(e)
+
+
+    def addCompositeDiscount(self,storeId, discountId, dId1, dId2, typeDiscount):
+        try:
+            return self.__market.addCompositeDiscount(self,storeId, discountId, dId1, dId2, typeDiscount)
+        except Exception as e:
+            raise Exception(e)
+
+
+    def removeDiscount(self,storeId, discountId):
+        try:
+            return self.__market.removeDiscount(self,storeId, discountId)
+        except Exception as e:
+            raise Exception(e)
+
