@@ -357,7 +357,7 @@ class RoleService:
 
     def addCompositeDiscountMax(self, userId, storeId, dId1, dId2):
         try:
-            simpleDis = self.__roleManagment.addCompositeDiscountMax(userId, storeId, dId1, dId2)
+            simpleDis = self.__roleManagment.addCompositeDiscount(userId, storeId, dId1, dId2, 1, None)
             logging.info("success to create max discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
             return Response(compositeDiscountDTO(simpleDis))
         except Exception as e:
@@ -366,7 +366,18 @@ class RoleService:
 
     def addCompositeDiscountAdd(self, userId, storeId, dId1, dId2):
         try:
-            simpleDis = self.__roleManagment.addCompositeDiscountAdd(userId, storeId, dId1, dId2)
+            simpleDis = self.__roleManagment.addCompositeDiscount(userId, storeId, dId1, dId2, 2, None)
+            logging.info("success to create add discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
+            return Response(compositeDiscountDTO(simpleDis))
+        except Exception as e:
+            logging.error("Failed to make add discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
+            return Response(e.__str__())
+
+    # if both of the discount are valid, the decide is the tie-breaker
+    # decide = 1 -> dId1, decide = 2 -> dId2
+    def addCompositeDiscountXor(self, userId, storeId, dId1, dId2, decide):
+        try:
+            simpleDis = self.__roleManagment.addCompositeDiscount(userId, storeId, dId1, dId2, 3, decide)
             logging.info("success to create add discount to discount id " + str(dId1) + " and to discount id " + str(dId2))
             return Response(compositeDiscountDTO(simpleDis))
         except Exception as e:

@@ -119,7 +119,7 @@ class IStore(Interface):
     def addSimpleDiscount(self, user, discount):
         pass
 
-    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType):
+    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):
         pass
 
     def removeDiscount(self, user, dId):

@@ -495,7 +495,7 @@ class Store:
         with self.__discountsLock:
             self.__discounts[discount.getDiscountId()] = discount
 
-    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType):
+    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -508,7 +508,7 @@ class Store:
             raise Exception("discount1 is not an existing discount")
         if d2 is None:
             raise Exception("discount1 is not an existing discount")
-        discount = DiscountComposite(discountId, d1, d2, discountType)
+        discount = DiscountComposite(discountId, d1, d2, discountType, decide)
         with self.__discountsLock:
             self.__discounts[discount.getDiscountId()] = discount
             self.__discounts.pop(dId1)

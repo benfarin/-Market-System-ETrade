@@ -136,6 +136,21 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
         self.assertEqual(690, userTransaction.getData().getTotalAmount())
 
+    def test_addDiscountAddXor(self):
+        dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
+        dId2 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory1",
+                                                            0.4).getData().getDiscountId()
+
+        self.proxy_market.addStoreTotalAmountRule(self.user_id1, self.store_id1, dId1, 2000, 3000)
+
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+
+        self.proxy_market.addConditionDiscountXor(self.user_id1, self.store_id1, dId1, dId2, 1)
+
+        userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
+        self.assertEqual(700, userTransaction.getData().getTotalAmount())
+
     def test_removeDiscount(self):
         dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
 

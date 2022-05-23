@@ -142,7 +142,7 @@ class IMarket(Interface):
     def addSimpleDiscount(self, user,storeId, discount):
         pass
 
-    def addCompositeDiscount(self, user ,storeId, discountId, dId1, dId2, typeDiscount):
+    def addCompositeDiscount(self, user ,storeId, discountId, dId1, dId2, typeDiscount, decide):
         pass
 
     def removeDiscount(self, user, storeId, discountId):

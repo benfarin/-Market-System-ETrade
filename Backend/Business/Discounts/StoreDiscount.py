@@ -16,7 +16,7 @@ class StoreDiscount:
         self.__rules: Dict[int: IRule] = {}
 
     def calculate(self, bag):  # return the new price for each product
-        isCheck = self.__check(bag)
+        isCheck = self.check(bag)
         newProductPrices: Dict[Product, float] = {}
         products: Dict[Product, int] = bag.getProducts()  # [product: quantity]
         for prod in products.keys():
@@ -45,7 +45,7 @@ class StoreDiscount:
     def removeDiscountRule(self, rId):
         self.__rules.pop(rId)
 
-    def __check(self, bag):
+    def check(self, bag):
         for rule in self.__rules.values():
             if not rule.check(bag):
                 return False

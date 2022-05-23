@@ -260,9 +260,9 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount):
+    def addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount, decide):
         try:
-            return self.__market.addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount)
+            return self.__market.addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount, decide)
         except Exception as e:
             raise Exception(e)
 

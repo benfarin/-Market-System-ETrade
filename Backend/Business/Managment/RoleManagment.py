@@ -368,7 +368,7 @@ class RoleManagment:
         member.addSimpleDiscount(storeId, discount)
         return discount
 
-    def addCompositeDiscountMax(self, userId, storeId, dId1, dId2):
+    def addCompositeDiscount(self, userId, storeId, dId1, dId2, discountType, decide):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -377,18 +377,7 @@ class RoleManagment:
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add disconts")
-        return member.addCompositeDiscount(storeId, self.__getDiscountId(), dId1, dId2, 1)
-
-    def addCompositeDiscountAdd(self, userId, storeId, dId1, dId2):
-        self.__memberManagement.checkOnlineUserFromUser(userId)
-        member = self.__memberManagement.getMembersFromUser().get(userId)
-        if userId not in self.__memberManagement.getMembersFromUser().keys():
-            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
-        if not member.isStoreExists(storeId):
-            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
-        if not member.hasDiscountPermission(storeId):
-            raise Exception("member does not have the permission to add disconts")
-        return member.addCompositeDiscount(storeId, self.__getDiscountId(), dId1, dId2, 2)
+        return member.addCompositeDiscount(storeId, self.__getDiscountId(), dId1, dId2, discountType, decide)
 
     def removeDiscount(self, userId, storeId, discountId):
         self.__memberManagement.checkOnlineUserFromUser(userId)

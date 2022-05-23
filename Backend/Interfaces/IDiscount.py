@@ -6,6 +6,9 @@ class IDiscount(Interface):
     def calculate(self, bag):
         pass
 
+    def check(self, bag):
+        pass
+
     def addSimpleRuleDiscount(self, rule):
         pass
 

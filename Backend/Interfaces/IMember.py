@@ -81,7 +81,7 @@ class IMember(Interface):
     def addSimpleDiscount(self, storeId, discount):
         pass
 
-    def addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount):
+    def addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount, decide):
         pass
 
     def removeDiscount(self, storeId, discountId):
