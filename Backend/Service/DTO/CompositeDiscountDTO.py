@@ -1,7 +1,7 @@
 from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from Backend.Business.Discounts.ProductDiscount import ProductDiscount
 from Backend.Interfaces.IDiscount import IDiscount
-from Backend.Service.DTO.simpleDiscountDTO import simpleDiscountDTO
+from Backend.Service.DTO.SimpleDiscountDTO import simpleDiscountDTO
 
 
 class compositeDiscountDTO:

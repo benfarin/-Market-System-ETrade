@@ -5,8 +5,9 @@ from Backend.Business.Managment.MemberManagment import MemberManagment
 from Backend.Business.Managment.RoleManagment import RoleManagment
 from Backend.Business.Managment.GetterManagment import GetterManagment
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException
-from Backend.Service.DTO.compositeDiscountDTO import compositeDiscountDTO
-from Backend.Service.DTO.simpleDiscountDTO import simpleDiscountDTO
+from Backend.Service.DTO.CompositeDiscountDTO import compositeDiscountDTO
+from Backend.Service.DTO.CompositeRuleDTO import CompositeRuleDTO
+from Backend.Service.DTO.SimpleDiscountDTO import simpleDiscountDTO
 from Backend.Service.Response import Response
 from Backend.Service.DTO.StoreTransactionDTO import storeTransactionDTO
 from Backend.Service.DTO.StorePermissionDTO import StorePermissionDTO
@@ -397,7 +398,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addPriceRule(userId, storeId, discountId, atLeast, atMost)
             logging.info("success to add price rule to store, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add price rule to store, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -406,7 +407,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addQuantityRule(userId, storeId, discountId, 1, None, atLeast, atMost)
             logging.info("success to add quantity store rule, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add price quantity store rule, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -415,7 +416,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addQuantityRule(userId, storeId, discountId, 2, category, atLeast, atMost)
             logging.info("success to add quantity category rule, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add price quantity category store, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -424,7 +425,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addQuantityRule(userId, storeId, discountId, 3, productId, atLeast, atMost)
             logging.info("success to add quantity product rule, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add price quantity product store, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -433,7 +434,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addWeightRule(userId, storeId, discountId, 1, None, atLeast, atMost)
             logging.info("success to add weight store rule, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add weight store  product store, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -442,7 +443,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addWeightRule(userId, storeId, discountId, 2, category, atLeast, atMost)
             logging.info("success to add weight category rule, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add weight category product store, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -451,7 +452,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addWeightRule(userId, storeId, discountId, 3, productId, atLeast, atMost)
             logging.info("success to add weight product rule, with discount id " + str(discountId))
-            return Response(rule)
+            return Response(RuleDTO(rule.getRuleId()))
         except Exception as e:
             logging.info("failed to add weight product product store, with discount id " + str(discountId))
             return Response(e.__str__())
@@ -460,7 +461,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addCompositeRuleDiscount(userId, storeId, dId, rId1, rId2, 1)
             logging.info("success to add composite ADD rule, with discount id " + str(dId))
-            return Response(rule)
+            return Response(CompositeRuleDTO(rule))
         except Exception as e:
             logging.info("failed to add composite ADD rule, with discount id " + str(dId))
             return Response(e.__str__())
@@ -469,7 +470,7 @@ class RoleService:
         try:
             rule = self.__roleManagment.addCompositeRuleDiscount(userId, storeId, dId, rId1, rId2, 2)
             logging.info("success to add composite OR rule, with discount id " + str(dId))
-            return Response(rule)
+            return Response(CompositeRuleDTO(rule))
         except Exception as e:
             logging.info("failed to add composite OR rule, with discount id " + str(dId))
             return Response(e.__str__())
