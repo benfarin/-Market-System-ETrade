@@ -167,6 +167,56 @@ class MarketProxyBridge:
     def removeDiscount(self,  userId, storeId, discountId):
         if self.check_access():
             return True
-        return self._real_subject.removeDiscount( userId, storeId, discountId)
+        return self._real_subject.removeDiscount(userId, storeId, discountId)
+
+    def addStoreTotalAmountRule(self, userId, storeId, discountId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addStoreTotalAmountRule(userId, storeId, discountId, atLeast, atMost)
+
+    def addStoreQuantityRule(self, userId, storeId, discountId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addStoreQuantityRule(userId, storeId, discountId, atLeast, atMost)
+
+    def addCategoryQuantityRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addCategoryQuantityRule(userId, storeId, discountId, category, atLeast, atMost)
+
+    def addProductQuantityRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addProductQuantityRule(userId, storeId, discountId, productId, atLeast, atMost)
+
+    def addStoreWeightRule(self, userId, storeId, discountId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addStoreWeightRule(userId, storeId, discountId, atLeast, atMost)
+
+    def addCategoryWeightRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addCategoryWeightRule(userId, storeId, discountId, category, atLeast, atMost)
+
+    def addProductWeightRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addProductWeightRule(userId, storeId, discountId, productId, atLeast, atMost)
+
+    def addCompositeRuleDiscountAnd(self, userId, storeId, dId, rId1, rId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addCompositeRuleDiscountAnd(userId, storeId, dId, rId1, rId2)
+
+    def addCompositeRuleDiscountOr(self, userId, storeId, dId, rId1, rId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addCompositeRuleDiscountOr(userId, storeId, dId, rId1, rId2)
+
+    def removeRuleDiscount(self, userId, storeId, dId, rId):
+        if self.check_access():
+            return True
+        return self._real_subject.removeRuleDiscount(userId, storeId, dId, rId)
 
 

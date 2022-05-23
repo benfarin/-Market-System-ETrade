@@ -6,7 +6,7 @@ from Backend.Interfaces.IDiscount import IDiscount
 @zope.interface.implementer(IDiscount)
 class DiscountComposite:
 
-    # max = 1, add = 2
+    # discountTypes: max = 1, add = 2
     def __init__(self, discountId, discount1, discount2, discountType):
         self.__discountId = discountId
         self.__discount1: IDiscount = discount1

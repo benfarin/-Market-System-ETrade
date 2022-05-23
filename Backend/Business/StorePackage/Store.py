@@ -542,3 +542,42 @@ class Store:
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         return permissions.hasPermission_Discount()
+
+    def addSimpleRuleDiscount(self, user, dId, rule):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        with self.__discountsLock:
+            discount = self.__discounts.get(dId)
+            if discount is None:
+                raise Exception("discount does not exists")
+            discount.addSimpleRuleDiscount(rule)
+
+    def addCompositeRuleDiscount(self, user, dId, ruleId, rId1, rId2, ruleType):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        with self.__discountsLock:
+            discount = self.__discounts.get(dId)
+            if discount is None:
+                raise Exception("discount does not exists")
+            return discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType)
+
+    def removeRuleDiscount(self, user, dId, rId):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.hasPermission_Discount():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        with self.__discountsLock:
+            discount = self.__discounts.get(dId)
+            if discount is None:
+                raise Exception("discount does not exists")
+            discount.removeDiscountRule(rId)

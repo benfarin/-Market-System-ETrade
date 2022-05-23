@@ -105,3 +105,33 @@ class MarketRealBridge:
     def removeDiscount(self,  userId, storeId, discountId):
         return self._roleService.removeDiscount(userId, storeId, discountId)
 
+    def addStoreTotalAmountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreTotalAmountRule(userId, storeId, discountId, atLeast, atMost)
+
+    def addStoreQuantityRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreQuantityRule(userId, storeId, discountId, atLeast, atMost)
+
+    def addCategoryQuantityRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        return self._roleService.addCategoryQuantityRule(userId, storeId, discountId, category, atLeast, atMost)
+
+    def addProductQuantityRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        return self._roleService.addProductQuantityRule(userId, storeId, discountId, productId, atLeast, atMost)
+
+    def addStoreWeightRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreWeightRule(userId, storeId, discountId, atLeast, atMost)
+
+    def addCategoryWeightRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        return self._roleService.addCategoryWeightRule(userId, storeId, discountId, category, atLeast, atMost)
+
+    def addProductWeightRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        return self._roleService.addProductWeightRule(userId, storeId, discountId, productId, atLeast, atMost)
+
+    def addCompositeRuleDiscountAnd(self, userId, storeId, dId, rId1, rId2):
+        return self._roleService.addCompositeRuleDiscountAnd(userId, storeId, dId, rId1, rId2)
+
+    def addCompositeRuleDiscountOr(self, userId, storeId, dId, rId1, rId2):
+        return self._roleService.addCompositeRuleDiscountOr(userId, storeId, dId, rId1, rId2)
+
+    def removeRuleDiscount(self, userId, storeId, dId, rId):
+        return self._roleService.removeRuleDiscount(userId, storeId, dId, rId)
+

@@ -87,4 +87,12 @@ class IMember(Interface):
     def removeDiscount(self, storeId, discountId):
         pass
 
+    def addSimpleRuleDiscount(self, storeId, dId, rule):
+        pass
+
+    def addCompositeRuleDiscount(self, storeId, dId, ruleId, rId1, rId2, ruleType):
+        pass
+
+    def removeRuleDiscount(self, storeId, dId, rId):
+        pass
 

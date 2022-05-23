@@ -128,3 +128,13 @@ class IStore(Interface):
     def getAllDiscounts(self, user):
         pass
 
+    def addSimpleRuleDiscount(self, user, dId, rule):
+        pass
+
+    def addCompositeRuleDiscount(self, user, dId, ruleId, rId1, rId2, ruleType):
+        pass
+
+    def removeRuleDiscount(self, user, dId, rId):
+        pass
+
+

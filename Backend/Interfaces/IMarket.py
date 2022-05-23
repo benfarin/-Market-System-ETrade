@@ -147,3 +147,12 @@ class IMarket(Interface):
 
     def removeDiscount(self, user, storeId, discountId):
         pass
+
+    def addSimpleRuleDiscount(self, user, storeId, dId, rule):
+        pass
+
+    def addCompositeRuleDiscount(self, user, storeId, dId, ruleId, rId1, rId2, ruleType):
+        pass
+
+    def removeRuleDiscount(self, user, storeId, dId, rId):
+        pass

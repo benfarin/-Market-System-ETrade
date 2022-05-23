@@ -454,6 +454,30 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def addSimpleRuleDiscount(self, user, storeId, dId, rule):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).addSimpleRuleDiscount(user, dId, rule)
+        except Exception as e:
+            raise Exception(e)
+
+    def addCompositeRuleDiscount(self, user, storeId, dId, ruleId, rId1, rId2, ruleType):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).addCompositeRuleDiscount(user, dId, ruleId, rId1, rId2, ruleType)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeRuleDiscount(self, user, storeId, dId, rId):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).removeRuleDiscount(user, dId, rId)
+        except Exception as e:
+            raise Exception(e)
+
     def __getGlobalStoreId(self):
         with self.__storeId_lock:
             storeId = self.__globalStore
