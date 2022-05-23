@@ -30,8 +30,8 @@ class StoreDiscount:
         self.__rules[rule.getRuleId()] = rule
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType):
-        r1 = self.__discounts.get(rId1)
-        r2 = self.__discounts.get(rId2)
+        r1 = self.__rules.get(rId1)
+        r2 = self.__rules.get(rId2)
         if r1 is None:
             raise Exception("rule1 is not an existing discount")
         if r2 is None:
