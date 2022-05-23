@@ -8,7 +8,7 @@ from Backend.Interfaces.IStore import IStore
 from Backend.Business.StorePackage.StorePermission import StorePermission
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Interfaces.IDiscount import IDiscount
-from Backend.Business.DiscountPackage.DiscountComposite import DiscountComposite
+from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from typing import Dict
 import threading
 
@@ -515,17 +515,17 @@ class Store:
             self.__discounts.pop(dId2)
         return discount
 
-    def removeDiscount(self, user, discount):
+    def removeDiscount(self, user, dId):
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        if discount not in self.__discounts:
+        if dId not in self.__discounts.keys():
             raise Exception("the discount is not an existing discount")
         with self.__discountsLock:
-            self.__discounts.pop(discount.getDiscountId())
+            self.__discounts.pop(dId)
         return True
 
     def getAllDiscounts(self, user):

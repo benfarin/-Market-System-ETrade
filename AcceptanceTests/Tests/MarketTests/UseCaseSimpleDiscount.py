@@ -131,6 +131,17 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
         self.assertEqual(690, userTransaction.getData().getTotalAmount())
 
+    def test_removeDiscount(self):
+        dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
+
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+
+        self.proxy_market.removeDiscount(self.user_id1, self.store_id1, dId1)
+
+        userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
+        self.assertEqual(1100, userTransaction.getData().getTotalAmount())
+
 
 if __name__ == '__main__':
     unittest.main()

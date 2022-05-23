@@ -1,4 +1,4 @@
-from Backend.Business.DiscountPackage.CategoryDiscount import CategoryDiscount
+from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
 
 
 class simpleDiscountDTO:

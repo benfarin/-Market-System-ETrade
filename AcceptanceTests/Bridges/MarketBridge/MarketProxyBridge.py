@@ -1,7 +1,6 @@
 import zope
 from AcceptanceTests.Bridges.MarketBridge.IMarketBridge import IMarketBridge
 from AcceptanceTests.Bridges.MarketBridge import MarketRealBridge
-from Backend.Business.Rules.ruleCreator import ruleCreator
 
 
 @zope.interface.implementer(IMarketBridge)

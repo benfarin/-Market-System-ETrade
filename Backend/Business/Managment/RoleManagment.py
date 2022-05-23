@@ -1,11 +1,10 @@
 import sys
 from datetime import datetime
 
-from Backend.Business.DiscountPackage.CategoryDiscount import CategoryDiscount
-from Backend.Business.DiscountPackage.DiscountComposite import DiscountComposite
-from Backend.Business.DiscountPackage.ProductDiscount import ProductDiscount
-from Backend.Business.DiscountPackage.StoreDiscount import StoreDiscount
-from Backend.Business.Rules.ruleCreator import ruleCreator
+from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
+from Backend.Business.Discounts.DiscountComposite import DiscountComposite
+from Backend.Business.Discounts.ProductDiscount import ProductDiscount
+from Backend.Business.Discounts.StoreDiscount import StoreDiscount
 from Backend.Business.Managment.UserManagment import UserManagment
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.Managment.MemberManagment import MemberManagment
@@ -28,8 +27,6 @@ class RoleManagment:
         """ Virtually private constructor. """
         super().__init__()
         self.__memberManagement = MemberManagment.getInstance()
-        self.rule_creator = ruleCreator.getInstance()
-        self.__rules = {}
         self.__productId = 0
         self.__discountId = 0
         self.__ruleId = 0
