@@ -6,7 +6,7 @@ from Backend.Interfaces.IRule import IRule
 @zope.interface.implementer(IRule)
 class RuleComposite:
 
-    # rulesTypes: and = 1, or = 2, xor = 3, cond = 4
+    # rulesTypes: and = 1, or = 2, cond = 3
     def __init__(self, ruleId, rule1, rule2, ruleType):
         self.__ruleId = ruleId
         self.__rule1: IRule = rule1
@@ -18,7 +18,7 @@ class RuleComposite:
             return self.__rule1.check(bag) and self.__rule2.check(bag)
         if self.__ruleType == 2:
             return self.__rule1.check(bag) or self.__rule2.check(bag)
-        # if self.__ruleType == 4:
+        # if self.__ruleType == 3:
         #     return self.__rule1.check(bag)  # rule 2 will be None
         else:
             raise Exception("rule type doesn't exist")
