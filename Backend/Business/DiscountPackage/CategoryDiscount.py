@@ -22,7 +22,7 @@ class CategoryDiscount:
             if prod.getProductCategory() == self.__category and isCheck:
                 newProductPrices[prod] = self.__percent
             else:
-                newProductPrices[prod] = 1
+                newProductPrices[prod] = 0
         return newProductPrices
 
     def __check(self, bag):
@@ -31,8 +31,11 @@ class CategoryDiscount:
     def getTotalPrice(self, bag):
         newPrices = self.calculate(bag)
         totalPrice = 0.0
-        for product, quantity in bag.getProducts().keys():
-            totalPrice += newPrices.get(product) * product.getProductPrice() * quantity
+        for product, quantity in bag.getProducts().items():
+            if product.getProductCategory() == self.__category:
+                totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
+            else:
+                totalPrice += product.getProductPrice() * quantity
         return totalPrice
 
     def getDiscountId(self):
@@ -41,6 +44,6 @@ class CategoryDiscount:
     def getCategory(self):
         return self.__category
 
-    def getPercent(self):
+    def getDiscountPercent(self):
         return self.__percent
 

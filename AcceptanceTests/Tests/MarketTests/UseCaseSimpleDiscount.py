@@ -52,7 +52,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.assertEqual(990, userTransaction.getData().getTotalAmount())
 
     def test_addSimpleDiscountCategory(self):
-        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, 0.1, "testCategory").getData()
+        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.1).getData()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
@@ -62,7 +62,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.assertEqual(1180, userTransaction.getData().getTotalAmount())
 
     def test_addSimpleDiscountProduct(self):
-        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, 0.1, self.product_id_3).getData()
+        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_3, 0.1).getData()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
@@ -72,8 +72,8 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.assertEqual(1190, userTransaction.getData().getTotalAmount())
 
     def test_addCoupleOfSimpleDiscount(self):
-        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, 0.1, "testCategory")
-        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, 0.5, self.product_id_3).getData()
+        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.1)
+        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_3, 0.5)
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
@@ -81,11 +81,10 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
         self.assertEqual(1150, userTransaction.getData().getTotalAmount())
-        self.assertTrue(True)
 
     def test_addCoupleOfSimpleDiscountFromDiffrenceStores(self):
-        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, 0.1, "testCategory")
-        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id2, 0.5, self.product_id_4).getData()
+        self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.1)
+        self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id2, self.product_id_4, 0.5)
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id2, self.product_id_4, 10)
@@ -93,7 +92,44 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
         self.assertEqual(140, userTransaction.getData().getTotalAmount())
-        self.assertTrue(True)
+
+    def test_addDiscountAdd(self):
+        dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
+        dId2 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.4).getData().getDiscountId()
+
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+        self.proxy_market.addConditionDiscountAdd(self.user_id1, self.store_id1, dId1, dId2)
+
+        userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
+
+        self.assertEqual(950, userTransaction.getData().getTotalAmount())
+
+    def test_addDiscountMax(self):
+        dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
+        dId2 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.4).getData().getDiscountId()
+
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+        self.proxy_market.addConditionDiscountMax(self.user_id1, self.store_id1, dId1, dId2)
+
+        userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
+
+        self.assertEqual(990, userTransaction.getData().getTotalAmount())
+
+    def test_addDiscountAddMax(self):
+        dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
+        dId2 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory1", 0.4).getData().getDiscountId()
+        dId3 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id, 0.1).getData().getDiscountId()
+
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+
+        dId4 = self.proxy_market.addConditionDiscountMax(self.user_id1, self.store_id1, dId1, dId2).getData().getDiscountId()
+        self.proxy_market.addConditionDiscountAdd(self.user_id1, self.store_id1, dId3, dId4)
+
+        userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
+        self.assertEqual(690, userTransaction.getData().getTotalAmount())
 
 
 if __name__ == '__main__':

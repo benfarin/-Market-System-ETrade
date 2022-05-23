@@ -26,7 +26,7 @@ class DiscountComposite:
             calc2 = self.__discount2.calculate(bag)
             newPrices = {}
             for prod in bag.getProducts().keys():
-                newPrices[prod] = 1 - ((1 - calc1.get(prod)) + (1 - calc2.get(prod)))
+                newPrices[prod] = calc1.get(prod) + calc2.get(prod)
             return newPrices
         else:
             raise Exception("no such discount type")

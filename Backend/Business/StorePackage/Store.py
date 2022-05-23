@@ -510,7 +510,7 @@ class Store:
             raise Exception("discount1 is not an existing discount")
         discount = DiscountComposite(discountId, d1, d2, discountType)
         with self.__discountsLock:
-            self.__discounts[discount] = discount
+            self.__discounts[discount.getDiscountId()] = discount
             self.__discounts.pop(dId1)
             self.__discounts.pop(dId2)
         return discount

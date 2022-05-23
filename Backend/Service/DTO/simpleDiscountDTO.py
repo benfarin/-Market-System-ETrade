@@ -3,8 +3,8 @@ from Backend.Business.DiscountPackage.CategoryDiscount import CategoryDiscount
 
 class simpleDiscountDTO:
     def __init__(self, discount: CategoryDiscount):
-            self.__discountId = discount.getDiscountId()
-            self.__percent = discount.getPercent()
+        self.__discountId = discount.getDiscountId()
+        self.__percent = discount.getDiscountPercent()
 
     def getDiscountId(self):
         return self.__discountId
@@ -12,10 +12,10 @@ class simpleDiscountDTO:
     def getDiscountPercent(self):
         return self.__percent
 
-    def setDiscountId(self,newId):
+    def setDiscountId(self, newId):
         self.__discountId = newId
 
-    def setDiscountPercent(self,newPercent):
+    def setDiscountPercent(self, newPercent):
         self.__percent = newPercent
 
     def __str__(self):

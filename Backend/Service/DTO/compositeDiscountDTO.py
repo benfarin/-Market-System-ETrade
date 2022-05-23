@@ -6,10 +6,10 @@ from Backend.Service.DTO.simpleDiscountDTO import simpleDiscountDTO
 
 class compositeDiscountDTO:
     def __init__(self, discount: DiscountComposite):
-            self.__discountId = discount.getDiscountId()
-            self.__discount1 = simpleDiscountDTO(discount.getDiscount1())
-            self.__discount2 = simpleDiscountDTO(discount.getDiscount2())
-            self.__discountType = discount.getDiscountType()
+        self.__discountId = discount.getDiscountId()
+        self.__discount1 = simpleDiscountDTO(discount.getDiscount1())
+        self.__discount2 = simpleDiscountDTO(discount.getDiscount2())
+        self.__discountType = discount.getDiscountType()
 
     def getDiscountId(self):
         return self.__discountId
@@ -42,4 +42,3 @@ class compositeDiscountDTO:
         toReturn += "\n\t\t\t" + self.__discount2.__str__()
         toReturn += "\n\tType: " + str(self.__discountType)
         return toReturn
-

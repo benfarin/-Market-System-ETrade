@@ -87,7 +87,7 @@ class Bag:
         if discounts is None or discounts == {}:
             return self.calc()
         minPrice = float('inf')
-        for discount in discounts:
+        for discount in discounts.values():
             newPrice = self.calcWithDiscount(discount.calculate(self))
             if newPrice < minPrice:
                 minPrice = newPrice
@@ -97,10 +97,9 @@ class Bag:
             return self.calc()
 
     def calcWithDiscount(self, discount_of_product):
-        newPrices = discount_of_product.getProducts()
         s = 0
-        for prod in newPrices.keys():
-            s += newPrices[prod] * prod.getProductPrice() * self.__products.get(prod)
+        for prod in discount_of_product.keys():
+            s += (1 - discount_of_product[prod]) * prod.getProductPrice() * self.__products.get(prod)
         return s
 
     def calc(self):

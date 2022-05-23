@@ -287,7 +287,6 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-
     def removeDiscount(self,user,storeId, discountId):
         try:
             return self.__stores.get(storeId).removeDiscount(user,discountId)

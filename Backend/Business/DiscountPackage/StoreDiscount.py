@@ -19,11 +19,18 @@ class StoreDiscount:
             if isCheck:
                 newProductPrices[prod] = self.__percent
             else:
-                newProductPrices[prod] = prod.getProductPrice()
+                newProductPrices[prod] = 0
         return newProductPrices
 
     def __check(self, bag):
         return True  # we need to add the logic only when we gonna add the rules
+
+    def getTotalPrice(self, bag):
+        newPrices = self.calculate(bag)
+        totalPrice = 0.0
+        for product, quantity in bag.getProducts().items():
+            totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
+        return totalPrice
 
     def getDiscountId(self):
         return self.__discountId
