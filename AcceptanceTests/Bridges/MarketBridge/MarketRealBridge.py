@@ -90,11 +90,11 @@ class MarketRealBridge:
     def addSimpleDiscount_Store(self, userId, storeId, precent):
         return self._roleService.addStoreDiscount(userId, storeId, precent)
 
-    def addSimpleDiscount_Category(self, userId, storeId, precent, category):
-        return self._roleService.addCategoryDiscount(userId, storeId, precent, category)
+    def addSimpleDiscount_Category(self, userId, storeId, category,precent):
+        return self._roleService.addCategoryDiscount(userId, storeId, category,precent)
 
-    def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
-        return self._roleService.addProductDiscount(userId, storeId, precent, productId)
+    def addSimpleDiscount_Product(self, userId, storeId,productId,precent):
+        return self._roleService.addProductDiscount(userId, storeId, productId,precent)
 
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
         return self._roleService.addCompositeDiscountAdd(userId, storeId, dId1, dId2)

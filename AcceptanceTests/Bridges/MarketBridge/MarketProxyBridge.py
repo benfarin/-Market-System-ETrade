@@ -144,15 +144,15 @@ class MarketProxyBridge:
             return True
         return self._real_subject.addSimpleDiscount_Store(userId, storeId, precent)
 
-    def addSimpleDiscount_Category(self, userId, storeId, precent, category):
+    def addSimpleDiscount_Category(self, userId, storeId, category,precent):
         if self.check_access():
             return True
-        return self._real_subject.addSimpleDiscount_Category(userId, storeId, precent, category)
+        return self._real_subject.addSimpleDiscount_Category(userId, storeId, category,precent)
 
-    def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
+    def addSimpleDiscount_Product(self, userId, storeId, productId,precent):
         if self.check_access():
             return True
-        return self._real_subject.addSimpleDiscount_Product(userId, storeId, precent, productId)
+        return self._real_subject.addSimpleDiscount_Product(userId, storeId,productId ,precent)
 
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
         if self.check_access():

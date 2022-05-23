@@ -529,12 +529,6 @@ class Store:
         return True
 
     def getAllDiscounts(self, user):
-        permissions = self.__permissions.get(user)
-        if permissions is None:
-            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
-            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
-                                      self.__name)
         return self.__discounts
 
     def hasDiscountPermission(self, user):
