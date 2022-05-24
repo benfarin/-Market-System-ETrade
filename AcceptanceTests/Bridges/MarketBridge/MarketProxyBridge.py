@@ -25,8 +25,6 @@ class MarketProxyBridge:
 
     def remove_product_from_store(self, store_id, user_id, prod_id):
         if self.check_access():
-            if store_id < 0 or prod_id < 0 or prod_id < 0:
-                return False
             return True
         return self._real_subject.remove_product_from_store(store_id, user_id, prod_id)
 
