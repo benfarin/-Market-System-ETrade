@@ -122,21 +122,21 @@ class UseCaseDiscount(unittest.TestCase):
 
         first_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, rId3_1,
                                                                      rId3_2).getData().getRuleId()
-        #second_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, rId3_3,
-         #                                                            rId3_4).getData().getRuleId()
-        #third_rule_3 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id3, self.store_id3, dId3, rId3_5, rId3_6)
+        second_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, rId3_3,
+                                                                     rId3_4).getData().getRuleId()
+        third_rule_3 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id3, self.store_id3, dId3, rId3_5, rId3_6)
 
-        #fourt_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, first_rule_3,
-        #                                                             second_rule_3)
-       # self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, third_rule_3, fourt_rule_3)
+        fourt_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, first_rule_3,
+                                                                     second_rule_3)
+        fifth_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, third_rule_3, fourt_rule_3)
 
         #----------------------------------------------------
 
-        #self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10) # 100 - 10
-        #self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10) # 1000 - 100
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10) # 100 - 10
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10) # 1000 - 100
         self.proxy_user.logout_member(self.user_id1)
         self.proxy_user.login_member(self.user_id1,"testUser1", "1234")
-        #self.proxy_user.add_product_to_cart(self.user_id1, self.store_id2, self.product_id_4, 10)  # 100 - 10
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id2, self.product_id_4, 10)  # 100 - 10
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id3, self.product_id_5, 10)  # 100 - 10
 
         first_rule_2 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, rId2_1,
@@ -147,19 +147,26 @@ class UseCaseDiscount(unittest.TestCase):
 
         fourt_rule_2 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, first_rule_2,
                                                                    second_rule_2)
-        self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, third_rule_2, fourt_rule_2)
+        fifth_rule_2 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, third_rule_2, fourt_rule_2)
 
 
         first_rule =self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, rId1, rId2).getData().getRuleId()
         second_rule = self.proxy_market.addCompositeRuleDiscountOr(self.user_id1, self.store_id1, dId1, rId3, rId4).getData().getRuleId()
         third_rule = self.proxy_market.addCompositeRuleDiscountOr(self.user_id1, self.store_id1, dId1, rId5, rId6)
         fourt_rule = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, first_rule, second_rule)
-        self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, third_rule, fourt_rule)
+        fifth_rule = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, third_rule, fourt_rule)
 
 
+        dId4 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1,"testCategory", 0.3).getData().getDiscountId() # 10 percent off to all store
+        dId5 = self.proxy_market.addSimpleDiscount_Product(self.user_id2, self.store_id2,self.product_id_4, 0.05).getData().getDiscountId() # 10 percent off to all store
+        dId6 = self.proxy_market.addSimpleDiscount_Product(self.user_id3, self.store_id3,self.product_id_5, 0.3).getData().getDiscountId() # 10 percent off to all store
+
+        sixth_xor = self.proxy_market.addConditionDiscountXor(self.user_id1,self.store_id1,dId1,dId4,1)
+        sixth_max_2 = self.proxy_market.addConditionDiscountMax(self.user_id2,self.store_id2,dId2,dId5)
+        sixth_add_3 = self.proxy_market.addConditionDiscountAdd(self.user_id3,self.store_id3,dId3,dId6)
 
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
-        self.assertEqual(1575, userTransaction.getData().getTotalAmount())
+        self.assertEqual(1440, userTransaction.getData().getTotalAmount())
 
 
 
