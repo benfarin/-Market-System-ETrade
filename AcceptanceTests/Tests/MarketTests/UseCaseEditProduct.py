@@ -18,9 +18,9 @@ class UseCaseEditProduct(unittest.TestCase):
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register(self.__guestId1, "testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
+        self.proxy_user.register("testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.user_id = self.proxy_user.login_member("testUser", "1234").getData().getUserID()
+        self.user_id = self.proxy_user.login_member(self.__guestId1, "testUser", "1234").getData().getUserID()
         self.store_id = self.proxy_user.open_store("testStore", self.user_id, 123, None, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
         # store_id, user_id, name, price, category, key_words
         self.prod_id = self.proxy_market.add_product_to_store(self.store_id, self.user_id, "testProduct", 10,
@@ -28,81 +28,44 @@ class UseCaseEditProduct(unittest.TestCase):
 
     def test_editProductPricePositive(self):
         # store_id, user_id, prod_id, new_price
-        try:
-            self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), 20).getData()
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
+        product = self.proxy_market.edit_product_price(self.user_id, self.store_id, self.prod_id.getProductId(), 20).getData()
+        p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
+        self.assertEqual(20, product.getProductPrice())
+        self.assertEqual(20, p.getProductPrice())
 
     def test_editProductNamePositive(self):
-        try:
-            self.proxy_market.edit_product_name(self.user_id, self.store_id, self.prod_id.getProductId(), "newName")
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
+        product = self.proxy_market.edit_product_name(self.user_id, self.store_id, self.prod_id.getProductId(), "newName").getData()
+        p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
+        self.assertEqual("newName", product.getProductName())
+        self.assertEqual("newName", p.getProductName())
 
     def test_editProductCategoryPositive(self):
-        try:
-            self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id.getProductId(),
-                                                    "newCategory")
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
+        product = self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id.getProductId(),
+                                                          "newCategory").getData()
+        p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
+        self.assertEqual("newCategory", product.getProductCategory())
+        self.assertEqual("newCategory", p.getProductCategory())
 
     def test_editProductWeightPositive(self):
-        try:
-            self.proxy_market.edit_product_Weight(self.user_id, self.store_id, self.prod_id.getProductId(), 20)
-            print(self.assertTrue(self.prod_id.getProductWeight()))
-        except:
-            self.assertTrue(False)
+        product = self.proxy_market.edit_product_Weight(self.user_id, self.store_id, self.prod_id.getProductId(), 20).getData()
+        p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
+        self.assertEqual(20, product.getProductWeight())
+        self.assertEqual(20, p.getProductWeight())
 
-    def test_editProductStoreDoesntExists(self):
+    def test_editProductUserDoesntExists(self):
         # the store doesn't exist
         self.assertTrue(self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id.getProductId(), 10).isError())
-        self.proxy_user.logout_member(self.user_id)
-        self.proxy_user.login_member("testUser", "1234")
-        self.assertTrue(self.proxy_market.edit_product_price(-10, self.user_id, self.prod_id.getProductId(), 10).isError())
 
-
-    def test_editProductStoreDoesntExists2(self):
-        self.assertTrue(self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id.getProductId(), "newName").isError())
-        self.proxy_user.logout_member(self.user_id)
-        self.proxy_user.login_member("testUser", "1234")
-        self.assertTrue(self.proxy_market.edit_product_name(self.user_id, -1, self.prod_id.getProductId(), "newName").isError())
-
-
-
-    def test_editProductStoreDoesntExists3(self):
-        self.assertTrue(self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id.getProductId(), "newCategory").isError())
-        self.proxy_user.logout_member(self.user_id)
-        self.proxy_user.login_member("testUser", "1234")
-        self.assertTrue(self.proxy_market.edit_product_category(self.user_id, -1, self.prod_id.getProductId(), "newCategory").isError())
-
-
-    def test_editProductNoManager(self):
-        # the manager's ID is negative
-        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, -1, self.prod_id.getProductId(), 10).isError())
-        self.proxy_user.logout_member(self.user_id)
-        self.proxy_user.login_member("testUser", "1234")
-        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, -1, self.prod_id.getProductId(), 10).isError())
-
+    def test_editProductStoreDoesntExists(self):
+        self.assertTrue(self.proxy_market.edit_product_name(self.user_id, 10, self.prod_id.getProductId(), "newName").isError())
 
     def test_editProductDoesntExists(self):
-        # the product doesn't exists
-        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, -1, 10).isError())
-        self.proxy_user.logout_member(self.user_id)
-        self.proxy_user.login_member("testUser", "1234")
-        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, -1, 10).isError())
-        # self.assertEqual(self.proxy.edit_product_name(0, 3, 10), False)
-        # self.assertEqual(self.proxy.edit_product_category(0, 3, 10), False)
+        self.assertTrue(self.proxy_market.edit_product_category(self.user_id, 7, self.prod_id.getProductId(), "newCategory").isError())
 
-    def test_editProductNegativePrice(self):
+    def test_editProductNegativePriceOrWeight(self):
         # the new price is negative
         self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), -3).isError())
-        self.proxy_user.logout_member(self.user_id)
-        self.proxy_user.login_member("testUser", "1234")
-        self.assertTrue(self.proxy_market.edit_product_price(self.store_id, self.user_id, self.prod_id.getProductId(), -3).isError())
-
+        self.assertTrue(self.proxy_market.edit_product_Weight(self.store_id, self.user_id, self.prod_id.getProductId(), -3).isError())
 
 
 if __name__ == '__main__':

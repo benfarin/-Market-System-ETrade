@@ -244,7 +244,7 @@ class Store:
             raise Exception(e)
         else:
             with self.__productsLock:
-                self.__products.get(newName).setProductPrice(newName)
+                self.__products.get(productId).setProductName(newName)
                 return self.__products.get(productId)
 
     def updateProductCategory(self, user, productId, newCategory):

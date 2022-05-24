@@ -162,9 +162,9 @@ class RoleService:
             logging.error("Failed to print purchase history information for store " + str(storeID))
             return Response(e.__str__())
 
-    def updateProductPrice(self, storeID, userID, productId, newPrice):
+    def updateProductPrice(self, userID, storeID, productId, newPrice):
         try:
-            product = self.__roleManagment.updateProductPrice(storeID, userID, productId, newPrice)
+            product = self.__roleManagment.updateProductPrice(userID, storeID, productId, newPrice)
             logging.info("success to update product " + str(productId) + "to price " + str(newPrice))
             return Response(ProductDTO(product))
         except Exception as e:
@@ -173,7 +173,7 @@ class RoleService:
 
     def updateProductName(self, userID, storeID, productID, newName):
         try:
-            product = self.__roleManagment.updateProductName(storeID, userID, productID, newName)
+            product = self.__roleManagment.updateProductName(userID, storeID, productID, newName)
             logging.info("success to update product " + str(productID) + "to name " + newName)
             return Response(ProductDTO(product))
         except Exception as e:
@@ -182,7 +182,7 @@ class RoleService:
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
         try:
-            product = self.__roleManagment.updateProductCategory(storeID, userID, productID, newCategory)
+            product = self.__roleManagment.updateProductCategory(userID, storeID, productID, newCategory)
             logging.info("success to update product " + str(productID) + "to category " + newCategory)
             return Response(ProductDTO(product))
         except Exception as e:
@@ -191,7 +191,7 @@ class RoleService:
 
     def updateProductWeight(self, userID, storeID, productID, newWeight):
         try:
-            product = self.__roleManagment.updateProductWeight(storeID, userID, productID, newWeight)
+            product = self.__roleManagment.updateProductWeight(userID, storeID, productID, newWeight)
             logging.info("success to update product " + str(productID) + "to weight " + str(newWeight))
             return Response(ProductDTO(product))
         except Exception as e:

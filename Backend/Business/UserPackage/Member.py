@@ -186,21 +186,21 @@ class Member(User):
     @threaded
     def updateProductPrice(self, storeID, productId, newPrice):
         try:
-            return self.__market.updateProductPrice(storeID, self, productId, newPrice)
+            return self.__market.updateProductPrice(self, storeID, productId, newPrice)
         except Exception as e:
             raise Exception(e)
 
     @threaded
     def updateProductName(self, storeID, productID, newName):
         try:
-            return self.__market.updateProductName(storeID, self, productID, newName)
+            return self.__market.updateProductName(self, storeID, productID, newName)
         except Exception as e:
             raise Exception(e)
 
     @threaded
     def updateProductCategory(self, storeID, productID, newCategory):
         try:
-            return self.__market.updateProductName(storeID, self, productID, newCategory)
+            return self.__market.updateProductCategory(self, storeID, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 

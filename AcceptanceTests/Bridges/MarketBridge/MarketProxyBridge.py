@@ -28,12 +28,10 @@ class MarketProxyBridge:
             return True
         return self._real_subject.remove_product_from_store(store_id, user_id, prod_id)
 
-    def edit_product_price(self, store_id, user_id, prod_id, new_price):
+    def edit_product_price(self,user_id,  store_id, prod_id, new_price):
         if self.check_access():
-            if new_price < 0 or store_id < 0 or prod_id < 0:
-                return False
             return True
-        return self._real_subject.edit_product_price(store_id, user_id, prod_id, new_price)
+        return self._real_subject.edit_product_price(user_id, store_id, prod_id, new_price)
 
     def search_product_category(self, category):
         if self.check_access():

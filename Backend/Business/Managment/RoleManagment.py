@@ -162,7 +162,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-    def updateProductPrice(self, storeID, userID, productId, newPrice):
+    def updateProductPrice(self, userID, storeID, productId, newPrice):
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -178,7 +178,7 @@ class RoleManagment:
             member = self.__memberManagement.getMembersFromUser().get(userID)
             if userID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
-            return member.updateProductPrice(storeID, productID, newName)
+            return member.updateProductName(storeID, productID, newName)
         except Exception as e:
             raise Exception(e)
 
@@ -188,7 +188,7 @@ class RoleManagment:
             member = self.__memberManagement.getMembersFromUser().get(userID)
             if userID not in self.__memberManagement.getMembersFromUser().keys():
                 raise NoSuchMemberException("user: " + str(userID) + "is not a member")
-            return member.updateProductPrice(storeID, productID, newCategory)
+            return member.updateProductCategory(storeID, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 

@@ -39,8 +39,6 @@ class UseCaseAppointStoreManager(unittest.TestCase):
     def test_AppointStoreManagerPositive(self):
         # store_id, assigner_id, assignee_id
         self.assertEqual(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser2").getData(), True)
-        self.proxy_user.logout_member(self.user1_id)
-        self.proxy_user.login_member(self.user1_id, "testUser", "1234")
         self.assertEqual(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3").getData(), True)
 
     def test_AppointStoreManagerNoStore(self):

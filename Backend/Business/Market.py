@@ -300,13 +300,6 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def updateProductPrice(self, storeID, user, productId, mewPrice):
-        try:
-            self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
-            return True
-        except Exception as e:
-            raise Exception(e)
-
     def addProductQuantityToStore(self, storeID, user, productId, quantity):
         try:
             self.__stores.get(storeID).addProductQuantityToStore(user, productId, quantity)
@@ -384,24 +377,27 @@ class Market:
             if self.__stores.get(storeID) is None:
                 user.getCart().removeBag(storeID)
 
+    def updateProductPrice(self, user, storeID, productId, mewPrice):
+        try:
+            return self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
+        except Exception as e:
+            raise Exception(e)
+
     def updateProductName(self, user, storeID, productID, newName):
         try:
-            self.__stores.get(storeID).updateProductName(user, productID, newName)
-            return True
+            return self.__stores.get(storeID).updateProductName(user, productID, newName)
         except Exception as e:
             raise Exception(e)
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         try:
-            self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
-            return True
+            return self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 
     def updateProductWeight(self, user, storeId, productID, newWeight):
         try:
-            self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
-            return True
+            return self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
         except Exception as e:
             raise Exception(e)
 
