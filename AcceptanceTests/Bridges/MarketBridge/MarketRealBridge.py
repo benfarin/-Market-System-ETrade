@@ -57,6 +57,9 @@ class MarketRealBridge:
     def appoint_store_manager(self, store_id, assigner_id, assignee_id):
         return self._roleService.appointManagerToStore(store_id, assigner_id, assignee_id)
 
+    def removeStoreOwner(self, storeId, assignerId, assigneeName):
+        return self._roleService.removeStoreOwner(storeId, assignerId, assigneeName)
+
     def set_stock_manager_perm(self, store_id, assigner_id, assignee_id):
         return self._roleService.setStockManagerPermission(store_id, assigner_id, assignee_id)
 

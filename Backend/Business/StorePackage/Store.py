@@ -349,6 +349,7 @@ class Store:
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
             self.__permissions[assignee].setPermission_Discount(True)
 
+    # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):
         if assigner not in self.__owners:
             raise Exception("user: " + str(assigner.getUserID()) + "is not an owner in store: " + str(self.__name))
@@ -357,6 +358,12 @@ class Store:
         if assignee not in self.__appointers.get(assigner):
             raise Exception("user: " + str(assigner.getUserID()) + "cannot remove the user: " +
                             str(assignee.getUserID() + "because he is not the one that appoint him"))
+
+        assignees_of_assignee = self.__appointers.get(assignee)
+        if assignees_of_assignee is not None:
+            for toRemoveOwner in assignees_of_assignee:
+                self.removeStoreOwner(assignee, toRemoveOwner)
+        self.__permissions.pop(assignee)
         self.__owners.remove(assignee)
         self.__appointers.get(assigner).remove(assignee)
 

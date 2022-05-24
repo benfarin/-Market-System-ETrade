@@ -72,6 +72,11 @@ class MarketProxyBridge:
             return True
         return self._real_subject.appoint_store_manager(store_id, assigner_id, assignee_id)
 
+    def removeStoreOwner(self, storeId, assignerId, assigneeName):
+        if self.check_access():
+            return True
+        return self._real_subject. removeStoreOwner(storeId, assignerId, assigneeName)
+
     def set_stock_manager_perm(self, store_id, assigner_id, assignee_id):
         if self.check_access():
             return True
