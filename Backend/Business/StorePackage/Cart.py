@@ -54,11 +54,11 @@ class Cart:
         else:
             return False
 
-    def calcSum(self):
-        s = 0.0
-        for bag in self.__bags.values():
-            s += bag.calcSum()
-        return s
+    # def calcSum(self):
+    #     s = 0.0
+    #     for bag in self.__bags.values():
+    #         s += bag.calcSum()
+    #     return s
 
     def calcSumOfBag(self, storeId, discounts):
         return self.__bags.get(storeId).calcSum(discounts)

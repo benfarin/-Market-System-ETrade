@@ -14,8 +14,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
     def setUpClass(cls):
         cls.market_proxy = MarketProxyBridge(MarketRealBridge())
         cls.user_proxy = UserProxyBridge(UserRealBridge())
-        cls.user_proxy.appoint_system_manager("user1", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+        cls.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
+
         cls.__guestId = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
@@ -29,7 +30,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                                 0, "000000").getData().getStoreId()
 
         cls.product01 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-01", 100,
-                                                              "Category", 8,["Test1", "Test2"]).getData().getProductId()
+                                                              "Category", 8, ["Test1", "Test2"]).getData().getProductId()
         cls.product02 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-02", 150,
                                                               "Category", 9,["Test1", "Test2"]).getData().getProductId()
         cls.product1 = cls.market_proxy.add_product_to_store(cls.store_1, cls.user_id, "Product-1", 100,
@@ -76,12 +77,13 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(guest3_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(guest3_id, self.store_2, self.product2, 1)
 
-        self.user_proxy.register( "user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, "HaPoalim")
-        member3_id = self.user_proxy.login_member(guest3_id,"user3", "1234").getData().getUserID()
+        member3_id = self.user_proxy.login_member(guest3_id, "user3", "1234").getData().getUserID()
 
         self.user_proxy.logout_member(member3_id)
-        self.user_proxy.login_member(member3_id,"user3", "1234")
+        guest = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(guest, "user3", "1234")
 
         userTransaction = self.user_proxy.purchase_product(member3_id, 500, 20)
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
