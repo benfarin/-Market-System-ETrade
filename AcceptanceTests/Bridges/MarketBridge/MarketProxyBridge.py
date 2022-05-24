@@ -90,8 +90,6 @@ class MarketProxyBridge:
 
     def get_store_info(self, store_id, user_id):
         if self.check_access():
-            if store_id < 0:
-                return False
             return True
         return self._real_subject.get_store_info(store_id, user_id)
 
