@@ -274,22 +274,22 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def addSimpleRuleDiscount(self, storeId, dId, rule):
+    def addSimpleRule(self, storeId, dId, rule):
         try:
-            return self.__market.addSimpleRuleDiscount(self, storeId, dId, rule)
+            return self.__market.addSimpleRule(self, storeId, dId, rule)
         except Exception as e:
             raise Exception(e)
 
     @threaded
-    def addCompositeRuleDiscount(self, storeId, dId, ruleId, rId1, rId2, ruleType):
+    def addCompositeRule(self, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
         try:
-            return self.__market.addCompositeRuleDiscount(self, storeId, dId, ruleId, rId1, rId2, ruleType)
+            return self.__market.addCompositeRule(self, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind)
         except Exception as e:
             raise Exception(e)
 
     @threaded
-    def removeRuleDiscount(self, storeId, dId, rId):
+    def removeRule(self, storeId, dId, rId, ruleKind):
         try:
-            return self.__market.removeRuleDiscount(self, storeId, dId, rId)
+            return self.__market.removeRule(self, storeId, dId, rId, ruleKind)
         except Exception as e:
             raise Exception(e)

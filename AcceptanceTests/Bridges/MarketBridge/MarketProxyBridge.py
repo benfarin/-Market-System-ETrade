@@ -173,40 +173,40 @@ class MarketProxyBridge:
             return True
         return self._real_subject.removeDiscount(userId, storeId, discountId)
 
-    def addStoreTotalAmountRule(self, userId, storeId, discountId, atLeast, atMost):
+    def addStoreTotalAmountDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addStoreTotalAmountRule(userId, storeId, discountId, atLeast, atMost)
+        return self._real_subject.addStoreTotalAmountDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def addStoreQuantityRule(self, userId, storeId, discountId, atLeast, atMost):
+    def addStoreQuantityDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addStoreQuantityRule(userId, storeId, discountId, atLeast, atMost)
+        return self._real_subject.addStoreQuantityDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def addCategoryQuantityRule(self, userId, storeId, discountId, category, atLeast, atMost):
+    def addCategoryQuantityDiscountRule(self, userId, storeId, discountId, category, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addCategoryQuantityRule(userId, storeId, discountId, category, atLeast, atMost)
+        return self._real_subject.addCategoryQuantityDiscountRule(userId, storeId, discountId, category, atLeast, atMost)
 
-    def addProductQuantityRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+    def addProductQuantityDiscountRule(self, userId, storeId, discountId, productId, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addProductQuantityRule(userId, storeId, discountId, productId, atLeast, atMost)
+        return self._real_subject.addProductQuantityDiscountRule(userId, storeId, discountId, productId, atLeast, atMost)
 
-    def addStoreWeightRule(self, userId, storeId, discountId, atLeast, atMost):
+    def addStoreWeightDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addStoreWeightRule(userId, storeId, discountId, atLeast, atMost)
+        return self._real_subject.addStoreWeightDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def addCategoryWeightRule(self, userId, storeId, discountId, category, atLeast, atMost):
+    def addCategoryWeightDiscountRule(self, userId, storeId, discountId, category, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addCategoryWeightRule(userId, storeId, discountId, category, atLeast, atMost)
+        return self._real_subject.addCategoryWeightDiscountRule(userId, storeId, discountId, category, atLeast, atMost)
 
-    def addProductWeightRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+    def addProductWeightDiscountRule(self, userId, storeId, discountId, productId, atLeast, atMost):
         if self.check_access():
             return True
-        return self._real_subject.addProductWeightRule(userId, storeId, discountId, productId, atLeast, atMost)
+        return self._real_subject.addProductWeightDiscountRule(userId, storeId, discountId, productId, atLeast, atMost)
 
     def addCompositeRuleDiscountAnd(self, userId, storeId, dId, rId1, rId2):
         if self.check_access():
@@ -222,5 +222,58 @@ class MarketProxyBridge:
         if self.check_access():
             return True
         return self._real_subject.removeRuleDiscount(userId, storeId, dId, rId)
+
+    #Purchase rules
+    def addStoreTotalAmountPurchaseRule(self, userId, storeId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addStoreTotalAmountPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addStoreQuantityPurchaseRule(self, userId, storeId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addStoreQuantityPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addCategoryQuantityPurchaseRule(self, userId, storeId, category, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addCategoryQuantityPurchaseRule(userId, storeId, category, atLeast, atMost)
+
+    def addProductQuantityPurchaseRule(self, userId, storeId, productId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addProductQuantityPurchaseRule(userId, storeId, productId, atLeast, atMost)
+
+    def addStoreWeightPurchaseRule(self, userId, storeId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addStoreWeightPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addCategoryWeightPurchaseRule(self, userId, storeId, category, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addCategoryWeightPurchaseRule(userId, storeId, category, atLeast, atMost)
+
+    def addProductWeightPurchaseRule(self, userId, storeId, productId, atLeast, atMost):
+        if self.check_access():
+            return True
+        return self._real_subject.addProductWeightPurchaseRule(userId, storeId, productId, atLeast, atMost)
+
+    def addCompositeRulePurchaseAnd(self, userId, storeId, rId1, rId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addCompositeRulePurchaseAnd(userId, storeId, rId1, rId2)
+
+    def addCompositeRulePurchaseOr(self, userId, storeId, rId1, rId2):
+        if self.check_access():
+            return True
+        return self._real_subject.addCompositeRulePurchaseOr(userId, storeId, rId1, rId2)
+
+    def removeRulePurchase(self, userId, storeId, rId):
+        if self.check_access():
+            return True
+        return self._real_subject.removeRulePurchase(userId, storeId, rId)
+
+
 
 

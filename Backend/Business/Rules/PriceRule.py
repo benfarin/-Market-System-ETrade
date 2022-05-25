@@ -8,8 +8,10 @@ class PriceRule:
 
     # ruleType: store = 1, category = 2, product = 3
     # filerType:  None   , category   ,  productId
-    def __init__(self, ruleId, ruleType, filterType, atLeast, atMost):
+    # ruleKind: discountRule = 1 , purchaseRule = 2
+    def __init__(self, ruleId, ruleType, filterType, atLeast, atMost, ruleKind):
         self.__ruleId = ruleId
+        self.__ruleKind = ruleKind
         self.__ruleType = ruleType
         self.__filterType = filterType
         self.__atLest = atLeast
@@ -25,3 +27,6 @@ class PriceRule:
 
     def getRuleId(self):
         return self.__ruleId
+
+    def getRuleKind(self):
+        return self.__ruleKind

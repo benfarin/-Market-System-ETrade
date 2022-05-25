@@ -111,26 +111,26 @@ class MarketRealBridge:
     def removeDiscount(self,  userId, storeId, discountId):
         return self._roleService.removeDiscount(userId, storeId, discountId)
 
-    def addStoreTotalAmountRule(self, userId, storeId, discountId, atLeast, atMost):
-        return self._roleService.addStoreTotalAmountRule(userId, storeId, discountId, atLeast, atMost)
+    def addStoreTotalAmountDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreTotalAmountDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def addStoreQuantityRule(self, userId, storeId, discountId, atLeast, atMost):
-        return self._roleService.addStoreQuantityRule(userId, storeId, discountId, atLeast, atMost)
+    def addStoreQuantityDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreQuantityDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def addCategoryQuantityRule(self, userId, storeId, discountId, category, atLeast, atMost):
-        return self._roleService.addCategoryQuantityRule(userId, storeId, discountId, category, atLeast, atMost)
+    def addCategoryQuantityDiscountRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        return self._roleService.addCategoryQuantityDiscountRule(userId, storeId, discountId, category, atLeast, atMost)
 
-    def addProductQuantityRule(self, userId, storeId, discountId, productId, atLeast, atMost):
-        return self._roleService.addProductQuantityRule(userId, storeId, discountId, productId, atLeast, atMost)
+    def addProductQuantityDiscountRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        return self._roleService.addProductQuantityDiscountRule(userId, storeId, discountId, productId, atLeast, atMost)
 
-    def addStoreWeightRule(self, userId, storeId, discountId, atLeast, atMost):
-        return self._roleService.addStoreWeightRule(userId, storeId, discountId, atLeast, atMost)
+    def addStoreWeightDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreWeightDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def addCategoryWeightRule(self, userId, storeId, discountId, category, atLeast, atMost):
-        return self._roleService.addCategoryWeightRule(userId, storeId, discountId, category, atLeast, atMost)
+    def addCategoryWeightDiscountRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        return self._roleService.addCategoryWeightDiscountRule(userId, storeId, discountId, category, atLeast, atMost)
 
-    def addProductWeightRule(self, userId, storeId, discountId, productId, atLeast, atMost):
-        return self._roleService.addProductWeightRule(userId, storeId, discountId, productId, atLeast, atMost)
+    def addProductWeightDiscountRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        return self._roleService.addProductWeightDiscountRule(userId, storeId, discountId, productId, atLeast, atMost)
 
     def addCompositeRuleDiscountAnd(self, userId, storeId, dId, rId1, rId2):
         return self._roleService.addCompositeRuleDiscountAnd(userId, storeId, dId, rId1, rId2)
@@ -140,4 +140,38 @@ class MarketRealBridge:
 
     def removeRuleDiscount(self, userId, storeId, dId, rId):
         return self._roleService.removeRuleDiscount(userId, storeId, dId, rId)
+
+    # purchase rules
+    def addStoreTotalAmountPurchaseRule(self, userId, storeId, atLeast, atMost):
+        return self._roleService.addStoreTotalAmountPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addStoreQuantityPurchaseRule(self, userId, storeId, atLeast, atMost):
+        return self._roleService.addStoreQuantityPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addCategoryQuantityPurchaseRule(self, userId, storeId, category, atLeast, atMost):
+        return self._roleService.addCategoryQuantityPurchaseRule(userId, storeId, category, atLeast,
+                                                                  atMost)
+
+    def addProductQuantityPurchaseRule(self, userId, storeId, productId, atLeast, atMost):
+        return self._roleService.addProductQuantityPurchaseRule(userId, storeId, productId, atLeast,
+                                                                 atMost)
+
+    def addStoreWeightPurchaseRule(self, userId, storeId, atLeast, atMost):
+        return self._roleService.addStoreWeightPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addCategoryWeightPurchaseRule(self, userId, storeId, category, atLeast, atMost):
+        return self._roleService.addCategoryWeightPurchaseRule(userId, storeId, category, atLeast, atMost)
+
+    def addProductWeightPurchaseRule(self, userId, storeId, productId, atLeast, atMost):
+        return self._roleService.addProductWeightPurchaseRule(userId, storeId, productId, atLeast, atMost)
+
+    def addCompositeRulePurchaseAnd(self, userId, storeId, rId1, rId2):
+        return self._roleService.addCompositeRulePurchaseAnd(userId, storeId, rId1, rId2)
+
+    def addCompositeRulePurchaseOr(self, userId, storeId, rId1, rId2):
+        return self._roleService.addCompositeRulePurchaseOr(userId, storeId, rId1, rId2)
+
+    def removeRulePurchase(self, userId, storeId, rId):
+        return self._roleService.removeRulePurchase(userId, storeId, rId)
+
 

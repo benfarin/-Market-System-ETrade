@@ -8,11 +8,13 @@ class quantityRule:
 
     # ruleType: store = 1, category = 2, product = 3
     # filerType:  None   , category   ,  productId
-    def __init__(self, ruleId, ruleType, filterKey, atLeast, atMost):
+    # ruleKind: discountRule = 1 , purchaseRule = 2
+    def __init__(self, ruleId, ruleType, filterKey, atLeast, atMost, ruleKind):
         self.__ruleId = ruleId
+        self.__ruleKind = ruleKind
         self.__ruleType = ruleType
         self.__filter = filterKey
-        self.__atLest = atLeast
+        self.__atLeast = atLeast
         self.__atMost = atMost
 
     def check(self, bag):
@@ -24,7 +26,11 @@ class quantityRule:
                 s += quantity
             elif self.__ruleType == 3 and product.getProductId() == self.__filter:
                 s += quantity
-        return self.__atLest <= s <= self.__atMost
+        return self.__atLeast <= s <= self.__atMost
 
     def getRuleId(self):
         return self.__ruleId
+
+    def getRuleKind(self):
+        return self.__ruleKind
+

@@ -2,7 +2,7 @@ from typing import Dict
 
 import zope
 
-from Backend.Business.Rules.RuleComposite import RuleComposite
+from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.StorePackage.Product import Product
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
@@ -31,14 +31,14 @@ class CategoryDiscount:
     def addSimpleRuleDiscount(self, rule):
         self.__rules[rule.getRuleId()] = rule
 
-    def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType):
+    def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = self.__rules.get(rId1)
         r2 = self.__rules.get(rId2)
         if r1 is None:
             raise Exception("rule1 is not an existing discount")
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
-        rule = RuleComposite(ruleId, r1, r2, ruleType)
+        rule = DiscountRuleComposite(ruleId, r1, r2, ruleType, ruleKind)
         self.__rules[rule.getRuleId()] = rule
         self.__rules.pop(rId1)
         self.__rules.pop(rId2)

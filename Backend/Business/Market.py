@@ -158,6 +158,12 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
+    def __checkRules(self, rules, bag):
+        for rule in rules.values():
+            if not rule.check(bag):
+                return False
+        return True
+
     # need to remember that if a user add the product to the cart, then the product is in the stock.
     def purchaseCart(self, user, bank):
         try:
@@ -170,9 +176,15 @@ class Market:
             totalAmount = 0.0
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
+                bag = cart.getBag(storeId)
+                rules = self.__stores.get(storeId).getAllRules()
+                isValidPurchase = self.__checkRules(rules, bag)   # check that all the purchase rules are valid
+                if not isValidPurchase:
+                    break
+
                 storeName = self.__stores.get(storeId).getStoreName()
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
-                discounts = self.__stores.get(storeId).getAllDiscounts(user)
+                discounts = self.__stores.get(storeId).getAllDiscounts()
                 storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
                 paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
@@ -450,27 +462,27 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addSimpleRuleDiscount(self, user, storeId, dId, rule):
+    def addSimpleRule(self, user, storeId, dId, rule):
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            return self.__stores.get(storeId).addSimpleRuleDiscount(user, dId, rule)
+            return self.__stores.get(storeId).addSimpleRule(user, dId, rule)
         except Exception as e:
             raise Exception(e)
 
-    def addCompositeRuleDiscount(self, user, storeId, dId, ruleId, rId1, rId2, ruleType):
+    def addCompositeRule(self, user, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            return self.__stores.get(storeId).addCompositeRuleDiscount(user, dId, ruleId, rId1, rId2, ruleType)
+            return self.__stores.get(storeId).addCompositeRule(user, dId, ruleId, rId1, rId2, ruleType, ruleKind)
         except Exception as e:
             raise Exception(e)
 
-    def removeRuleDiscount(self, user, storeId, dId, rId):
+    def removeRule(self, user, storeId, dId, rId, ruleKind):
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            return self.__stores.get(storeId).removeRuleDiscount(user, dId, rId)
+            return self.__stores.get(storeId).removeRule(user, dId, rId, ruleKind)
         except Exception as e:
             raise Exception(e)
 

@@ -10,9 +10,9 @@ from Backend.Business.UserPackage.Member import Member
 from Backend.Business.Managment.MemberManagment import MemberManagment
 from Backend.Exceptions.CustomExceptions import NoSuchMemberException, NoSuchStoreException, ComplexDiscountException
 from Backend.Business.StorePackage.Product import Product
-from Backend.Business.Rules.priceRule import PriceRule
-from Backend.Business.Rules.weightRule import weightRule
-from Backend.Business.Rules.quantityRule import quantityRule
+from Backend.Business.Rules.PriceRule import PriceRule
+from Backend.Business.Rules.WeightRule import weightRule
+from Backend.Business.Rules.QuantityRule import quantityRule
 import threading
 
 
@@ -390,7 +390,7 @@ class RoleManagment:
             raise Exception("member does not have the permission to add disconts")
         return member.removeDiscount(storeId, discountId)
 
-    def addPriceRule(self, userId, storeId, discountId, atLeast, atMost):
+    def addPriceRule(self, userId, storeId, discountId, atLeast, atMost, ruleKind):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -400,11 +400,11 @@ class RoleManagment:
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add disconts")
 
-        rule = PriceRule(self.__getRuleId(), 1, None, atLeast, atMost)
-        member.addSimpleRuleDiscount(storeId, discountId, rule)
+        rule = PriceRule(self.__getRuleId(), 1, None, atLeast, atMost, ruleKind)
+        member.addSimpleRule(storeId, discountId, rule)
         return rule
 
-    def addQuantityRule(self, userId, storeId, discountId, ruleType, filterType, atLeast, atMost):
+    def addQuantityRule(self, userId, storeId, discountId, ruleType, filterType, atLeast, atMost, ruleKind):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -414,11 +414,11 @@ class RoleManagment:
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add disconts")
 
-        rule = quantityRule(self.__getRuleId(), ruleType, filterType, atLeast, atMost)
-        member.addSimpleRuleDiscount(storeId, discountId, rule)
+        rule = quantityRule(self.__getRuleId(), ruleType, filterType, atLeast, atMost, ruleKind)
+        member.addSimpleRule(storeId, discountId, rule)
         return rule
 
-    def addWeightRule(self, userId, storeId, discountId, ruleType, filterType, atLeast, atMost):
+    def addWeightRule(self, userId, storeId, discountId, ruleType, filterType, atLeast, atMost, ruleKind):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -428,11 +428,11 @@ class RoleManagment:
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add disconts")
 
-        rule = weightRule(self.__getRuleId(), ruleType, filterType, atLeast, atMost)
-        member.addSimpleRuleDiscount(storeId, discountId, rule)
+        rule = weightRule(self.__getRuleId(), ruleType, filterType, atLeast, atMost, ruleKind)
+        member.addSimpleRule(storeId, discountId, rule)
         return rule
 
-    def addCompositeRuleDiscount(self, userId, storeId, dId, rId1, rId2, ruleType):
+    def addCompositeRule(self, userId, storeId, dId, rId1, rId2, ruleType, ruleKind):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -441,9 +441,9 @@ class RoleManagment:
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add disconts")
-        return member.addCompositeRuleDiscount(storeId, dId, self.__getRuleId(), rId1, rId2, ruleType)
+        return member.addCompositeRule(storeId, dId, self.__getRuleId(), rId1, rId2, ruleType, ruleKind)
 
-    def removeRuleDiscount(self, userId, storeId, dId, rId):
+    def removeRule(self, userId, storeId, dId, rId, ruleKind):
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -452,7 +452,7 @@ class RoleManagment:
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add disconts")
-        return member.removeRuleDiscount(storeId, dId, rId)
+        return member.removeRule(storeId, dId, rId, ruleKind)
 
     def __getProductId(self):
         with self.__productId_lock:

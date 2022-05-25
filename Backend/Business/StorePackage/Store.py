@@ -1,9 +1,11 @@
 import zope
 from zope.interface import implements
 
+from Backend.Business.Rules.PurchaseRuleComposite import PurchaseRuleComposite
 from Backend.Exceptions.CustomExceptions import ProductException, PermissionException, TransactionException
 from Backend.Interfaces.IMember import IMember
 from Backend.Interfaces.IProduct import IProduct
+from Backend.Interfaces.IRule import IRule
 from Backend.Interfaces.IStore import IStore
 from Backend.Business.StorePackage.StorePermission import StorePermission
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
@@ -29,6 +31,7 @@ class Store:
         self.__productsQuantity = {}  # productId : quantity
         self.__transactions: Dict[int: StoreTransaction] = {}
         self.__discounts: {int: IDiscount} = {}
+        self.__rules: {int: IRule} = {}
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -37,7 +40,8 @@ class Store:
         self.__transactionLock = threading.Lock()
         self.__discountsLock = threading.Lock()
 
-        self.__permissions: Dict[IMember: StorePermission] = {founder: StorePermission(founder.getUserID())}  # member : storePermission
+        self.__permissions: Dict[IMember: StorePermission] = {
+            founder: StorePermission(founder.getUserID())}  # member : storePermission
         self.__permissions[founder].setPermission_AppointManager(True)
         self.__permissions[founder].setPermission_AppointOwner(True)
         self.__permissions[founder].setPermission_CloseStore(True)
@@ -274,9 +278,11 @@ class Store:
     def __checkPermissions_ChangeStock(self, user):
         permissions = self.__permissions.get(user)
         if permissions is None:
-            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ", self.__name)
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ",
+                                      self.__name)
         if not permissions.hasPermission_StockManagement():
-            raise PermissionException("User ", user.getUserID(), " doesn't have the permission to change the stock in store: ",
+            raise PermissionException("User ", user.getUserID(),
+                                      " doesn't have the permission to change the stock in store: ",
                                       self.__name)
 
     def appointManagerToStore(self, assigner, assignee):
@@ -284,9 +290,11 @@ class Store:
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
         if permissions is None:
-            raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:", self.__name)
+            raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:",
+                                      self.__name)
         if not permissions.hasPermission_AppointManager():
-            raise PermissionException("User ", assigner.getUserID(), " doesn't have the permission - appoint manager in store: ",
+            raise PermissionException("User ", assigner.getUserID(),
+                                      " doesn't have the permission - appoint manager in store: ",
                                       self.__name)
         if assigner not in self.__owners:
             raise PermissionException("User ", assigner.getUserID(), "cannot add manager to store: ", self.__name,
@@ -296,7 +304,8 @@ class Store:
             raise Exception("User ", assignee.getUserID(), "is all ready a manger in store: ", self.__name)
         # to avoid circularity
         if self.__appointers.get(assignee) is not None and assigner in self.__appointers.get(assigner):
-            raise PermissionException("User ", assignee.getUserID(), "cannot assign manager to hwo made him owner in store: ",
+            raise PermissionException("User ", assignee.getUserID(),
+                                      "cannot assign manager to hwo made him owner in store: ",
                                       self.__name)
 
         with self.__rolesLock:
@@ -316,9 +325,11 @@ class Store:
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
         if permissions is None:
-            raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:", str(self.__id))
+            raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:",
+                                      str(self.__id))
         if not permissions.hasPermission_AppointOwner():
-            raise PermissionException("User ", assigner.getUserID(), " doesn't have the permission - appoint owner in store: ",
+            raise PermissionException("User ", assigner.getUserID(),
+                                      " doesn't have the permission - appoint owner in store: ",
                                       self.__name)
         if assigner not in self.__owners:
             raise PermissionException("User ", assigner.getUserID(), "cannot add manager to store: ", self.__name,
@@ -328,7 +339,8 @@ class Store:
             raise Exception("User ", assignee.getUserID(), "is all ready a owner in store: ", self.__name)
             # to avoid circularity
         if self.__appointers.get(assignee) is not None and assigner in self.__appointers.get(assigner):
-            raise Exception("User ", assignee.getUserID(), "cannot assign owner to hwo made him manager in store: ", self.__name)
+            raise Exception("User ", assignee.getUserID(), "cannot assign owner to hwo made him manager in store: ",
+                            self.__name)
 
         with self.__rolesLock:
             self.__owners.append(assignee)
@@ -498,7 +510,8 @@ class Store:
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         if not permissions.hasPermission_Discount():
-            raise PermissionException("User ", user.getUserID()," doesn't have the discount permission in store: ",self.__name)
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
         with self.__discountsLock:
             self.__discounts[discount.getDiscountId()] = discount
 
@@ -535,8 +548,11 @@ class Store:
             self.__discounts.pop(dId)
         return True
 
-    def getAllDiscounts(self, user):
+    def getAllDiscounts(self):
         return self.__discounts
+
+    def getAllRules(self):
+        return self.__rules
 
     def hasDiscountPermission(self, user):
         permissions = self.__permissions.get(user)
@@ -544,7 +560,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         return permissions.hasPermission_Discount()
 
-    def addSimpleRuleDiscount(self, user, dId, rule):
+    def addSimpleRule(self, user, dId, rule: IRule):
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -552,12 +568,17 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         with self.__discountsLock:
-            discount = self.__discounts.get(dId)
-            if discount is None:
-                raise Exception("discount does not exists")
-            discount.addSimpleRuleDiscount(rule)
+            if rule.getRuleKind() == 1:
+                discount = self.__discounts.get(dId)
+                if discount is None:
+                    raise Exception("discount does not exists")
+                discount.addSimpleRuleDiscount(rule)
+            elif rule.getRuleKind() == 2:
+                self.__rules[rule.getRuleId()] = rule
+            else:
+                raise Exception("rule kind is illegal")
 
-    def addCompositeRuleDiscount(self, user, dId, ruleId, rId1, rId2, ruleType):
+    def addCompositeRule(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -565,12 +586,27 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         with self.__discountsLock:
-            discount = self.__discounts.get(dId)
-            if discount is None:
-                raise Exception("discount does not exists")
-            return discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType)
+            if ruleKind == 1:
+                discount: IDiscount = self.__discounts.get(dId)
+                if discount is None:
+                    raise Exception("discount does not exists")
+                return discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType, ruleKind)
+            elif ruleKind == 2:
+                rule1 = self.__rules.get(rId1)
+                rule2 = self.__rules.get(rId2)
+                if rule1 is None:
+                    raise Exception("rule1 is not an existing discount")
+                if rule2 is None:
+                    raise Exception("rule2 is not an existing discount")
+                newRule = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
+                self.__rules.pop(rId1)
+                self.__rules.pop(rId2)
+                self.__rules[ruleId] = newRule
+                return newRule
+            else:
+                raise Exception("rule kind is illegal")
 
-    def removeRuleDiscount(self, user, dId, rId):
+    def removeRule(self, user, dId, rId, ruleKind):
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -578,7 +614,12 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         with self.__discountsLock:
-            discount = self.__discounts.get(dId)
-            if discount is None:
-                raise Exception("discount does not exists")
-            discount.removeDiscountRule(rId)
+            if ruleKind == 1:
+                discount = self.__discounts.get(dId)
+                if discount is None:
+                    raise Exception("discount does not exists")
+                discount.removeDiscountRule(rId)
+            elif ruleKind == 2:
+                self.__rules.pop(rId)
+            else:
+                raise Exception("rule kind is illegal")

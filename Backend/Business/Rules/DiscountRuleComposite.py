@@ -4,11 +4,15 @@ from Backend.Interfaces.IRule import IRule
 
 
 @zope.interface.implementer(IRule)
-class RuleComposite:
+class DiscountRuleComposite:
 
-    # rulesTypes: and = 1, or = 2, cond = 3
-    def __init__(self, ruleId, rule1, rule2, ruleType):
+    # rulesTypes: and = 1, or = 2
+    # ruleKind: discountRule = 1 , purchaseRule = 2
+    def __init__(self, ruleId, rule1, rule2, ruleType, ruleKind):
         self.__ruleId = ruleId
+        self.__rulKind = ruleKind
+        if rule1.getRuleKind() != ruleKind or rule2.getRuleKind() != ruleKind:
+            raise Exception("cannot concat between purchase rule and discount rule")
         self.__rule1: IRule = rule1
         self.__rule2: IRule = rule2
         self.__ruleType = ruleType
@@ -18,8 +22,6 @@ class RuleComposite:
             return self.__rule1.check(bag) and self.__rule2.check(bag)
         if self.__ruleType == 2:
             return self.__rule1.check(bag) or self.__rule2.check(bag)
-        # if self.__ruleType == 3:
-        #     return self.__rule1.check(bag)  # rule 2 will be None
         else:
             raise Exception("rule type doesn't exist")
 
@@ -34,3 +36,7 @@ class RuleComposite:
 
     def getRuleType(self):
         return self.__ruleType
+
+    def getRuleKind(self):
+        return self.__ruleKind
+

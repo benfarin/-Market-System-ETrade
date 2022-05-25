@@ -8,3 +8,6 @@ class IRule(Interface):
 
     def getRuleId(self):
         pass
+
+    def getRuleKind(self):
+        pass

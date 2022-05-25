@@ -12,7 +12,7 @@ class IDiscount(Interface):
     def addSimpleRuleDiscount(self, rule):
         pass
 
-    def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType):
+    def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         pass
 
     def removeDiscountRule(self, rId):
