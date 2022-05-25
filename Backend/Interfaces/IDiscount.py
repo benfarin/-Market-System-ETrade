@@ -3,11 +3,23 @@ from zope.interface import Interface
 
 class IDiscount(Interface):
 
-    def calcDiscount(self, bag):
+    def calculate(self, bag):
         pass
 
-    def max(self, additional_DiscountCal):
+    def check(self, bag):
         pass
 
-    def add(self, discount_calc_2):
+    def addSimpleRuleDiscount(self, rule):
+        pass
+
+    def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
+        pass
+
+    def removeDiscountRule(self, rId):
+        pass
+
+    def getTotalPrice(self, bag):
+        pass
+
+    def getDiscountId(self):
         pass

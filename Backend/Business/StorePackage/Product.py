@@ -1,6 +1,8 @@
 from typing import List
 import zope
 from zope.interface import implements
+
+from Backend.Exceptions.CustomExceptions import ProductException
 from Backend.Interfaces.IProduct import IProduct
 
 
@@ -38,15 +40,23 @@ class Product:
         return self.__keywords
 
     def setProductName(self, name):
+        if name is None:
+            raise ProductException("name of a product cannot be None")
         self.__name = name
 
     def setProductPrice(self, price):
+        if price <= 0:
+            raise ProductException("price of a product cannot be non-positive")
         self.__price = price
 
     def setProductCategory(self, category):
+        if category is None:
+            raise ProductException("category of a product cannot be None")
         self.__category = category
 
     def setProductWeight(self, weight):
+        if weight <= 0:
+            raise ProductException("weight of a product cannot be non-positive")
         self.__weight = weight
 
     def addKeyWord(self, keyword):

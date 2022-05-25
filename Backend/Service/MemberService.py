@@ -56,7 +56,7 @@ class MemberService:
             logging.info("logout member: " + userName)
             return Response(isLoggedOut)
         except Exception as e:
-            logging.error("Failed opening a new store")
+            logging.error("Failed to logged out")
             return Response(e.__str__())
 
     def getMemberTransactions(self, userID):

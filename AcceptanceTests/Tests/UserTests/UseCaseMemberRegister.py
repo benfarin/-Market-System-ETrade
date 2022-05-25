@@ -13,13 +13,10 @@ class UseCaseMemberRegister(unittest.TestCase):
         cls.proxy = UserProxyBridge(UserRealBridge())
 
     def test_register_positive(self):
-        try:
-            self.__guestId = self.proxy.login_guest().getData().getUserID()
-            self.proxy.register(self.__guestId, "user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                                             "Ben Gurion", 0, "HaPoalim")
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
+        guestId = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                                         "Ben Gurion", 0, "HaPoalim")
+        self.assertTrue(self.proxy.login_member(guestId, "user1", "1234").getData())
 
     def test_register_negative(self):
         self.__guestId1 = self.proxy.login_guest().getData().getUserID()

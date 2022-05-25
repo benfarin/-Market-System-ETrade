@@ -6,7 +6,7 @@ from typing import Dict
 class CartDTO:
     def __init__(self, cart: Cart):
         self.__userId = cart.getUserId()
-        self.__sum = cart.calcSum()
+        # self.__sum = cart.calcSum()
         self.__bags = {}
         for storeId in cart.getAllBags().keys():
             self.__bags[storeId] = (BagDTO(cart.getAllBags().get(storeId)))
@@ -26,8 +26,8 @@ class CartDTO:
     def getBagByStoreID(self, storeid):
         return self.__bags.get(storeid)
 
-    def getSum(self):
-        return self.__sum
+    # def getSum(self):
+    #     return self.__sum
 
     def __str__(self):
         toReturn = "cart of user " + str(self.__userId) + " :"

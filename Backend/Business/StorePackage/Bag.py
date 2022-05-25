@@ -3,7 +3,6 @@ from zope.interface import implements
 
 from Backend.Exceptions.CustomExceptions import QuantityException, ProductException
 from Backend.Interfaces.IBag import IBag
-from Backend.Business.StorePackage.Predicates.StorePredicateManager import storePredicateManager
 
 
 @zope.interface.implementer(IBag)
@@ -65,8 +64,8 @@ class Bag:
     def getProductQuantity(self, product):
         return self.__products[product]
 
-    def calcSum(self):
-        return self.applyDiscount()
+    def calcSum(self, discounts):
+        return self.applyDiscount(discounts)
 
     def cleanBag(self):
         self.__products = {}
@@ -84,27 +83,23 @@ class Bag:
                 return product
         return None
 
-    def applyDiscount(self):
-        discounts = storePredicateManager.getInstance().getDiscountsByIdStore(self.__storeId)  # brings all of the discounts of the store
-        if discounts is None or discounts == []:
+    def applyDiscount(self, discounts):
+        if discounts is None or discounts == {}:
             return self.calc()
-        f = lambda discount: discount.check(self)
         minPrice = float('inf')
-        for discount in discounts:
-            if f(discount):
-                newPrice = self.findMinBagPrice(discount.makeDiscount(self))
-                if newPrice < minPrice:
-                    minPrice = newPrice
+        for discount in discounts.values():
+            newPrice = self.calcWithDiscount(discount.calculate(self))
+            if newPrice < minPrice:
+                minPrice = newPrice
         if minPrice < float('inf'):
             return minPrice
         else:
             return self.calc()
 
-    def findMinBagPrice(self, discount_of_product):
-        newPrices = discount_of_product.getProducts()
+    def calcWithDiscount(self, discount_of_product):
         s = 0
-        for prod in newPrices.keys():
-            s += newPrices[prod] * prod.getProductPrice() * self.__products.get(prod)
+        for prod in discount_of_product.keys():
+            s += (1 - discount_of_product[prod]) * prod.getProductPrice() * self.__products.get(prod)
         return s
 
     def calc(self):

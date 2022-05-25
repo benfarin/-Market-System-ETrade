@@ -50,7 +50,15 @@ class MemberManagment(UserManagment):
         for member in super().getMembers().values():
             if member.getMemberName() == memberName:
                 return member
-        raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
+        return None
+        # raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
+
+    def getSystemMangerByName(self, memberName):
+        for sm in super().getSystemManagers().values():
+            if sm.getMemberName() == memberName:
+                return sm
+        return None
+        # raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
 
     def getSystemManagers(self):
         return super().getSystemManagers()
@@ -100,17 +108,30 @@ class MemberManagment(UserManagment):
 
     def logoutMember(self, userName):
         try:
-            user = self.getMembers().get(userName)
+            user = self.getMemberByName(userName)
             system_manager = self.getSystemManagers().get(userName)
+
+            userId = None
+            smId = None
             if user is not None:
-                self.checkOnlineUser(user.getUserID())
-                self.getMembers().get(userName).setLoggedIn(False)
-                self.getMembers().get(userName).setMemberCheck(False)
-                self.__activeUsers.pop(user.getUserID())
+                userId = user.getUserID()
             if system_manager is not None:
-                self.__systemManager.get(userName).setLoggedIn(False)
-                self.__systemManager.get(userName).setMemberCheck(False)
-                self.__activeUsers.pop(system_manager.getUserID())
+                smId = system_manager.getUserID()
+
+            if user is not None:
+                self.checkOnlineUser(userId)
+                self.getMembers().get(userId).setLoggedIn(False)
+                self.getMembers().get(userId).setMemberCheck(False)
+                self.removeFromActiveUsers(userId)
+
+            if system_manager is not None:
+                self.getSystemManagers().get(userName).setLoggedIn(False)
+                self.getSystemManagers().get(userName).setMemberCheck(False)
+                self.removeFromActiveUsers(smId)
+
+            if user is None and system_manager is None:
+                raise Exception("no such member that active with the userName: " + userName)
+
             return True
         except Exception as e:
             raise Exception(e)
@@ -124,7 +145,6 @@ class MemberManagment(UserManagment):
 
     def isSystemManger(self, userName):
         return self.getSystemManagers().get(userName) is not None
-
 
 
 # NOT IMPORTANT FUNCTION ---
