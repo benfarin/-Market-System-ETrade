@@ -6,7 +6,7 @@ from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.StorePackage.Product import Product
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
-from ModelsBackend.models import DiscountModel, DiscountRulesModel, RuleModel, ProductModel
+from ModelsBackend.models import DiscountModel, DiscountRulesModel, RuleModel, ProductModel, ProductsInBagModel
 
 
 @zope.interface.implementer(IDiscount)
@@ -18,10 +18,11 @@ class CategoryDiscount:
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
         self.__model = DiscountModel(discountID=discountId, category=category, percent=percent, type='Category')
+        self.__model.save()
 
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)
-        newProductPrices: Dict[Product, float] = {}
+        newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
             product = ProductModel.objects.get(product_id=prod.product_ID)
@@ -51,9 +52,9 @@ class CategoryDiscount:
             raise Exception("rule2 is not an existing discount")
         rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
         # rule = DiscountRuleComposite(ruleId, r1, r2, ruleType, ruleKind)
-        self.__rules[rule.getRuleId()] = rule
-        self.__rules.pop(rId1)
-        self.__rules.pop(rId2)
+        # self.__rules[rule.getRuleId()] = rule
+        # self.__rules.pop(rId1)
+        # self.__rules.pop(rId2)
         return rule
 
     def removeDiscountRule(self, rId):
@@ -68,18 +69,21 @@ class CategoryDiscount:
     def getTotalPrice(self, bag):
         newPrices = self.calculate(bag)
         totalPrice = 0.0
-        for product, quantity in bag.getProducts().items():
-            if product.getProductCategory() == self.__category:
-                totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
+        for prod in bag.getProducts():
+            product = ProductModel.objects.get(product_id=prod.product_ID)
+            if product.category == self.__model.category:
+                totalPrice += (1 - newPrices.get(product)) * product.price * \
+                              ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
             else:
-                totalPrice += product.getProductPrice() * quantity
+                totalPrice += product.getProductPrice() * \
+                              ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
         return totalPrice
 
     def getDiscountId(self):
         return self.__model.discountID
 
     def getCategory(self):
-        return self.__model.type
+        return self.__model.category
 
     def getDiscountPercent(self):
         return self.__model.percent
