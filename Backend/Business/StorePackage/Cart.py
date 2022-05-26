@@ -1,11 +1,17 @@
 import zope
 from zope.interface import implements
+import os, django
 
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
+django.setup()
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
 from Backend.Interfaces.ICart import ICart
 from Backend.Business.StorePackage.Bag import Bag
 from Backend.Business.StorePackage.Product import Product
 from typing import Dict
+
+from ModelsBackend.models import CartModel
 
 
 @zope.interface.implementer(ICart)
@@ -14,6 +20,8 @@ class Cart:
     def __init__(self, userId):
         self.__userId = userId
         self.__bags: Dict[int, Bag] = {}  # storeId : Bag
+        self.__c = CartModel(userid=self.__userId)
+        self.__c.save()
 
     def getUserId(self):
         return self.__userId
@@ -53,6 +61,9 @@ class Cart:
             return True
         else:
             return False
+
+    def getModel(self):
+        return self.__c
 
     # def calcSum(self):
     #     s = 0.0

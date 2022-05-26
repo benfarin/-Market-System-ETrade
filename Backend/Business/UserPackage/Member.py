@@ -1,11 +1,19 @@
+from Backend.Business.Address import Address
+from Backend.Business.Bank import Bank
 from Backend.Business.UserPackage.User import User
 import bcrypt
 import threading
+import os, django
 
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
+django.setup()
 from Backend.Exceptions.CustomExceptions import NoSuchMemberException, PasswordException
 from Backend.Interfaces.IMarket import IMarket
 from Backend.Business.Market import Market
 from concurrent.futures import Future
+
+from ModelsBackend.models import MemberModel
 
 
 def call_with_future(fn, future, args, kwargs):
@@ -35,9 +43,12 @@ class Member(User):
         self.__userName = userName  # string
         self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
         self.__phone = phone  # string
-        self.__address = address  # type address class
-        self.__bank = bank  # type bank
+        self.__address : Address = address  # type address class
+        self.__bank :Bank = bank  # type bank
         self.__market: IMarket = Market.getInstance()
+        self.__m = MemberModel(userid=super().getUserID(), member_username=userName, member_password=password, phone=phone,
+                        address=self.__address.getModel(), bank=self.__bank.getModel(), cart=super().getCart().getModel())
+        self.__m.save()
 
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
@@ -84,6 +95,9 @@ class Member(User):
             return "Password changed succesfully!"
         else:
             raise PasswordException("password not good!")
+
+    def getModel(self):
+        return self.__m
 
     @threaded
     def createStore(self, storeName, bank, address):

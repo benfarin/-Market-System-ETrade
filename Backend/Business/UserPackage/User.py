@@ -10,6 +10,8 @@ import threading
 from concurrent.futures import Future
 import os
 
+from ModelsBackend.models import CartModel
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
 
@@ -40,7 +42,6 @@ class User:
     def __init__(self, model=None):
         #  threading.Thread.__init__(self, target=t, args=args)
         # threading.Thread.__init__(self)
-
         self.__id = str(uuid.uuid4())  # unique id
         self._cart = Cart(self.__id)
         self.__memberCheck = False

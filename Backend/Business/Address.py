@@ -1,3 +1,12 @@
+
+import os, django
+
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
+django.setup()
+
+from ModelsBackend.models import AddressModel
+
 class Address:
 
     def __init__(self, country, city, street, apartmentNum, zipCode):
@@ -6,6 +15,10 @@ class Address:
         self.__street = street
         self.__apartmentNum = apartmentNum
         self.__zipCode = zipCode
+        self.__a = AddressModel(country=self.__country, city=self.__city, street=self.__street,
+                                apartmentNum=self.__apartmentNum, zipCode=self.__zipCode)
+        self.__a.save()
+
 
     def getCountry(self):
         return self.__country
@@ -36,6 +49,9 @@ class Address:
 
     def setZipCode(self, zipCode):
         self.__zipCode = zipCode
+
+    def getModel(self):
+        return self.__a
 
     def printForEvents(self):
         address = "\n\t\t\tcountry: " + self.__country

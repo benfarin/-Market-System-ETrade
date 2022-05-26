@@ -1,6 +1,8 @@
 import zope
 from zope.interface import implements
 
+from Backend.Business.Address import Address
+from Backend.Business.Bank import Bank
 from Backend.Business.Rules.PurchaseRuleComposite import PurchaseRuleComposite
 from Backend.Exceptions.CustomExceptions import ProductException, PermissionException, TransactionException
 from Backend.Interfaces.IMember import IMember
@@ -14,6 +16,8 @@ from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from typing import Dict
 import threading
 
+from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, StoreProductQuantityModel, ProductModel
+
 
 @zope.interface.implementer(IStore)
 class Store:
@@ -22,8 +26,8 @@ class Store:
         self.__id = storeId
         self.__name = storeName
         self.__founderId = founder.getUserID()
-        self.__bankAccount = bankAccount
-        self.__address = address
+        self.__bankAccount: Bank = bankAccount
+        self.__address: Address = address
         self.__appointers: Dict[IMember: []] = {}  # Member : Members list
         self.__managers = []  # Members
         self.__owners = [founder]  # Members
@@ -32,6 +36,11 @@ class Store:
         self.__transactions: Dict[int: StoreTransaction] = {}
         self.__discounts: {int: IDiscount} = {}
         self.__rules: {int: IRule} = {}
+
+        self.__s = StoreModel(storeID=self.__id, name=self.__name, founderId=founder.getModel(),
+                              bankAccount=self.__bankAccount.getModel(), address=self.__address.getModel())
+        self.__s.save()
+        self.__s.owners.add(founder.getModel())
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -53,6 +62,12 @@ class Store:
         self.__permissions[founder].setPermission_RolesInformation(True)
         self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
         self.__permissions[founder].setPermission_Discount(True)
+
+        self.__p = StoreUserPermissionsModel(userID=founder.getModel(), storeID=self.__s, appointManager=True,
+                                             appointOwner=True, closeStore=True, stockManagement=True,
+                                             changePermission=True, rolesInformation=True,
+                                             purchaseHistoryInformation=True, discount=True)
+        self.__p.save()
 
     def getStoreId(self):
         return self.__id
@@ -215,6 +230,8 @@ class Store:
         else:
             with self.__stockLock:
                 self.__productsQuantity[productId] += quantity
+                quantity = StoreProductQuantityModel(storeID=self.__s, productID=ProductModel.objects.get(product_id=productId), quantity=quantity)
+                quantity.save()
 
     def removeProductFromStore(self, user, productId):
         try:
@@ -318,7 +335,11 @@ class Store:
         with self.__permissionsLock:
             if self.__permissions.get(assignee) is None:
                 self.__permissions[assignee] = StorePermission(assignee.getUserID())
+                StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__s).save()
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
+            permission = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__s)
+            permission.rolesInformation = True
+            permission.save()
 
     def appointOwnerToStore(self, assigner, assignee):
         permissions = self.__permissions.get(assigner)

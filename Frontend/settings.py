@@ -17,6 +17,7 @@ import Backend
 
 # sys.path.append('....')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -44,8 +45,10 @@ INSTALLED_APPS = [
     'crispy_forms',
     'notifications',
     'channels',
-    'Backend',
+    'ModelsBackend',
 ]
+
+AUTH_USER_MODEL = 'ModelsBackend.UserModel'
 
 CRISPY_TEMPLATE_PACK = 'uni_form'
 

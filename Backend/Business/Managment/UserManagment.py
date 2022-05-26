@@ -66,8 +66,8 @@ class UserManagment(object):
             guest = Guest()
             self.__guests[guest.getUserID()] = guest
             self.__activeUsers[guest.getUserID()] = guest
-            if User.get_user("Guest") is None:
-                User.save(username="Guest", password="")
+            # if User.get_user("Guest") is None:
+            #     User.save(username="Guest", password="")
             return guest
         except Exception as e:
             raise Exception(e)
@@ -82,8 +82,8 @@ class UserManagment(object):
         if self.__isMemberExists(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[member.getUserID()] = member
-            if User.get_user(userName) is None:
-                User.save(username=userName, password=password)
+            # if User.get_user(userName) is None:
+            #     User.save(username=userName, password=password)
             return True
         raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
 
@@ -132,8 +132,8 @@ class UserManagment(object):
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
             if systemManager:
                 self.__systemManager[userName] = systemManager
-                if User.get_user(userName) is None:
-                    User.save_admin(username=userName, password=password)
+                # if User.get_user(userName) is None:
+                #     User.save_admin(username=userName, password=password)
                 return systemManager
         return None
 

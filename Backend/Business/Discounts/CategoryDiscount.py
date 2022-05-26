@@ -6,30 +6,42 @@ from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.StorePackage.Product import Product
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
+from ModelsBackend.models import DiscountModel, DiscountRulesModel, RuleModel, ProductModel
 
 
 @zope.interface.implementer(IDiscount)
 class CategoryDiscount:
 
     def __init__(self, discountId, category, percent):
-        self.__discountId = discountId
-        self.__category = category
-        self.__percent = percent
-        self.__rules: Dict[int: IRule] = {}
+        # self.__discountId = discountId
+        # self.__category = category
+        # self.__percent = percent
+        # self.__rules: Dict[int: IRule] = {}
+        self.__model = DiscountModel(discountID=discountId, category=category, percent=percent, type='Category')
 
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)
         newProductPrices: Dict[Product, float] = {}
-        products: Dict[Product, int] = bag.getProducts()  # [product: quantity]
-        for prod in products.keys():
-            if prod.getProductCategory() == self.__category and isCheck:
-                newProductPrices[prod] = self.__percent
+        products = bag.getProducts()
+        for prod in products:
+            product = ProductModel.objects.get(product_id=prod.product_ID)
+            if product == self.__model.category:
+
             else:
-                newProductPrices[prod] = 0
-        return newProductPrices
+
+
+
+        # newProductPrices: Dict[Product, float] = {}
+        # products: Dict[Product, int] = bag.getProducts()  # [product: quantity]
+        # for prod in products.keys():
+        #     if prod.getProductCategory() == self.__category and isCheck:
+        #         newProductPrices[prod] = self.__percent
+        #     else:
+        #         newProductPrices[prod] = 0
+        # return newProductPrices
 
     def addSimpleRuleDiscount(self, rule):
-        self.__rules[rule.getRuleId()] = rule
+        DiscountRulesModel(discountID=self.__model, ruleID=rule).save()
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = self.__rules.get(rId1)
@@ -45,10 +57,10 @@ class CategoryDiscount:
         return rule
 
     def removeDiscountRule(self, rId):
-        self.__rules.pop(rId)
+        DiscountRulesModel.objects.get(ruleID=rId).delete()
 
-    def check(self, bag):
-        for rule in self.__rules.values():
+    def check(self, bag): ###NEED TO EDIT THIS
+        for rule in RuleModel.objects.all():
             if not rule.check(bag):
                 return False
         return True
@@ -64,11 +76,11 @@ class CategoryDiscount:
         return totalPrice
 
     def getDiscountId(self):
-        return self.__discountId
+        return self.__model.discountID
 
     def getCategory(self):
-        return self.__category
+        return self.__model.type
 
     def getDiscountPercent(self):
-        return self.__percent
+        return self.__model.percent
 
