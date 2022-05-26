@@ -26,11 +26,10 @@ class CategoryDiscount:
         for prod in products:
             product = ProductModel.objects.get(product_id=prod.product_ID)
             if product == self.__model.category:
-
+                newProductPrices[prod] = self.__model.percent
             else:
-
-
-
+                newProductPrices[prod] = 0
+        return newProductPrices
         # newProductPrices: Dict[Product, float] = {}
         # products: Dict[Product, int] = bag.getProducts()  # [product: quantity]
         # for prod in products.keys():
