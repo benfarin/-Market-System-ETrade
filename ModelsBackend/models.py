@@ -26,13 +26,13 @@ class StoreTransactionModel(models.Model):
     storeId = models.IntegerField()
     storeName = models.CharField(max_length=100)
     transactionId = models.IntegerField(primary_key=True)
-    payemntId = models.IntegerField()
+    paymentId = models.IntegerField()
     date = models.DateField()
-    products = models.ManyToManyField(ProductModel)
     amount = models.IntegerField()
 
+
 class ProductsInStoreTransactions(models.Model):
-    storeId = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
+    transactionId = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
     productId = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
 
 
@@ -41,8 +41,12 @@ class UserTransactionModel(models.Model):
     transactionId = models.IntegerField(primary_key=True)
     paymentId = models.IntegerField()
     date = models.DateField()
-    storeTransactions = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
     totalAmount = models.IntegerField()
+
+
+class StoreTransactionsInUserTransactions(models.Model):
+    userTransaction_id = models.ForeignKey(UserTransactionModel, on_delete=models.CASCADE)
+    storeTransaction_id = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
 
 
 class BagModel(models.Model):
