@@ -1,31 +1,41 @@
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from typing import Dict
+from ModelsBackend.models import UserTransactionModel, StoreTransactionsInUserTransactions
 import datetime
 
 
 class UserTransaction:
     def __init__(self, userID, transactionId, storeTransactions, paymentId, totalAmount):
-        self.__userID = userID
-        self.__transactionId = transactionId
-        self.__paymentId = paymentId
-        self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
-        self.__storeTransactions: Dict[int: StoreTransaction] = storeTransactions
-        self.__totalAmount = totalAmount
+        # self.__userID = userID
+        # self.__transactionId = transactionId
+        # self.__paymentId = paymentId
+        # self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
+        # self.__storeTransactions: Dict[int: StoreTransaction] = storeTransactions
+        # self.__totalAmount = totalAmount
+        self.__ut = UserTransactionModel(userID=userID, transactionId=transactionId, paymentId=paymentId,
+                                         date=datetime.datetime.now(), totalAmount=totalAmount)
+        self.__ut.save()
+        for st in storeTransactions:
+            StoreTransactionsInUserTransactions(userTransaction_id=self.__ut,
+                                                storeTransaction_id=st).save()
 
     def getUserId(self):
-        return self.__userID
+        return self.__ut.userID
 
     def getUserTransactionId(self):
-        return self.__transactionId
+        return self.__ut.transactionId
 
     def getStoreTransactions(self):
-        return self.__storeTransactions
+        return [stiut.storeTransaction_id for stiut in StoreTransactionsInUserTransactions.objects.filter(userTransaction_id=self.__ut.transactionId)]
 
     def getPaymentId(self):
-        return self.__paymentId
+        return self.__ut.paymentId
 
     def getDate(self):
-        return self.__date
+        return self.__ut.date
 
     def getTotalAmount(self):
-        return self.__totalAmount
+        return self.__ut.totalAmount
+
+    def getModel(self):
+        return self.__ut
