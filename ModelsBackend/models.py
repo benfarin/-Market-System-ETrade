@@ -143,8 +143,8 @@ class DiscountModel(models.Model):
         ('Or', 'Or'),
     ]
     discountID = models.IntegerField(primary_key=True)
-    category = models.CharField(null=True)
-    productID = models.CharField(null=True)
+    category = models.CharField(null=True, max_length=100)
+    productID = models.CharField(null=True, max_length=100)
     percent = models.IntegerField()
     type = models.CharField(max_length=100, choices=Simple_Discount_Choices)
     dID1 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='firstDiscountID', null=True)
