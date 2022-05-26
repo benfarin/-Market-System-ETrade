@@ -21,7 +21,7 @@ class ProductDiscount:
         self.__model.save()
 
     def calculate(self, bag):  # return the new price for each product
-        isCheck = self.check(bag)
+        # isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
