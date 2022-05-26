@@ -31,6 +31,10 @@ class StoreTransactionModel(models.Model):
     products = models.ManyToManyField(ProductModel)
     amount = models.IntegerField()
 
+class ProductsInStoreTransactions(models.Model):
+    storeId = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
+    productId = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+
 
 class UserTransactionModel(models.Model):
     userID = models.UUIDField()
