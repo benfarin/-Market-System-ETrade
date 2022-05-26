@@ -43,13 +43,14 @@ class CategoryDiscount:
         DiscountRulesModel(discountID=self.__model, ruleID=rule).save()
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
-        r1 = self.__rules.get(rId1)
-        r2 = self.__rules.get(rId2)
+        r1 = RuleModel.objects.get(ruleID=rId1)
+        r2 = RuleModel.objects.get(ruleID=rId2)
         if r1 is None:
             raise Exception("rule1 is not an existing discount")
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
-        rule = DiscountRuleComposite(ruleId, r1, r2, ruleType, ruleKind)
+        rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
+        # rule = DiscountRuleComposite(ruleId, r1, r2, ruleType, ruleKind)
         self.__rules[rule.getRuleId()] = rule
         self.__rules.pop(rId1)
         self.__rules.pop(rId2)
