@@ -61,7 +61,12 @@ class ProductsInBagModel(models.Model):
 
 class CartModel(models.Model):
     userid = models.UUIDField()
-    bags = models.ForeignKey(BagModel, on_delete=models.CASCADE, null=True)
+
+
+class BagsInCartModel(models.Model):
+    cart = models.ForeignKey(CartModel, on_delete=models.CASCADE, null=True)
+    storeID = models.IntegerField()
+    bag = models.ForeignKey(BagModel, on_delete=models.CASCADE, null=True)
 
 
 class UserModel(AbstractBaseUser):
@@ -197,4 +202,3 @@ class RuleModel(models.Model):
 class DiscountRulesModel(models.Model):
     discountID = models.ForeignKey(DiscountModel, on_delete=models.SET_NULL, null=True)
     ruleID = models.ForeignKey(RuleModel, on_delete=models.CASCADE)
-

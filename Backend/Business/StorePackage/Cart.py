@@ -2,7 +2,6 @@ import zope
 from zope.interface import implements
 import os, django
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
@@ -11,53 +10,56 @@ from Backend.Business.StorePackage.Bag import Bag
 from Backend.Business.StorePackage.Product import Product
 from typing import Dict
 
-from ModelsBackend.models import CartModel
+from ModelsBackend.models import CartModel, BagsInCartModel
 
 
 @zope.interface.implementer(ICart)
 class Cart:
 
     def __init__(self, userId):
-        self.__userId = userId
-        self.__bags: Dict[int, Bag] = {}  # storeId : Bag
-        self.__c = CartModel(userid=self.__userId)
-        self.__c.save()
+        # self.__userId = userId
+        # self.__bags: Dict[int, Bag] = {}  # storeId : Bag
+        self.__model = CartModel.objects.get_or_create(userid=self.__userId)
 
     def getUserId(self):
-        return self.__userId
+        return self.__model.userid
 
     def getAllBags(self):
-        return self.__bags
+        return BagsInCartModel.objects.filter(cart=self.__model)
 
     def getBag(self, storeId):
         try:
-            return self.__bags[storeId]
+            bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
+            bag = self.__buildBag(bag_model)
+            return bag
         except:
             raise NoSuchStoreException("storeId does not exists, can't add the bag to the cart")
 
     def removeBag(self, storeId):
-        if self.__bags.get(storeId) is not None:
-            self.__bags.pop(storeId)
+        if BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
+            BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).delete()
             return True
         else:
             return False
 
     def cleanBag(self, storeId):
-        if self.__bags.get(storeId) is not None:
-            self.__bags.get(storeId).cleanBag()
+        if BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
+            bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
+            self.__buildBag(bag_model).cleanBag()
         else:
             raise NoSuchStoreException("storeId does not exists, can't clean the bag from the cart")
 
-    def updateCart(self, cart):
-        for storeId in cart.getAllBags().keys():
-            if storeId in self.__bags.keys():
-                self.__bags[storeId] = self.__bags[storeId].addBag(cart.getAllBags()[storeId])
+    def updateCart(self, cart):  ###NEED TO CHANGE THIS
+        for bag_in_cart_model in cart.getAllBags():
+            if bag_in_cart_model.bag in BagsInCartModel.objects.filter(cart=self.__model):
+                ###FROM HERE NEED TO CHANGE
+                self.__bags[bag_in_cart_model] = self.__bags[bag_in_cart_model].addBag(cart.getAllBags()[bag_in_cart_model])
             else:
-                self.__bags[storeId] = cart.getAllBags()[storeId]
+                self.__bags[bag_in_cart_model] = cart.getAllBags()[bag_in_cart_model]
 
     def updateBag(self, bag):
-        if self.__bags.get(bag.getStoreId()) is not None:
-            self.__bags[bag.getStoreId()] = bag
+        if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.storeId).exists():
+            BagsInCartModel.objects.get(cart=self.__model, storeID=bag.storeId).bag = bag
             return True
         else:
             return False
@@ -72,17 +74,21 @@ class Cart:
     #     return s
 
     def calcSumOfBag(self, storeId, discounts):
-        return self.__bags.get(storeId).calcSum(discounts)
+        bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
+        bag = self.__buildBag(bag_model)
+        return bag.calcSum(discounts)
 
     def isEmpty(self):
-        for bag in self.__bags.values():
+        for bag_model in BagsInCartModel.objects.filter(cart=self.__model):
+            bag = self.__buildBag(bag_model)
             if not bag.isEmpty():
                 return False
         return True
 
     def addProduct(self, storeId, product, quantity):
-        if self.__bags.get(storeId) is None:
-            self.__bags[storeId] = Bag(storeId)
+        if not BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
+            bag = Bag(storeId)
+            BagsInCartModel.objects.get_or_create(cart=self.__model, storeID=storeId, bag=bag.getModel())
         self.getBag(storeId).addProduct(product, quantity)
 
     def removeProduct(self, storeId, productId):
@@ -91,6 +97,7 @@ class Cart:
             self.removeBag(storeId)
         return quantity
 
+    ###NEED TO CHANGE THIS
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
         if self.__bags.get(storeId) is None:
             raise NoSuchBagException("can't update a product without a bag to his store")
@@ -100,16 +107,17 @@ class Cart:
         return True
 
     def cleanCart(self):
-        for bag in self.__bags.values():
+        for bag_model in BagsInCartModel.objects.filter(cart=self.__model):
+            bag = self.__buildBag(bag_model)
             bag.cleanBag()
 
-    def getAllProductsByStore(self):
+    def getAllProductsByStore(self): ###NEED TO CHANGE THIS
         products: Dict[int, Dict[Product, int]] = {}  # [storeId: [product : quantity]]
         for bag in self.__bags.values():
             products.update({bag.getStoreId(): bag.getProducts()})
         return products
 
-    def getAllProducts(self):
+    def getAllProducts(self):  ###NEED TO CHANGE THIS
         products: Dict[Product, int] = {}  # [product : quantity]
         for bag in self.__bags.values():
             products.update(bag.getProducts())
@@ -125,3 +133,5 @@ class Cart:
     def applyDiscount(self, bag: Bag):
         bag.applyDiscount()
 
+    def __buildBag(self, bagModel):
+        return Bag(bagModel.bag.storeId)

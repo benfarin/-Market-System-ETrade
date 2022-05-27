@@ -18,14 +18,13 @@ class Bag:
     def __init__(self, storeId):
         # self.__storeId = storeId
         # self.__products = {}  # product : quantity
-        self.__b = BagModel(storeId=storeId)
-        self.__b.save()
+        self.__b = BagModel.objects.get_or_create(storeId=storeId)
 
     def getStore(self):
         pass
 
     def isEmpty(self):
-        return not BagModel.objects.filter(products__bagmodel=self.__b).exists()
+        return not ProductsInBagModel.objects.filter(bag_ID=self.__b).exists()
 
     def getStoreId(self):
         return self.__b.storeId
@@ -134,6 +133,9 @@ class Bag:
         for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
             s += product.product_ID.price * product.quantity
         return s
+
+    def getModel(self):
+        return self.__b
 
 
 
