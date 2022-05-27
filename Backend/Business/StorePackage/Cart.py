@@ -21,7 +21,7 @@ class Cart:
     def __init__(self, userId):
         # self.__userId = userId
         # self.__bags: Dict[int, Bag] = {}  # storeId : Bag
-        self.__model = CartModel.objects.get_or_create(userid=self.__userId)
+        self.__model = CartModel.objects.get_or_create(userid=self.__userId)[0]
 
     def getUserId(self):
         return self.__model.userid
@@ -97,7 +97,7 @@ class Cart:
     def addProduct(self, storeId, product, quantity):
         if not BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
             bag = Bag(storeId, self.__model.userid)
-            BagsInCartModel.objects.get_or_create(cart=self.__model, storeID=storeId, bag=bag.getModel())
+            BagsInCartModel.objects.get_or_create(cart=self.__model, storeID=storeId, bag=bag.getModel())[0]
         self.getBag(storeId).addProduct(product, quantity)
 
     def removeProduct(self, storeId, productId):

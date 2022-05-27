@@ -18,7 +18,7 @@ class Bag:
     def __init__(self, storeId, userId):
         # self.__storeId = storeId
         # self.__products = {}  # product : quantity
-        self.__b = BagModel.objects.get_or_create(storeId=storeId, userId=userId)
+        self.__b = BagModel.objects.get_or_create(storeId=storeId, userId=userId)[0]
 
     def getStore(self):
         pass
@@ -37,7 +37,7 @@ class Bag:
             raise QuantityException("cannot add negative quantity of product")
         check = ProductsInBagModel.objects.filter(product_ID=product, quantity=quantity)
         if not check.exists():
-            ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product, quantity=quantity)
+            ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product, quantity=quantity)[0]
             return True
         ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product).quantity += quantity
         return True

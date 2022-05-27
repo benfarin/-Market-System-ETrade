@@ -40,7 +40,7 @@ class CategoryDiscount:
         # return newProductPrices
 
     def addSimpleRuleDiscount(self, rule):
-        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)[0]
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = RuleModel.objects.get(ruleID=rId1)
