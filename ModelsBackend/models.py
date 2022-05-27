@@ -148,12 +148,12 @@ class DiscountModel(models.Model):
     Composite_Discount_Choices = [
         ('Max', 'Max'),
         ('Add', 'Add'),
-        ('Or', 'Or'),
+        ('XOR', 'XOR'),
     ]
     discountID = models.IntegerField(primary_key=True)
     category = models.CharField(null=True, max_length=100)
-    productID = models.CharField(null=True, max_length=100)
-    percent = models.FloatField()
+    productID = models.IntegerField(null=True)
+    percent = models.FloatField(null=True)
     type = models.CharField(max_length=100, choices=Simple_Discount_Choices)
     dID1 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='firstDiscountID', null=True)
     dID2 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='secondDiscountID', null=True)
@@ -162,25 +162,32 @@ class DiscountModel(models.Model):
 
 
 class RuleModel(models.Model):
+    Rule_Class = [
+        ('DiscountComposite', 'DiscountComposite'),
+        ('Price', 'Price'),
+        ('PurchaseComposite', 'PurchaseComposite'),
+        ('Quantity', 'Quantity'),
+        ('Weight', 'Weight'),
+    ]
     Rule_Kind = [
-        (1, 'Discount'),
-        (2, 'Purchase'),
+        ('Discount', 'Discount'),
+        ('Purchase', 'Purchase'),
     ]
     Rule_Type = [
-        (1, 'Store'),
-        (2, 'Category'),
-        (3, 'Product'),
+        ('Store', 'Store'),
+        ('Category', 'Category'),
+        ('Product', 'Product'),
     ]
     Filter_Type = [
-        (1, 'None'),
-        (2, 'Category'),
-        (3, 'ProductID'),
+        (None, 'None'),
+        ('Category', 'Category'),
+        ('ProductID', 'ProductID'),
     ]
-
+    rule_class = models.CharField(max_length=100, choices=Rule_Class, null=True)
     ruleID = models.IntegerField(primary_key=True)
     rule_kind = models.CharField(max_length=100, choices=Rule_Kind)
     rule_type = models.CharField(max_length=100, choices=Rule_Type)
-    filter_type = models.CharField(max_length=100, choices=Filter_Type)
+    filter_type = models.CharField(max_length=100, choices=Filter_Type, null=True)
     at_least = models.IntegerField()
     at_most = models.IntegerField()
     ruleID1 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='firstRuleID', null=True)

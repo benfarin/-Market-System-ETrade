@@ -17,16 +17,15 @@ class ProductDiscount:
         # self.__productId = productId
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
-        self.__model = DiscountModel(discountID=discountId, productID=productId, percent=percent, type='Product')
-        self.__model.save()
+        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, productID=productId, percent=percent, type='Product')[0]
 
     def calculate(self, bag):  # return the new price for each product
         # isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
-            product = ProductModel.objects.get(product_id=prod.product_ID)
-            if product == self.__model.category:
+            product = prod.product_ID
+            if product.product_id == self.__model.productID:
                 newProductPrices[prod] = self.__model.percent
             else:
                 newProductPrices[prod] = 0
@@ -43,7 +42,7 @@ class ProductDiscount:
         # return newProductPrices
 
     def addSimpleRuleDiscount(self, rule):
-        DiscountRulesModel(discountID=self.__model, ruleID=rule).save()
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = RuleModel.objects.get(ruleID=rId1)
@@ -80,7 +79,7 @@ class ProductDiscount:
         newPrices = self.calculate(bag)
         totalPrice = 0.0
         for prod in bag.getProducts():
-            product = ProductModel.objects.get(product_id=prod.product_ID)
+            product = prod.product_ID
             if product.category == self.__model.category:
                 totalPrice += (1 - newPrices.get(product)) * product.price * \
                               ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
@@ -97,3 +96,7 @@ class ProductDiscount:
 
     def getDiscountPercent(self):
         return self.__model.percent
+
+    def getModel(self):
+        return self.__model
+

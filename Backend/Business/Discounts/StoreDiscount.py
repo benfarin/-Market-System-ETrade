@@ -16,16 +16,15 @@ class StoreDiscount:
         # self.__discountId = discountId
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
-        self.__model = DiscountModel(discountID=discountId, percent=percent, type='Store')
-        self.__model.save()
+        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, percent=percent, type='Store')[0]
+
 
     def calculate(self, bag):  # return the new price for each product
-        # isCheck = self.check(bag)
+        isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
-            product = ProductModel.objects.get(product_id=prod.product_ID)
-            if product == self.__model.category:
+            if isCheck:
                 newProductPrices[prod] = self.__model.percent
             else:
                 newProductPrices[prod] = 0
@@ -41,8 +40,8 @@ class StoreDiscount:
         #         newProductPrices[prod] = 0
         # return newProductPrices
 
-    def addSimpleRuleDiscount(self, rule: IRule):
-        DiscountRulesModel(discountID=self.__model, ruleID=rule).save()
+    def addSimpleRuleDiscount(self, rule):
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = RuleModel.objects.get(ruleID=rId1)
@@ -83,3 +82,6 @@ class StoreDiscount:
 
     def getDiscountPercent(self):
         return self.__model.percent
+
+    def getModel(self):
+        return self.__model

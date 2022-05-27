@@ -21,10 +21,9 @@ class Product:
         # self.__category = category  # String
         # self.__weight = weight
         # self.__keywords: List = keyword
-        self.__p = ProductModel(product_id=Id, storeId=storeId, name=name, price=price,
+        self.__p = ProductModel.objects.get_or_create(product_id=Id, storeId=storeId, name=name, price=price,
                                 category=category
-                                ,weight=weight)
-        self.__p.save()
+                                ,weight=weight)[0]
 
         for k in keyword:
             ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=k)
