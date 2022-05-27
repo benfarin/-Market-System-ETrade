@@ -2,6 +2,8 @@ import zope
 from zope.interface import implements
 import os, django
 
+from Backend.Interfaces.IBag import IBag
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 from Backend.Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
@@ -27,13 +29,16 @@ class Cart:
     def getAllBags(self):
         return BagsInCartModel.objects.filter(cart=self.__model)
 
-    def getBag(self, storeId):
+    def getBag(self, storeId) -> Bag:
         try:
             bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
             bag = self.__buildBag(bag_model)
             return bag
         except:
             raise NoSuchStoreException("storeId does not exists, can't add the bag to the cart")
+
+    def getBagFromCart(self, cart, bag):
+        return BagsInCartModel.objects.filter(cart=cart, )
 
     def removeBag(self, storeId):
         if BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
@@ -49,13 +54,17 @@ class Cart:
         else:
             raise NoSuchStoreException("storeId does not exists, can't clean the bag from the cart")
 
-    def updateCart(self, cart):  ###NEED TO CHANGE THIS
+    def updateCart(self, cart):
         for bag_in_cart_model in cart.getAllBags():
-            if bag_in_cart_model.bag in BagsInCartModel.objects.filter(cart=self.__model):
-                ###FROM HERE NEED TO CHANGE
-                self.__bags[bag_in_cart_model] = self.__bags[bag_in_cart_model].addBag(cart.getAllBags()[bag_in_cart_model])
+            if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag_in_cart_model.storeID).exists():
+                bag_to_add_model = BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag
+                bag_to_add = self.__buildBag(bag_to_add_model)
+                bag_to_add.addBag(BagsInCartModel.objects.get(cart=cart, storeID=bag_in_cart_model.storeID).bag)
+                BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag = bag_to_add.getModel()
             else:
-                self.__bags[bag_in_cart_model] = cart.getAllBags()[bag_in_cart_model]
+                BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag =\
+                    BagsInCartModel.objects.get(cart=cart, storeID=bag_in_cart_model.storeID).bag
+
 
     def updateBag(self, bag):
         if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.storeId).exists():
@@ -97,9 +106,8 @@ class Cart:
             self.removeBag(storeId)
         return quantity
 
-    ###NEED TO CHANGE THIS
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
-        if self.__bags.get(storeId) is None:
+        if not BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
             raise NoSuchBagException("can't update a product without a bag to his store")
         self.getBag(storeId).updateProduct(productId, quantity)
         if self.getBag(storeId).isEmpty():
@@ -111,15 +119,17 @@ class Cart:
             bag = self.__buildBag(bag_model)
             bag.cleanBag()
 
-    def getAllProductsByStore(self): ###NEED TO CHANGE THIS
+    def getAllProductsByStore(self):
         products: Dict[int, Dict[Product, int]] = {}  # [storeId: [product : quantity]]
-        for bag in self.__bags.values():
+        for bag_model in BagsInCartModel.objects.filter(cart=self.__model):
+            bag = self.__buildBag(bag_model)
             products.update({bag.getStoreId(): bag.getProducts()})
         return products
 
-    def getAllProducts(self):  ###NEED TO CHANGE THIS
+    def getAllProducts(self):
         products: Dict[Product, int] = {}  # [product : quantity]
-        for bag in self.__bags.values():
+        for bag_model in BagsInCartModel.objects.filter(cart=self.__model):
+            bag = self.__buildBag(bag_model)
             products.update(bag.getProducts())
         return products
 
@@ -135,3 +145,6 @@ class Cart:
 
     def __buildBag(self, bagModel):
         return Bag(bagModel.bag.storeId, bagModel.bag.userId)
+
+    def getModel(self):
+        return self.__model
