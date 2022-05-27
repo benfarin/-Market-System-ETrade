@@ -50,6 +50,7 @@ class StoreTransactionsInUserTransactions(models.Model):
 
 
 class BagModel(models.Model):
+    userId = models.UUIDField(null=True)
     storeId = models.IntegerField(primary_key=True)
 
 
@@ -178,21 +179,21 @@ class RuleModel(models.Model):
         ('Discount', 'Discount'),
         ('Purchase', 'Purchase'),
     ]
-    Rule_Type = [
+    Simple_Rule_Type = [
         ('Store', 'Store'),
         ('Category', 'Category'),
         ('Product', 'Product'),
     ]
-    Filter_Type = [
-        (None, 'None'),
-        ('Category', 'Category'),
-        ('ProductID', 'ProductID'),
+    Composite_Rule_Type = [
+        ('And', 'Or'),
+        ('And', 'Or'),
     ]
     rule_class = models.CharField(max_length=100, choices=Rule_Class, null=True)
     ruleID = models.IntegerField(primary_key=True)
     rule_kind = models.CharField(max_length=100, choices=Rule_Kind)
-    rule_type = models.CharField(max_length=100, choices=Rule_Type)
-    filter_type = models.CharField(max_length=100, choices=Filter_Type, null=True)
+    simple_rule_type = models.CharField(max_length=100, choices=Simple_Rule_Type, null=True)
+    composite_rule_type = models.CharField(max_length=100, choices=Composite_Rule_Type, null=True)
+    filter_type = models.CharField(max_length=100, null=True)
     at_least = models.IntegerField()
     at_most = models.IntegerField()
     ruleID1 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='firstRuleID', null=True)

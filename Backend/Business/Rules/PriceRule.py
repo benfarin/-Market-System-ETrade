@@ -15,18 +15,21 @@ class PriceRule:
     # ruleType: store = 1, category = 2, product = 3
     # filerType:  None   , category   ,  productId
     # ruleKind: discountRule = 1 , purchaseRule = 2
-    def __init__(self, ruleId, ruleType, filterType, atLeast, atMost, ruleKind):
+    def __init__(self, ruleId=None, ruleType=None, filterType=None, atLeast=None, atMost=None, ruleKind=None, model=None):
         # self.__ruleId = ruleId
         # self.__ruleKind = ruleKind
         # self.__ruleType = ruleType
         # self.__filterType = filterType
         # self.__atLest = atLeast
         # self.__atMost = atMost
-        self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, rule_type=ruleType, rule_kind=ruleKind, filter_type=filterType,
-                                 at_least=atLeast, at_most=atMost, rule_class='Price')[0]
+        if model is None:
+            self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, simple_rule_type=ruleType, rule_kind=ruleKind, filter_type=filterType,
+                                     at_least=atLeast, at_most=atMost, rule_class='Price')[0]
+        else:
+            self.__model = model
 
     def check(self, bag):
-        if self.__model.rule_type != 'Store':
+        if self.__model.simple_rule_type != 'Store':
             raise Exception("price rule can only be for stores")
         s = 0.0
         for prod in bag.getProducts():

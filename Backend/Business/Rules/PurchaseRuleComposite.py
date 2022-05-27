@@ -1,5 +1,9 @@
 import zope
 
+from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
+from Backend.Business.Rules.PriceRule import PriceRule
+from Backend.Business.Rules.QuantityRule import quantityRule
+from Backend.Business.Rules.WeightRule import weightRule
 from Backend.Interfaces.IRule import IRule
 from ModelsBackend.models import RuleModel
 
@@ -9,7 +13,7 @@ class PurchaseRuleComposite:
 
     # rulesTypes: and = 1, or = 2
     # ruleKind: discountRule = 1 , purchaseRule = 2
-    def __init__(self, ruleId, rule1, rule2, ruleType, ruleKind):
+    def __init__(self, ruleId=None, rule1=None, rule2=None, ruleType=None, ruleKind=None, model=None):
         # self.__ruleId = ruleId
         # self.__ruleKind = ruleKind
         # if rule1.getRuleKind() != ruleKind or rule2.getRuleKind() != ruleKind:
@@ -17,14 +21,19 @@ class PurchaseRuleComposite:
         # self.__rule1: IRule = rule1
         # self.__rule2: IRule = rule2
         # self.__ruleType = ruleType
-        self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, rule_type=ruleType, rule_kind=ruleKind,
-                                                       ruleID1=rule1, ruleID2=rule2,  rule_class='PurchaseComposite')[0]
+        if model is None:
+            self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, composite_rule_type=ruleType, rule_kind=ruleKind,
+                                                           ruleID1=rule1, ruleID2=rule2,  rule_class='PurchaseComposite')[0]
+        else:
+            self.__model = model
 
     def check(self, bag):
-        if self.__ruleType == 1:
-            return self.__rule1.check(bag) and self.__rule2.check(bag)
-        if self.__ruleType == 2:
-            return self.__rule1.check(bag) or self.__rule2.check(bag)
+        rule1 = self.__buildRule(self.__model.ruleID1)
+        rule2 = self.__buildRule(self.__model.ruleID2)
+        if self.__ruleType == 'And':
+            return rule1.check(bag) and rule2.check(bag)
+        if self.__ruleType == 'Or':
+            return rule1.check(bag) or rule2.check(bag)
         else:
             raise Exception("rule type doesn't exist")
 
@@ -42,3 +51,15 @@ class PurchaseRuleComposite:
 
     def getRuleKind(self):
         return self.__model.rule_kind
+
+    def __buildRule(self, rule_model):
+        if rule_model.rule_class == 'Price':
+            return PriceRule(rule_model=rule_model)
+        if rule_model.rule_class == 'Quantity':
+            return quantityRule(rule_model=rule_model)
+        if rule_model.rule_class == 'Weight':
+            return weightRule(rule_model=rule_model)
+        if rule_model.rule_class == 'DiscountComposite':
+            return DiscountRuleComposite(rule_model=rule_model)
+        if rule_model.rule_class == 'PurchaseComposite':
+            return PurchaseRuleComposite(rule_model=rule_model)

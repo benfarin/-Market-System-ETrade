@@ -15,10 +15,10 @@ from ModelsBackend.models import BagModel, ProductsInBagModel, ProductModel
 @zope.interface.implementer(IBag)
 class Bag:
 
-    def __init__(self, storeId):
+    def __init__(self, storeId, userId):
         # self.__storeId = storeId
         # self.__products = {}  # product : quantity
-        self.__b = BagModel.objects.get_or_create(storeId=storeId)
+        self.__b = BagModel.objects.get_or_create(storeId=storeId, userId=userId)
 
     def getStore(self):
         pass

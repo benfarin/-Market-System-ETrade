@@ -87,7 +87,7 @@ class Cart:
 
     def addProduct(self, storeId, product, quantity):
         if not BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
-            bag = Bag(storeId)
+            bag = Bag(storeId, self.__model.userid)
             BagsInCartModel.objects.get_or_create(cart=self.__model, storeID=storeId, bag=bag.getModel())
         self.getBag(storeId).addProduct(product, quantity)
 
@@ -134,4 +134,4 @@ class Cart:
         bag.applyDiscount()
 
     def __buildBag(self, bagModel):
-        return Bag(bagModel.bag.storeId)
+        return Bag(bagModel.bag.storeId, bagModel.bag.userId)
