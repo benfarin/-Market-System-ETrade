@@ -38,7 +38,7 @@ class Bag:
         if len(check) > 1:
             raise Exception("there is more then one product with that id in this bag!")
         if not check.exists():
-            ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product, quantity=quantity)[0]
+            ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product, quantity=quantity)
             return True
         p = check[0]
         p.quantity += quantity
@@ -68,17 +68,17 @@ class Bag:
         return ProductsInBagModel.objects.filter(bag_ID=self.__b)
 
     def addBag(self, bag):
-        for product in ProductsInBagModel.objects.filter(bag_ID=bag):
+        for product in ProductsInBagModel.objects.filter(bag_ID=bag.getModel()):
             p = ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product)
             if product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-                p.quantity += ProductsInBagModel.objects.get(bag_ID=bag, product_ID=product).quantity
+                p.quantity += ProductsInBagModel.objects.get(bag_ID=bag.getModel, product_ID=product).quantity
             else:
-                p = ProductsInBagModel.objects.get(bag_ID=bag, product_ID=product).quantity
+                p = ProductsInBagModel.objects.get(bag_ID=bag.getModel, product_ID=product).quantity
             p.save()
         return True
 
     def getProductQuantity(self, product):
-        return ProductsInBagModel.objects.filter(bag_ID=self.__b, product_ID=product)
+        return ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel()).quantity
 
     def calcSum(self, discounts):
         return self.applyDiscount(discounts)
@@ -141,3 +141,6 @@ class Bag:
 
     def getModel(self):
         return self.__b
+
+    def removeBag(self):
+        self.__b.delete()

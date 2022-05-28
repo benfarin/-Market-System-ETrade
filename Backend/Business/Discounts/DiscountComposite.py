@@ -79,3 +79,7 @@ class DiscountComposite:
             return CategoryDiscount(discount_model.discountID, discount_model.category, discount_model.percent)
         else:  # discount_model.type == 'Store'
             return StoreDiscount(discount_model.discountID, discount_model.percent)
+
+
+    def remove(self):
+        self.__model.delete()

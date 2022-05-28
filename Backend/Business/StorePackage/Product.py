@@ -81,14 +81,17 @@ class Product:
         self.__p.save()
 
     def addKeyWord(self, keyword):
-        if ProductKeyword.objects.get(product_id=self.__p, keyword=keyword):
-            k = ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=keyword)
+        if not ProductKeyword.objects.filter(product_id=self.__p, keyword=keyword).exists():
+            k = ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=keyword)[0]
             k.save()
 
     def removeKeyWord(self, keyword):
-        if keyword not in self.__keywords:
+        if not ProductKeyword.objects.filter(product_id=self.__p, keyword=keyword).exists():
             raise Exception("cannot remove keyword that doesn't exists")
         ProductKeyword.objects.get(product_id=self.__p, keyword=keyword).delete()
 
     def isExistsKeyword(self, keyword):
-        return ProductKeyword.objects.get(product_id=self.__p, keyword=keyword) is not None
+        return ProductKeyword.objects.filter(product_id=self.__p, keyword=keyword).exists()
+
+    def removeProduct(self):
+        self.__p.delete()

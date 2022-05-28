@@ -15,7 +15,7 @@ class ProductModel(models.Model):
 
 
 class ProductKeyword(models.Model):
-    product_id = models.ForeignKey(ProductModel, on_delete=models.SET_NULL, null=True)
+    product_id = models.ForeignKey(ProductModel, on_delete=models.CASCADE, null=True)
     keyword = models.CharField(max_length=100, null=True)
 
     class Meta:

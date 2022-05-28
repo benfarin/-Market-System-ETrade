@@ -42,3 +42,6 @@ class PriceRule:
 
     def getRuleKind(self):
         return self.__model.rule_kind
+
+    def removeRule(self):
+        self.__model.delete()

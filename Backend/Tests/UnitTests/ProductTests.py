@@ -5,29 +5,37 @@ from Backend.Business.StorePackage.Product import Product
 
 class MyTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.product = Product(0, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
+        self.product2 = Product(1, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
+
     def test_productGetters(self):
-        product = Product(0, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
-        self.assertEqual(product.getProductId(), 0)
-        self.assertEqual(product.getProductWeight(), 5)
-        self.assertEqual(product.getProductPrice(), 50)
-        self.assertEqual(product.getProductStoreId(), 2)
-        self.assertEqual(product.getProductCategory(), "TestCategory")
-        self.assertEqual(product.getProductName(), "TestProduct")
-        self.assertEqual(product.getProductKeywords(), ["Check" , "Check2"])
+        self.assertEqual(self.product.getProductId(), 0)
+        self.assertEqual(self.product.getProductWeight(), 5)
+        self.assertEqual(self.product.getProductPrice(), 50)
+        self.assertEqual(self.product.getProductStoreId(), 2)
+        self.assertEqual(self.product.getProductCategory(), "TestCategory")
+        self.assertEqual(self.product.getProductName(), "TestProduct")
+        self.assertEqual(self.product.getProductKeywords(), ["Check" , "Check2"])
 
     def test_productSetters(self):
-        product = Product(1, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
-        product.setProductCategory("Category1")
-        product.setProductWeight(100)
-        product.setProductPrice(1)
-        product.setProductName("TestProduct2")
-        product.addKeyWord("keyword")
-        self.assertEqual(product.getProductWeight(), 100)
-        self.assertEqual(product.getProductPrice(), 1)
-        self.assertEqual(product.getProductCategory(), "Category1")
-        self.assertEqual(product.getProductName(), "TestProduct2")
-        self.assertEqual(product.getProductKeywords(), ["Check", "Check2", "keyword"])
+        self.product2.setProductCategory("Category1")
+        self.product2.setProductWeight(100)
+        self.product2.setProductPrice(1)
+        self.product2.setProductName("TestProduct2")
+        self.product2.addKeyWord("keyword")
+        self.assertEqual(self.product2.getProductWeight(), 100)
+        self.assertEqual(self.product2.getProductPrice(), 1)
+        self.assertEqual(self.product2.getProductCategory(), "Category1")
+        self.assertEqual(self.product2.getProductName(), "TestProduct2")
+        self.assertEqual(self.product2.getProductKeywords(), ["Check", "Check2", "keyword"])
+        self.assertEqual(self.product2.isExistsKeyword("Check2"), True)
+        self.product2.removeKeyWord("Check2")
+        self.assertEqual(self.product2.isExistsKeyword("Check2"), False)
 
+    def tearDown(self):
+        self.product.removeProduct()
+        self.product2.removeProduct()
 
 if __name__ == '__main__':
     unittest.main()

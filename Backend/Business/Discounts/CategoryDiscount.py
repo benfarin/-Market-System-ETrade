@@ -95,3 +95,6 @@ class CategoryDiscount:
     def getModel(self):
         return self.__model
 
+    def remove(self):
+        self.__model.delete()
+

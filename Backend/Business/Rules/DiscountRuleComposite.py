@@ -1,4 +1,10 @@
+import os
+
+import django
 import zope
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
+django.setup()
 
 from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.Rules.QuantityRule import quantityRule
