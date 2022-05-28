@@ -109,11 +109,23 @@ class StoreModel(models.Model):
     # appointers: Dict[IMember: []] = {}  # Member : Members list   --This is a different model
     managers = models.ManyToManyField(MemberModel, related_name='managers')
     owners = models.ManyToManyField(MemberModel, related_name='owners')
-    products: models.ManyToManyField(ProductModel)
+    # products: models.ManyToManyField(ProductModel)  --different model
     # productsQuantity = {}  # productId : quantity --This is a different model
-    transactions = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE, null=True)
+    # transactions = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE, null=True)
     # discounts: {int: IDiscount} = {}
     # rules: {int: IRule} = {}
+
+
+class ProductsInStoreModel(models.Model):
+    storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
+    productID = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+    quantity = models.IntegerField(null=True)
+
+
+class TransactionsInStoreModel(models.Model):
+    storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
+    transactionID = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
+
 
 
 class StoreUserPermissionsModel(models.Model):
@@ -202,4 +214,14 @@ class RuleModel(models.Model):
 
 class DiscountRulesModel(models.Model):
     discountID = models.ForeignKey(DiscountModel, on_delete=models.SET_NULL, null=True)
+    ruleID = models.ForeignKey(RuleModel, on_delete=models.CASCADE)
+
+
+class DiscountsInStoreModel(models.Model):
+    storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
+    discountID = models.ForeignKey(DiscountModel, on_delete=models.CASCADE)
+
+
+class RulesInStoreModel(models.Model):
+    storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     ruleID = models.ForeignKey(RuleModel, on_delete=models.CASCADE)
