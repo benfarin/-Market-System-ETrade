@@ -18,7 +18,6 @@ class StoreDiscount:
         # self.__rules: Dict[int: IRule] = {}
         self.__model = DiscountModel.objects.get_or_create(discountID=discountId, percent=percent, type='Store')[0]
 
-
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
@@ -51,13 +50,17 @@ class StoreDiscount:
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
         rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
+        self.addSimpleRuleDiscount(rule)
+        self.removeDiscountRule(r1.ruleID)
+        self.removeDiscountRule(r2.ruleID)
         return rule
 
     def removeDiscountRule(self, rId):
         DiscountRulesModel.objects.get(ruleID=rId).delete()
 
     def check(self, bag):
-        for rule in self.__rules.values():
+        rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
+        for rule in rules:
             if not rule.check(bag):
                 return False
         return True
@@ -70,12 +73,12 @@ class StoreDiscount:
                           ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
         return totalPrice
 
-
         # newPrices = self.calculate(bag)
         # totalPrice = 0.0
         # for product, quantity in bag.getProducts().items():
         #     totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
         # return totalPrice
+
 
     def getDiscountId(self):
         return self.__model.discountID

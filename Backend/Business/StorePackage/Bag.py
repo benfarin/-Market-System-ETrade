@@ -3,7 +3,6 @@ from zope.interface import implements
 
 import os, django
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 
@@ -35,25 +34,31 @@ class Bag:
     def addProduct(self, product, quantity):
         if quantity <= 0:
             raise QuantityException("cannot add negative quantity of product")
-        check = ProductsInBagModel.objects.filter(product_ID=product, quantity=quantity)
+        check = ProductsInBagModel.objects.filter(product_ID=product.product_id)
+        if len(check) > 1:
+            raise Exception("there is more then one product with that id in this bag!")
         if not check.exists():
             ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product, quantity=quantity)[0]
             return True
-        ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product).quantity += quantity
+        p = check[0]
+        p.quantity += quantity
+        p.save()
         return True
 
     def removeProduct(self, productId):
         for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
             if product.product_ID.product_id == productId:
                 quantity = product.quantity
-                ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product, quantity=quantity).delete()
+                ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.product_ID,
+                                               quantity=quantity).delete()
                 return quantity
         raise ProductException("no such product in the Bag")
 
     def updateBag(self, productId, quantity):
         for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            if product.product_ID == productId:
+            if product.product_ID.product_id == productId:
                 product.quantity += quantity
+                product.save()
                 if product.quantity < 0:
                     ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product, quantity=quantity).delete()
                 return True
@@ -64,12 +69,12 @@ class Bag:
 
     def addBag(self, bag):
         for product in ProductsInBagModel.objects.filter(bag_ID=bag):
+            p = ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product)
             if product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-                ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product).quantity +=\
-                    ProductsInBagModel.objects.get(bag_ID=bag, product_ID=product).quantity
+                p.quantity += ProductsInBagModel.objects.get(bag_ID=bag, product_ID=product).quantity
             else:
-                ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product).quantity = \
-                    ProductsInBagModel.objects.get(bag_ID=bag, product_ID=product).quantity
+                p = ProductsInBagModel.objects.get(bag_ID=bag, product_ID=product).quantity
+            p.save()
         return True
 
     def getProductQuantity(self, product):
@@ -94,7 +99,7 @@ class Bag:
                 return product
         return None
 
-    def applyDiscount(self, discounts): ###NEED TO ADD THIS
+    def applyDiscount(self, discounts):  ###NEED TO ADD THIS
         if discounts is None:
             return self.calc()
         minPrice = float('inf')
@@ -136,8 +141,3 @@ class Bag:
 
     def getModel(self):
         return self.__b
-
-
-
-
-

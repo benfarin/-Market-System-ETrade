@@ -38,7 +38,7 @@ class Cart:
             raise NoSuchStoreException("storeId does not exists, can't add the bag to the cart")
 
     def getBagFromCart(self, cart, bag):
-        return BagsInCartModel.objects.filter(cart=cart, )
+        return BagsInCartModel.objects.filter(cart=cart, bag=bag)[0]
 
     def removeBag(self, storeId):
         if BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
@@ -60,11 +60,11 @@ class Cart:
                 bag_to_add_model = BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag
                 bag_to_add = self.__buildBag(bag_to_add_model)
                 bag_to_add.addBag(BagsInCartModel.objects.get(cart=cart, storeID=bag_in_cart_model.storeID).bag)
-                BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag = bag_to_add.getModel()
+                BagsInCartModel.objects.get(cart=self.__model,
+                                            storeID=bag_in_cart_model.storeID).bag = bag_to_add.getModel()
             else:
-                BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag =\
+                BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag = \
                     BagsInCartModel.objects.get(cart=cart, storeID=bag_in_cart_model.storeID).bag
-
 
     def updateBag(self, bag):
         if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.storeId).exists():

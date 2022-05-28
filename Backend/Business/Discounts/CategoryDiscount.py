@@ -20,16 +20,17 @@ class CategoryDiscount:
         self.__model = DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent, type='Category')[0]
 
     def calculate(self, bag):  # return the new price for each product
-        # isCheck = self.check(bag)
+        isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
             product = ProductModel.objects.get(product_id=prod.product_ID)
-            if product == self.__model.category:
+            if product == self.__model.category and isCheck:
                 newProductPrices[prod] = self.__model.percent
             else:
                 newProductPrices[prod] = 0
         return newProductPrices
+
         # newProductPrices: Dict[Product, float] = {}
         # products: Dict[Product, int] = bag.getProducts()  # [product: quantity]
         # for prod in products.keys():
@@ -50,6 +51,9 @@ class CategoryDiscount:
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
         rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
+        self.addSimpleRuleDiscount(rule)
+        self.removeDiscountRule(r1.ruleID)
+        self.removeDiscountRule(r2.ruleID)
         # rule = DiscountRuleComposite(ruleId, r1, r2, ruleType, ruleKind)
         # self.__rules[rule.getRuleId()] = rule
         # self.__rules.pop(rId1)
@@ -59,8 +63,9 @@ class CategoryDiscount:
     def removeDiscountRule(self, rId):
         DiscountRulesModel.objects.get(ruleID=rId).delete()
 
-    def check(self, bag): ###NEED TO EDIT THIS
-        for rule in RuleModel.objects.all():
+    def check(self, bag):
+        rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
+        for rule in rules:
             if not rule.check(bag):
                 return False
         return True

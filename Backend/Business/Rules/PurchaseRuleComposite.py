@@ -1,6 +1,5 @@
 import zope
 
-from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.Rules.QuantityRule import quantityRule
 from Backend.Business.Rules.WeightRule import weightRule
@@ -30,6 +29,9 @@ class PurchaseRuleComposite:
     def check(self, bag):
         rule1 = self.__buildRule(self.__model.ruleID1)
         rule2 = self.__buildRule(self.__model.ruleID2)
+        if rule1.getRuleKind() != rule2.getRuleKind():
+            raise Exception("cannot concat discount rule and purchase rule")
+
         if self.__ruleType == 'And':
             return rule1.check(bag) and rule2.check(bag)
         if self.__ruleType == 'Or':
@@ -59,7 +61,9 @@ class PurchaseRuleComposite:
             return quantityRule(rule_model=rule_model)
         if rule_model.rule_class == 'Weight':
             return weightRule(rule_model=rule_model)
-        if rule_model.rule_class == 'DiscountComposite':
-            return DiscountRuleComposite(rule_model=rule_model)
+        # if rule_model.rule_class == 'DiscountComposite':
+        #     return DiscountRuleComposite(rule_model=rule_model)
         if rule_model.rule_class == 'PurchaseComposite':
             return PurchaseRuleComposite(rule_model=rule_model)
+        else:
+            raise Exception("cannot concat discount rule and purchase rule")

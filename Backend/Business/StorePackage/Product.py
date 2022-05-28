@@ -22,8 +22,8 @@ class Product:
         # self.__weight = weight
         # self.__keywords: List = keyword
         self.__p = ProductModel.objects.get_or_create(product_id=Id, storeId=storeId, name=name, price=price,
-                                category=category
-                                ,weight=weight)[0]
+                                                      category=category
+                                                      , weight=weight)[0]
 
         for k in keyword:
             ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=k)
@@ -81,8 +81,9 @@ class Product:
         self.__p.save()
 
     def addKeyWord(self, keyword):
-        if keyword not in self.__keywords:
-            ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=keyword)
+        if ProductKeyword.objects.get(product_id=self.__p, keyword=keyword):
+            k = ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=keyword)
+            k.save()
 
     def removeKeyWord(self, keyword):
         if keyword not in self.__keywords:
@@ -91,4 +92,3 @@ class Product:
 
     def isExistsKeyword(self, keyword):
         return ProductKeyword.objects.get(product_id=self.__p, keyword=keyword) is not None
-

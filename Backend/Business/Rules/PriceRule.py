@@ -24,7 +24,7 @@ class PriceRule:
         # self.__atMost = atMost
         if model is None:
             self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, simple_rule_type=ruleType, rule_kind=ruleKind, filter_type=filterType,
-                                     at_least=atLeast, at_most=atMost, rule_class='Price')[0]
+                                                           at_least=atLeast, at_most=atMost, rule_class='Price')[0]
         else:
             self.__model = model
 

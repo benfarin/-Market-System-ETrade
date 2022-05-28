@@ -2,7 +2,8 @@ from typing import Dict
 
 import zope
 
-from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
+
+# from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.StorePackage.Product import Product
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
@@ -17,15 +18,16 @@ class ProductDiscount:
         # self.__productId = productId
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
-        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, productID=productId, percent=percent, type='Product')[0]
+        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, productID=productId, percent=percent,
+                                                           type='Product')[0]
 
     def calculate(self, bag):  # return the new price for each product
-        # isCheck = self.check(bag)
+        isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
             product = prod.product_ID
-            if product.product_id == self.__model.productID:
+            if product.product_id == self.__model.productID and isCheck:
                 newProductPrices[prod] = self.__model.percent
             else:
                 newProductPrices[prod] = 0
@@ -52,6 +54,9 @@ class ProductDiscount:
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
         rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
+        self.addSimpleRuleDiscount(rule)
+        self.removeDiscountRule(r1.ruleID)
+        self.removeDiscountRule(r2.ruleID)
         return rule
 
         # r1 = self.__rules.get(rId1)
@@ -70,7 +75,8 @@ class ProductDiscount:
         DiscountRulesModel.objects.get(ruleID=rId).delete()
 
     def check(self, bag):
-        for rule in self.__rules.values():
+        rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
+        for rule in rules:
             if not rule.check(bag):
                 return False
         return True

@@ -16,15 +16,17 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(product.getProductKeywords(), ["Check" , "Check2"])
 
     def test_productSetters(self):
-        product = Product(0, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
+        product = Product(1, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
         product.setProductCategory("Category1")
         product.setProductWeight(100)
         product.setProductPrice(1)
         product.setProductName("TestProduct2")
+        product.addKeyWord("keyword")
         self.assertEqual(product.getProductWeight(), 100)
         self.assertEqual(product.getProductPrice(), 1)
         self.assertEqual(product.getProductCategory(), "Category1")
         self.assertEqual(product.getProductName(), "TestProduct2")
+        self.assertEqual(product.getProductKeywords(), ["Check", "Check2", "keyword"])
 
 
 if __name__ == '__main__':

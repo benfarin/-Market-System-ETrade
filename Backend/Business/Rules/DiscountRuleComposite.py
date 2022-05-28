@@ -29,6 +29,9 @@ class DiscountRuleComposite:
     def check(self, bag):
         rule1 = self.__buildRule(self.__model.ruleID1)
         rule2 = self.__buildRule(self.__model.ruleID2)
+        if rule1.getRuleKind() != rule2.getRuleKind():
+            raise Exception("cannot concat discount rule and purchase rule")
+
         if self.__model.rule_type == 'And':
             return rule1.check(bag) and rule2.check(bag)
         if self.__model.rule_type == 'Or':
@@ -60,8 +63,11 @@ class DiscountRuleComposite:
             return weightRule(rule_model=rule_model)
         if rule_model.rule_class == 'DiscountComposite':
             return DiscountRuleComposite(rule_model=rule_model)
+        # else:
+        #     return PurchaseRuleComposite(rule_model=rule_model)
         else:
-            return PurchaseRuleComposite(rule_model=rule_model)
+            raise Exception("cannot concat discount rule and purchase rule")
+
 
 
 

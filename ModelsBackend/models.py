@@ -127,7 +127,6 @@ class TransactionsInStoreModel(models.Model):
     transactionID = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
 
 
-
 class StoreUserPermissionsModel(models.Model):
     userID = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
