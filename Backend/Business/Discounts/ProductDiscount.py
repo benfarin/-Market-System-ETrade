@@ -26,8 +26,7 @@ class ProductDiscount:
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
         for prod in products:
-            product = prod.product_ID
-            if product.product_id == self.__model.productID and isCheck:
+            if prod.getProductId() == self.__model.productID and isCheck:
                 newProductPrices[prod] = self.__model.percent
             else:
                 newProductPrices[prod] = 0
@@ -106,6 +105,6 @@ class ProductDiscount:
     def getModel(self):
         return self.__model
 
-    def remove(self):
+    def removeDiscount(self):
         self.__model.delete()
 

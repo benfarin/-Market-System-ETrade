@@ -55,8 +55,8 @@ class BagModel(models.Model):
 
 
 class ProductsInBagModel(models.Model):
-    bag_ID = models.ForeignKey(BagModel, on_delete=models.SET_NULL, null=True)
-    product_ID = models.ForeignKey(ProductModel, on_delete=models.SET_NULL, null=True)
+    bag_ID = models.ForeignKey(BagModel, on_delete=models.CASCADE, null=True)
+    product_ID = models.ForeignKey(ProductModel, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField()
 
 

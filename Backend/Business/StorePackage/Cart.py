@@ -21,7 +21,7 @@ class Cart:
     def __init__(self, userId):
         # self.__userId = userId
         # self.__bags: Dict[int, Bag] = {}  # storeId : Bag
-        self.__model = CartModel.objects.get_or_create(userid=self.__userId)[0]
+        self.__model = CartModel.objects.get_or_create(userid=userId)[0]
 
     def getUserId(self):
         return self.__model.userid
@@ -146,3 +146,6 @@ class Cart:
 
     def getModel(self):
         return self.__model
+
+    def removeCart(self):
+        self.__model.delete()

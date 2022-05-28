@@ -16,8 +16,8 @@ class MyTestCase(unittest.TestCase):
         self.discount = ProductDiscount(0, 0, 0.5)
 
     def test_calc_sum(self):
-        self.bag.addProduct(self.p1.getModel(), 4)
-        self.bag.addProduct(self.p2.getModel(), 2)
+        self.bag.addProduct(self.p1, 4)
+        self.bag.addProduct(self.p2, 2)
         self.assertEqual(400, self.bag.calcSum(None))
         self.assertEqual(300, self.bag.calcSum([self.discount]))
         # self.bag.addProduct(self.p1, 3)
@@ -26,9 +26,9 @@ class MyTestCase(unittest.TestCase):
         # self.assertEqual(110.0, self.bag.calcSum())
 
     def test_all(self):
-        self.bag2.addProduct(self.p1.getModel(), 2)
-        self.bag2.addProduct(self.p1.getModel(), 1)
-        self.bag2.addProduct(self.p2.getModel(), 3)
+        self.bag2.addProduct(self.p1, 2)
+        self.bag2.addProduct(self.p1, 1)
+        self.bag2.addProduct(self.p2, 3)
 
         self.assertEqual(450, self.bag2.calcSum(None))
         self.assertEqual(3, self.bag2.removeProduct(self.p1.getProductId()))

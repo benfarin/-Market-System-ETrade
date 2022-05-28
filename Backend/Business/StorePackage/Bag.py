@@ -36,11 +36,11 @@ class Bag:
     def addProduct(self, product, quantity):
         if quantity <= 0:
             raise QuantityException("cannot add negative quantity of product")
-        check = ProductsInBagModel.objects.filter(product_ID=product.product_id)
+        check = ProductsInBagModel.objects.filter(product_ID=product.getModel())
         if len(check) > 1:
             raise Exception("there is more then one product with that id in this bag!")
         if not check.exists():
-            ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product, quantity=quantity)
+            ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product.getModel(), quantity=quantity)
             return True
         p = check[0]
         p.quantity += quantity
@@ -133,8 +133,8 @@ class Bag:
         s = 0
         for prod in discount_of_product:
             first = (1 - discount_of_product[prod])
-            second = prod.quantity
-            third = prod.product_ID.price
+            second = ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=prod.getModel()).quantity
+            third = prod.getProductPrice()
             s += first * second * third
 
         return s
