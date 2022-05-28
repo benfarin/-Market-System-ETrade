@@ -13,7 +13,7 @@ from ModelsBackend.models import ProductModel, ProductKeyword
 @zope.interface.implementer(IProduct)
 class Product:
 
-    def __init__(self, Id, storeId, name, price, category, weight, keyword):
+    def __init__(self, Id=None, storeId=None, name=None, price=None, category=None, weight=None, keyword=None, model=None):
         # self.__id = Id
         # self.__storeId = storeId
         # self.__name = name
@@ -21,12 +21,16 @@ class Product:
         # self.__category = category  # String
         # self.__weight = weight
         # self.__keywords: List = keyword
-        self.__p = ProductModel.objects.get_or_create(product_id=Id, storeId=storeId, name=name, price=price,
-                                                      category=category
-                                                      , weight=weight)[0]
+        if model is None:
+            self.__p = ProductModel.objects.get_or_create(product_id=Id, storeId=storeId, name=name, price=price,
+                                                          category=category
+                                                          , weight=weight)[0]
 
-        for k in keyword:
-            ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=k)
+            for k in keyword:
+                ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=k)
+
+        else:
+            self.__p = model
 
     def getProductId(self):
         return self.__p.product_id

@@ -69,12 +69,10 @@ class Cart:
     def updateBag(self, bag):
         if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.storeId).exists():
             BagsInCartModel.objects.get(cart=self.__model, storeID=bag.storeId).bag = bag
+            BagsInCartModel.objects.get(cart=self.__model, storeID=bag.storeId).save()
             return True
         else:
             return False
-
-    def getModel(self):
-        return self.__c
 
     # def calcSum(self):
     #     s = 0.0
@@ -97,7 +95,7 @@ class Cart:
     def addProduct(self, storeId, product, quantity):
         if not BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
             bag = Bag(storeId, self.__model.userid)
-            BagsInCartModel.objects.get_or_create(cart=self.__model, storeID=storeId, bag=bag.getModel())[0]
+            BagsInCartModel.objects.get_or_create(cart=self.__model, storeID=storeId, bag=bag.getModel())
         self.getBag(storeId).addProduct(product, quantity)
 
     def removeProduct(self, storeId, productId):

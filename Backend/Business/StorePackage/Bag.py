@@ -3,6 +3,8 @@ from zope.interface import implements
 
 import os, django
 
+from Backend.Business.StorePackage.Product import Product
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 
@@ -65,7 +67,11 @@ class Bag:
         raise ProductException("no such product in the Bag")
 
     def getProducts(self):
-        return ProductsInBagModel.objects.filter(bag_ID=self.__b)
+        products = {}
+        for prod in ProductsInBagModel.objects.filter(bag_ID=self.__b):
+            product = self._buildProduct(prod.product_ID)
+            products[product] = prod.quantity
+        return products
 
     def addBag(self, bag):
         for product in ProductsInBagModel.objects.filter(bag_ID=bag.getModel()):
@@ -141,6 +147,9 @@ class Bag:
 
     def getModel(self):
         return self.__b
+
+    def _buildProduct(self, model):
+        return Product(model=model)
 
     def removeBag(self):
         self.__b.delete()
