@@ -55,25 +55,25 @@ class Member(User):
             self.__m = model
 
     def setLoggedIn(self, state):
-        self.__isLoggedIn = state
+        self.__m.isLoggedIn = state
 
     def addProductRating(self, productID, rating):
         pass
 
     def getPassword(self):
-        return self.__password
+        return self.__m.password
 
     def getPhone(self):
-        return self.__phone
+        return self.__m.phone
 
     def getAddress(self):
-        return self.__address
+        return self.__m.address
 
     def getBank(self):
-        return self.__bank
+        return self.__m.bank
 
     def getMemberName(self):
-        return self.__userName
+        return self.__m.userName
 
     def getMemberTransactions(self):
         return super().getTransactions().values()
@@ -95,7 +95,8 @@ class Member(User):
 
     def change_password(self, old_password, new_password):
         if bcrypt.checkpw(old_password.encode('utf-8'), self.__password):
-            self.__password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            self.__m.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            self.__m.save()
             return "Password changed succesfully!"
         else:
             raise PasswordException("password not good!")

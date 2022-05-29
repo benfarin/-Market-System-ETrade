@@ -44,6 +44,7 @@ class UserTransactionModel(models.Model):
     totalAmount = models.IntegerField()
 
 
+
 class StoreTransactionsInUserTransactions(models.Model):
     userTransaction_id = models.ForeignKey(UserTransactionModel, on_delete=models.CASCADE)
     storeTransaction_id = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
@@ -75,6 +76,7 @@ class UserModel(AbstractBaseUser):
     userid = models.UUIDField(primary_key=True)
     cart = models.ForeignKey(CartModel, on_delete=models.CASCADE)
     transactions = models.ForeignKey(UserTransactionModel, on_delete=models.CASCADE, null=True)
+    isLoggedIn = models.BooleanField(default=False)
     USERNAME_FIELD = 'userid'
 
 
