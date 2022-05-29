@@ -10,7 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 from Backend.Exceptions.CustomExceptions import NoSuchMemberException, PasswordException
 from Backend.Interfaces.IMarket import IMarket
-from Backend.Business.Market import Market
+import Backend.Business.Market as m
 from concurrent.futures import Future
 
 from ModelsBackend.models import MemberModel
@@ -37,18 +37,20 @@ def threaded(fn):
 
 
 class Member(User):
-    def __init__(self, userName, password, phone, address, bank):
+    def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
         super().__init__()  # extend the constructor of user class
-        self.__isLoggedIn = False
-        self.__userName = userName  # string
-        self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
-        self.__phone = phone  # string
-        self.__address : Address = address  # type address class
-        self.__bank :Bank = bank  # type bank
-        self.__market: IMarket = Market.getInstance()
-        self.__m = MemberModel(userid=super().getUserID(), member_username=userName, member_password=password, phone=phone,
-                        address=self.__address.getModel(), bank=self.__bank.getModel(), cart=super().getCart().getModel())
-        self.__m.save()
+        # self.__isLoggedIn = False
+        # self.__userName = userName  # string
+        # self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
+        # self.__phone = phone  # string
+        # self.__address : Address = address  # type address class
+        # self.__bank :Bank = bank  # type bank
+        # self.__market: IMarket = m.Market.getInstance()
+        if model is None:
+            self.__m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName, member_password=password, phone=phone,
+                            address=address.getModel(), bank=bank.getModel(), cart=super().getCart().getModel())[0]
+        else:
+            self.__m = model
 
     def setLoggedIn(self, state):
         self.__isLoggedIn = state
@@ -307,3 +309,6 @@ class Member(User):
             return self.__market.removeRule(self, storeId, dId, rId, ruleKind)
         except Exception as e:
             raise Exception(e)
+
+    def removeMember(self):
+        self.__m.delete()

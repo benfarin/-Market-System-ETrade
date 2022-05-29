@@ -9,7 +9,7 @@ from ModelsBackend.models import StoreTransactionModel, ProductsInStoreTransacti
 
 class StoreTransaction:
 
-    def __init__(self, storeId, storeName, transactionId, paymentId, products, amount):
+    def __init__(self, storeId=None, storeName=None, transactionId=None, paymentId=None, products=None, amount=None, model=None):
         # self.__storeId = storeId
         # self.__storeName = storeName
         # self.__transactionId = transactionId
@@ -17,11 +17,13 @@ class StoreTransaction:
         # self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
         # self.__products = products
         # self.__amount = amount
-        self.__st = StoreTransactionModel(storeId=storeId, storeName=storeName, transactionId=transactionId,
-                                          paymentId=paymentId, date=datetime.datetime.now(), amount=amount)
-        self.__st.save()
-        for product in products:
-            ProductsInStoreTransactions(transactionId=self.__st, productId=product).save()
+        if model is None:
+            self.__st = StoreTransactionModel.objects.get_or_create(storeId=storeId, storeName=storeName, transactionId=transactionId,
+                                              paymentId=paymentId, date=datetime.datetime.now(), amount=amount)[0]
+            for product in products:
+                ProductsInStoreTransactions(transactionId=self.__st, productId=product).save()
+        else:
+            self.__st = model
 
     def getStoreId(self):
         return self.__st.storeId

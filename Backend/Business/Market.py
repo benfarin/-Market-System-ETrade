@@ -2,7 +2,7 @@ import uuid
 
 import zope
 
-from Backend.Business.StorePackage.Store import Store
+import Backend.Business.StorePackage.Store as s
 from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
@@ -49,7 +49,7 @@ class Market:
 
     def createStore(self, storeName, user, bank, address):  # change test!
         storeID = self.__getGlobalStoreId()
-        newStore = Store(storeID, storeName, user, bank, address)
+        newStore = s.Store(storeID, storeName, user, bank, address)
         self.__stores[storeID] = newStore
         return newStore
 

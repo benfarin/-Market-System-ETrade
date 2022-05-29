@@ -143,16 +143,10 @@ class StoreUserPermissionsModel(models.Model):
         unique_together = ('userID', 'storeID',)
 
 
-class StoreProductQuantityModel(models.Model):
-    storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
-    productID = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-
-
 class StoreAppointersModel(models.Model):
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
-    assingee = models.ManyToManyField(MemberModel, related_name='assingee')
-    assigner = models.ManyToManyField(MemberModel, related_name='assigner')
+    assingee = models.ForeignKey(MemberModel, on_delete=models.CASCADE, related_name='assingee', default=None)
+    assigner = models.ForeignKey(MemberModel, on_delete=models.CASCADE, related_name='assigner', default=None)
 
 
 class DiscountModel(models.Model):

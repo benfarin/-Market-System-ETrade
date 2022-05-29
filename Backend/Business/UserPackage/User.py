@@ -3,7 +3,7 @@ import django
 from Backend.Business.StorePackage.Cart import Cart
 from Backend.Business.Transactions.UserTransaction import UserTransaction
 from Backend.Interfaces.IMarket import IMarket
-from Backend.Business.Market import Market
+import Backend.Business.Market as m
 from typing import Dict
 import uuid
 import threading
@@ -46,7 +46,7 @@ class User:
         self._cart = Cart(self.__id)
         self.__memberCheck = False
         self.__transactions: Dict[int: UserTransaction] = {}
-        self.__market: IMarket = Market.getInstance()
+        self.__market: IMarket = m.Market.getInstance()
         if model is not None:
             self._model = model
 
@@ -142,4 +142,7 @@ class User:
     @staticmethod
     def save_admin(username, password):
         m_User.objects.create_superuser(username=username, password=password)
+
+    def getModel(self):
+        return self._model
 

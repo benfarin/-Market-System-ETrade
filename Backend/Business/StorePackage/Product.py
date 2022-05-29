@@ -22,40 +22,40 @@ class Product:
         # self.__weight = weight
         # self.__keywords: List = keyword
         if model is None:
-            self.__p = ProductModel.objects.get_or_create(product_id=Id, storeId=storeId, name=name, price=price,
-                                                          category=category
-                                                          , weight=weight)[0]
+            self.__model = ProductModel.objects.get_or_create(product_id=Id, storeId=storeId, name=name, price=price,
+                                                              category=category
+                                                              , weight=weight)[0]
 
             for k in keyword:
-                ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=k)
+                ProductKeyword.objects.get_or_create(product_id=self.__model, keyword=k)
 
         else:
-            self.__p = model
+            self.__model = model
 
     def getProductId(self):
-        return self.__p.product_id
+        return self.__model.product_id
 
     def getProductStoreId(self):
-        return self.__p.storeId
+        return self.__model.storeId
 
     def getProductName(self):
-        return self.__p.name
+        return self.__model.name
 
     def getProductPrice(self):
-        return self.__p.price
+        return self.__model.price
 
     def getProductCategory(self):
-        return self.__p.category
+        return self.__model.category
 
     def getProductWeight(self):
-        return self.__p.weight
+        return self.__model.weight
 
     def getModel(self):
-        return self.__p
+        return self.__model
 
     def getProductKeywords(self):
         keywords = []
-        keywords_models = ProductKeyword.objects.filter(product_id=self.__p)
+        keywords_models = ProductKeyword.objects.filter(product_id=self.__model)
         for k in keywords_models:
             keywords.append(k.keyword)
         return keywords
@@ -63,39 +63,39 @@ class Product:
     def setProductName(self, name):
         if name is None:
             raise ProductException("name of a product cannot be None")
-        self.__p.name = name
-        self.__p.save()
+        self.__model.name = name
+        self.__model.save()
 
     def setProductPrice(self, price):
         if price <= 0:
             raise ProductException("price of a product cannot be non-positive")
-        self.__p.price = price
-        self.__p.save()
+        self.__model.price = price
+        self.__model.save()
 
     def setProductCategory(self, category):
         if category is None:
             raise ProductException("category of a product cannot be None")
-        self.__p.category = category
-        self.__p.save()
+        self.__model.category = category
+        self.__model.save()
 
     def setProductWeight(self, weight):
         if weight <= 0:
             raise ProductException("weight of a product cannot be non-positive")
-        self.__p.weight = weight
-        self.__p.save()
+        self.__model.weight = weight
+        self.__model.save()
 
     def addKeyWord(self, keyword):
-        if not ProductKeyword.objects.filter(product_id=self.__p, keyword=keyword).exists():
-            k = ProductKeyword.objects.get_or_create(product_id=self.__p, keyword=keyword)[0]
+        if not ProductKeyword.objects.filter(product_id=self.__model, keyword=keyword).exists():
+            k = ProductKeyword.objects.get_or_create(product_id=self.__model, keyword=keyword)[0]
             k.save()
 
     def removeKeyWord(self, keyword):
-        if not ProductKeyword.objects.filter(product_id=self.__p, keyword=keyword).exists():
+        if not ProductKeyword.objects.filter(product_id=self.__model, keyword=keyword).exists():
             raise Exception("cannot remove keyword that doesn't exists")
-        ProductKeyword.objects.get(product_id=self.__p, keyword=keyword).delete()
+        ProductKeyword.objects.get(product_id=self.__model, keyword=keyword).delete()
 
     def isExistsKeyword(self, keyword):
-        return ProductKeyword.objects.filter(product_id=self.__p, keyword=keyword).exists()
+        return ProductKeyword.objects.filter(product_id=self.__model, keyword=keyword).exists()
 
     def removeProduct(self):
-        self.__p.delete()
+        self.__model.delete()
