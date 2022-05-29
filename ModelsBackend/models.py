@@ -214,7 +214,13 @@ class DiscountsInStoreModel(models.Model):
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     discountID = models.ForeignKey(DiscountModel, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('storeID', 'discountID',)
+
 
 class RulesInStoreModel(models.Model):
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     ruleID = models.ForeignKey(RuleModel, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('storeID', 'ruleID',)

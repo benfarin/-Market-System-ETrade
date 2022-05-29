@@ -2,6 +2,12 @@ import zope
 from zope.interface import implements
 import os, django
 
+from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
+from Backend.Business.Discounts.ProductDiscount import ProductDiscount
+from Backend.Business.Discounts.StoreDiscount import StoreDiscount
+from Backend.Business.Rules import QuantityRule, WeightRule
+from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
+from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.StorePackage.Product import Product
 import Backend.Business.UserPackage.Member as m
 
@@ -24,7 +30,8 @@ import threading
 from notifications.signals import notify
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
-    ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel
+    ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
+    DiscountModel, RulesInStoreModel
 
 
 @zope.interface.implementer(IStore)
@@ -498,50 +505,55 @@ class Store:
                                       self.__name)
         return self.__transactions.values()
 
-    def getProductsByName(self, productName):  ###NEED TO CHANGE THIS
+    def getProductsByName(self, productName):
         toReturnProducts = []
-        for product in self.__products.values():
+        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
+            product = self._buildProduct(prod.productID)
             if product.getProductName().lower() == productName.lower():
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def getProductsByKeyword(self, keyword):   ###NEED TO CHANGE THIS
+    def getProductsByKeyword(self, keyword):
         products = []
-        for product in self.__products.values():
+        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
+            product = self._buildProduct(prod.productID)
             if product.isExistsKeyword(keyword):
                 products.append(product)
         return products
 
-    def getProductsByCategory(self, productCategory):   ###NEED TO CHANGE THIS
+    def getProductsByCategory(self, productCategory):
         toReturnProducts = []
-        for product in self.__products.values():
+        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
+            product = self._buildProduct(prod.productID)
             if product.getProductCategory().lower() == productCategory.lower():
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def getProductsByPriceRange(self, minPrice, maxPrice):   ###NEED TO CHANGE THIS
+    def getProductsByPriceRange(self, minPrice, maxPrice):
         toReturnProducts = []
-        for product in self.__products.values():
+        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
+            product = self._buildProduct(prod.productID)
             price = product.getProductPrice()
             if minPrice <= price <= maxPrice:
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def addProductToBag(self, productId, quantity):    ###NEED TO CHANGE THIS
-        if self.__products.get(productId) is None:
+    def addProductToBag(self, productId, quantity):   ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
+        product_model = ProductModel.objects.get(product_id=productId)
+        if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
             raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
-        if self.__productsQuantity[productId] < quantity:
+        if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
             raise ProductException("cannot add a negative quantity to bag")
         else:
-            with self.__stockLock:
-                self.__productsQuantity[productId] -= quantity
-                return True
+            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity -= quantity
+            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).save()
 
-    def removeProductFromBag(self, productId, quantity):    ###NEED TO CHANGE THIS
-        if productId not in self.__products.keys():
+    def removeProductFromBag(self, productId, quantity):    ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
+        if not ProductModel.objects.filter(product_id=productId).exists():
             raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
-        with self.__stockLock:
-            self.__productsQuantity[productId] += quantity
+        product_model = ProductModel.objects.get(product_id=productId)
+        ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity += quantity
+        ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).save()
 
     def hasRole(self, user):
         return user in self.getStoreOwners() or user in self.getStoreManagers()
@@ -555,15 +567,14 @@ class Store:
             return False
         return True
 
-    def addSimpleDiscount(self, user, discount):  ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def addSimpleDiscount(self, user, discount):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
+        if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        with self.__discountsLock:
-            self.__discounts[discount.getDiscountId()] = discount
+        DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
 
     def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):   ###NEED TO CHANGE THIS
         permissions = self.__permissions.get(user)
@@ -585,30 +596,42 @@ class Store:
             self.__discounts.pop(dId2)
         return discount
 
-    def removeDiscount(self, user, dId):   ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def removeDiscount(self, user, dId):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
+        if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        if dId not in self.__discounts.keys():
+        discount_model = DiscountModel.objects.get(discountID=dId)
+        discount = DiscountsInStoreModel.objects.filter(storeID=self.__model, discountID=discount_model)
+        if not discount.exists():
             raise Exception("the discount is not an existing discount")
-        with self.__discountsLock:
-            self.__discounts.pop(dId)
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=discount_model).delete()
         return True
 
-    def getAllDiscounts(self):   ###NEED TO CHANGE THIS
-        return self.__discounts
+    def getAllDiscounts(self):
+        # self.__discounts: {int: IDiscount} = {}
+        discounts = {}
+        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
+        for d in discount_models:
+            discount = self._buildDiscount(d.discountID)
+            discounts[discount.getDiscountId()] = discount
+        return discounts
 
-    def getAllRules(self):   ###NEED TO CHANGE THIS
-        return self.__rules
+    def getAllRules(self):
+        rules = {}
+        rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
+        for r in rule_models:
+            rule = self._buildRule(r.discountID)
+            rules[rule.getRuleId()] = rule
+        return rules
 
-    def hasDiscountPermission(self, user):     ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def hasDiscountPermission(self, user):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        return permissions.hasPermission_Discount()
+        return permissions.first().discount
 
     def addSimpleRule(self, user, dId, rule: IRule):   ###NEED TO CHANGE THIS
         permissions = self.__permissions.get(user)
@@ -691,4 +714,26 @@ class Store:
 
     def _buildStoreTransactions(self, model):
         return StoreTransaction(model=model)
+
+    def _buildDiscount(self, model):
+        if model.type == 'Product':
+            return ProductDiscount(model)
+        if model.type == 'Category':
+            return CategoryDiscount(model)
+        if model.type == 'Store':
+            return StoreDiscount(model)
+        if model.type == 'Composite':
+            return DiscountComposite(model)
+
+    def _buildRule(self, model):
+        if model.rule_class == 'DiscountComposite':
+            return DiscountRuleComposite(model)
+        if model.rule_class =='Price':
+            return PriceRule(model)
+        if model.rule_class =='PurchaseComposite':
+            return PurchaseRuleComposite(model)
+        if model.rule_class =='Quantity':
+            return QuantityRule(model)
+        if model.rule_class =='Weight':
+            return WeightRule(model)
 
