@@ -47,8 +47,10 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         # self.__market: IMarket = m.Market.getInstance()
         if model is None:
-            self.__m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName, member_password=password, phone=phone,
-                            address=address.getModel(), bank=bank.getModel(), cart=super().getCart().getModel())[0]
+            self.__m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
+                                                         member_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()),
+                                                         phone=phone, address=address.getModel(), bank=bank.getModel(),
+                                                         cart=super().getCart().getModel())[0]
         else:
             self.__m = model
 
