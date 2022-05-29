@@ -335,85 +335,83 @@ class Store:
                                       " doesn't have the permission to change the stock in store: ",
                                       self.__name)
 
-    def appointManagerToStore(self, assigner, assignee):  ####NEED TO CHANGE THIS
-        permissions = self.__permissions.get(assigner)
+    def appointManagerToStore(self, assigner, assignee):
+        permissions = StoreUserPermissionsModel.objects.filter(userID=assigner.getModel(), storeID=self.__model)
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
-        if permissions is None:
+        if not permissions.exists():
             raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:",
                                       self.__name)
-        if not permissions.hasPermission_AppointManager():
+        if not permissions.first().appointManager:
             raise PermissionException("User ", assigner.getUserID(),
                                       " doesn't have the permission - appoint manager in store: ",
                                       self.__name)
-        if assigner not in self.__owners:
+        owners = StoreModel.objects.filter(storeID=self.__model).model.owners.get_queryset()
+        managers = StoreModel.objects.filter(storeID=self.__model).model.managers.get_queryset()
+        if assigner.getModel() not in owners:
             raise PermissionException("User ", assigner.getUserID(), "cannot add manager to store: ", self.__name,
                                       "because he is not a store owner")
         # this constrains is also covert the constrains that for each manager there is 1 assigner
-        if assignee in self.__managers:
+        if assignee.getModel() in managers:
             raise Exception("User ", assignee.getUserID(), "is all ready a manger in store: ", self.__name)
         # to avoid circularity
-        if self.__appointers.get(assignee) is not None and assigner in self.__appointers.get(assigner):
+
+        if StoreAppointersModel.objects.filter(assigner=assignee.getModel()).exists() \
+                and StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assigner.getModel()).exists():
             raise PermissionException("User ", assignee.getUserID(),
                                       "cannot assign manager to hwo made him owner in store: ",
                                       self.__name)
 
-        with self.__rolesLock:
-            self.__managers.append(assignee)
-            if self.__appointers.get(assigner) is None:
-                self.__appointers[assigner] = [assignee]
-            else:
-                self.__appointers[assigner].append(assignee)
+        self.__model.managers.add(assignee.getModel())
+        StoreAppointersModel.objects.get_or_create(assigner=assigner.getModel(), assingee=assignee.getModel())
 
-        with self.__permissionsLock:
-            if self.__permissions.get(assignee) is None:
-                self.__permissions[assignee] = StorePermission(assignee.getUserID())
-                StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__s).save()
-            self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
-            permission = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__s)
-            permission.rolesInformation = True
-            permission.save()
+        if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
+            StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__model).save()
+        permission = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+        permission.purchaseHistoryInformation = True
+        permission.save()
 
-    def appointOwnerToStore(self, assigner, assignee):    ####NEED TO CHANGE THIS
-        permissions = self.__permissions.get(assigner)
+    def appointOwnerToStore(self, assigner, assignee):
+        permissions = StoreUserPermissionsModel.objects.filter(userID=assigner.getModel(), storeID=self.__model)
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
-        if permissions is None:
+        if not permissions.exists():
             raise PermissionException("User ", assigner.getUserID(), " doesn't have any permissions is store:",
                                       str(self.__id))
-        if not permissions.hasPermission_AppointOwner():
+        if not permissions.first().appointOwner:
             raise PermissionException("User ", assigner.getUserID(),
                                       " doesn't have the permission - appoint owner in store: ",
                                       self.__name)
-        if assigner not in self.__owners:
+        owners = StoreModel.objects.filter(storeID=self.__model).model.owners.get_queryset()
+        managers = StoreModel.objects.filter(storeID=self.__model).model.managers.get_queryset()
+        if assigner.getModel() not in owners:
             raise PermissionException("User ", assigner.getUserID(), "cannot add manager to store: ", self.__name,
                                       "because he is not a store owner")
         # this constrains is also covert the constrains that for each owner there is 1 assigner
-        if assignee in self.__owners:
+        if assignee.getModel() in owners:
             raise Exception("User ", assignee.getUserID(), "is all ready a owner in store: ", self.__name)
             # to avoid circularity
-        if self.__appointers.get(assignee) is not None and assigner in self.__appointers.get(assigner):
-            raise Exception("User ", assignee.getUserID(), "cannot assign owner to hwo made him manager in store: ",
-                            self.__name)
 
-        with self.__rolesLock:
-            self.__owners.append(assignee)
+        if StoreAppointersModel.objects.filter(assigner=assignee.getModel()).exists() \
+                and StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assigner.getModel()).exists():
+            raise PermissionException("User ", assignee.getUserID(),
+                                      "cannot assign manager to hwo made him owner in store: ",
+                                      self.__name)
 
-            if self.__appointers.get(assigner) is None:
-                self.__appointers[assigner] = [assignee]
-            else:
-                self.__appointers[assigner].append(assignee)
+        self.__model.owners.add(assignee.getModel())
+        StoreAppointersModel.objects.get_or_create(assigner=assigner.getModel(), assingee=assignee.getModel())
 
-        with self.__permissionsLock:
-            if self.__permissions.get(assignee) is None:
-                self.__permissions[assignee] = StorePermission(assignee.getUserID())
-            self.__permissions[assignee].setPermission_StockManagement(True)
-            self.__permissions[assignee].setPermission_AppointManager(True)
-            self.__permissions[assignee].setPermission_AppointOwner(True)
-            self.__permissions[assignee].setPermission_ChangePermission(True)
-            self.__permissions[assignee].setPermission_RolesInformation(True)
-            self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
-            self.__permissions[assignee].setPermission_Discount(True)
+
+        if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
+            StoreUserPermissionsModel(storeID=self.__model, userID=assignee.getModel()).save()
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).stockManagement = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).appointManager = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).appointOwner = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).changePermission = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).rolesInformation = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).purchaseHistoryInformation = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).discount = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).save()
 
     # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):
