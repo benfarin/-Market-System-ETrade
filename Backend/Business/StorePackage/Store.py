@@ -126,11 +126,22 @@ class Store:
             productsQuantity[prod.productID.product_id] = prod.quantity
         return productsQuantity
 
-    def getTransactionForDTO(self):  ###NEED TO CHANGE THIS
-        return self.__transactions
+    def getTransactionForDTO(self):
+        # self.__transactions: Dict[int: StoreTransaction] = {}
+        transactions: Dict[int: StoreTransaction] = {}
+        for tran in StoreTransactionModel.objects.filter(storeId=self.__model):
+            storeTransaction = self._buildStoreTransactions(tran)
+            transactions.update({storeTransaction.getTransactionID() : storeTransaction})
+        return transactions
 
-    def getPermissionForDto(self): ###NEED TO CHANGE THIS
-        return self.__permissions
+    def getPermissionForDto(self):
+        # self.__permissions: Dict[IMember: StorePermission] = {}
+        permissions: Dict[IMember: StorePermission] = {}
+        for per in StoreUserPermissionsModel.objects.filter(storeID=self.__model):
+            permission = self._buildPermission(per)
+            member = self._buildMember(per.userID)
+            permissions.update({member : permission})
+        return permissions
 
     def getProduct(self, productId):
         for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
@@ -435,7 +446,7 @@ class Store:
         StoreAppointersModel.objects.get(storeID=self.__model, assigner=assigner.getModel(), assingee=assignee.getModel()).delete()
 
     # print all permission in store - will be deleted this version
-    def PrintRolesInformation(self, user):   ####NEED TO CHANGE THIS
+    def PrintRolesInformation(self, user):   ####NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -493,7 +504,7 @@ class Store:
             info += storeTransaction.getPurchaseHistoryInformation() + "\n"
         return info
 
-    def getTransactionHistory(self, user):  ###NEED TO CHANGE THIS
+    def getTransactionHistory(self, user):  ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -556,7 +567,7 @@ class Store:
     def hasRole(self, user):
         return user in self.getStoreOwners() or user in self.getStoreManagers()
 
-    def getTransactionsForSystemManager(self):   ###NEED TO CHANGE THIS
+    def getTransactionsForSystemManager(self):   ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
         return self.__transactions.values()
 
     def hasPermissions(self, user):
@@ -575,23 +586,25 @@ class Store:
         DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
 
     def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):   ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
+        if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        d1 = self.__discounts.get(dId1)
-        d2 = self.__discounts.get(dId2)
-        if d1 is None:
+        d1_model = DiscountModel.objects.filter(discountID=dId1)
+        d2_model = DiscountModel.objects.filter(discountID=dId2)
+        if not d1_model.exists():
             raise Exception("discount1 is not an existing discount")
-        if d2 is None:
+        if not d2_model.exists():
             raise Exception("discount1 is not an existing discount")
+        d1 = self._buildDiscount(d1_model.first())
+        d2 = self._buildDiscount(d2_model.first())
         discount = DiscountComposite(discountId, d1, d2, discountType, decide)
-        with self.__discountsLock:
-            self.__discounts[discount.getDiscountId()] = discount
-            self.__discounts.pop(dId1)
-            self.__discounts.pop(dId2)
+        # with self.__discountsLock:
+        #     self.__discounts[discount.getDiscountId()] = discount
+        #     self.__discounts.pop(dId1)
+        #     self.__discounts.pop(dId2)
         return discount
 
     def removeDiscount(self, user, dId):
@@ -650,32 +663,35 @@ class Store:
             raise Exception("rule kind is illegal")
 
     def addCompositeRule(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):    ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
+        if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        with self.__discountsLock:
-            if ruleKind == 1:
-                discount: IDiscount = self.__discounts.get(dId)
-                if discount is None:
-                    raise Exception("discount does not exists")
-                return discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType, ruleKind)
-            elif ruleKind == 2:
-                rule1 = self.__rules.get(rId1)
-                rule2 = self.__rules.get(rId2)
-                if rule1 is None:
-                    raise Exception("rule1 is not an existing discount")
-                if rule2 is None:
-                    raise Exception("rule2 is not an existing discount")
-                newRule = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
-                self.__rules.pop(rId1)
-                self.__rules.pop(rId2)
-                self.__rules[ruleId] = newRule
-                return newRule
-            else:
-                raise Exception("rule kind is illegal")
+
+        if ruleKind == 'Discount':
+            discount_model = DiscountModel.objects.filter(discountID=dId)
+            if not discount_model.exists():
+                raise Exception("discount does not exists")
+            discount = self._buildDiscount(discount_model.first())
+            return discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType, ruleKind)
+        elif ruleKind == 'Purchase':
+            rule1model = RuleModel.objects.filter(ruleID=rId1)
+            rule2model = RuleModel.objects.filter(ruleID=rId2)
+            if not rule1model.exists():
+                raise Exception("rule1 is not an existing discount")
+            if not rule2model.exists():
+                raise Exception("rule2 is not an existing discount")
+            rule1 = self._buildRule(rule1model.first())
+            rule2 = self._buildRule(rule2model.first())
+            newRule = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
+            # self.__rules.pop(rId1)
+            # self.__rules.pop(rId2)
+            # self.__rules[ruleId] = newRule
+            return newRule
+        else:
+            raise Exception("rule kind is illegal")
 
     def removeRule(self, user, dId, rId, ruleKind):
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
@@ -716,23 +732,25 @@ class Store:
 
     def _buildDiscount(self, model):
         if model.type == 'Product':
-            return ProductDiscount(model)
+            return ProductDiscount(model=model)
         if model.type == 'Category':
-            return CategoryDiscount(model)
+            return CategoryDiscount(model=model)
         if model.type == 'Store':
-            return StoreDiscount(model)
+            return StoreDiscount(model=model)
         if model.type == 'Composite':
-            return DiscountComposite(model)
+            return DiscountComposite(model=model)
 
     def _buildRule(self, model):
         if model.rule_class == 'DiscountComposite':
-            return DiscountRuleComposite(model)
+            return DiscountRuleComposite(model=model)
         if model.rule_class == 'Price':
-            return PriceRule(model)
+            return PriceRule(model=model)
         if model.rule_class == 'PurchaseComposite':
-            return PurchaseRuleComposite(model)
+            return PurchaseRuleComposite(model=model)
         if model.rule_class == 'Quantity':
-            return QuantityRule(model)
+            return QuantityRule(model=model)
         if model.rule_class == 'Weight':
-            return WeightRule(model)
+            return WeightRule(model=model)
 
+    def _buildPermission(self, model):
+        return StorePermission(model=model)

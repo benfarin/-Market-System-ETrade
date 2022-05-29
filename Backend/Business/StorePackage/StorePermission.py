@@ -2,7 +2,7 @@ from ModelsBackend.models import StoreUserPermissionsModel
 
 
 class StorePermission:
-    def __init__(self, userId):
+    def __init__(self, userId=None, model=None):
         # self.__userId = userId
         # self.__stockManagement = False
         # self.__appointManager = False
@@ -12,7 +12,10 @@ class StorePermission:
         # self.__rolesInformation = False
         # self.__purchaseHistoryInformation = False
         # self.__discountPermission = False
-        self.__model = StoreUserPermissionsModel.objects.get_or_create(userID=userId)[0]
+        if model is None:
+            self.__model = StoreUserPermissionsModel.objects.get_or_create(userID=userId)[0]
+        else:
+            self.__model = model
 
     def getUserId(self):
         return self.__model.userID
