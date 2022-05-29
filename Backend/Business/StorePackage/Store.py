@@ -31,7 +31,7 @@ from notifications.signals import notify
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
-    DiscountModel, RulesInStoreModel
+    DiscountModel, RulesInStoreModel, RuleModel
 
 
 @zope.interface.implementer(IStore)
@@ -633,23 +633,23 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         return permissions.first().discount
 
-    def addSimpleRule(self, user, dId, rule: IRule):   ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def addSimpleRule(self, user, dId, rule: IRule):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
+        if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        with self.__discountsLock:
-            if rule.getRuleKind() == 1:
-                discount = self.__discounts.get(dId)
-                if discount is None:
-                    raise Exception("discount does not exists")
-                discount.addSimpleRuleDiscount(rule)
-            elif rule.getRuleKind() == 2:
-                self.__rules[rule.getRuleId()] = rule
-            else:
-                raise Exception("rule kind is illegal")
+        if rule.getRuleKind() == 'Discount':
+            discount_model = DiscountModel.objects.get(discountID=dId)
+            discount = self._buildDiscount(discount_model)
+            if discount is None:
+                raise Exception("discount does not exists")
+            discount.addSimpleRuleDiscount(rule)
+        elif rule.getRuleKind() == 'Purchase':
+            RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=rule.getModel())
+        else:
+            raise Exception("rule kind is illegal")
 
     def addCompositeRule(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):    ###NEED TO CHANGE THIS
         permissions = self.__permissions.get(user)
@@ -679,23 +679,24 @@ class Store:
             else:
                 raise Exception("rule kind is illegal")
 
-    def removeRule(self, user, dId, rId, ruleKind):   ###NEED TO CHANGE THIS
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def removeRule(self, user, dId, rId, ruleKind):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_Discount():
+        if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        with self.__discountsLock:
-            if ruleKind == 1:
-                discount = self.__discounts.get(dId)
-                if discount is None:
-                    raise Exception("discount does not exists")
-                discount.removeDiscountRule(rId)
-            elif ruleKind == 2:
-                self.__rules.pop(rId)
-            else:
-                raise Exception("rule kind is illegal")
+        if ruleKind == 'Discount':
+            discount_model = DiscountModel.objects.get(discountID=dId)
+            discount = self._buildDiscount(discount_model)
+            if discount is None:
+                raise Exception("discount does not exists")
+            discount.removeDiscountRule(rId)
+        elif ruleKind == 'Purchase':
+            rule_model = RuleModel.objects.get(ruleID=rId)
+            RulesInStoreModel.objects.get(storeID=self.__model, ruleID=rule_model).delete()
+        else:
+            raise Exception("rule kind is illegal")
 
     def removeStore(self):
         self.__model.delete()
@@ -728,12 +729,12 @@ class Store:
     def _buildRule(self, model):
         if model.rule_class == 'DiscountComposite':
             return DiscountRuleComposite(model)
-        if model.rule_class =='Price':
+        if model.rule_class == 'Price':
             return PriceRule(model)
-        if model.rule_class =='PurchaseComposite':
+        if model.rule_class == 'PurchaseComposite':
             return PurchaseRuleComposite(model)
-        if model.rule_class =='Quantity':
+        if model.rule_class == 'Quantity':
             return QuantityRule(model)
-        if model.rule_class =='Weight':
+        if model.rule_class == 'Weight':
             return WeightRule(model)
 
