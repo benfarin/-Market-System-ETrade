@@ -107,7 +107,7 @@ class Cart:
     def updateProduct(self, storeId, productId, quantity):  # quantity can be negative!!!
         if not BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId).exists():
             raise NoSuchBagException("can't update a product without a bag to his store")
-        self.getBag(storeId).updateProduct(productId, quantity)
+        self.getBag(storeId).updateBag(productId, quantity)
         if self.getBag(storeId).isEmpty():
             self.removeBag(storeId)
         return True
