@@ -174,4 +174,43 @@ class MarketRealBridge:
     def removeRulePurchase(self, userId, storeId, rId):
         return self._roleService.removeRulePurchase(userId, storeId, rId)
 
+    def appoint_owner_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setAppointOwnerPermission(store_id, assigner_id, assignee_name)
+
+    def set_roles_info_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setRolesInformationPermission(store_id, assigner_id, assignee_name)
+
+    def set_purchase_history_info_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setPurchaseHistoryInformationPermission(store_id, assigner_id, assignee_name)
+
+    def set_discount_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setDiscountPermission(store_id, assigner_id, assignee_name)
+
+    def remove_member(self, admin_name, member_name):
+        return self._roleService.removeMember(admin_name, member_name)
+
+    def get_all_store_trans(self, admin_name):
+        return self._roleService.getAllStoreTransactions(admin_name)
+
+    def get_all_user_trans(self, admin_name):
+        return self._roleService.getAllUserTransactions(admin_name)
+
+    def get_user_tran(self, admin_name, tran_id):
+        return self._roleService.getUserTransaction(admin_name, tran_id)
+
+    def get_store_tran_by_store_id(self, admin_name, store_id):
+        return self._roleService.getStoreTransactionByStoreId(admin_name, store_id)
+
+    def get_all_rules(self, user_id, store_id):
+        return self._roleService.getAllRules(user_id, store_id)
+
+
+
+
+
+
+
+
+
+
 

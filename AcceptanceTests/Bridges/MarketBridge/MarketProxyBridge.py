@@ -274,6 +274,52 @@ class MarketProxyBridge:
             return True
         return self._real_subject.removeRulePurchase(userId, storeId, rId)
 
+    def appoint_owner_perm(self, store_id, assigner_id, assignee_name):
+        if self.check_access():
+            return True
+        return self._real_subject.appoint_owner_perm(store_id, assigner_id, assignee_name)
 
+    def set_roles_info_perm(self, store_id, assigner_id, assignee_name):
+        if self.check_access():
+            return True
+        return self._real_subject.set_roles_info_perm(store_id, assigner_id, assignee_name)
 
+    def set_purchase_history_info_perm(self, store_id, assigner_id, assignee_name):
+        if self.check_access():
+            return True
+        return self._real_subject.set_purchase_history_info_perm(store_id, assigner_id, assignee_name)
 
+    def set_discount_perm(self, store_id, assigner_id, assignee_name):
+        if self.check_access():
+            return True
+        return self._real_subject.set_discount_perm(store_id, assigner_id, assignee_name)
+
+    def remove_member(self, admin_name, member_name):
+        if self.check_access():
+            return True
+        return self._real_subject.remove_member(admin_name, member_name)
+
+    def get_all_store_trans(self, admin_name):
+        if self.check_access():
+            return True
+        return self._real_subject.get_all_store_trans(admin_name)
+
+    def get_all_user_trans(self, admin_name):
+        if self.check_access():
+            return True
+        return self._real_subject.get_all_user_trans(admin_name)
+
+    def get_user_tran(self, admin_name, tran_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_user_tran(admin_name, tran_id)
+
+    def get_store_tran_by_store_id(self, admin_name, store_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_store_tran_by_store_id(admin_name, store_id)
+
+    def get_all_rules(self, user_id, store_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_all_rules(user_id, store_id)
