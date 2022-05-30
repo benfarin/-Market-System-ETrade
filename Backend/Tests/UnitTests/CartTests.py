@@ -31,12 +31,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.cart.getAllBags(), [self.bag])
 
     def test_updateCart(self):
-        c = Cart(0)
+        c = Cart(1)
         c.addProduct(0, self.p1, 1)
         c.updateCart(self.cart)
         self.assertEqual(c.getBag(0).getProducts(), {self.p1: 2})
         self.assertEqual(c.getBag(1).getProducts(), {self.p2: 1})
 
+        c.removeProduct(0, self.p1.getProductId())
         c.removeCart()
 
     def test_calcSum(self):
