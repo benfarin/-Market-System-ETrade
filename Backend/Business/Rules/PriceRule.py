@@ -1,13 +1,12 @@
 import zope
 
+import os, django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
+django.setup()
+
 from Backend.Interfaces.IRule import IRule
 from ModelsBackend.models import RuleModel
 
-import os, django
-
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
-django.setup()
 
 @zope.interface.implementer(IRule)
 class PriceRule:
@@ -32,9 +31,8 @@ class PriceRule:
         if self.__model.simple_rule_type != 'Store':
             raise Exception("price rule can only be for stores")
         s = 0.0
-        for prod in bag.getProducts():
-            product = prod.product_ID
-            s += product.price * prod.quantity
+        for prod, quantity in bag.getProducts().items():
+            s += prod.getProductPrice() * quantity
         return self.__model.at_least <= s <= self.__model.at_most
 
     def getRuleId(self):
@@ -45,3 +43,12 @@ class PriceRule:
 
     def removeRule(self):
         self.__model.delete()
+
+    def getModel(self):
+        return self.__model
+
+    def __eq__(self, other):
+        return isinstance(other, PriceRule) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.ruleID)

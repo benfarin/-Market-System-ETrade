@@ -1,8 +1,5 @@
-import os
-
-import django
 import zope
-
+import os, django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 
@@ -11,6 +8,9 @@ from Backend.Business.Rules.QuantityRule import quantityRule
 from Backend.Business.Rules.WeightRule import weightRule
 from Backend.Interfaces.IRule import IRule
 from ModelsBackend.models import RuleModel
+
+import os, django
+
 
 
 @zope.interface.implementer(IRule)
@@ -28,7 +28,8 @@ class DiscountRuleComposite:
         # self.__ruleType = ruleType
         if model is None:
             self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, composite_rule_type=ruleType, rule_kind=ruleKind,
-                                                           ruleID1=rule1, ruleID2=rule2,  rule_class='DiscountComposite')[0]
+                                                           ruleID1=rule1.getModel(), ruleID2=rule2.getModel(),
+                                                           rule_class='DiscountComposite')[0]
         else:
             self.__model = model
 
@@ -74,7 +75,14 @@ class DiscountRuleComposite:
         else:
             raise Exception("cannot concat discount rule and purchase rule")
 
+    def removeRule(self):
+        self.__model.delete()
 
+    def getModel(self):
+        return self.__model
 
+    def __eq__(self, other):
+        return isinstance(other, DiscountRuleComposite) and self.__model == other.getModel()
 
-
+    def __hash__(self):
+        return hash(self.__model.ruleID)

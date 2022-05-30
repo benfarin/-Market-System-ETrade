@@ -2,7 +2,6 @@ import zope
 from zope.interface import implements
 
 import os, django
-
 from Backend.Business.StorePackage.Product import Product
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
@@ -36,7 +35,7 @@ class Bag:
     def addProduct(self, product, quantity):
         if quantity <= 0:
             raise QuantityException("cannot add negative quantity of product")
-        check = ProductsInBagModel.objects.filter(product_ID=product.getModel())
+        check = ProductsInBagModel.objects.filter(bag_ID=self.__b, product_ID=product.getModel())
         if len(check) > 1:
             raise Exception("there is more then one product with that id in this bag!")
         if not check.exists():
@@ -75,13 +74,24 @@ class Bag:
 
     def addBag(self, bag):
         for product in ProductsInBagModel.objects.filter(bag_ID=bag.getModel()):
-            p = ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product)
-            if product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-                p.quantity += ProductsInBagModel.objects.get(bag_ID=bag.getModel, product_ID=product).quantity
+
+            productInBag = self.checkSameProduct(product)
+            if productInBag is not None:
+                productInBag.quantity += ProductsInBagModel.objects.get(bag_ID=bag.getModel(),
+                                                                        product_ID=product.product_ID.product_id).quantity
+                productInBag.save()
             else:
-                p = ProductsInBagModel.objects.get(bag_ID=bag.getModel, product_ID=product).quantity
-            p.save()
+                p = ProductModel.objects.get(product_id=product.product_ID.product_id)
+                newProduct = ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=p,
+                                                                      quantity=product.quantity)
+                newProduct[0].save()
         return True
+
+    def checkSameProduct(self, product):
+        for p in ProductsInBagModel.objects.filter(bag_ID=self.__b):
+            if product.product_ID == p.product_ID:
+                return p
+        return None
 
     def getProductQuantity(self, product):
         return ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel()).quantity
@@ -153,3 +163,10 @@ class Bag:
 
     def removeBag(self):
         self.__b.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, Bag) and self.__b == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__b.storeId and self.__b.userId)
+

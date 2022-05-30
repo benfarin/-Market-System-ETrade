@@ -44,7 +44,6 @@ class UserTransactionModel(models.Model):
     totalAmount = models.IntegerField()
 
 
-
 class StoreTransactionsInUserTransactions(models.Model):
     userTransaction_id = models.ForeignKey(UserTransactionModel, on_delete=models.CASCADE)
     storeTransaction_id = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE)
@@ -192,8 +191,8 @@ class RuleModel(models.Model):
         ('Product', 'Product'),
     ]
     Composite_Rule_Type = [
-        ('And', 'Or'),
-        ('And', 'Or'),
+        ('Or', 'Or'),
+        ('And', 'And'),
     ]
     rule_class = models.CharField(max_length=100, choices=Rule_Class, null=True)
     ruleID = models.IntegerField(primary_key=True)
@@ -201,8 +200,8 @@ class RuleModel(models.Model):
     simple_rule_type = models.CharField(max_length=100, choices=Simple_Rule_Type, null=True)
     composite_rule_type = models.CharField(max_length=100, choices=Composite_Rule_Type, null=True)
     filter_type = models.CharField(max_length=100, null=True)
-    at_least = models.IntegerField()
-    at_most = models.IntegerField()
+    at_least = models.IntegerField(null=True)
+    at_most = models.IntegerField(null=True)
     ruleID1 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='firstRuleID', null=True)
     ruleID2 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='secondRuleID', null=True)
 

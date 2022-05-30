@@ -105,6 +105,6 @@ class ProductDiscount:
     def getModel(self):
         return self.__model
 
-    def removeDiscount(self):
+    def remove(self):
         self.__model.delete()
 

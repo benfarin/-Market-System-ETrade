@@ -1,5 +1,10 @@
 import zope
 
+import os, django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
+django.setup()
+
+
 from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.Rules.QuantityRule import quantityRule
 from Backend.Business.Rules.WeightRule import weightRule
@@ -20,9 +25,11 @@ class PurchaseRuleComposite:
         # self.__rule1: IRule = rule1
         # self.__rule2: IRule = rule2
         # self.__ruleType = ruleType
+
         if model is None:
             self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, composite_rule_type=ruleType, rule_kind=ruleKind,
-                                                           ruleID1=rule1, ruleID2=rule2,  rule_class='PurchaseComposite')[0]
+                                                           ruleID1=rule1.getModel(), ruleID2=rule2.getModel(),
+                                                           rule_class='PurchaseComposite')[0]
         else:
             self.__model = model
 
@@ -54,6 +61,9 @@ class PurchaseRuleComposite:
     def getRuleKind(self):
         return self.__model.rule_kind
 
+    def removeRule(self):
+        self.__model.delete()
+
     def __buildRule(self, rule_model):
         if rule_model.rule_class == 'Price':
             return PriceRule(rule_model=rule_model)
@@ -67,3 +77,12 @@ class PurchaseRuleComposite:
             return PurchaseRuleComposite(rule_model=rule_model)
         else:
             raise Exception("cannot concat discount rule and purchase rule")
+
+    def getModel(self):
+        return self.__model
+
+    def __eq__(self, other):
+        return isinstance(other, PurchaseRuleComposite) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.ruleID)

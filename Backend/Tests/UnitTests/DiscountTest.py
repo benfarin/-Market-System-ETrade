@@ -11,8 +11,8 @@ class MyTestCase(unittest.TestCase):
         self.discountCategory = CategoryDiscount(0, "Electric", 0.5)
         self.discountProduct = ProductDiscount(1, 0, 0.85)
         self.discountStore = StoreDiscount(3, 0.1)
-        self.discountComposite = DiscountComposite(5, self.discountCategory.getModel(), self.discountProduct.getModel(), 'Max', 1)
-
+        self.discountComposite = DiscountComposite(5, self.discountCategory.getModel(), self.discountProduct.getModel(),
+                                                   'Max', 1)
 
     def test_DiscountGetters(self):
         self.assertEqual(self.discountCategory.getDiscountId(), 0)
@@ -36,10 +36,6 @@ class MyTestCase(unittest.TestCase):
         self.discountComposite.remove()
         self.discountProduct.remove()
         self.discountStore.remove()
-
-
-
-
 
 
 if __name__ == '__main__':

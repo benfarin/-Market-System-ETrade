@@ -1,12 +1,11 @@
 import unittest
-import os, django
 
+from Backend.Business.Rules.PurchaseRuleComposite import PurchaseRuleComposite
+from Backend.Business.Rules.QuantityRule import quantityRule
+from Backend.Business.Rules.WeightRule import weightRule
+from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.StorePackage.Bag import Bag
 from Backend.Business.StorePackage.Product import Product
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
-django.setup()
-from Backend.Business.Rules.PriceRule import PriceRule
 
 
 class MyTestCase(unittest.TestCase):
@@ -20,8 +19,20 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.rule_price.getRuleKind(), 'Discount')
 
     def test_rule_bag(self):
-        self.bag.addProduct(self.product.getModel(), 6)
+        self.bag.addProduct(self.product, 6)
         self.assertEqual(self.rule_price.check(self.bag), True)
+
+    def test_rule_composite(self):
+        self.productRule = quantityRule(1, 'Product', 1, 0, 1000, 'Purchase')
+        self.categoryRule = weightRule(2, 'Category', "Category", 0, 1000, 'Purchase')
+        self.compRule = PurchaseRuleComposite(3, self.productRule, self.categoryRule, 'Or', 'Purchase')
+
+        self.bag.addProduct(self.product, 10)
+        self.assertEqual(500, self.bag.calcSum([]))
+
+        self.productRule.removeRule()
+        self.categoryRule.removeRule()
+        self.compRule.removeRule()
 
     def tearDown(self):
         self.rule_price.removeRule()

@@ -13,7 +13,25 @@ class MyTestCase(unittest.TestCase):
         self.bag2 = Bag(1, 0)
         self.p1 = Product(0, 0, "Test", 50, "Category", 5, [])
         self.p2 = Product(1, 0, "Test1", 100, "Category", 5, [])
+        self.p3 = Product(2, 0, "Test1", 150, "Category1", 10, ["myKeyword"])
         self.discount = ProductDiscount(0, 0, 0.5)
+
+    def testGetters(self):
+        self.assertTrue(self.bag.isEmpty())
+
+        self.bag.addProduct(self.p1, 4)
+        self.bag.addProduct(self.p2, 2)
+        self.assertEqual(self.bag.getProducts(), {self.p1: 4, self.p2: 2})
+
+        self.bag2.addProduct(self.p1, 6)
+        self.bag2.addProduct(self.p3, 5)
+        self.bag.addBag(self.bag2)
+        self.assertEqual(self.bag.getProducts(), {self.p1: 10, self.p2: 2, self.p3: 5})
+
+        self.assertEqual(10, self.bag.getProductQuantity(self.p1))
+
+        self.bag2.cleanBag()
+        self.assertEqual(self.bag2.getProducts(), {})
 
     def test_calc_sum(self):
         self.bag.addProduct(self.p1, 4)
@@ -43,11 +61,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.bag2.isEmpty(), True)
 
     def tearDown(self):
-        self.bag.removeBag()
-        self.bag2.removeBag()
         self.p1.removeProduct()
         self.p2.removeProduct()
-        self.discount.removeDiscount()
+        self.p3.removeProduct()
+        self.bag.removeBag()
+        self.bag2.removeBag()
+        self.discount.remove()
 
 
 if __name__ == '__main__':

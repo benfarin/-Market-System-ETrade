@@ -98,4 +98,11 @@ class Product:
         return ProductKeyword.objects.filter(product_id=self.__model, keyword=keyword).exists()
 
     def removeProduct(self):
-        self.__model.delete()
+        if self.__model.product_id is not None:
+            self.__model.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, Product) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.product_id)

@@ -9,6 +9,12 @@ class MyTestCase(unittest.TestCase):
         self.product = Product(0, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
         self.product2 = Product(1, 2, "TestProduct", 50, "TestCategory", 5, ["Check", "Check2"])
 
+    def testCheckEQ(self):
+        self.product_to_check = Product(model=self.product.getModel())
+        self.assertEqual(self.product, self.product_to_check)
+        self.product_to_check.removeProduct()
+
+
     def test_productGetters(self):
         self.assertEqual(self.product.getProductId(), 0)
         self.assertEqual(self.product.getProductWeight(), 5)
@@ -36,6 +42,7 @@ class MyTestCase(unittest.TestCase):
     def tearDown(self):
         self.product.removeProduct()
         self.product2.removeProduct()
+
 
 if __name__ == '__main__':
     unittest.main()
