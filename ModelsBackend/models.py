@@ -51,7 +51,10 @@ class StoreTransactionsInUserTransactions(models.Model):
 
 class BagModel(models.Model):
     userId = models.UUIDField(null=True)
-    storeId = models.IntegerField(primary_key=True)
+    storeId = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = ('userId', 'storeId')
 
 
 class ProductsInBagModel(models.Model):
