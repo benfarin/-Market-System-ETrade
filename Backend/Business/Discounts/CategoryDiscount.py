@@ -17,7 +17,9 @@ class CategoryDiscount:
         # self.__category = category
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
-        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent, type='Category')[0]
+        self.__model = \
+        DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent, type='Category')[
+            0]
 
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)
@@ -41,7 +43,7 @@ class CategoryDiscount:
         # return newProductPrices
 
     def addSimpleRuleDiscount(self, rule):
-        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule.getModel())
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = RuleModel.objects.get(ruleID=rId1)
@@ -50,18 +52,24 @@ class CategoryDiscount:
             raise Exception("rule1 is not an existing discount")
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
-        rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
-        self.addSimpleRuleDiscount(rule)
-        self.removeDiscountRule(r1.ruleID)
-        self.removeDiscountRule(r2.ruleID)
+
+        rule = RuleModel.objects.get_or_create(ruleID=ruleId, ruleID1=r1, ruleID2=r2, composite_rule_type=ruleType,
+                                               rule_kind=ruleKind)[0]
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
+        DiscountRulesModel.objects.get(discountID=self.__model, ruleID=r1).delete()
+        DiscountRulesModel.objects.get(discountID=self.__model, ruleID=r2).delete()
+
+        return DiscountRuleComposite(model=rule)
+
         # rule = DiscountRuleComposite(ruleId, r1, r2, ruleType, ruleKind)
         # self.__rules[rule.getRuleId()] = rule
         # self.__rules.pop(rId1)
         # self.__rules.pop(rId2)
-        return rule
 
+    # the rule will be only at the rules table, so we can redo him later.
     def removeDiscountRule(self, rId):
-        DiscountRulesModel.objects.get(ruleID=rId).delete()
+        rule = RuleModel.objects.get(ruleID=rId)
+        DiscountRulesModel.objects.get(discountID=self.__model, ruleID=rule).delete()
 
     def check(self, bag):
         rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
@@ -97,4 +105,3 @@ class CategoryDiscount:
 
     def remove(self):
         self.__model.delete()
-
