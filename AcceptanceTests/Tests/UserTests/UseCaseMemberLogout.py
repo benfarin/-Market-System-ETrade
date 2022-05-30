@@ -7,6 +7,7 @@ from Backend.Service.UserService import UserService
 
 
 class UseCaseMemberLogout(unittest.TestCase):
+    #usecase 3.1
     @classmethod
     def setUpClass(cls):
         cls.user_proxy = UserProxyBridge(UserRealBridge())

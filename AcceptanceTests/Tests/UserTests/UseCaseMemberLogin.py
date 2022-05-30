@@ -6,6 +6,7 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UseCaseMemberLogin(unittest.TestCase):
+    #usecase 2.4
     @classmethod
     def setUpClass(cls):
         cls.proxy = UserProxyBridge(UserRealBridge())

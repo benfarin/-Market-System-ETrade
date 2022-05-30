@@ -9,7 +9,9 @@ from Backend.Service.MemberService import MemberService
 from Backend.Service.UserService import UserService
 
 
-class MyTestCase(unittest.TestCase):
+class UseCaseUserOpenStore(unittest.TestCase):
+
+    #usecase 3.2
     @classmethod
     def setUpClass(cls):
         cls.user_proxy = UserProxyBridge(UserRealBridge())

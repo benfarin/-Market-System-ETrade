@@ -7,7 +7,7 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 
 class UseCaseDiscount(unittest.TestCase):
-    # use-case 4.1.1
+    # use-case 4.2
     @classmethod
     def setUpClass(cls):
         cls.proxy_market = MarketProxyBridge(MarketRealBridge())

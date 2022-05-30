@@ -10,6 +10,7 @@ from Backend.Service.UserService import UserService
 
 
 class UseCasePurchaseProduct(unittest.TestCase):
+    #usecase 2.9
     @classmethod
     def setUpClass(cls):
         cls.market_proxy = MarketProxyBridge(MarketRealBridge())
