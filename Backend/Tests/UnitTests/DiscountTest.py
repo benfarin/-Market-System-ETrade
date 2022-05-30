@@ -50,6 +50,26 @@ class MyTestCase(unittest.TestCase):
                                                 ruleID=self.rule3.getModel())
         self.assertEqual(0, len(dis))
 
+        self.discountProduct.addSimpleRuleDiscount(self.rule1)
+        self.discountProduct.addSimpleRuleDiscount(self.rule2)
+        self.rule3 = self.discountProduct.addCompositeRuleDiscount(3, self.rule1.getRuleId(), self.rule2.getRuleId(),
+                                                                    'Max', 'Discount')
+        self.discountProduct.removeDiscountRule(self.rule3.getRuleId())
+
+        dis = DiscountRulesModel.objects.filter(discountID=self.discountProduct.getModel(),
+                                                ruleID=self.rule3.getModel())
+        self.assertEqual(0, len(dis))
+
+        self.discountStore.addSimpleRuleDiscount(self.rule1)
+        self.discountStore.addSimpleRuleDiscount(self.rule2)
+        self.rule3 = self.discountStore.addCompositeRuleDiscount(3, self.rule1.getRuleId(), self.rule2.getRuleId(),
+                                                                    'Max', 'Discount')
+        self.discountStore.removeDiscountRule(self.rule3.getRuleId())
+
+        dis = DiscountRulesModel.objects.filter(discountID=self.discountStore.getModel(),
+                                                ruleID=self.rule3.getModel())
+        self.assertEqual(0, len(dis))
+
     def tearDown(self):
         self.discountCategory.remove()
         self.discountComposite.remove()

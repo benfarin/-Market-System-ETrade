@@ -4,6 +4,7 @@ import zope
 
 
 # from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
+from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.StorePackage.Product import Product
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
@@ -43,7 +44,7 @@ class ProductDiscount:
         # return newProductPrices
 
     def addSimpleRuleDiscount(self, rule):
-        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)[0]
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule.getModel())
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
         r1 = RuleModel.objects.get(ruleID=rId1)
@@ -52,11 +53,12 @@ class ProductDiscount:
             raise Exception("rule1 is not an existing discount")
         if r2 is None:
             raise Exception("rule2 is not an existing discount")
-        rule = RuleModel(ruleID=ruleId, rId1=r1, rId2=r2, ruleType=ruleType, ruleKind=ruleKind).save()
-        self.addSimpleRuleDiscount(rule)
-        self.removeDiscountRule(r1.ruleID)
-        self.removeDiscountRule(r2.ruleID)
-        return rule
+        rule = RuleModel.objects.get_or_create(ruleID=ruleId, ruleID1=r1, ruleID2=r2, composite_rule_type=ruleType,
+                                               rule_kind=ruleKind)[0]
+        DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
+        DiscountRulesModel.objects.get(discountID=self.__model, ruleID=r1).delete()
+        DiscountRulesModel.objects.get(discountID=self.__model, ruleID=r2).delete()
+        return DiscountRuleComposite(model=rule)
 
         # r1 = self.__rules.get(rId1)
         # r2 = self.__rules.get(rId2)
@@ -71,7 +73,8 @@ class ProductDiscount:
         # return rule
 
     def removeDiscountRule(self, rId):
-        DiscountRulesModel.objects.get(ruleID=rId).delete()
+        rule = RuleModel.objects.get(ruleID=rId)
+        DiscountRulesModel.objects.get(discountID=self.__model, ruleID=rule).delete()
 
     def check(self, bag):
         rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
@@ -107,4 +110,10 @@ class ProductDiscount:
 
     def remove(self):
         self.__model.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, ProductDiscount) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.ruleID)
 

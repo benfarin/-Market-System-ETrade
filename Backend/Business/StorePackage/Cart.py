@@ -27,13 +27,12 @@ class Cart:
         return self.__model.userid
 
     def getAllBags(self):
-        return BagsInCartModel.objects.filter(cart=self.__model)
+        return [self.__buildBag(bag) for bag in BagsInCartModel.objects.filter(cart=self.__model)]
 
-    def getBag(self, storeId) -> Bag:
+    def getBag(self, storeId):
         try:
             bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
-            bag = self.__buildBag(bag_model)
-            return bag
+            return self.__buildBag(bag_model)
         except:
             raise NoSuchStoreException("storeId does not exists, can't add the bag to the cart")
 
@@ -55,16 +54,14 @@ class Cart:
             raise NoSuchStoreException("storeId does not exists, can't clean the bag from the cart")
 
     def updateCart(self, cart):
-        for bag_in_cart_model in cart.getAllBags():
-            if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag_in_cart_model.storeID).exists():
-                bag_to_add_model = BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag
-                bag_to_add = self.__buildBag(bag_to_add_model)
-                bag_to_add.addBag(BagsInCartModel.objects.get(cart=cart, storeID=bag_in_cart_model.storeID).bag)
-                BagsInCartModel.objects.get(cart=self.__model,
-                                            storeID=bag_in_cart_model.storeID).bag = bag_to_add.getModel()
+        for bag in cart.getAllBags():
+            if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.getStoreId()).exists():
+                bag_to_add = self.__buildBag(BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()))
+                bag_to_add.addBag(self.__buildBag(BagsInCartModel.objects.get(cart=cart.getModel(), storeID=bag.getStoreId())))
+                # BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).bag = bag_to_add.getModel()
             else:
-                BagsInCartModel.objects.get(cart=self.__model, storeID=bag_in_cart_model.storeID).bag = \
-                    BagsInCartModel.objects.get(cart=cart, storeID=bag_in_cart_model.storeID).bag
+                BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).bag = \
+                    BagsInCartModel.objects.get(cart=cart, storeID=bag.getStoreId()).bag
 
     def updateBag(self, bag):
         if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.storeId).exists():
@@ -138,8 +135,8 @@ class Cart:
                 bag.getStoreId()) + " store products:" + "\t\t\t\t\t\t\t\t\t" + bag.printProducts()
         return printBags
 
-    def applyDiscount(self, bag: Bag):
-        bag.applyDiscount()
+    # def applyDiscount(self, bag: Bag):
+    #     bag.applyDiscount()
 
     def __buildBag(self, bagModel):
         return Bag(bagModel.bag.storeId, bagModel.bag.userId)

@@ -80,6 +80,14 @@ class DiscountComposite:
         else:  # discount_model.type == 'Store'
             return StoreDiscount(discount_model.discountID, discount_model.percent)
 
-
     def remove(self):
         self.__model.delete()
+
+    def getModel(self):
+        return self.__model
+
+    def __eq__(self, other):
+        return isinstance(other, DiscountComposite) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.ruleID)
