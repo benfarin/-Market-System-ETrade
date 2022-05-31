@@ -1,9 +1,6 @@
 import uuid
-import django, os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
-django.setup()
+
 import zope
-from django.db.models import Max
 
 import Backend.Business.StorePackage.Store as s
 from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
@@ -22,8 +19,6 @@ from zope.interface import implements
 from typing import Dict
 import threading
 
-from ModelsBackend.models import StoreModel, UserTransactionModel, StoreTransactionModel
-
 
 @zope.interface.implementer(IMarket)
 class Market:
@@ -37,23 +32,14 @@ class Market:
         return Market.__instance
 
     def __init__(self):
-
-
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
-        if StoreModel.objects.exists():
-            for store_model in StoreModel.objects.all():
-                store = self.__buildStore(store_model)
-                self.__stores.update({store.getStoreId(): store})
         self.__transactionHistory = TransactionHistory.getInstance()
         self.__removedStores: Dict[str: IStore] = {}
 
-        self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))
-        self.__storeTransactionIdCounter = StoreTransactionModel.objects.aggregate(Max('transactionId'))
-        self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))
-        # self.__globalStore = 0
-        # self.__storeTransactionIdCounter = 0
-        # self.__userTransactionIdCounter = 0
+        self.__globalStore = 0
+        self.__storeTransactionIdCounter = 0
+        self.__userTransactionIdCounter = 0
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
@@ -517,8 +503,5 @@ class Market:
             utId = self.__userTransactionIdCounter
             self.__userTransactionIdCounter += 1
             return utId
-
-    def __buildStore(self, model):
-        return s.Store(model)
 
 

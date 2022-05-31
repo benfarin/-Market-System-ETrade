@@ -12,7 +12,7 @@ from Backend.Business.StorePackage.Bag import Bag
 from Backend.Business.StorePackage.Product import Product
 from typing import Dict
 
-from ModelsBackend.models import CartModel, BagsInCartModel
+from ModelsBackend.models import CartModel, BagsInCartModel, BagModel
 
 
 @zope.interface.implementer(ICart)
@@ -23,8 +23,9 @@ class Cart:
         # self.__bags: Dict[int, Bag] = {}  # storeId : Bag
         self.__model = CartModel.objects.get_or_create(userid=userId)[0]
 
+    # not sure if need the casting - it's for tests now...
     def getUserId(self):
-        return self.__model.userid
+        return int(self.__model.userid)
 
     def getAllBags(self):
         return [self.__buildBag(bag) for bag in BagsInCartModel.objects.filter(cart=self.__model)]
@@ -55,18 +56,23 @@ class Cart:
 
     def updateCart(self, cart):
         for bag in cart.getAllBags():
-            if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.getStoreId()).exists():
+            cartBag = self.__buildBag(BagsInCartModel.objects.get(cart=cart.getModel(), storeID=bag.getStoreId()))
+
+            matchingBag = BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.getStoreId())
+            if len(matchingBag) == 1:
                 bag_to_add = self.__buildBag(BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()))
-                bag_to_add.addBag(self.__buildBag(BagsInCartModel.objects.get(cart=cart.getModel(), storeID=bag.getStoreId())))
-                # BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).bag = bag_to_add.getModel()
+                bag_to_add.addBag(cartBag)
             else:
-                BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).bag = \
-                    BagsInCartModel.objects.get(cart=cart, storeID=bag.getStoreId()).bag
+                newBag = Bag(userId=self.__model.userid, storeId=bag.getStoreId())
+                BagsInCartModel.objects.get_or_create(cart=self.__model, bag=newBag.getModel(),
+                                                      storeID=bag.getStoreId())
+                newBag.addBag(cartBag)
 
     def updateBag(self, bag):
-        if BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.storeId).exists():
-            BagsInCartModel.objects.get(cart=self.__model, storeID=bag.storeId).bag = bag
-            BagsInCartModel.objects.get(cart=self.__model, storeID=bag.storeId).save()
+        matchingBag = BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.getStoreId())
+        if len(matchingBag) == 1:
+            BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).bag = bag.getModel()
+            BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).save()
             return True
         else:
             return False
@@ -96,8 +102,11 @@ class Cart:
         self.getBag(storeId).addProduct(product, quantity)
 
     def removeProduct(self, storeId, productId):
-        quantity = self.getBag(storeId).removeProduct(productId)
-        if self.getBag(storeId).isEmpty():
+        bagInCart = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
+        bag = self.__buildBag(bagInCart)
+        quantity = bag.getProductQuantityByProductId(productId)
+        bag.updateBag(productId, -1 * quantity)
+        if bag.isEmpty():
             self.removeBag(storeId)
         return quantity
 
@@ -138,11 +147,17 @@ class Cart:
     # def applyDiscount(self, bag: Bag):
     #     bag.applyDiscount()
 
-    def __buildBag(self, bagModel):
-        return Bag(bagModel.bag.storeId, bagModel.bag.userId)
+    def __buildBag(self, bagInCartModel):
+        return Bag(model=bagInCartModel.bag)
 
     def getModel(self):
         return self.__model
 
     def removeCart(self):
+        for bagInCartModel in BagsInCartModel.objects.filter(cart=self.__model):
+            bag = self.__buildBag(bagInCartModel)
+            bag.removeBag()
+        for bagModel in BagModel.objects.filter(userId=self.__model.userid):
+            bag = Bag(model=bagModel)
+            bag.removeBag()
         self.__model.delete()

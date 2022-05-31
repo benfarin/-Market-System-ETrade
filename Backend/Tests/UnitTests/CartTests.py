@@ -11,6 +11,7 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.cart = Cart(0)
+        self.cart2 = Cart(1)
         self.bag = Bag(0, 0)
         self.bag_2 = Bag(1, 0)
         self.p1 = Product(0, 0, "Test", 50, "Category", 5, [])
@@ -31,14 +32,32 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.cart.getAllBags(), [self.bag])
 
     def test_updateCart(self):
-        c = Cart(1)
-        c.addProduct(0, self.p1, 1)
-        c.updateCart(self.cart)
-        self.assertEqual(c.getBag(0).getProducts(), {self.p1: 2})
-        self.assertEqual(c.getBag(1).getProducts(), {self.p2: 1})
+        self.cart.addProduct(0, self.p1, 1)
+        self.cart.addProduct(1, self.p2, 2)
 
-        c.removeProduct(0, self.p1.getProductId())
-        c.removeCart()
+        self.cart2.addProduct(0, self.p1, 1)
+        self.cart2.updateCart(self.cart)
+
+        self.assertEqual(self.cart2.getBag(0).getProducts(), {self.p1: 2})
+        self.assertEqual(self.cart2.getBag(1).getProducts(), {self.p2: 2})
+
+        self.assertEqual(self.cart2.getAllProductsByStore(), {0: {self.p1: 2}, 1: {self.p2: 2}})
+        self.assertEqual(self.cart2.getAllProducts(), {self.p1: 2, self.p2: 2})
+
+        self.cart.removeProduct(0, self.p1.getProductId())
+        self.cart.removeProduct(1, self.p2.getProductId())
+        self.cart2.removeProduct(0, self.p1.getProductId())
+
+    def test_updateBag(self):
+        self.cart.addProduct(0, self.p1, 7)
+        self.assertFalse(self.cart2.updateBag(self.bag))
+
+        bag3 = Bag(0, 2)
+        bag3.addProduct(self.p1, 7)
+        self.cart.updateBag(self.bag)
+        self.assertEqual(self.cart.getBag(0).getProducts(), {self.p1: 7})
+
+        self.cart.removeProduct(0, self.p1.getProductId())
 
     def test_calcSum(self):
         self.cart.addProduct(0, self.p1, 1)
@@ -66,11 +85,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.cart.isEmpty(), True)
 
     def tearDown(self):
+        self.cart.removeCart()
+        self.cart2.removeCart()
         self.p1.removeProduct()
         self.p2.removeProduct()
-        self.bag.removeBag()
-        self.bag_2.removeBag()
-        self.cart.removeCart()
 
 
 if __name__ == '__main__':

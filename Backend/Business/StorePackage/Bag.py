@@ -15,10 +15,13 @@ from ModelsBackend.models import BagModel, ProductsInBagModel, ProductModel
 @zope.interface.implementer(IBag)
 class Bag:
 
-    def __init__(self, storeId, userId):
+    def __init__(self, storeId=None, userId=None, model=None):
         # self.__storeId = storeId
         # self.__products = {}  # product : quantity
-        self.__b = BagModel.objects.get_or_create(storeId=storeId, userId=userId)[0]
+        if model is None:
+            self.__b = BagModel.objects.get_or_create(storeId=storeId, userId=userId)[0]
+        else:
+            self.__b = model
 
     def getStore(self):
         pass
@@ -60,8 +63,8 @@ class Bag:
             if product.product_ID.product_id == productId:
                 product.quantity += quantity
                 product.save()
-                if product.quantity < 0:
-                    ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product, quantity=quantity).delete()
+                if product.quantity <= 0:
+                    ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.product_ID.product_id).delete()
                 return True
         raise ProductException("no such product in the Bag")
 
@@ -95,6 +98,10 @@ class Bag:
 
     def getProductQuantity(self, product):
         return ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel()).quantity
+
+    def getProductQuantityByProductId(self, productId):
+        product = self._buildProduct(ProductModel.objects.get(product_id=productId))
+        return self.getProductQuantity(product)
 
     def calcSum(self, discounts):
         return self.applyDiscount(discounts)
@@ -162,6 +169,8 @@ class Bag:
         return Product(model=model)
 
     def removeBag(self):
+        for productInBag in ProductsInBagModel.objects.filter(bag_ID=self.__b):
+            productInBag.delete()
         self.__b.delete()
 
     def __eq__(self, other):
