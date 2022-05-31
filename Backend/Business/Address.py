@@ -66,6 +66,16 @@ class Address:
         address += "\n\t\t\tapartment number: " + str(self.__model.apartmentNum)
         return address + "\n\t\t\tzip code: " + str(self.__model.zipCode)
 
+    def removeAddress(self):
+        self.__model.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, Address) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.country and self.__model.country and self.__model.city and
+                    self.__model.street and self.__model.apartmentNum and self.__model.zipCode)
+
 
     # def __str__(self):
     #     return "Country: " + self.__country + " city: " + self.__city + " street: " + self.__street + " apartment Number: " \

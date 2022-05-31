@@ -315,3 +315,10 @@ class Member(User):
 
     def removeMember(self):
         self.__m.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, Member) and self.__m == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__m.userName)
+

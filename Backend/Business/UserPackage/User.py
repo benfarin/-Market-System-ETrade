@@ -10,7 +10,7 @@ import threading
 from concurrent.futures import Future
 import os
 
-from ModelsBackend.models import CartModel
+from ModelsBackend.models import CartModel, UserModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -42,13 +42,18 @@ class User:
     def __init__(self, model=None):
         #  threading.Thread.__init__(self, target=t, args=args)
         # threading.Thread.__init__(self)
-        self.__id = str(uuid.uuid4())  # unique id
-        self._cart = Cart(self.__id)
-        self.__memberCheck = False
-        self.__transactions: Dict[int: UserTransaction] = {}
-        self.__market: IMarket = m.Market.getInstance()
-        if model is not None:
-            self._model = model
+
+        # self.__id = str(uuid.uuid4())  # unique id
+        # self._cart = Cart(self.__id)
+        # self.__memberCheck = False
+        # self.__transactions: Dict[int: UserTransaction] = {}
+        # self.__market: IMarket = m.Market.getInstance()
+        # if model is not None:
+        #     self._model = model
+
+        userid = uuid.uuid4()
+        userCart = Cart(userid)
+        self.__model = UserModel.objects.get_or_create(userid=userid, cart=userCart.getModel())[0]
 
         # self.start()
 
@@ -66,10 +71,10 @@ class User:
         return self.__transactions[transactionId]
 
     def getUserID(self):
-        return self.__id
+        return self.__model.userid
 
     def getCart(self):
-        return self._cart
+        return Cart(model=CartModel.objects.get(userid=self.__model.userid))
 
     def getMemberCheck(self):
         return self.__memberCheck

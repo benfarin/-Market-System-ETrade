@@ -18,10 +18,14 @@ from ModelsBackend.models import CartModel, BagsInCartModel, BagModel
 @zope.interface.implementer(ICart)
 class Cart:
 
-    def __init__(self, userId):
+    def __init__(self, userId=None, model=None):
         # self.__userId = userId
         # self.__bags: Dict[int, Bag] = {}  # storeId : Bag
-        self.__model = CartModel.objects.get_or_create(userid=userId)[0]
+
+        if model is None:
+            self.__model = CartModel.objects.get_or_create(userid=userId)[0]
+        else:
+            self.__model = model
 
     # not sure if need the casting - it's for tests now...
     def getUserId(self):

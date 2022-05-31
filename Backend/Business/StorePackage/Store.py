@@ -37,7 +37,7 @@ from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductM
 @zope.interface.implementer(IStore)
 class Store:
 
-    def __init__(self, storeId, storeName, founder, bankAccount, address):
+    def __init__(self, storeId=None, storeName=None, founder=None, bankAccount=None, address=None, model=None):
         # self.__id = storeId
         # self.__name = storeName
         # self.__founderId = founder.getUserID()
@@ -52,16 +52,19 @@ class Store:
         # self.__discounts: {int: IDiscount} = {}
         # self.__rules: {int: IRule} = {}
 
-        self.__model = StoreModel.objects.get_or_create(storeID=storeId, name=storeName, founderId=founder.getModel(),
-                              bankAccount=bankAccount.getModel(), address=address.getModel())[0]
-        self.__model.owners.add(founder.getModel())
+        if model is None:
+            self.__model = StoreModel.objects.get_or_create(storeID=storeId, name=storeName, founderId=founder.getModel(),
+                                                            bankAccount=bankAccount.getModel(), address=address.getModel())[0]
+            self.__model.owners.add(founder.getModel())
+        else:
+            self.__model = model
 
-        # self.__permissionsLock = threading.Lock()
-        # self.__stockLock = threading.Lock()
-        # self.__productsLock = threading.Lock()
-        # self.__rolesLock = threading.Lock()
-        # self.__transactionLock = threading.Lock()
-        # self.__discountsLock = threading.Lock()
+        self.__permissionsLock = threading.Lock()
+        self.__stockLock = threading.Lock()
+        self.__productsLock = threading.Lock()
+        self.__rolesLock = threading.Lock()
+        self.__transactionLock = threading.Lock()
+        self.__discountsLock = threading.Lock()
 
         # self.__permissions: Dict[IMember: StorePermission] = {
         #     founder: StorePermission(founder.getUserID())}  # member : storePermission
@@ -77,10 +80,12 @@ class Store:
         # self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
         # self.__permissions[founder].setPermission_Discount(True)
 
-        self.__permissions_model= StoreUserPermissionsModel.objects.get_or_create(userID=founder.getModel(), storeID=self.__model, appointManager=True,
-                                                 appointOwner=True, closeStore=True, stockManagement=True,
-                                                 changePermission=True, rolesInformation=True,
-                                                 purchaseHistoryInformation=True, discount=True)[0]
+        self.__permissions_model = \
+            StoreUserPermissionsModel.objects.get_or_create(userID=founder.getModel(), storeID=self.__model,
+                                                            appointManager=True,
+                                                            appointOwner=True, closeStore=True, stockManagement=True,
+                                                            changePermission=True, rolesInformation=True,
+                                                            purchaseHistoryInformation=True, discount=True)[0]
 
     def getStoreId(self):
         return self.__model.storeID
@@ -89,7 +94,7 @@ class Store:
         return self.__model.name
 
     def getStoreFounderId(self):
-        return self.__model.founderId
+        return self.__model.founderId.userid
 
     def getStoreBankAccount(self):
         return self._buildBankAccount(self.__model.bankAccount)
@@ -99,16 +104,14 @@ class Store:
 
     def getStoreOwners(self):
         owners = []
-        store_model = StoreModel.objects.get(storeID=self.getStoreId())
-        for owner_model in store_model.owners.get_queryset():
+        for owner_model in self.__model.owners.get_queryset():
             owner = self._buildMember(owner_model)
             owners.append(owner)
         return owners
 
     def getStoreManagers(self):
         managers = []
-        store_model = StoreModel.objects.get(storeID=self.getStoreId())
-        for manager_model in store_model.managers.get_queryset():
+        for manager_model in self.__model.managers.get_queryset():
             manager = self._buildMember(manager_model)
             managers.append(manager)
         return managers
@@ -117,7 +120,7 @@ class Store:
         products: Dict[int: IProduct] = {}
         for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
             product = self._buildProduct(prod.productID)
-            products.update({product.getProductId() : product})
+            products.update({product.getProductId(): product})
         return products
 
     def getProductQuantity(self):
@@ -131,7 +134,7 @@ class Store:
         transactions: Dict[int: StoreTransaction] = {}
         for tran in StoreTransactionModel.objects.filter(storeId=self.__model):
             storeTransaction = self._buildStoreTransactions(tran)
-            transactions.update({storeTransaction.getTransactionID() : storeTransaction})
+            transactions.update({storeTransaction.getTransactionID(): storeTransaction})
         return transactions
 
     def getPermissionForDto(self):
@@ -140,7 +143,7 @@ class Store:
         for per in StoreUserPermissionsModel.objects.filter(storeID=self.__model):
             permission = self._buildPermission(per)
             member = self._buildMember(per.userID)
-            permissions.update({member : permission})
+            permissions.update({member: permission})
         return permissions
 
     def getProduct(self, productId):
@@ -148,7 +151,6 @@ class Store:
             if prod.productID.product_id == productId:
                 return self._buildProduct(prod.productID)
         raise ProductException("product not in store")
-
 
     def setStockManagementPermission(self, assigner, assignee):
         try:
@@ -158,7 +160,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).stockManagement = True
+            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                  storeID=self.__model).stockManagement = True
             StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
             # with self.__permissionsLock:
             #     self.__permissions[assignee].setPermission_StockManagement(True)
@@ -171,14 +174,15 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).appointManager = True
+            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                  storeID=self.__model).appointManager = True
             StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
             # with self.__permissionsLock:
             #     self.__permissions[assignee].setPermission_AppointManager(True)
 
     def setAppointOwnerPermission(self, assigner, assignee):
         try:
-            if assignee not in  self.getStoreOwners():
+            if assignee not in self.getStoreOwners():
                 raise PermissionException("only owner can assign new owners")
             self.__haveAllPermissions(assigner, assignee)
             if assigner not in self.getStoreOwners():
@@ -199,7 +203,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).changePermission = True
+            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                  storeID=self.__model).changePermission = True
             StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
 
     def setRolesInformationPermission(self, assigner, assignee):
@@ -210,7 +215,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).rolesInformation = True
+            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                  storeID=self.__model).rolesInformation = True
             StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
 
     def setPurchaseHistoryInformationPermission(self, assigner, assignee):
@@ -221,7 +227,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).purchaseHistoryInformation = True
+            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                  storeID=self.__model).purchaseHistoryInformation = True
             StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
 
     def setDiscountPermission(self, assigner, assignee):
@@ -270,8 +277,8 @@ class Store:
             with self.__stockLock:
                 self.__productsQuantity[productId] += quantity
                 quantity = ProductsInStoreModel(storeID=self.__model,
-                                                     productID=ProductModel.objects.get(product_id=productId),
-                                                     quantity=quantity)
+                                                productID=ProductModel.objects.get(product_id=productId),
+                                                quantity=quantity)
                 quantity.save()
 
     def removeProductFromStore(self, user, productId):
@@ -282,7 +289,6 @@ class Store:
         else:
             product_model = ProductModel.objects.get_or_create(product_id=productId)[0]
             ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).delete()
-
 
     def updateProductPrice(self, user, productId, newPrice):
         try:
@@ -368,7 +374,8 @@ class Store:
         # to avoid circularity
 
         if StoreAppointersModel.objects.filter(assigner=assignee.getModel()).exists() \
-                and StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assigner.getModel()).exists():
+                and StoreAppointersModel.objects.filter(assigner=assigner.getModel(),
+                                                        assingee=assigner.getModel()).exists():
             raise PermissionException("User ", assignee.getUserID(),
                                       "cannot assign manager to hwo made him owner in store: ",
                                       self.__name)
@@ -404,14 +411,14 @@ class Store:
             # to avoid circularity
 
         if StoreAppointersModel.objects.filter(assigner=assignee.getModel()).exists() \
-                and StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assigner.getModel()).exists():
+                and StoreAppointersModel.objects.filter(assigner=assigner.getModel(),
+                                                        assingee=assigner.getModel()).exists():
             raise PermissionException("User ", assignee.getUserID(),
                                       "cannot assign manager to hwo made him owner in store: ",
                                       self.__name)
 
         self.__model.owners.add(assignee.getModel())
         StoreAppointersModel.objects.get_or_create(assigner=assigner.getModel(), assingee=assignee.getModel())
-
 
         if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
             StoreUserPermissionsModel(storeID=self.__model, userID=assignee.getModel()).save()
@@ -420,7 +427,8 @@ class Store:
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).appointOwner = True
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).changePermission = True
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).rolesInformation = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).purchaseHistoryInformation = True
+        StoreUserPermissionsModel.objects.get(storeID=self.__model,
+                                              userID=assignee.getModel()).purchaseHistoryInformation = True
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).discount = True
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).save()
 
@@ -430,7 +438,8 @@ class Store:
             raise Exception("user: " + str(assigner.getUserID()) + "is not an owner in store: " + str(self.__name))
         if assignee not in self.getStoreOwners():
             raise Exception("user: " + str(assignee) + "is not an owner in store: " + str(self.__name))
-        if not StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assigner.getModel(), assingee=assignee.getModel()).exists():
+        if not StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assigner.getModel(),
+                                                   assingee=assignee.getModel()).exists():
             raise Exception("user: " + str(assigner.getUserID()) + "cannot remove the user: " +
                             str(assignee.getUserID() + "because he is not the one that appoint him"))
 
@@ -443,10 +452,11 @@ class Store:
         for model in StoreModel.objects.get(storeID=self.__model).owners.get_queryset():
             if assignee.getModel() == model:
                 model.delete()
-        StoreAppointersModel.objects.get(storeID=self.__model, assigner=assigner.getModel(), assingee=assignee.getModel()).delete()
+        StoreAppointersModel.objects.get(storeID=self.__model, assigner=assigner.getModel(),
+                                         assingee=assignee.getModel()).delete()
 
     # print all permission in store - will be deleted this version
-    def PrintRolesInformation(self, user):   ####NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
+    def PrintRolesInformation(self, user):  ####NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
         permissions = self.__permissions.get(user)
         if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -482,7 +492,6 @@ class Store:
     def removeTransaction(self, transactionId):
         transaction_model = StoreTransactionModel.objects.get(transactionId=transactionId)
         TransactionsInStoreModel.objects.get(storeID=self.__model, transactionID=transaction_model).delete()
-
 
     def getTransaction(self, transactionId):
         if not StoreTransactionModel.objects.filter(transactionId=transactionId).exists():
@@ -547,7 +556,7 @@ class Store:
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def addProductToBag(self, productId, quantity):   ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
+    def addProductToBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
         product_model = ProductModel.objects.get(product_id=productId)
         if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
             raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
@@ -557,7 +566,7 @@ class Store:
             ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity -= quantity
             ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).save()
 
-    def removeProductFromBag(self, productId, quantity):    ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
+    def removeProductFromBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
         if not ProductModel.objects.filter(product_id=productId).exists():
             raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         product_model = ProductModel.objects.get(product_id=productId)
@@ -567,7 +576,7 @@ class Store:
     def hasRole(self, user):
         return user in self.getStoreOwners() or user in self.getStoreManagers()
 
-    def getTransactionsForSystemManager(self):   ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
+    def getTransactionsForSystemManager(self):  ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
         return self.__transactions.values()
 
     def hasPermissions(self, user):
@@ -585,7 +594,7 @@ class Store:
                                       self.__name)
         DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
 
-    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):   ###NEED TO CHANGE THIS
+    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):  ###NEED TO CHANGE THIS
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
         if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -662,7 +671,7 @@ class Store:
         else:
             raise Exception("rule kind is illegal")
 
-    def addCompositeRule(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):    ###NEED TO CHANGE THIS
+    def addCompositeRule(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):  ###NEED TO CHANGE THIS
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
         if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -713,6 +722,8 @@ class Store:
             raise Exception("rule kind is illegal")
 
     def removeStore(self):
+        self.__model.owners.remove()
+        self.__model.managers.remove()
         self.__model.delete()
 
     def _buildProduct(self, model):
@@ -721,7 +732,7 @@ class Store:
     def _buildMember(self, model):
         return m.Member(model=model)
 
-    def _buildBankAccount(self,model):
+    def _buildBankAccount(self, model):
         return Bank(model.accountNumber, model.branch)
 
     def _buildAddress(self, model):

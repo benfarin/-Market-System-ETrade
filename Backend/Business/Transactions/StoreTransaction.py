@@ -23,7 +23,7 @@ class StoreTransaction:
             self.__st = StoreTransactionModel.objects.get_or_create(storeId=storeId, storeName=storeName, transactionId=transactionId,
                                               paymentId=paymentId, date=datetime.datetime.now(), amount=amount)[0]
             for product in products:
-                ProductsInStoreTransactions(transactionId=self.__st, productId=product.getModel()).save()
+                ProductsInStoreTransactions.objects.get_or_create(transactionId=self.__st, productId=product.getModel())
         else:
             self.__st = model
 
