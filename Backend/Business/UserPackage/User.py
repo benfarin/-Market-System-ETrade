@@ -1,5 +1,6 @@
-import django
-
+import django, os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
 from Backend.Business.StorePackage.Cart import Cart
 from Backend.Business.Transactions.UserTransaction import UserTransaction
 from Backend.Interfaces.IMarket import IMarket
@@ -8,12 +9,11 @@ from typing import Dict
 import uuid
 import threading
 from concurrent.futures import Future
-import os
+
 
 from ModelsBackend.models import CartModel, UserModel
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
-django.setup()
+
 
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User as m_User, Group

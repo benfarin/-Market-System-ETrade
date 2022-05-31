@@ -113,6 +113,7 @@ class StoreModel(models.Model):
     # appointers: Dict[IMember: []] = {}  # Member : Members list   --This is a different model
     managers = models.ManyToManyField(MemberModel, related_name='managers')
     owners = models.ManyToManyField(MemberModel, related_name='owners')
+    active = models.BooleanField(default=True)
     # products: models.ManyToManyField(ProductModel)  --different model
     # productsQuantity = {}  # productId : quantity --This is a different model
     # transactions = models.ForeignKey(StoreTransactionModel, on_delete=models.CASCADE, null=True)
