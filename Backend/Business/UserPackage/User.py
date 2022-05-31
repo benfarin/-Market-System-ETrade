@@ -10,7 +10,7 @@ import threading
 from concurrent.futures import Future
 import os
 
-from ModelsBackend.models import CartModel
+from ModelsBackend.models import CartModel, UserModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -42,13 +42,21 @@ class User:
     def __init__(self, model=None):
         #  threading.Thread.__init__(self, target=t, args=args)
         # threading.Thread.__init__(self)
-        self.__id = str(uuid.uuid4())  # unique id
-        self._cart = Cart(self.__id)
-        self.__memberCheck = False
-        self.__transactions: Dict[int: UserTransaction] = {}
-        self.__market: IMarket = m.Market.getInstance()
         if model is not None:
             self._model = model
+            self.__id = model.userid # unique id
+            self._cart = self._buildCart(model.cart)
+            self.__memberCheck = False
+            self.__transactions: Dict[int: UserTransaction] = {}  ###NEED TO CHANGE
+            self.__market: IMarket = m.Market.getInstance()
+        else:
+            self.__id = str(uuid.uuid4())  # unique id
+            self._cart = Cart(self.__id)
+            self.__memberCheck = False
+            self.__transactions: Dict[int: UserTransaction] = {}
+            self.__market: IMarket = m.Market.getInstance()
+            self._model = UserModel.objects.get_or_create(userid=self.__id, cart=self._cart.getModel())[0]
+
 
         # self.start()
 
@@ -132,17 +140,10 @@ class User:
         except Exception as e:
             return None
 
-    def is_authenticated(self):
-        return self._model.is_authenticated
-
-    @staticmethod
-    def save(username, password):
-        m_User.objects.create_user(username=username, password=password)
-
-    @staticmethod
-    def save_admin(username, password):
-        m_User.objects.create_superuser(username=username, password=password)
 
     def getModel(self):
         return self._model
+
+    def _buildCart(self, model):
+        return Cart(model)
 
