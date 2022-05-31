@@ -161,3 +161,10 @@ class Cart:
             bag = Bag(model=bagModel)
             bag.removeBag()
         self.__model.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, Cart) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.userid)
+

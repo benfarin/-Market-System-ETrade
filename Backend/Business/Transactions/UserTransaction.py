@@ -17,7 +17,7 @@ class UserTransaction:
         self.__ut.save()
         for st in storeTransactions:
             StoreTransactionsInUserTransactions(userTransaction_id=self.__ut,
-                                                storeTransaction_id=st).save()
+                                                storeTransaction_id=st.getModel()).save()
 
     def getUserId(self):
         return self.__ut.userID
@@ -26,7 +26,8 @@ class UserTransaction:
         return self.__ut.transactionId
 
     def getStoreTransactions(self):
-        return [stiut.storeTransaction_id for stiut in StoreTransactionsInUserTransactions.objects.filter(userTransaction_id=self.__ut.transactionId)]
+        return [StoreTransaction(model=stiut.storeTransaction_id)
+                for stiut in StoreTransactionsInUserTransactions.objects.filter(userTransaction_id=self.__ut.transactionId)]
 
     def getPaymentId(self):
         return self.__ut.paymentId
@@ -39,3 +40,14 @@ class UserTransaction:
 
     def getModel(self):
         return self.__ut
+
+    def removeUserTransaction(self):
+        for STinUT in StoreTransactionsInUserTransactions.objects.filter(userTransaction_id=self.__ut.transactionId):
+            STinUT.delete()
+        self.__ut.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, UserTransaction) and self.__ut == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__ut.transactionId)

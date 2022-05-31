@@ -22,6 +22,8 @@ class MyTestCase(unittest.TestCase):
         self.bag.addProduct(self.product, 6)
         self.assertEqual(self.rule_price.check(self.bag), True)
 
+        self.bag.removeProduct(self.product.getProductId())
+
     def test_rule_composite(self):
         self.productRule = quantityRule(1, 'Product', 1, 0, 1000, 'Purchase')
         self.categoryRule = weightRule(2, 'Category', "Category", 0, 1000, 'Purchase')

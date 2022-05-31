@@ -2,6 +2,8 @@ from typing import Dict
 import datetime
 import os, django
 
+from Backend.Business.StorePackage.Product import Product
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 from ModelsBackend.models import StoreTransactionModel, ProductsInStoreTransactions
@@ -21,7 +23,7 @@ class StoreTransaction:
             self.__st = StoreTransactionModel.objects.get_or_create(storeId=storeId, storeName=storeName, transactionId=transactionId,
                                               paymentId=paymentId, date=datetime.datetime.now(), amount=amount)[0]
             for product in products:
-                ProductsInStoreTransactions(transactionId=self.__st, productId=product).save()
+                ProductsInStoreTransactions(transactionId=self.__st, productId=product.getModel()).save()
         else:
             self.__st = model
 
@@ -41,7 +43,7 @@ class StoreTransaction:
         return self.__st.amount
 
     def getProducts(self):
-        return [pm.productId for pm in ProductsInStoreTransactions.objects.filter(transactionId=self.__st.transactionId)]
+        return [Product(model=pm.productId) for pm in ProductsInStoreTransactions.objects.filter(transactionId=self.__st.transactionId)]
 
     def getModel(self):
         return self.__st
@@ -58,3 +60,14 @@ class StoreTransaction:
         #         product.getProductPrice()) + ", amount: " + str(self.__products[product])
         # info += "\n\ttotal amount: " + str(self.__amount) + "\n"
         # return info
+
+    def removeStoreTransaction(self):
+        for productInST in ProductsInStoreTransactions.objects.filter(transactionId=self.__st.transactionId):
+            productInST.delete()
+        self.__st.delete()
+
+    def __eq__(self, other):
+        return isinstance(other, StoreTransaction) and self.__st == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__st.transactionId)

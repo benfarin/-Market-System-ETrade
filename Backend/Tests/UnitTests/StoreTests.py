@@ -1,10 +1,10 @@
 import threading
 import unittest
-from Business.Bank import Bank
-from Business.Address import Address
-from Business.UserPackage.Member import Member
-from Business.StorePackage.Product import Product
-from Business.StorePackage.Store import Store
+from Backend.Business.Bank import Bank
+from Backend.Business.Address import Address
+from Backend.Business.UserPackage.Member import Member
+from Backend.Business.StorePackage.Product import Product
+from Backend.Business.StorePackage.Store import Store
 
 
 class MyTestCase(unittest.TestCase):

@@ -71,6 +71,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(0, len(dis))
 
     def tearDown(self):
+        self.rule1.removeRule()
+        self.rule2.removeRule()
         self.discountCategory.remove()
         self.discountComposite.remove()
         self.discountProduct.remove()

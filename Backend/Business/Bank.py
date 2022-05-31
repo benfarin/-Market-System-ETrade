@@ -10,8 +10,7 @@ class Bank:
     def __init__(self, accountNumber, branch):
         self.__accountNumber = accountNumber
         self.__branch = branch
-        self.__b = BankModel.objects.get_or_create(accountNumber=self.__accountNumber, branch=self.__branch)[0]
-
+        self.__b = BankModel.objects.get_or_create(accountNumber=accountNumber, branch=branch)[0]
 
     def getAccountNumber(self):
         return self.__accountNumber
