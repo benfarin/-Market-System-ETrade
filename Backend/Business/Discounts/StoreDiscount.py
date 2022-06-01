@@ -2,6 +2,7 @@ from typing import Dict
 
 from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.StorePackage.Product import Product
+from Backend.Exceptions.CustomExceptions import NotFoundException
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
 import zope
@@ -43,12 +44,14 @@ class StoreDiscount:
         DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule.getModel())
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
+        if len(RuleModel.objects.filter(ruleID=rId1)) != 1:
+            raise NotFoundException("rule1 is not an existing discount")
+        if len(RuleModel.objects.filter(ruleID=rId2)) != 1:
+            raise NotFoundException("rule1 is not an existing discount")
+
         r1 = RuleModel.objects.get(ruleID=rId1)
         r2 = RuleModel.objects.get(ruleID=rId2)
-        if r1 is None:
-            raise Exception("rule1 is not an existing discount")
-        if r2 is None:
-            raise Exception("rule2 is not an existing discount")
+
         rule = RuleModel.objects.get_or_create(ruleID=ruleId, ruleID1=r1, ruleID2=r2, composite_rule_type=ruleType,
                                                rule_kind=ruleKind)[0]
         DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
@@ -57,7 +60,12 @@ class StoreDiscount:
         return DiscountRuleComposite(model=rule)
 
     def removeDiscountRule(self, rId):
+        if len(RuleModel.objects.filter(ruleID=rId)) != 1:
+            raise NotFoundException("rule1 is not an existing discount")
         rule = RuleModel.objects.get(ruleID=rId)
+
+        if len(DiscountRulesModel.objects.filter(discountID=self.__model, ruleID=rule)) != 1:
+            raise NotFoundException("rule hasn't been connected to any discount")
         DiscountRulesModel.objects.get(discountID=self.__model, ruleID=rule).delete()
 
     def check(self, bag):

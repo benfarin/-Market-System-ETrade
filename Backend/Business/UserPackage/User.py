@@ -85,6 +85,12 @@ class User:
     def setMemberCheck(self, state):
         self.__memberCheck = state
 
+    def getCartSum(self):
+        try:
+            return self.__market.getCartSum(self)
+        except Exception as e:
+            raise Exception(e)
+
     @threaded
     def addProductToCart(self, storeID, product, quantity):
         try:

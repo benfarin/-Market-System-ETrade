@@ -7,7 +7,7 @@ from Backend.Business.StorePackage.Product import Product
 from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Interfaces.IRule import IRule
 from ModelsBackend.models import DiscountModel, DiscountRulesModel, RuleModel, ProductModel, ProductsInBagModel
-
+from Backend.Exceptions.CustomExceptions import NotFoundException
 
 @zope.interface.implementer(IDiscount)
 class CategoryDiscount:
@@ -18,8 +18,7 @@ class CategoryDiscount:
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
         self.__model = \
-        DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent, type='Category')[
-            0]
+        DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent, type='Category')[0]
 
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)
@@ -46,13 +45,13 @@ class CategoryDiscount:
         DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule.getModel())
 
     def addCompositeRuleDiscount(self, ruleId, rId1, rId2, ruleType, ruleKind):
+        if len(RuleModel.objects.filter(ruleID=rId1)) != 1:
+            raise NotFoundException("rule1 is not an existing discount")
+        if len(RuleModel.objects.filter(ruleID=rId2)) != 1:
+            raise NotFoundException("rule1 is not an existing discount")
+
         r1 = RuleModel.objects.get(ruleID=rId1)
         r2 = RuleModel.objects.get(ruleID=rId2)
-        if r1 is None:
-            raise Exception("rule1 is not an existing discount")
-        if r2 is None:
-            raise Exception("rule2 is not an existing discount")
-
         rule = RuleModel.objects.get_or_create(ruleID=ruleId, ruleID1=r1, ruleID2=r2, composite_rule_type=ruleType,
                                                rule_kind=ruleKind)[0]
         DiscountRulesModel.objects.get_or_create(discountID=self.__model, ruleID=rule)
@@ -68,7 +67,12 @@ class CategoryDiscount:
 
     # the rule will be only at the rules table, so we can redo him later.
     def removeDiscountRule(self, rId):
+        if len(RuleModel.objects.filter(ruleID=rId)) != 1:
+            raise NotFoundException("rule1 is not an existing discount")
         rule = RuleModel.objects.get(ruleID=rId)
+
+        if len(DiscountRulesModel.objects.filter(discountID=self.__model, ruleID=rule)) != 1:
+            raise NotFoundException("rule hasn't been connected to any discount")
         DiscountRulesModel.objects.get(discountID=self.__model, ruleID=rule).delete()
 
     def check(self, bag):

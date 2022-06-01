@@ -14,7 +14,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.product, self.product_to_check)
         self.product_to_check.removeProduct()
 
-
     def test_productGetters(self):
         self.assertEqual(self.product.getProductId(), 0)
         self.assertEqual(self.product.getProductWeight(), 5)
