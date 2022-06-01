@@ -255,6 +255,9 @@ class Store:
         if not StoreUserPermissionsModel.objects.filter(userID=assignee.getModel(), storeID=self.__model).exists():
             raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
                                       assignee.getUserID(), " because he didn't assign him")
+        if not StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assignee.getModel(), storeID=self.__model).exists():
+            raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
+                                      assignee.getUserID(), " because he didn't assign him")
 
     def addProductToStore(self, user, product):
         try:
@@ -270,7 +273,7 @@ class Store:
         try:
             self.__checkPermissions_ChangeStock(user)
             product_model = ProductModel.objects.get_or_create(product_id=productId)
-            if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
+            if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=productId).exists():
                 raise ProductException("cannot add quantity to a product who doesn't exist, in store: " + self.__name)
             if quantity <= 0:
                 raise ProductException("cannot add a non-positive quantity")
@@ -278,11 +281,11 @@ class Store:
             raise Exception(e)
         else:
             with self.__stockLock:
-                self.__productsQuantity[productId] += quantity
-                quantity = ProductsInStoreModel(storeID=self.__model,
-                                                productID=ProductModel.objects.get(product_id=productId),
-                                                quantity=quantity)
-                quantity.save()
+                # self.__productsQuantity[productId] += quantity
+                quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model,
+                                                productID=productId)
+                quantity_to_change.quantity += quantity
+                quantity_to_change.save()
 
     def removeProductFromStore(self, user, productId):
         try:
@@ -455,13 +458,13 @@ class Store:
             raise Exception("user: " + str(assigner.getUserID()) + "cannot remove the user: " +
                             str(assignee.getUserID() + "because he is not the one that appoint him"))
 
-        assignees_of_assignee = StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assigner.getModel())
+        assignees_of_assignee = StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assignee.getModel())
         if assignees_of_assignee.exists():
             for toRemoveOwner in assignees_of_assignee:
                 to_remove = self._buildMember(toRemoveOwner.assingee)
                 self.removeStoreOwner(assignee, to_remove)
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).delete()
-        for model in StoreModel.objects.get(storeID=self.__model).owners.get_queryset():
+        for model in StoreModel.objects.filter(storeID=self.__model.storeID, owners=assignee.getModel()):
             if assignee.getModel() == model:
                 model.delete()
         StoreAppointersModel.objects.get(storeID=self.__model, assigner=assigner.getModel(),
@@ -496,7 +499,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return self.__permissions.values()
+        return permissions.first()
 
     def addTransaction(self, transaction):
         TransactionsInStoreModel.objects.get_or_create(storeID=self.__model, transactionID=transaction.getModel())
@@ -582,8 +585,9 @@ class Store:
         if not ProductModel.objects.filter(product_id=productId).exists():
             raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         product_model = ProductModel.objects.get(product_id=productId)
-        ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity += quantity
-        ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).save()
+        product_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
+        product_to_change.quantity += quantity
+        product_to_change.save()
 
     def hasRole(self, user):
         return user in self.getStoreOwners() or user in self.getStoreManagers()
