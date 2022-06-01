@@ -16,8 +16,7 @@ class MyTestCase(unittest.TestCase):
         self.discountCategory = CategoryDiscount(0, "Electric", 0.5)
         self.discountProduct = ProductDiscount(1, 0, 0.85)
         self.discountStore = StoreDiscount(3, 0.1)
-        self.discountComposite = DiscountComposite(5, self.discountCategory.getModel(), self.discountProduct.getModel(),
-                                                   'Max', 1)
+        self.discountComposite = DiscountComposite(5, self.discountCategory, self.discountProduct, 'Max')
 
         self.rule1 = PriceRule(0, 'Store', None, 200, 1000, 'Discount')
         self.rule2 = quantityRule(1, 'Product', 1, 0, 1000, 'Discount')

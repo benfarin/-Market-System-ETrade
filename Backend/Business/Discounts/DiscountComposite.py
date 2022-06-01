@@ -18,7 +18,8 @@ class DiscountComposite:
         # self.__discountType = discountType
         # self.__decide = decide
         if model is None:
-            self.__model = DiscountModel.objects.get_or_create(discountID=discountId, dID1=discount1, dID2=discount2,
+            self.__model = DiscountModel.objects.get_or_create(discountID=discountId, dID1=discount1.getModel(),
+                                                               dID2=discount2.getModel(),
                                                                composite_type=discountType, decide=decide,
                                                                type='Composite')[0]
         else:
@@ -63,6 +64,16 @@ class DiscountComposite:
         else:
             raise Exception("no such discount type")
 
+    def check(self, bag):
+        discount1 = self.__buildDiscountObject(self.__model.dID1)
+        discount2 = self.__buildDiscountObject(self.__model.dID2)
+        return discount1.check(bag) and discount2.check(bag)
+
+    def getTotalPrice(self, bag):
+        discount1 = self.__buildDiscountObject(self.__model.dID1)
+        discount2 = self.__buildDiscountObject(self.__model.dID2)
+        return discount1.getTotalPrice(bag) + discount2.getTotalPrice(bag)
+
     def getDiscountId(self):
         return self.__model.discountID
 
@@ -77,11 +88,13 @@ class DiscountComposite:
 
     def __buildDiscountObject(self, discount_model):
         if discount_model.type == 'Product':
-            return ProductDiscount(discount_model.discountID, discount_model.productID, discount_model.percent)
+            return ProductDiscount(model=discount_model)
         elif discount_model.type == 'Category':
-            return CategoryDiscount(discount_model.discountID, discount_model.category, discount_model.percent)
-        else:  # discount_model.type == 'Store'
-            return StoreDiscount(discount_model.discountID, discount_model.percent)
+            return CategoryDiscount(model=discount_model)
+        elif discount_model.type == 'Store':
+            return StoreDiscount(model=discount_model)
+        else:
+            return DiscountComposite(model=discount_model)
 
     def remove(self):
         self.__model.delete()
