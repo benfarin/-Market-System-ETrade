@@ -186,21 +186,21 @@ class Member(User):
     @threaded
     def updateProductPrice(self, storeID, productId, newPrice):
         try:
-            return self.__market.updateProductPrice(storeID, self, productId, newPrice)
+            return self.__market.updateProductPrice(self, storeID, productId, newPrice)
         except Exception as e:
             raise Exception(e)
 
     @threaded
     def updateProductName(self, storeID, productID, newName):
         try:
-            return self.__market.updateProductName(storeID, self, productID, newName)
+            return self.__market.updateProductName(self, storeID, productID, newName)
         except Exception as e:
             raise Exception(e)
 
     @threaded
     def updateProductCategory(self, storeID, productID, newCategory):
         try:
-            return self.__market.updateProductName(storeID, self, productID, newCategory)
+            return self.__market.updateProductCategory(self, storeID, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 
@@ -239,55 +239,6 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def addDiscount(self, storeId, discount):
-        try:
-            return self.__market.addDiscount(storeId, self, discount)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def removeDiscount(self, storeId, discountId):
-        try:
-            return self.__market.removeDiscount(storeId, self, discountId)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountAdd(self, storeId, dId, dId1, dId2):
-        try:
-            return self.__market.addConditionDiscountAdd(storeId, self, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountMax(self, storeId, dId, dId1, dId2):
-        try:
-            return self.__market.addConditionDiscountMax(storeId, self, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountXor(self, storeId, discountId, dId, pred1, pred2, decide):
-        try:
-            return self.__market.addConditionDiscountXor(storeId, self, discountId, dId, pred1, pred2, decide)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountAnd(self, storeId, discountId, dId, pred1, pred2):
-        try:
-            return self.__market.addConditionDiscountAnd(storeId, self, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
-    def addConditionDiscountOr(self, storeId, discountId, dId, pred1, pred2):
-        try:
-            return self.__market.addConditionDiscountOr(storeId, self, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
-    @threaded
     def hasRole(self):
         try:
             return self.__market.hasRole(self)
@@ -298,5 +249,47 @@ class Member(User):
     def hasDiscountPermission(self, storeId):
         try:
             return self.__market.hasDiscountPermission(self, storeId)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addSimpleDiscount(self, storeId, discount):
+        try:
+            return self.__market.addSimpleDiscount(self, storeId, discount)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount, decide):
+        try:
+            return self.__market.addCompositeDiscount(self, storeId, discountId, dId1, dId2, typeDiscount, decide)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeDiscount(self, storeId, discountId):
+        try:
+            return self.__market.removeDiscount(self, storeId, discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addSimpleRule(self, storeId, dId, rule):
+        try:
+            return self.__market.addSimpleRule(self, storeId, dId, rule)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def addCompositeRule(self, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
+        try:
+            return self.__market.addCompositeRule(self, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeRule(self, storeId, dId, rId, ruleKind):
+        try:
+            return self.__market.removeRule(self, storeId, dId, rId, ruleKind)
         except Exception as e:
             raise Exception(e)

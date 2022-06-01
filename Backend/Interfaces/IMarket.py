@@ -63,7 +63,7 @@ class IMarket(Interface):
     def addProductToStore(self, storeID, user, product):  # Tested
         pass
 
-    def updateProductPrice(self, storeID, user, productId, mewPrice):
+    def updateProductPrice(self, user, StoreId, productId, mewPrice):
         pass
 
     def updateProductWeight(self, user, storeID, productID, newWeight):
@@ -136,29 +136,23 @@ class IMarket(Interface):
     def recreateStore(self, storeID, founder):
         pass
 
-    def addDiscount(self, storeId, user, discount):
-        pass
-
-    def removeDiscount(self, storeId, user, discountId):
-        pass
-
-    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
-        pass
-
-    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
-        pass
-
     def updateCart(self, cart1, cart2):
         pass
 
-    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
+    def addSimpleDiscount(self, user,storeId, discount):
         pass
 
-    def addConditionDiscountAnd(self, storeId, user, dId, discountId, pred1, pred2):
+    def addCompositeDiscount(self, user ,storeId, discountId, dId1, dId2, typeDiscount, decide):
         pass
 
-    def addConditionDiscountXor(self, storeId, user, dId, discountId, pred1, pred2, decide):
+    def removeDiscount(self, user, storeId, discountId):
         pass
 
-    def hasDiscountPermission(self, user, storeId):
+    def addSimpleRule(self, user, storeId, dId, rule):
+        pass
+
+    def addCompositeRule(self, user, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
+        pass
+
+    def removeRule(self, user, storeId, dId, rId, ruleKind):
         pass

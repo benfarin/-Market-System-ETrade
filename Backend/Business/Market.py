@@ -158,6 +158,12 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
+    def __checkRules(self, rules, bag):
+        for rule in rules.values():
+            if not rule.check(bag):
+                return False
+        return True
+
     # need to remember that if a user add the product to the cart, then the product is in the stock.
     def purchaseCart(self, user, bank):
         try:
@@ -170,9 +176,16 @@ class Market:
             totalAmount = 0.0
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
+                bag = cart.getBag(storeId)
+                rules = self.__stores.get(storeId).getAllRules()
+                isValidPurchase = self.__checkRules(rules, bag)   # check that all the purchase rules are valid
+                if not isValidPurchase:
+                    break
+
                 storeName = self.__stores.get(storeId).getStoreName()
                 storeBank = self.__stores.get(storeId).getStoreBankAccount()
-                storeAmount = cart.calcSumOfBag(storeId)
+                discounts = self.__stores.get(storeId).getAllDiscounts()
+                storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
                 paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
@@ -273,16 +286,28 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addProductToStore(self, storeID, user, product):  # Tested
+    def addSimpleDiscount(self,user, storeId, discount):
         try:
-            self.__stores.get(storeID).addProductToStore(user, product)
+            self.__stores.get(storeId).addSimpleDiscount(user,discount)
             return True
         except Exception as e:
             raise Exception(e)
 
-    def updateProductPrice(self, storeID, user, productId, mewPrice):
+    def addCompositeDiscount(self, user,storeId, discountId, dId1, dId2, typeDiscount, decide):
         try:
-            self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
+            return self.__stores.get(storeId).addCompositeDiscount(user,discountId, dId1, dId2, typeDiscount, decide)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeDiscount(self,user,storeId, discountId):
+        try:
+            return self.__stores.get(storeId).removeDiscount(user,discountId)
+        except Exception as e:
+            raise Exception(e)
+
+    def addProductToStore(self, storeID, user, product):  # Tested
+        try:
+            self.__stores.get(storeID).addProductToStore(user, product)
             return True
         except Exception as e:
             raise Exception(e)
@@ -364,24 +389,27 @@ class Market:
             if self.__stores.get(storeID) is None:
                 user.getCart().removeBag(storeID)
 
+    def updateProductPrice(self, user, storeID, productId, mewPrice):
+        try:
+            return self.__stores.get(storeID).updateProductPrice(user, productId, mewPrice)
+        except Exception as e:
+            raise Exception(e)
+
     def updateProductName(self, user, storeID, productID, newName):
         try:
-            self.__stores.get(storeID).updateProductName(user, productID, newName)
-            return True
+            return self.__stores.get(storeID).updateProductName(user, productID, newName)
         except Exception as e:
             raise Exception(e)
 
     def updateProductCategory(self, user, storeID, productID, newCategory):
         try:
-            self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
-            return True
+            return self.__stores.get(storeID).updateProductCategory(user, productID, newCategory)
         except Exception as e:
             raise Exception(e)
 
     def updateProductWeight(self, user, storeId, productID, newWeight):
         try:
-            self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
-            return True
+            return self.__stores.get(storeId).updateProductWeight(user, productID, newWeight)
         except Exception as e:
             raise Exception(e)
 
@@ -426,67 +454,35 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addDiscount(self, storeId, user, discount):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addDiscount(user, discount)
-        except Exception as e:
-            raise Exception(e)
-
-    def removeDiscount(self, storeId, user, discountId):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).removeDiscount(user, discountId)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountAdd(self, storeId, user, dId, dId1, dId2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountAdd(user, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountMax(self, storeId, user, dId, dId1, dId2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountMax(user, dId, dId1, dId2)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountXor(self, storeId, user, discountId, dId, pred1, pred2, decide):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountXor(user, discountId, dId, pred1, pred2, decide)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountAnd(self, storeId, user, discountId, dId, pred1, pred2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountAnd(user, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
-    def addConditionDiscountOr(self, storeId, user, discountId, dId, pred1, pred2):
-        try:
-            if storeId not in self.__stores.keys():
-                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
-            self.__stores.get(storeId).addConditionDiscountOr(user, discountId, dId, pred1, pred2)
-        except Exception as e:
-            raise Exception(e)
-
     def hasDiscountPermission(self, user, storeId):
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
             return self.__stores.get(storeId).hasDiscountPermission(user)
+        except Exception as e:
+            raise Exception(e)
+
+    def addSimpleRule(self, user, storeId, dId, rule):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).addSimpleRule(user, dId, rule)
+        except Exception as e:
+            raise Exception(e)
+
+    def addCompositeRule(self, user, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).addCompositeRule(user, dId, ruleId, rId1, rId2, ruleType, ruleKind)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeRule(self, user, storeId, dId, rId, ruleKind):
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).removeRule(user, dId, rId, ruleKind)
         except Exception as e:
             raise Exception(e)
 
@@ -507,3 +503,5 @@ class Market:
             utId = self.__userTransactionIdCounter
             self.__userTransactionIdCounter += 1
             return utId
+
+

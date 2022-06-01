@@ -45,8 +45,8 @@ class MarketRealBridge:
     def remove_product_from_store(self, store_id, user_id, prod_id):
         return self._roleService.removeProductFromStore(store_id, user_id, prod_id)
 
-    def edit_product_price(self, store_id, user_id, prod_id, new_price):
-        return self._roleService.updateProductPrice(store_id, user_id, prod_id, new_price)
+    def edit_product_price(self, user_id, store_id, prod_id, new_price):
+        return self._roleService.updateProductPrice(user_id, store_id, prod_id, new_price)
 
     def edit_product_Weight(self, user_id, store_id, prod_id, new_weight):
         return self._roleService.updateProductWeight(user_id, store_id, prod_id, new_weight)
@@ -56,6 +56,9 @@ class MarketRealBridge:
 
     def appoint_store_manager(self, store_id, assigner_id, assignee_id):
         return self._roleService.appointManagerToStore(store_id, assigner_id, assignee_id)
+
+    def removeStoreOwner(self, storeId, assignerId, assigneeName):
+        return self._roleService.removeStoreOwner(storeId, assignerId, assigneeName)
 
     def set_stock_manager_perm(self, store_id, assigner_id, assignee_id):
         return self._roleService.setStockManagerPermission(store_id, assigner_id, assignee_id)
@@ -88,57 +91,126 @@ class MarketRealBridge:
         return self._memberService.removeStore(store_id, user_id)
 
     def addSimpleDiscount_Store(self, userId, storeId, precent):
-        return self._roleService.addSimpleDiscount_Store(userId, storeId, precent)
+        return self._roleService.addStoreDiscount(userId, storeId, precent)
 
-    def addSimpleConditionDiscount_Store(self, userId, storeId, condition, precent, fromVal, toVal):
-        return self._roleService.addSimpleConditionDiscount_Store(userId, storeId, condition, precent, fromVal, toVal)
+    def addSimpleDiscount_Category(self, userId, storeId, category,precent):
+        return self._roleService.addCategoryDiscount(userId, storeId, category,precent)
 
-    def addSimpleDiscount_Category(self, userId, storeId, precent, category):
-        return self._roleService.addSimpleDiscount_Category(userId, storeId, precent, category)
-
-    def addSimpleConditionDiscount_Category(self, userId, storeId, precent, condition, category, fromVal, toVal):
-        return self._roleService.addSimpleConditionDiscount_Category(userId, storeId, precent, condition, category, fromVal, toVal)
-
-    def addSimpleDiscount_Product(self, userId, storeId, precent, productId):
-        return self._roleService.addSimpleDiscount_Product(userId, storeId, precent, productId)
-
-    def addSimpleConditionDiscount_Product(self, userId, storeId, precent, condition, productId, fromVal, toVal):
-        return self._roleService.addSimpleConditionDiscount_Product(userId, storeId, precent, condition, productId, fromVal, toVal)
+    def addSimpleDiscount_Product(self, userId, storeId,productId,precent):
+        return self._roleService.addProductDiscount(userId, storeId, productId,precent)
 
     def addConditionDiscountAdd(self, userId, storeId, dId1, dId2):
-        return self._roleService.addConditionDiscountAdd(userId, storeId, dId1, dId2)
+        return self._roleService.addCompositeDiscountAdd(userId, storeId, dId1, dId2)
 
     def addConditionDiscountMax(self, userId, storeId, dId1, dId2):
-        return self._roleService.addConditionDiscountMax(userId, storeId, dId1, dId2)
+        return self._roleService.addCompositeDiscountMax(userId, storeId, dId1, dId2)
 
-    def addConditionDiscountXor(self, userId, storeId, dId, pred1, pred2, decide):
-        return self._roleService.addConditionDiscountXor(userId, storeId, dId, pred1, pred2, decide)
-
-    def addConditionDiscountAnd(self, userId, storeId, dId, pred1, pred2):
-        return self._roleService.addConditionDiscountAnd(userId, storeId, dId, pred1, pred2)
-
-    def addConditionDiscountOr(self, userId, storeId, dId, pred1, pred2):
-        return self._roleService.addConditionDiscountOr(userId, storeId, dId, pred1, pred2)
+    def addConditionDiscountXor(self, userId, storeId, dId1, dId2, decide):
+        return self._roleService.addCompositeDiscountXor(userId, storeId, dId1, dId2, decide)
 
     def removeDiscount(self,  userId, storeId, discountId):
         return self._roleService.removeDiscount(userId, storeId, discountId)
 
-    def createProductWeightRule(self, uid, sid, pid, less_than, bigger_than):
-        return self._roleService.createProductWeightRule(uid, sid, pid, less_than, bigger_than)
+    def addStoreTotalAmountDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreTotalAmountDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def createStoreWeightRule(self,uid, storeId, less_than, bigger_than):
-        return self._roleService.createStoreWeightRule(uid, storeId, less_than, bigger_than)
+    def addStoreQuantityDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreQuantityDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def createStoreQuantityRule(self,userId, storeId, less_than, bigger_than):
-        return self._roleService.createStoreQuantityRule(userId, storeId, less_than, bigger_than)
+    def addCategoryQuantityDiscountRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        return self._roleService.addCategoryQuantityDiscountRule(userId, storeId, discountId, category, atLeast, atMost)
 
-    def createCategoryRule(self,userId, storeId, category, less_than, bigger_than):
-        return self._roleService.createCategoryRule(userId, storeId, category, less_than, bigger_than)
+    def addProductQuantityDiscountRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        return self._roleService.addProductQuantityDiscountRule(userId, storeId, discountId, productId, atLeast, atMost)
 
-    def createProductRule(self,userId, storeId, pid, less_than, bigger_than):
-        return self._roleService.createProductRule(userId, storeId, pid, less_than, bigger_than)
+    def addStoreWeightDiscountRule(self, userId, storeId, discountId, atLeast, atMost):
+        return self._roleService.addStoreWeightDiscountRule(userId, storeId, discountId, atLeast, atMost)
 
-    def createStoreTotalAmountRule(self, userId, storeId, less_than, bigger_than):
-        return self._roleService.createStoreTotalAmountRule(userId, storeId, less_than, bigger_than)
+    def addCategoryWeightDiscountRule(self, userId, storeId, discountId, category, atLeast, atMost):
+        return self._roleService.addCategoryWeightDiscountRule(userId, storeId, discountId, category, atLeast, atMost)
+
+    def addProductWeightDiscountRule(self, userId, storeId, discountId, productId, atLeast, atMost):
+        return self._roleService.addProductWeightDiscountRule(userId, storeId, discountId, productId, atLeast, atMost)
+
+    def addCompositeRuleDiscountAnd(self, userId, storeId, dId, rId1, rId2):
+        return self._roleService.addCompositeRuleDiscountAnd(userId, storeId, dId, rId1, rId2)
+
+    def addCompositeRuleDiscountOr(self, userId, storeId, dId, rId1, rId2):
+        return self._roleService.addCompositeRuleDiscountOr(userId, storeId, dId, rId1, rId2)
+
+    def removeRuleDiscount(self, userId, storeId, dId, rId):
+        return self._roleService.removeRuleDiscount(userId, storeId, dId, rId)
+
+    # purchase rules
+    def addStoreTotalAmountPurchaseRule(self, userId, storeId, atLeast, atMost):
+        return self._roleService.addStoreTotalAmountPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addStoreQuantityPurchaseRule(self, userId, storeId, atLeast, atMost):
+        return self._roleService.addStoreQuantityPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addCategoryQuantityPurchaseRule(self, userId, storeId, category, atLeast, atMost):
+        return self._roleService.addCategoryQuantityPurchaseRule(userId, storeId, category, atLeast,
+                                                                  atMost)
+
+    def addProductQuantityPurchaseRule(self, userId, storeId, productId, atLeast, atMost):
+        return self._roleService.addProductQuantityPurchaseRule(userId, storeId, productId, atLeast,
+                                                                 atMost)
+
+    def addStoreWeightPurchaseRule(self, userId, storeId, atLeast, atMost):
+        return self._roleService.addStoreWeightPurchaseRule(userId, storeId, atLeast, atMost)
+
+    def addCategoryWeightPurchaseRule(self, userId, storeId, category, atLeast, atMost):
+        return self._roleService.addCategoryWeightPurchaseRule(userId, storeId, category, atLeast, atMost)
+
+    def addProductWeightPurchaseRule(self, userId, storeId, productId, atLeast, atMost):
+        return self._roleService.addProductWeightPurchaseRule(userId, storeId, productId, atLeast, atMost)
+
+    def addCompositeRulePurchaseAnd(self, userId, storeId, rId1, rId2):
+        return self._roleService.addCompositeRulePurchaseAnd(userId, storeId, rId1, rId2)
+
+    def addCompositeRulePurchaseOr(self, userId, storeId, rId1, rId2):
+        return self._roleService.addCompositeRulePurchaseOr(userId, storeId, rId1, rId2)
+
+    def removeRulePurchase(self, userId, storeId, rId):
+        return self._roleService.removeRulePurchase(userId, storeId, rId)
+
+    def appoint_owner_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setAppointOwnerPermission(store_id, assigner_id, assignee_name)
+
+    def set_roles_info_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setRolesInformationPermission(store_id, assigner_id, assignee_name)
+
+    def set_purchase_history_info_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setPurchaseHistoryInformationPermission(store_id, assigner_id, assignee_name)
+
+    def set_discount_perm(self, store_id, assigner_id, assignee_name):
+        return self._roleService.setDiscountPermission(store_id, assigner_id, assignee_name)
+
+    def remove_member(self, admin_name, member_name):
+        return self._roleService.removeMember(admin_name, member_name)
+
+    def get_all_store_trans(self, admin_name):
+        return self._roleService.getAllStoreTransactions(admin_name)
+
+    def get_all_user_trans(self, admin_name):
+        return self._roleService.getAllUserTransactions(admin_name)
+
+    def get_user_tran(self, admin_name, tran_id):
+        return self._roleService.getUserTransaction(admin_name, tran_id)
+
+    def get_store_tran_by_store_id(self, admin_name, store_id):
+        return self._roleService.getStoreTransactionByStoreId(admin_name, store_id)
+
+    def get_all_rules(self, user_id, store_id):
+        return self._roleService.getAllRules(user_id, store_id)
+
+
+
+
+
+
+
+
+
 
 

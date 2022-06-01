@@ -113,27 +113,31 @@ class IStore(Interface):
     def getTransactionsForSystemManager(self):
         pass
 
-    def addDiscount(self, user, discount):
-        pass
-
-    def removeDiscount(self, user, discountId):
-        pass
-
-    def addConditionDiscountAdd(self, user, dId, dId1, dId2):
-        pass
-
-    def addConditionDiscountMax(self, user, dId, dId1, dId2):
-        pass
-
-    def addConditionDiscountOr(self, user, discountId, dId, pred1, pred2):
-        pass
-
-    def addConditionDiscountAnd(self, user, discountId, dId, pred1, pred2):
-        pass
-
-    def addConditionDiscountXor(self, user, discountId, dId, pred1, pred2, decide):
-        pass
-
     def hasDiscountPermission(self, user):
         pass
+
+    def addSimpleDiscount(self, user, discount):
+        pass
+
+    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):
+        pass
+
+    def removeDiscount(self, user, dId):
+        pass
+
+    def getAllDiscounts(self):
+        pass
+
+    def getAllRules(self):
+        pass
+
+    def addSimpleRuleDiscount(self, user, dId, rule):
+        pass
+
+    def addCompositeRuleDiscount(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):
+        pass
+
+    def removeRuleDiscount(self, user, dId, rId):
+        pass
+
 

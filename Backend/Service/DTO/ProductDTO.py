@@ -28,6 +28,9 @@ class ProductDTO:
     def getProductCategory(self):
         return self.__category
 
+    def getProductWeight(self):
+        return self.__wight
+
     def getKeyWords(self):
         return self.__keywords
 
