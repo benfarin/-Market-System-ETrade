@@ -41,6 +41,9 @@ class Market:
     def __init__(self):
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
+
+        ###IN CASE OF PROBLEM PUT NEXT LINES IN COMMENT:
+
         if StoreModel.objects.all().exists():
             for store_model in StoreModel.objects.filter(is_active=True):
                 store = self.__buildStore(store_model)
@@ -63,6 +66,8 @@ class Market:
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
+
+        ###UNTILL HERE
 
         if Market.__instance is None:
             Market.__instance = self
@@ -100,13 +105,13 @@ class Market:
                 user.getCart().addProduct(storeID, product, quantity)
                 return True
             else:
-                raise QuantityException("The quantity " + quantity + " is not available")
+                raise QuantityException("The quantity " + str(quantity) + " is not available")
         except Exception as e:
             raise Exception(e)
 
     def __getStoreByProductID(self, productID):
         for store in self.__stores.values():
-            if store.getProductFromStore(productID) is not None:
+            if store.hasProduct(productID) is not False:
                 return store
         raise ProductException("There no product id :" + productID + " in the market!")
 
@@ -393,6 +398,7 @@ class Market:
             founderId = self.__stores.get(storeID).getStoreFounderId()
             if founderId != user.getUserID():
                 raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__stores.get(storeID).closeStore()
             self.__removedStores[storeID] = self.__stores.get(storeID)
             self.__stores.pop(storeID)
             return True
@@ -407,6 +413,7 @@ class Market:
             if founderId != founder.getUserID():
                 raise NotFounderException(
                     "user: " + founder.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__removedStores.get(storeID).recreateStore()
             self.__stores[storeID] = self.__removedStores.get(storeID)
             self.__removedStores.pop(storeID)
             return True
@@ -533,5 +540,8 @@ class Market:
             utId = self.__userTransactionIdCounter
             self.__userTransactionIdCounter += 1
             return utId
+
+    def __buildStore(self, model):
+        s.Store(model=model)
 
 

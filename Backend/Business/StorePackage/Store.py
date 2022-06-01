@@ -153,6 +153,7 @@ class Store:
                 return self._buildProduct(prod.productID)
         raise ProductException("product not in store")
 
+
     def setStockManagementPermission(self, assigner, assignee):
         try:
             if assignee not in self.getStoreManagers() and assignee not in self.getStoreOwners():
@@ -580,15 +581,17 @@ class Store:
                 toReturnProducts.append(product)
         return toReturnProducts
 
-    def addProductToBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
+    def addProductToBag(self, productId, quantity):
         product_model = ProductModel.objects.get(product_id=productId)
         if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
             raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
         if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
             raise ProductException("cannot add a negative quantity to bag")
         else:
-            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity -= quantity
-            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).save()
+            quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
+            quantity_to_change.quantity -= quantity
+            quantity_to_change.save()
+            return True
 
     def removeProductFromBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
         if not ProductModel.objects.filter(product_id=productId).exists():
@@ -745,6 +748,14 @@ class Store:
             RulesInStoreModel.objects.get(storeID=self.__model, ruleID=rule_model).delete()
         else:
             raise Exception("rule kind is illegal")
+
+    def closeStore(self):
+        self.__model.is_active = False
+        self.__model.save()
+
+    def recreateStore(self):
+        self.__model.is_active = True
+        self.__model.save()
 
     def removeStore(self):
         self.__model.owners.remove()
