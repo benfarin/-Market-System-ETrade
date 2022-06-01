@@ -10,22 +10,22 @@ from Backend.Business.StorePackage.Store import Store
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        bank = Bank(1, 1)
-        address = Address("Israel", "Tel Aviv", "s", 1, 0)
+        self.bank = Bank(1, 1)
+        self.address = Address("Israel", "Tel Aviv", "s", 1, 0)
 
-        self.founder = Member("kfir1", "1234", "012", address, bank)
-        self.store = Store(0, "kfir store", self.founder, bank, address)
+        self.founder = Member("kfir0", "1234", "012", self.address, self.bank)
+        self.store = Store(0, "kfir store", self.founder, self.bank, self.address)
 
-        self.member1 = Member("kfir1", "1234", "012", address, bank)
-        self.member2 = Member("kfir2", "1234", "012", address, bank)
-        self.member3 = Member("kfir3", "1234", "012", address, bank)
-        self.member4 = Member("kfir4", "1234", "012", address, bank)
+        self.member1 = Member("kfir1", "1234", "012", self.address, self.bank)
+        self.member2 = Member("kfir2", "1234", "012", self.address, self.bank)
+        self.member3 = Member("kfir3", "1234", "012", self.address, self.bank)
+        self.member4 = Member("kfir4", "1234", "012", self.address, self.bank)
 
-        self.product1 = Product(0, 0, "tara milk 5%", 10.0, "dairy", ["drink", "tara", "5%"])
-        self.product2 = Product(1, 0,  "beef", 20.0, "meat", ["cow"])
-        self.product3 = Product(2, 0,  "milk", 7.0, "dairy", ["drink"])
-        self.product4 = Product(3, 0, "yogurt", 15.5, "dairy", ["goat"])
-        self.product5 = Product(4, 0, "milk", 1.0, "dairy", [])
+        self.product1 = Product(0, 0, "tara milk 5%", 10.0, "dairy", 0.5, ["drink", "tara", "5%"])
+        self.product2 = Product(1, 0,  "beef", 20.0, "meat", 2,  ["cow"])
+        self.product3 = Product(2, 0,  "milk", 7.0, "dairy", 0.3, ["drink"])
+        self.product4 = Product(3, 0, "yogurt", 15.5, "dairy", 0.1, ["goat"])
+        self.product5 = Product(4, 0, "milk", 1.0, "dairy",  0.3, [])
 
         # after the appointers we will get: manager = [user1->user2, founder->user1],
         #                                   owners = [founder, founder -> user1, user1->user3]
@@ -172,6 +172,24 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(5, self.store.getProductQuantity().get(self.product4.getProductId()))
         self.store.removeProductFromBag(self.product4.getProductId(), 5)
         self.assertEqual(10, self.store.getProductQuantity().get(self.product4.getProductId()))
+
+    def tearDown(self):
+        self.bank.removeBank()
+        self.address.removeAddress()
+
+        self.founder.removeMember()
+        self.store.removeStore()
+
+        self.member1.removeMember()
+        self.member2.removeMember()
+        self.member3.removeMember()
+        self.member4.removeMember()
+
+        self.product1.removeProduct()
+        self.product2.removeProduct()
+        self.product3.removeProduct()
+        self.product4.removeProduct()
+        self.product5.removeProduct()
 
 
 if __name__ == '__main__':

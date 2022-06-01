@@ -9,9 +9,9 @@ class ProductModel(models.Model):
     product_id = models.IntegerField(primary_key=True)
     storeId = models.IntegerField()
     name = models.CharField(max_length=100)
-    price = models.IntegerField()
+    price = models.FloatField()
     category = models.CharField(max_length=100)
-    weight = models.IntegerField()
+    weight = models.FloatField()
 
 
 class ProductKeyword(models.Model):

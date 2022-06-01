@@ -1,10 +1,10 @@
-from ModelsBackend.models import BankModel
+
 import os, django
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
-
+from ModelsBackend.models import BankModel
 class Bank:
 
     def __init__(self, accountNumber, branch):

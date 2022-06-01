@@ -400,13 +400,14 @@ class Store:
             raise PermissionException("User ", assigner.getUserID(),
                                       " doesn't have the permission - appoint owner in store: ",
                                       self.__name)
-        owners = StoreModel.objects.filter(storeID=self.__model).model.owners.get_queryset()
-        managers = StoreModel.objects.filter(storeID=self.__model).model.managers.get_queryset()
-        if assigner.getModel() not in owners:
+        is_assigner_in_owners = StoreModel.objects.filter(storeID=self.__model.storeID, owners=assigner.getModel())
+        # managers = StoreModel.objects.filter(storeID=self.__model.storeID, managers=assigner.getModel())
+        if not is_assigner_in_owners.exists():
             raise PermissionException("User ", assigner.getUserID(), "cannot add manager to store: ", self.__name,
                                       "because he is not a store owner")
         # this constrains is also covert the constrains that for each owner there is 1 assigner
-        if assignee.getModel() in owners:
+        is_assignee_in_owners = StoreModel.objects.filter(storeID=self.__model.storeID, owners=assignee.getModel())
+        if is_assignee_in_owners.exists():
             raise Exception("User ", assignee.getUserID(), "is all ready a owner in store: ", self.__name)
             # to avoid circularity
 
@@ -418,19 +419,27 @@ class Store:
                                       self.__name)
 
         self.__model.owners.add(assignee.getModel())
-        StoreAppointersModel.objects.get_or_create(assigner=assigner.getModel(), assingee=assignee.getModel())
+        StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(), assingee=assignee.getModel())
 
         if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
             StoreUserPermissionsModel(storeID=self.__model, userID=assignee.getModel()).save()
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).stockManagement = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).appointManager = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).appointOwner = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).changePermission = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).rolesInformation = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model,
-                                              userID=assignee.getModel()).purchaseHistoryInformation = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).discount = True
-        StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).save()
+
+        assignee_permissions = StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel())
+        assignee_permissions.stockManagement = True
+        assignee_permissions.save()
+        assignee_permissions.appointManager = True
+        assignee_permissions.save()
+        assignee_permissions.appointOwner = True
+        assignee_permissions.save()
+        assignee_permissions.changePermission = True
+        assignee_permissions.save()
+        assignee_permissions.rolesInformation = True
+        assignee_permissions.save()
+        assignee_permissions.purchaseHistoryInformation = True
+        assignee_permissions.save()
+        assignee_permissions.discount = True
+        assignee_permissions.save()
+
 
     # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):

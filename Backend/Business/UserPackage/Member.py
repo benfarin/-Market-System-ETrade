@@ -320,5 +320,5 @@ class Member(User):
         return isinstance(other, Member) and self.__m == other.getModel()
 
     def __hash__(self):
-        return hash(self.__m.userName)
+        return hash(self.__m.userid)
 

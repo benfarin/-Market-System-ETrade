@@ -138,7 +138,7 @@ class User:
             return None
 
     def is_authenticated(self):
-        return self._model.is_authenticated
+        return self.__model.is_authenticated
 
     @staticmethod
     def save(username, password):
@@ -149,5 +149,11 @@ class User:
         m_User.objects.create_superuser(username=username, password=password)
 
     def getModel(self):
-        return self._model
+        return self.__model
+
+    # def __eq__(self, other):
+    #     return isinstance(other, User) and self.__model == other.getModel()
+    #
+    # def __hash__(self):
+    #     return hash(self.__model.userid)
 
