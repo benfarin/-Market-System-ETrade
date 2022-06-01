@@ -542,6 +542,6 @@ class Market:
             return utId
 
     def __buildStore(self, model):
-        s.Store(model=model)
+        return s.Store(model=model)
 
 

@@ -1,6 +1,6 @@
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from typing import Dict
-from ModelsBackend.models import UserTransactionModel, StoreTransactionsInUserTransactions
+from ModelsBackend.models import UserTransactionModel, StoreTransactionsInUserTransactions, StoreTransactionModel
 import datetime
 
 
@@ -12,12 +12,13 @@ class UserTransaction:
         # self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
         # self.__storeTransactions: Dict[int: StoreTransaction] = storeTransactions
         # self.__totalAmount = totalAmount
-        self.__ut = UserTransactionModel(userID=userID, transactionId=transactionId, paymentId=paymentId,
-                                         date=datetime.datetime.now(), totalAmount=totalAmount)
+        self.__ut = UserTransactionModel.objects.get_or_create(userID=userID, transactionId=transactionId, paymentId=paymentId,
+                                         date=datetime.datetime.now(), totalAmount=totalAmount)[0]
         self.__ut.save()
         for st in storeTransactions:
+            model = StoreTransactionModel.objects.get(transactionId=st)
             StoreTransactionsInUserTransactions.objects.get_or_create(userTransaction_id=self.__ut,
-                                                                      storeTransaction_id=st.getModel())
+                                                                      storeTransaction_id=model)
 
     def getUserId(self):
         return self.__ut.userID

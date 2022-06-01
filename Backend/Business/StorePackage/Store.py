@@ -57,8 +57,23 @@ class Store:
             self.__model = StoreModel.objects.get_or_create(storeID=storeId, name=storeName, founderId=founder.getModel(),
                                                             bankAccount=bankAccount.getModel(), address=address.getModel())[0]
             self.__model.owners.add(founder.getModel())
+
+            self.__permissions_model = \
+                StoreUserPermissionsModel.objects.get_or_create(userID=founder.getModel(), storeID=self.__model,
+                                                                appointManager=True,
+                                                                appointOwner=True, closeStore=True,
+                                                                stockManagement=True,
+                                                                changePermission=True, rolesInformation=True,
+                                                                purchaseHistoryInformation=True, discount=True)[0]
         else:
             self.__model = model
+            self.__permissions_model = \
+                StoreUserPermissionsModel.objects.get_or_create(userID=self.__model.founderId, storeID=self.__model,
+                                                                appointManager=True,
+                                                                appointOwner=True, closeStore=True,
+                                                                stockManagement=True,
+                                                                changePermission=True, rolesInformation=True,
+                                                                purchaseHistoryInformation=True, discount=True)[0]
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -81,12 +96,7 @@ class Store:
         # self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
         # self.__permissions[founder].setPermission_Discount(True)
 
-        self.__permissions_model = \
-            StoreUserPermissionsModel.objects.get_or_create(userID=founder.getModel(), storeID=self.__model,
-                                                            appointManager=True,
-                                                            appointOwner=True, closeStore=True, stockManagement=True,
-                                                            changePermission=True, rolesInformation=True,
-                                                            purchaseHistoryInformation=True, discount=True)[0]
+
 
     def getStoreId(self):
         return self.__model.storeID
@@ -758,6 +768,7 @@ class Store:
         self.__model.save()
 
     def removeStore(self):
+        StoreTransactionModel.objects.filter(storeId=self.__model.storeID).delete()
         self.__model.owners.remove()
         self.__model.managers.remove()
         self.__removeDiscount()

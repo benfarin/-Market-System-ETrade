@@ -27,7 +27,7 @@ class StoreTransactionModel(models.Model):
     storeName = models.CharField(max_length=100)
     transactionId = models.IntegerField(primary_key=True)
     paymentId = models.IntegerField()
-    date = models.DateField()
+    date = models.DateField(auto_now=True)
     amount = models.IntegerField()
 
 
@@ -40,7 +40,7 @@ class UserTransactionModel(models.Model):
     userID = models.UUIDField()
     transactionId = models.IntegerField(primary_key=True)
     paymentId = models.IntegerField()
-    date = models.DateField()
+    date = models.DateField(auto_now=True)
     totalAmount = models.IntegerField()
 
 
