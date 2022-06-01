@@ -1,3 +1,8 @@
+import os
+
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
 import zope
 
 from Backend.Business.Address import Address
@@ -12,6 +17,8 @@ from typing import Dict
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.SystemManager import SystemManager
 import bcrypt
+
+
 
 
 class UserManagment(object):

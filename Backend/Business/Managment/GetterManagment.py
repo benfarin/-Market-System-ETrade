@@ -1,4 +1,10 @@
+import os
+
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
 from Backend.Business.Market import Market
+
 
 
 class GetterManagment:

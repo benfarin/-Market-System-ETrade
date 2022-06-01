@@ -1,3 +1,8 @@
+import django, os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
+
 from Backend.Service.MemberService import MemberService
 from Backend.Service.RoleService import RoleService
 from Backend.Service.UserService import UserService

@@ -1,7 +1,12 @@
+import os
 import threading
 import unittest
 from collections import Counter
 
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
 from Backend.Business.Bank import Bank
 from Backend.Business.Address import Address
 from Backend.Business.UserPackage.Member import Member

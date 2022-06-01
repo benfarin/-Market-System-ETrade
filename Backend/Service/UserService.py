@@ -1,3 +1,8 @@
+import django, os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
+
 from Backend.Business.Managment.UserManagment import UserManagment
 from Backend.Business.Managment.GetterManagment import GetterManagment
 from Backend.Business.UserPackage.Member import Member

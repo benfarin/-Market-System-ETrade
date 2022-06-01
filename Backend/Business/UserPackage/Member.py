@@ -45,7 +45,7 @@ class Member(User):
         # self.__phone = phone  # string
         # self.__address : Address = address  # type address class
         # self.__bank :Bank = bank  # type bank
-        # self.__market: IMarket = m.Market.getInstance()
+        self.__market: IMarket = m.Market.getInstance()
         if model is None:
             self.__m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
                                                          member_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()),
@@ -94,7 +94,7 @@ class Member(User):
             raise Exception(e)
 
     def change_password(self, old_password, new_password):
-        if bcrypt.checkpw(old_password.encode('utf-8'), self.__password):
+        if bcrypt.checkpw(old_password.encode('utf-8'), self.__m.password):
             self.__m.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
             self.__m.save()
             return "Password changed succesfully!"

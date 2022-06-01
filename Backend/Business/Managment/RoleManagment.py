@@ -1,5 +1,8 @@
+import os , django
 import sys
 from datetime import datetime
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
 
 from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
 from Backend.Business.Discounts.DiscountComposite import DiscountComposite
@@ -14,6 +17,8 @@ from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.Rules.WeightRule import weightRule
 from Backend.Business.Rules.QuantityRule import quantityRule
 import threading
+
+
 
 
 class RoleManagment:
