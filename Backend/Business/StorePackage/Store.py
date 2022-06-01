@@ -360,7 +360,7 @@ class Store:
 
     def __checkPermissions_ChangeStock(self, user):
         permissions = StoreUserPermissionsModel.objects.filter(userID=user.getModel(), storeID=self.__model)
-        if permissions is None:
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ",
                                       self.__name)
         if not permissions.first().stockManagement:

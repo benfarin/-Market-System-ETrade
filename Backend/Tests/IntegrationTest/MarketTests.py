@@ -44,8 +44,6 @@ class MarketTests(unittest.TestCase):
         # storeId2 = 1, founder: member2
         self.assertEqual(1, self.__store2.getStoreId())
 
-        self.__store2.removeStore()
-
     def test_addProductToStore(self): ##WORKING
         self.test_createStore()
         self.assertTrue(self.__market.addProductToStore(0, self.__member1, self.__product1))
@@ -177,6 +175,7 @@ class MarketTests(unittest.TestCase):
         self.__member3.removeMember()
 
         self.__store.removeStore()
+        self.__store2.removeStore()
 
         self.__product1.removeProduct()
         self.__product2.removeProduct()

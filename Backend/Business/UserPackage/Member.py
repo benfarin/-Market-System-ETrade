@@ -13,7 +13,7 @@ from Backend.Interfaces.IMarket import IMarket
 import Backend.Business.Market as m
 from concurrent.futures import Future
 
-from ModelsBackend.models import MemberModel
+from ModelsBackend.models import MemberModel, CartModel, BagModel
 
 
 def call_with_future(fn, future, args, kwargs):
@@ -314,6 +314,8 @@ class Member(User):
             raise Exception(e)
 
     def removeMember(self):
+        CartModel.objects.filter(userid=self.__m.userid).delete()
+        BagModel.objects.filter(userId=self.__m.userid).delete()
         self.__m.delete()
 
     def __eq__(self, other):

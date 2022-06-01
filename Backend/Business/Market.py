@@ -42,7 +42,7 @@ class Market:
         """ Virtually private constructor. """
         self.__stores: Dict[int, IStore] = {}  # <id,Store> should check how to initial all the stores into dictionary
 
-        ###IN CASE OF PROBLEM PUT NEXT LINES IN COMMENT:
+        #IN CASE OF PROBLEM PUT NEXT LINES IN COMMENT:
 
         if StoreModel.objects.all().exists():
             for store_model in StoreModel.objects.filter(is_active=True):
