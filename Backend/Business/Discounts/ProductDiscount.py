@@ -101,11 +101,11 @@ class ProductDiscount:
         for prod in bag.getProducts():
             product = prod.product_ID
             if product.category == self.__model.category:
-                totalPrice += (1 - newPrices.get(product)) * product.price * \
-                              ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
+                totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * \
+                              ProductsInBagModel.objects.get(product_ID=product.getModel(), bag_ID=bag.getModel()).quantity
             else:
                 totalPrice += product.getProductPrice() * \
-                              ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
+                              ProductsInBagModel.objects.get(product_ID=product.getModel(), bag_ID=bag.getModel()).quantity
         return totalPrice
 
     def getDiscountId(self):

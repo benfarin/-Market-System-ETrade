@@ -83,8 +83,8 @@ class StoreDiscount:
         newPrices = self.calculate(bag)
         totalPrice = 0.0
         for product in bag.getProducts():
-            totalPrice += (1 - newPrices.get(product)) * product.price * \
-                          ProductsInBagModel.objects.get(product_ID=product, bag=bag).quantity
+            totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * \
+                          ProductsInBagModel.objects.get(product_ID=product.getModel(), bag_ID=bag.getModel()).quantity
         return totalPrice
 
         # newPrices = self.calculate(bag)
