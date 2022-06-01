@@ -107,9 +107,9 @@ class MemberModel(UserModel):
 class StoreModel(models.Model):
     storeID = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
-    founderId = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
-    bankAccount = models.ForeignKey(BankModel, on_delete=models.CASCADE)
-    address = models.ForeignKey(AddressModel, on_delete=models.CASCADE)
+    founderId = models.ForeignKey(MemberModel, on_delete=models.SET_NULL, null=True)
+    bankAccount = models.ForeignKey(BankModel, on_delete=models.SET_NULL, null=True)
+    address = models.ForeignKey(AddressModel, on_delete=models.SET_NULL, null=True)
     # appointers: Dict[IMember: []] = {}  # Member : Members list   --This is a different model
     managers = models.ManyToManyField(MemberModel, related_name='managers')
     owners = models.ManyToManyField(MemberModel, related_name='owners')

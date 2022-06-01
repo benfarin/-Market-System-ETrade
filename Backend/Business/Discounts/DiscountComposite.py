@@ -11,15 +11,18 @@ from ModelsBackend.models import DiscountModel
 class DiscountComposite:
 
     # discountTypes: max = 1, add = 2, xor = 3
-    def __init__(self, discountId, discount1, discount2, discountType, decide):
+    def __init__(self, discountId=None, discount1=None, discount2=None, discountType=None, decide=None, model=None):
         # self.__discountId = discountId
         # self.__discount1: IDiscount = discount1
         # self.__discount2: IDiscount = discount2
         # self.__discountType = discountType
         # self.__decide = decide
-        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, dID1=discount1, dID2=discount2,
-                                                           composite_type=discountType, decide=decide,
-                                                           type='Composite')[0]
+        if model is None:
+            self.__model = DiscountModel.objects.get_or_create(discountID=discountId, dID1=discount1, dID2=discount2,
+                                                               composite_type=discountType, decide=decide,
+                                                               type='Composite')[0]
+        else:
+            self.__model = model
 
     def calculate(self, bag):
         discount1 = self.__buildDiscountObject(self.__model.dID1)
