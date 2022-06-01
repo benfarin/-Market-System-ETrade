@@ -781,3 +781,10 @@ class Store:
 
     def _buildPermission(self, model):
         return StorePermission(model=model)
+
+    def __eq__(self, other):
+        return isinstance(other, Store) and self.__model == other.getModel()
+
+    def __hash__(self):
+        return hash(self.__model.storeID)
+
