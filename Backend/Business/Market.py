@@ -158,6 +158,16 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
+    def getCartSum(self, user):
+        cart = user.getCart()
+        totalAmount = 0.0
+        for storeId in cart.getAllProductsByStore().keys():
+            discounts = self.__stores.get(storeId).getAllDiscounts()
+            storeAmount = cart.calcSumOfBag(storeId, discounts)
+            totalAmount += storeAmount
+        return totalAmount
+
+
     def __checkRules(self, rules, bag):
         for rule in rules.values():
             if not rule.check(bag):

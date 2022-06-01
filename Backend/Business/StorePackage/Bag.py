@@ -7,7 +7,7 @@ from Backend.Business.StorePackage.Product import Product
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 
-from Backend.Exceptions.CustomExceptions import QuantityException, ProductException
+from Backend.Exceptions.CustomExceptions import QuantityException, ProductException, NotFoundException
 from Backend.Interfaces.IBag import IBag
 from ModelsBackend.models import BagModel, ProductsInBagModel, ProductModel
 
@@ -84,6 +84,9 @@ class Bag:
                                                                         product_ID=product.product_ID.product_id).quantity
                 productInBag.save()
             else:
+                if len(ProductModel.objects.filter(product_id=product.product_ID.product_id)) != 1:
+                    raise NotFoundException("product: " + str(product.product_ID.product_id) + "has not found")
+
                 p = ProductModel.objects.get(product_id=product.product_ID.product_id)
                 newProduct = ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=p,
                                                                       quantity=product.quantity)
@@ -97,9 +100,14 @@ class Bag:
         return None
 
     def getProductQuantity(self, product):
-        return ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel()).quantity
+        try:
+            return ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel()).quantity
+        except:
+            raise NotFoundException("product: " + str(product.getProductId()) + "has not found")
 
     def getProductQuantityByProductId(self, productId):
+        if len(ProductModel.objects.filter(product_id=productId)) != 1:
+            raise NotFoundException("product: " + str(productId) + "has not found")
         product = self._buildProduct(ProductModel.objects.get(product_id=productId))
         return self.getProductQuantity(product)
 
@@ -122,7 +130,7 @@ class Bag:
                 return product
         return None
 
-    def applyDiscount(self, discounts):  ###NEED TO ADD THIS
+    def applyDiscount(self, discounts):
         if discounts is None:
             return self.calc()
         minPrice = float('inf')

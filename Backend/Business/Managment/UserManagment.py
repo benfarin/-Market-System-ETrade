@@ -183,7 +183,7 @@ class UserManagment(object):
     def getSumAfterDiscount(self, userId):
         try:
             self.checkOnlineUser(userId)
-            return self.__activeUsers.get(userId).getCart().calcSum()
+            return self.__activeUsers.get(userId).getCartSum()
         except Exception as e:
             raise Exception(e)
 

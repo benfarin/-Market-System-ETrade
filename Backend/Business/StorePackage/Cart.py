@@ -6,7 +6,7 @@ from Backend.Interfaces.IBag import IBag
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
-from Backend.Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException
+from Backend.Exceptions.CustomExceptions import NoSuchStoreException, NoSuchBagException, NotFoundException
 from Backend.Interfaces.ICart import ICart
 from Backend.Business.StorePackage.Bag import Bag
 from Backend.Business.StorePackage.Product import Product
@@ -39,7 +39,7 @@ class Cart:
             bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
             return self.__buildBag(bag_model)
         except:
-            raise NoSuchStoreException("storeId does not exists, can't add the bag to the cart")
+            raise NotFoundException("bag from store: " + str(storeId) + "couldn't be found")
 
     def getBagFromCart(self, cart, bag):
         return BagsInCartModel.objects.filter(cart=cart, bag=bag)[0]
@@ -88,6 +88,8 @@ class Cart:
     #     return s
 
     def calcSumOfBag(self, storeId, discounts):
+        if len(BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId)) != 1:
+            raise NotFoundException("there is no bag in storeId: " + str(storeId) + " for this cart")
         bag_model = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
         bag = self.__buildBag(bag_model)
         return bag.calcSum(discounts)
@@ -106,6 +108,8 @@ class Cart:
         self.getBag(storeId).addProduct(product, quantity)
 
     def removeProduct(self, storeId, productId):
+        if len(BagsInCartModel.objects.filter(cart=self.__model, storeID=storeId)) != 1:
+            raise NotFoundException("there is no bag in storeId: " + str(storeId) + " for this cart")
         bagInCart = BagsInCartModel.objects.get(cart=self.__model, storeID=storeId)
         bag = self.__buildBag(bagInCart)
         quantity = bag.getProductQuantityByProductId(productId)

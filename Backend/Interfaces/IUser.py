@@ -21,3 +21,6 @@ class IUser(Interface):
     def purchaseCart(self, bank):
         pass
 
+    def getCartSum(self):
+        pass
+

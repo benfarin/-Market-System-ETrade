@@ -61,5 +61,10 @@ class TransactionException(Exception):
 class MemberAllReadyLoggedIn(Exception):
     pass
 
+
 class ComplexDiscountException(Exception):
+    pass
+
+
+class NotFoundException(Exception):
     pass
