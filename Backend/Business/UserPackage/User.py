@@ -10,7 +10,7 @@ import threading
 from concurrent.futures import Future
 import os
 
-from ModelsBackend.models import CartModel, UserModel
+from ModelsBackend.models import CartModel, UserModel, UserTransactionModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -47,28 +47,35 @@ class User:
         # self._cart = Cart(self.__id)
         # self.__memberCheck = False
         # self.__transactions: Dict[int: UserTransaction] = {}
-        # self.__market: IMarket = m.Market.getInstance()
+        self.__market: IMarket = m.Market.getInstance()
         # if model is not None:
         #     self._model = model
 
-        userid = uuid.uuid4()
-        userCart = Cart(userid)
-        self.__model = UserModel.objects.get_or_create(userid=userid, cart=userCart.getModel())[0]
+        self.userid = userid = uuid.uuid4()
+        self.__userCart = Cart(userid)
+        self.__model = UserModel.objects.get_or_create(userid=userid, cart=self.__userCart.getModel())[0]
 
         # self.start()
 
     # all the transaction should be access only from member !!!!
     def getTransactions(self):
-        return self.__transactions
+        transactions: Dict[int: UserTransaction] = {}
+        for model in UserTransactionModel.objects.filter(userID=self.userid):
+            transaction = self._buildUserTransaction(model)
+            transactions[transaction.getUserTransactionId()] = transaction
+        return transactions
 
     def addTransaction(self, userTransaction: UserTransaction):
-        self.__transactions[userTransaction.getUserTransactionId()] = userTransaction
+        pass
+        # self.__transactions[userTransaction.getUserTransactionId()] = userTransaction
 
     def removeTransaction(self, transactionId):
-        self.__transactions.pop(transactionId)
+        UserTransactionModel.objects.get(transactionId=transactionId).delete()
 
     def getTransactionById(self, transactionId):
-        return self.__transactions[transactionId]
+        model = UserTransactionModel.objects.get(transactionId=transactionId)
+        return self._buildUserTransaction(model)
+        # return self.__transactions[transactionId]
 
     def getUserID(self):
         return self.__model.userid
@@ -77,13 +84,15 @@ class User:
         return Cart(model=CartModel.objects.get(userid=self.__model.userid))
 
     def getMemberCheck(self):
-        return self.__memberCheck
+        pass
+        # return self.__memberCheck
 
     def setICart(self, icart):
         self._cart = icart
 
     def setMemberCheck(self, state):
-        self.__memberCheck = state
+        pass
+        # self.__memberCheck = state
 
     def getCartSum(self):
         try:
@@ -128,10 +137,6 @@ class User:
             raise Exception(e)
 
 
-    @property
-    def pk(self):
-        return self.__id
-
     @staticmethod
     def get_user(username):
         try:
@@ -162,4 +167,7 @@ class User:
     #
     # def __hash__(self):
     #     return hash(self.__model.userid)
+
+    def _buildUserTransaction(self, model):
+        return UserTransaction(model=model)
 

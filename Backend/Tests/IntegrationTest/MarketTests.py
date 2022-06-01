@@ -142,7 +142,7 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.removeProductFromCart(self.__storeId1, self.__member1, self.__product1.getProductId()))
 
 
-    def test_purchaseCart(self):
+    def test_purchaseCart(self):  ##WORKING
         self.test_addProductToCart()
         self.assertTrue(self.__market.purchaseCart(self.__member1, self.__bank1))
         # trans = self.__member1.getTransactionById(2)

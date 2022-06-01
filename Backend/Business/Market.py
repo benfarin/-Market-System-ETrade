@@ -244,7 +244,7 @@ class Market:
             userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(), storeTransactions,
                                               userPaymentId, totalAmount)
             user.addTransaction(userTransaction)
-            self.__transactionHistory.addUserTransaction(userTransaction)
+            # self.__transactionHistory.addUserTransaction(userTransaction)
 
             # need to think what should we do if some of the payments failed
             if len(storeFailed) == 0:
