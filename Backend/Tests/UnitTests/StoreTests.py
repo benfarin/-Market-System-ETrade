@@ -5,6 +5,8 @@ from collections import Counter
 
 import django
 
+from Backend.Business.Discounts.ProductDiscount import ProductDiscount
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
 from Backend.Business.Bank import Bank
@@ -191,8 +193,12 @@ class MyTestCase(unittest.TestCase):
         self.test_add_product_quantity()
 
         discount1 = StoreDiscount(0, 0.25)
+        discount2 = ProductDiscount(1, self.product1.getProductId(), 0.5)
         self.store.addSimpleDiscount(self.founder, discount1)
-        self.assertEqual(self.store.getAllDiscounts(), {0: discount1})
+        self.store.addSimpleDiscount(self.founder, discount2)
+        discount3 = self.store.addCompositeDiscount(self.founder, 2, discount1.getDiscountId(), discount2.getDiscountId(), 'Max', None)
+
+        self.assertEqual(self.store.getAllDiscounts(), {2: discount3})
 
     def tearDown(self):
         self.bank.removeBank()

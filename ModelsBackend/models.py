@@ -171,8 +171,8 @@ class DiscountModel(models.Model):
     productID = models.IntegerField(null=True)
     percent = models.FloatField(null=True)
     type = models.CharField(max_length=100, choices=Simple_Discount_Choices)
-    dID1 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='firstDiscountID', null=True)
-    dID2 = models.ForeignKey('self', on_delete=models.CASCADE, related_name='secondDiscountID', null=True)
+    dID1 = models.ForeignKey('self', on_delete=models.SET_NULL, related_name='firstDiscountID', null=True)
+    dID2 = models.ForeignKey('self', on_delete=models.SET_NULL, related_name='secondDiscountID', null=True)
     composite_type = models.CharField(max_length=100, choices=Composite_Discount_Choices, null=True)
     decide = models.IntegerField(choices=[(1, 1), (2, 2)], null=True)
 
@@ -218,6 +218,7 @@ class DiscountRulesModel(models.Model):
 class DiscountsInStoreModel(models.Model):
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     discountID = models.ForeignKey(DiscountModel, on_delete=models.CASCADE)
+    isVisible = models.BooleanField(null=True)
 
     class Meta:
         unique_together = ('storeID', 'discountID',)

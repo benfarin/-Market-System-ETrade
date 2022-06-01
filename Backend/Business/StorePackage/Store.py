@@ -652,6 +652,12 @@ class Store:
         #     self.__discounts[discount.getDiscountId()] = discount
         #     self.__discounts.pop(dId1)
         #     self.__discounts.pop(dId2)
+        DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel(), isVisible=True)
+
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d1.getModel()).isVisible = False
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d1.getModel()).save()
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d2.getModel()).isVisible = False
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d2.getModel()).save()
         return discount
 
     def removeDiscount(self, user, dId):
@@ -671,7 +677,7 @@ class Store:
     def getAllDiscounts(self):
         # self.__discounts: {int: IDiscount} = {}
         discounts = {}
-        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
+        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model, isVisible=True)
         for d in discount_models:
             discount = self._buildDiscount(d.discountID)
             discounts[discount.getDiscountId()] = discount
