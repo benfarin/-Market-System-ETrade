@@ -5,7 +5,8 @@ import os, django
 from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
 from Backend.Business.Discounts.ProductDiscount import ProductDiscount
 from Backend.Business.Discounts.StoreDiscount import StoreDiscount
-from Backend.Business.Rules import QuantityRule, WeightRule
+from Backend.Business.Rules.WeightRule import weightRule
+from Backend.Business.Rules.QuantityRule import quantityRule
 from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
 from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.StorePackage.Product import Product
@@ -31,7 +32,7 @@ from notifications.signals import notify
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
-    DiscountModel, RulesInStoreModel, RuleModel
+    DiscountModel, RulesInStoreModel, RuleModel, DiscountRulesModel
 
 
 @zope.interface.implementer(IStore)
@@ -258,6 +259,14 @@ class Store:
         if not StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assignee.getModel(), storeID=self.__model).exists():
             raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
                                       assignee.getUserID(), " because he didn't assign him")
+
+    def hasProduct(self, productId):
+        try:
+            product = ProductModel.objects.get(product_id=productId)
+            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product)
+            return True
+        except:
+            return False
 
     def addProductToStore(self, user, product):
         try:
@@ -740,7 +749,16 @@ class Store:
     def removeStore(self):
         self.__model.owners.remove()
         self.__model.managers.remove()
+        self.__removeDiscount()
         self.__model.delete()
+
+    def __removeDiscount(self):
+        for discountInStore in DiscountsInStoreModel.objects.filter(storeID=self.__model):
+            discount = self._buildDiscount(discountInStore.discountID)
+            for ruleInDiscount in DiscountRulesModel.objects.filter(discountID=discount.getModel()):
+                rule = self._buildRule(ruleInDiscount.ruleID)
+                rule.removeRule()
+            discount.remove()
 
     def _buildProduct(self, model):
         return Product(model=model)
@@ -775,9 +793,9 @@ class Store:
         if model.rule_class == 'PurchaseComposite':
             return PurchaseRuleComposite(model=model)
         if model.rule_class == 'Quantity':
-            return QuantityRule(model=model)
+            return quantityRule(model=model)
         if model.rule_class == 'Weight':
-            return WeightRule(model=model)
+            return weightRule(model=model)
 
     def _buildPermission(self, model):
         return StorePermission(model=model)

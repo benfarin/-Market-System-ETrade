@@ -12,13 +12,17 @@ from Backend.Exceptions.CustomExceptions import NotFoundException
 @zope.interface.implementer(IDiscount)
 class CategoryDiscount:
 
-    def __init__(self, discountId, category, percent):
+    def __init__(self, discountId=None, category=None, percent=None, model=None):
         # self.__discountId = discountId
         # self.__category = category
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
-        self.__model = \
-        DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent, type='Category')[0]
+
+        if model is None:
+            self.__model = DiscountModel.objects.get_or_create(discountID=discountId, category=category, percent=percent,
+                                                               type='Category')[0]
+        else:
+            self.__model = model
 
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)

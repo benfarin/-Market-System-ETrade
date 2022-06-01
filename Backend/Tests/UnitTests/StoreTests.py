@@ -4,6 +4,7 @@ from collections import Counter
 
 from Backend.Business.Bank import Bank
 from Backend.Business.Address import Address
+from Backend.Business.Discounts.StoreDiscount import StoreDiscount
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.StorePackage.Product import Product
 from Backend.Business.StorePackage.Store import Store
@@ -110,6 +111,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual({0: self.product1, 1: self.product2, 2: self.product3, 3: self.product4, 4: self.product5},
                          self.store.getProducts())
 
+        self.assertTrue(self.store.hasProduct(1))
+        self.assertFalse(self.store.hasProduct(10))
+
     def test_add_product_quantity(self):  ###WORKING
         self.test_add_product()
         self.store.addProductQuantityToStore(self.member1, self.product1.getProductId(), 15)
@@ -177,6 +181,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(5, self.store.getProductQuantity().get(self.product4.getProductId()))
         self.store.removeProductFromBag(self.product4.getProductId(), 5)
         self.assertEqual(10, self.store.getProductQuantity().get(self.product4.getProductId()))
+
+    def test_add_discount_permission(self):
+        self.test_add_product_quantity()
+
+        discount1 = StoreDiscount(0, 0.25)
+        self.store.addSimpleDiscount(self.founder, discount1)
+        self.assertEqual(self.store.getAllDiscounts(), {0: discount1})
 
     def tearDown(self):
         self.bank.removeBank()

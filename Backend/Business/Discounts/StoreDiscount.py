@@ -13,11 +13,15 @@ from ModelsBackend.models import DiscountModel, DiscountRulesModel, RuleModel, P
 @zope.interface.implementer(IDiscount)
 class StoreDiscount:
 
-    def __init__(self, discountId, percent):
+    def __init__(self, discountId=None, percent=None, model=None):
         # self.__discountId = discountId
         # self.__percent = percent
         # self.__rules: Dict[int: IRule] = {}
-        self.__model = DiscountModel.objects.get_or_create(discountID=discountId, percent=percent, type='Store')[0]
+
+        if model is None:
+            self.__model = DiscountModel.objects.get_or_create(discountID=discountId, percent=percent, type='Store')[0]
+        else:
+            self.__model = model
 
     def calculate(self, bag):  # return the new price for each product
         isCheck = self.check(bag)
