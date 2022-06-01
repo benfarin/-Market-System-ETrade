@@ -1,5 +1,7 @@
 import threading
 import unittest
+from collections import Counter
+
 from Backend.Business.Bank import Bank
 from Backend.Business.Address import Address
 from Backend.Business.UserPackage.Member import Member
@@ -35,7 +37,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.store.getStoreOwners(), [self.founder, self.member1])
 
         self.store.appointOwnerToStore(self.member1, self.member3)
-        self.assertEqual(self.store.getStoreOwners(), [self.founder, self.member1, self.member3])
+        self.assertEqual(Counter(self.store.getStoreOwners()) == Counter([self.founder, self.member1, self.member3]), True)
 
     def test_appoint_owners_FAIL(self):
         # user cannot assign himself

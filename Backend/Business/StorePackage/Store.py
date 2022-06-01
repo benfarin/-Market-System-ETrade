@@ -160,9 +160,9 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
-                                                  storeID=self.__model).stockManagement = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            assignee_permissions.stockManagement = True
+            assignee_permissions.save()
             # with self.__permissionsLock:
             #     self.__permissions[assignee].setPermission_StockManagement(True)
 
@@ -174,9 +174,9 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
-                                                  storeID=self.__model).appointManager = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            assignee_permissions.appointManagera = True
+            assignee_permissions.save()
             # with self.__permissionsLock:
             #     self.__permissions[assignee].setPermission_AppointManager(True)
 
@@ -190,8 +190,9 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).appointOwner = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            assignee_permissions.appointOwner = True
+            assignee_permissions.save()
             # with self.__permissionsLock:
             #     self.__permissions[assignee].setPermission_AppointOwner(True)
 
@@ -203,9 +204,10 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
-                                                  storeID=self.__model).changePermission = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                  storeID=self.__model)
+            assignee_permissions.changePermission = True
+            assignee_permissions.save()
 
     def setRolesInformationPermission(self, assigner, assignee):
         try:
@@ -215,9 +217,9 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
-                                                  storeID=self.__model).rolesInformation = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            assignee_permissions.rolesInformation = True
+            assignee_permissions.save()
 
     def setPurchaseHistoryInformationPermission(self, assigner, assignee):
         try:
@@ -227,9 +229,9 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
-                                                  storeID=self.__model).purchaseHistoryInformation = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            assignee_permissions.purchaseHistoryInformation = True
+            assignee_permissions.save()
 
     def setDiscountPermission(self, assigner, assignee):
         try:
@@ -239,8 +241,9 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).discount = True
-            StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model).save()
+            assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            assignee_permissions.discount = True
+            assignee_permissions.save()
 
     def __haveAllPermissions(self, assigner, assignee):
         # next version need to add parameter for removing.
@@ -363,13 +366,13 @@ class Store:
             raise PermissionException("User ", assigner.getUserID(),
                                       " doesn't have the permission - appoint manager in store: ",
                                       self.__name)
-        owners = StoreModel.objects.filter(storeID=self.__model).model.owners.get_queryset()
-        managers = StoreModel.objects.filter(storeID=self.__model).model.managers.get_queryset()
-        if assigner.getModel() not in owners:
+        is_assigner_in_owners = StoreModel.objects.filter(storeID=self.__model.storeID, owners=assigner.getModel())
+        is_assignee_in_managers = StoreModel.objects.filter(storeID=self.__model.storeID, managers=assignee.getModel())
+        if not is_assigner_in_owners.exists():
             raise PermissionException("User ", assigner.getUserID(), "cannot add manager to store: ", self.__name,
                                       "because he is not a store owner")
         # this constrains is also covert the constrains that for each manager there is 1 assigner
-        if assignee.getModel() in managers:
+        if is_assignee_in_managers.exists():
             raise Exception("User ", assignee.getUserID(), "is all ready a manger in store: ", self.__name)
         # to avoid circularity
 
@@ -381,7 +384,7 @@ class Store:
                                       self.__name)
 
         self.__model.managers.add(assignee.getModel())
-        StoreAppointersModel.objects.get_or_create(assigner=assigner.getModel(), assingee=assignee.getModel())
+        StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(), assingee=assignee.getModel())
 
         if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
             StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__model).save()
