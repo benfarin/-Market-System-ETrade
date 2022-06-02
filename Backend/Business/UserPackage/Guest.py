@@ -7,7 +7,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 
 class Guest(User):
-    def __init__(self):
-        super().__init__()
-        self.__g = UserModel(userid=super().getUserID(), cart=super().getCart().getModel())
-        self.__g.save()
+    def __init__(self, model=None):
+        if model is None:
+            super().__init__()
+        else:
+            self._model = model
+
+

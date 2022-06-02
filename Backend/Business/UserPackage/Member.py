@@ -15,6 +15,8 @@ import Backend.Business.Market as m
 from concurrent.futures import Future
 
 from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel
+from django.contrib.auth.hashers import make_password, check_password
+
 
 
 def call_with_future(fn, future, args, kwargs):
@@ -49,7 +51,7 @@ class Member(User):
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
             self._m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
-                                                         member_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()),
+                                                         member_password=make_password(password),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
                                                          cart=super().getCart().getModel())[0]
         else:
@@ -62,7 +64,7 @@ class Member(User):
         pass
 
     def getPassword(self):
-        return self._m.password
+        return self._m.member_password
 
     def getPhone(self):
         return self._m.phone

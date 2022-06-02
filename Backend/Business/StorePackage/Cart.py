@@ -32,7 +32,11 @@ class Cart:
         return int(self.__model.userid)
 
     def getAllBags(self):
-        return [self.__buildBag(bag) for bag in BagsInCartModel.objects.filter(cart=self.__model)]
+        bags: Dict[int, Bag] = {}
+        for model in BagsInCartModel.objects.filter(cart=self.__model):
+            bag = self.__buildBag(model)
+            bags[bag.getStoreId()] = bag
+        return bags
 
     def getBag(self, storeId):
         try:
