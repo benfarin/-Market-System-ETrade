@@ -603,6 +603,10 @@ class Market:
                 store = self.__buildStore(store_model)
                 self.__stores.update({store.getStoreId(): store})
 
+    def resetDict(self):
+        self.__stores = None
+        self.__removedStores = None
+
 
 
 

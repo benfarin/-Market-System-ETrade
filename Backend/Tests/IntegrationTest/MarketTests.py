@@ -193,6 +193,7 @@ class MarketTests(unittest.TestCase):
                                                              self.__member1, self.__product1.getProductId()))
 
     def tearDown(self):
+        self.__market.resetDict()
         self.__address1.removeAddress()
         self.__address2.removeAddress()
         self.__address3.removeAddress()
