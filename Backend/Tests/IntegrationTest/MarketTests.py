@@ -169,9 +169,9 @@ class MarketTests(unittest.TestCase):
         self.__bank1.removeBank()
         self.__bank2.removeBank()
         self.__bank3.removeBank()
-        self.__member1.removeMember()
-        self.__member2.removeMember()
-        self.__member3.removeMember()
+        self.__member1.removeUser()
+        self.__member2.removeUser()
+        self.__member3.removeUser()
 
         self.__store.removeStore()
         self.__store2.removeStore()

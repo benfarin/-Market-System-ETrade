@@ -57,7 +57,7 @@ class Market:
             Market.__instance = self
 
 
-    def createStore(self, storeName, user, bank, address):  # change test!
+    def createStore(self, storeName, user, bank, address):  #TESTED
         self.__initializeStoresDict()
         storeID = self.__getGlobalStoreId()
         newStore = s.Store(storeID, storeName, user, bank, address)
@@ -86,7 +86,7 @@ class Market:
         self.__initializeStoresDict()
         return self.__stores.values()
 
-    def addProductToCart(self, user, storeID, productID, quantity):  # Tested
+    def addProductToCart(self, user, storeID, productID, quantity):  # TESTED
         self.__initializeStoresDict()
         try:
             if self.__stores.get(storeID).hasProduct(productID) is None:
@@ -107,7 +107,7 @@ class Market:
                 return store
         raise ProductException("There no product id :" + productID + " in the market!")
 
-    def addProductToCartWithoutStore(self, user, productID, quantity):  # Tested
+    def addProductToCartWithoutStore(self, user, productID, quantity):  # TESTED
         try:
             self.__initializeStoresDict()
             store = self.__getStoreByProductID(productID)
@@ -121,7 +121,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def removeProductFromCart(self, storeID, user, productId):  # Tested
+    def removeProductFromCart(self, storeID, user, productId):  # TESTED
         try:
             self.__initializeStoresDict()
             quantity = user.getCart().removeProduct(storeID, productId)
@@ -200,7 +200,7 @@ class Market:
         return True
 
     # need to remember that if a user add the product to the cart, then the product is in the stock.
-    def purchaseCart(self, user, bank):
+    def purchaseCart(self, user, bank): #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
@@ -266,7 +266,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def appointOwnerToStore(self, storeID, assigner, assignee):  # unTested
+    def appointOwnerToStore(self, storeID, assigner, assignee):  # TESTED
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).appointOwnerToStore(assigner, assignee)
@@ -353,7 +353,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addProductToStore(self, storeID, user, product):  # Tested
+    def addProductToStore(self, storeID, user, product):  # TESTED
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).addProductToStore(user, product)
@@ -361,7 +361,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addProductQuantityToStore(self, storeID, user, productId, quantity):
+    def addProductQuantityToStore(self, storeID, user, productId, quantity):  #TESTED
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).addProductQuantityToStore(user, productId, quantity)
@@ -400,7 +400,7 @@ class Market:
                 store_collection.append(self.__stores.get(s))
         return store_collection
 
-    def getStoreById(self, id_store):  # maybe should be private
+    def getStoreById(self, id_store):  #TESTED
         self.__initializeStoresDict()
         return self.__stores.get(id_store)
 
@@ -412,7 +412,7 @@ class Market:
         return self.__stores
 
     # need to add to the service
-    def removeStore(self, storeID, user):
+    def removeStore(self, storeID, user):  #TESTED
         self.__initializeStoresDict()
         try:
             if self.__stores.get(storeID) is None:
@@ -427,7 +427,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def recreateStore(self, storeID, founder):
+    def recreateStore(self, storeID, founder):  #TESTED
         self.__initializeStoresDict()
         try:
             if self.__removedStores.get(storeID) is None:
