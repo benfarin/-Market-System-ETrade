@@ -62,19 +62,23 @@ class PurchaseRuleComposite:
         return self.__model.rule_kind
 
     def removeRule(self):
+        rule1 = self.__buildRule(self.__model.ruleID1)
+        rule2 = self.__buildRule(self.__model.ruleID2)
+        rule1.removeRule()
+        rule2.removeRule()
         self.__model.delete()
 
     def __buildRule(self, rule_model):
         if rule_model.rule_class == 'Price':
-            return PriceRule(rule_model=rule_model)
+            return PriceRule(model=rule_model)
         if rule_model.rule_class == 'Quantity':
-            return quantityRule(rule_model=rule_model)
+            return quantityRule(model=rule_model)
         if rule_model.rule_class == 'Weight':
-            return weightRule(rule_model=rule_model)
+            return weightRule(model=rule_model)
         # if rule_model.rule_class == 'DiscountComposite':
         #     return DiscountRuleComposite(rule_model=rule_model)
         if rule_model.rule_class == 'PurchaseComposite':
-            return PurchaseRuleComposite(rule_model=rule_model)
+            return PurchaseRuleComposite(model=rule_model)
         else:
             raise Exception("cannot concat discount rule and purchase rule")
 

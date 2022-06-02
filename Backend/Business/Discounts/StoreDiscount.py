@@ -1,10 +1,9 @@
 from typing import Dict
 
 from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
-from Backend.Business.StorePackage.Product import Product
+from Backend.Business.Rules.RuleCreator import RuleCreator
 from Backend.Exceptions.CustomExceptions import NotFoundException
 from Backend.Interfaces.IDiscount import IDiscount
-from Backend.Interfaces.IRule import IRule
 import zope
 
 from ModelsBackend.models import DiscountModel, DiscountRulesModel, RuleModel, ProductModel, ProductsInBagModel
@@ -93,6 +92,13 @@ class StoreDiscount:
         #     totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
         # return totalPrice
 
+    def getAllDiscountRules(self):
+        rules = []
+        for discountRule in DiscountRulesModel.objects.filter(discountID=self.__model):
+            rule = RuleCreator.getInstance().buildRule(discountRule.ruleID)
+            rules.append(rule)
+        return rules
+
     def getDiscountId(self):
         return self.__model.discountID
 
@@ -103,6 +109,8 @@ class StoreDiscount:
         return self.__model
 
     def remove(self):
+        for rule in self.getAllDiscountRules():
+            rule.removeRule()
         self.__model.delete()
 
     def __eq__(self, other):

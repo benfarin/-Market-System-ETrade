@@ -195,26 +195,28 @@ class MyTestCase(unittest.TestCase):
         self.test_add_product_quantity()
 
         discount1 = StoreDiscount(0, 0.25)
+
+        rule1 = PriceRule(0, 'Store', None, 0, 100, 'Discount')
+        self.store.addSimpleRule(self.founder, 0, rule1)
+        rule2 = quantityRule(1, 'Store', None, 0, 100, 'Discount')
+        self.store.addSimpleRule(self.founder, 0, rule2)
+        self.assertEqual(discount1.getAllDiscountRules(), [rule1, rule2])
+        rule3 = self.store.addCompositeRule(self.founder, 0, 2, rule1.getRuleId(), rule2.getRuleId(), 'Composite',
+                                            'Discount')
+        self.assertEqual(discount1.getAllDiscountRules(), [rule3])
+
         discount2 = ProductDiscount(1, self.product1.getProductId(), 0.5)
         self.store.addSimpleDiscount(self.founder, discount1)
         self.store.addSimpleDiscount(self.founder, discount2)
         discount3 = self.store.addCompositeDiscount(self.founder, 2, discount1.getDiscountId(),
                                                     discount2.getDiscountId(), 'Max', None)
         self.assertEqual(self.store.getAllDiscounts(), {2: discount3})
-
-        rule1 = PriceRule(0, 'Store', None, 0, 100, 'Discount')
-        self.store.addSimpleRule(self.founder, 2, rule1)
-        rule2 = quantityRule(1, 'Store', None, 0, 100, 'Discount')
-        self.store.addSimpleRule(self.founder, 2, rule2)
-        # need to check that rule1 and rule2 is in discount3
-
-        rule3 = self.store.addCompositeRule(self.founder, 2, 2, rule1.getRuleId(), rule2.getRuleId(), 'Composite',
-                                            'Discount')
-        # need to check that only rule3 is in discount3
+        self.assertEqual(discount3.getAllDiscountRules(), [rule3])
 
         self.store.removeDiscount(self.founder, discount3.getDiscountId())
         self.assertEqual(self.store.getAllDiscounts(), {})
-        # need to make sure that all his rules has deleted as well.
+
+        # self.store.removeStore()
 
     def test_discount_permission(self):
         self.assertTrue(self.store.hasDiscountPermission(self.founder))

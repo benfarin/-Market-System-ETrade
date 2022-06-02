@@ -74,6 +74,16 @@ class DiscountComposite:
         discount2 = self.__buildDiscountObject(self.__model.dID2)
         return discount1.getTotalPrice(bag) + discount2.getTotalPrice(bag)
 
+    def getAllDiscountRules(self):
+        discount1 = self.__buildDiscountObject(self.__model.dID1)
+        discount2 = self.__buildDiscountObject(self.__model.dID2)
+        rules = []
+        for rule in discount1.getAllDiscountRules():
+            rules.append(rule)
+        for rule in discount2.getAllDiscountRules():
+            rules.append(rule)
+        return rules
+
     def getDiscountId(self):
         return self.__model.discountID
 
@@ -97,6 +107,10 @@ class DiscountComposite:
             return DiscountComposite(model=discount_model)
 
     def remove(self):
+        discount1 = self.__buildDiscountObject(self.__model.dID1)
+        discount2 = self.__buildDiscountObject(self.__model.dID2)
+        discount1.remove()
+        discount2.remove()
         self.__model.delete()
 
     def getModel(self):

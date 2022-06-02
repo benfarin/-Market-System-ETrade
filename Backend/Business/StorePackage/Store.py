@@ -5,10 +5,7 @@ import os, django
 from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
 from Backend.Business.Discounts.ProductDiscount import ProductDiscount
 from Backend.Business.Discounts.StoreDiscount import StoreDiscount
-from Backend.Business.Rules.WeightRule import weightRule
-from Backend.Business.Rules.QuantityRule import quantityRule
-from Backend.Business.Rules.DiscountRuleComposite import DiscountRuleComposite
-from Backend.Business.Rules.PriceRule import PriceRule
+from Backend.Business.Rules.RuleCreator import RuleCreator
 from Backend.Business.StorePackage.Product import Product
 import Backend.Business.UserPackage.Member as m
 
@@ -20,11 +17,9 @@ from Backend.Business.Rules.PurchaseRuleComposite import PurchaseRuleComposite
 from Backend.Exceptions.CustomExceptions import ProductException, PermissionException, TransactionException
 from Backend.Interfaces.IMember import IMember
 from Backend.Interfaces.IProduct import IProduct
-from Backend.Interfaces.IRule import IRule
 from Backend.Interfaces.IStore import IStore
 from Backend.Business.StorePackage.StorePermission import StorePermission
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
-from Backend.Interfaces.IDiscount import IDiscount
 from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from typing import Dict
 import threading
@@ -664,10 +659,12 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         discount_model = DiscountModel.objects.get(discountID=dId)
-        discount = DiscountsInStoreModel.objects.filter(storeID=self.__model, discountID=discount_model)
-        if not discount.exists():
+        discountInStore = DiscountsInStoreModel.objects.filter(storeID=self.__model, discountID=discount_model)
+        if not discountInStore.exists():
             raise Exception("the discount is not an existing discount")
-        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=discount_model).delete()
+        discount = self._buildDiscount(discount_model)
+        discount.remove()
+        # DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=discount_model).delete()
         return True
 
     def getAllDiscounts(self):
@@ -683,7 +680,7 @@ class Store:
         rules = {}
         rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
         for r in rule_models:
-            rule = self._buildRule(r.ruleID)
+            rule = RuleCreator.getInstance().buildRule(r.ruleID)
             rules[rule.getRuleId()] = rule
         return rules
 
@@ -721,15 +718,17 @@ class Store:
 
         rule1model = RuleModel.objects.filter(ruleID=rId1)
         rule2model = RuleModel.objects.filter(ruleID=rId2)
-        rule1 = self._buildRule(rule1model.first())
-        rule2 = self._buildRule(rule2model.first())
+        rule1 = RuleCreator.getInstance().buildRule(rule1model.first())
+        rule2 = RuleCreator.getInstance().buildRule(rule2model.first())
 
         if ruleKind == 'Discount':
             discount_model = DiscountModel.objects.filter(discountID=dId)
             if not discount_model.exists():
                 raise Exception("discount does not exists")
             discount = self._buildDiscount(discount_model.first())
-            toReturnDiscount = discount.addCompositeRuleDiscount(ruleId, rule1, rule2, ruleType, ruleKind)
+            toReturnDiscount = discount.addCompositeRuleDiscount(ruleId, rule1.getRuleId(), rule2.getRuleId(), ruleType, ruleKind)
+            toReturnDiscount.getModel().rule_class = 'DiscountComposite'
+            toReturnDiscount.getModel().save()
         elif ruleKind == 'Purchase':
             if not rule1model.exists():
                 raise Exception("rule1 is not an existing discount")
@@ -737,6 +736,8 @@ class Store:
                 raise Exception("rule2 is not an existing discount")
             toReturnDiscount = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
             RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=toReturnDiscount.getModel())
+            toReturnDiscount.getModel().rule_class = 'PurchaseComposite'
+            toReturnDiscount.getModel().save()
 
             RulesInStoreModel.objects.get(ruleID=rule1model.first()).delete()
             RulesInStoreModel.objects.get(ruleID=rule2model.first()).delete()
@@ -764,7 +765,9 @@ class Store:
             discount.removeDiscountRule(rId)
         elif ruleKind == 'Purchase':
             rule_model = RuleModel.objects.get(ruleID=rId)
-            RulesInStoreModel.objects.get(storeID=self.__model, ruleID=rule_model).delete()
+            rule = RuleCreator.getInstance().buildRule(rule_model)
+            rule.removeRule()
+            # RulesInStoreModel.objects.get(storeID=self.__model, ruleID=rule_model).delete()
         else:
             raise Exception("rule kind is illegal")
 
@@ -787,7 +790,7 @@ class Store:
         for discountInStore in DiscountsInStoreModel.objects.filter(storeID=self.__model):
             discount = self._buildDiscount(discountInStore.discountID)
             for ruleInDiscount in DiscountRulesModel.objects.filter(discountID=discount.getModel()):
-                rule = self._buildRule(ruleInDiscount.ruleID)
+                rule = RuleCreator.getInstance().buildRule(ruleInDiscount.ruleID)
                 rule.removeRule()
             discount.remove()
 
@@ -815,18 +818,6 @@ class Store:
             return StoreDiscount(model=model)
         if model.type == 'Composite':
             return DiscountComposite(model=model)
-
-    def _buildRule(self, model):
-        if model.rule_class == 'DiscountComposite':
-            return DiscountRuleComposite(model=model)
-        if model.rule_class == 'Price':
-            return PriceRule(model=model)
-        if model.rule_class == 'PurchaseComposite':
-            return PurchaseRuleComposite(model=model)
-        if model.rule_class == 'Quantity':
-            return quantityRule(model=model)
-        if model.rule_class == 'Weight':
-            return weightRule(model=model)
 
     def _buildPermission(self, model):
         return StorePermission(model=model)

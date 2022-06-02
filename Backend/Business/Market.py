@@ -47,7 +47,6 @@ class Market:
         self.__storeTransactionIdCounter = None
         self.__userTransactionIdCounter = None
 
-
         self.__transactionHistory = TransactionHistory.getInstance()
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
