@@ -97,7 +97,6 @@ class Store:
         # self.__permissions[founder].setPermission_Discount(True)
 
 
-
     def getStoreId(self):
         return self.__model.storeID
 
@@ -162,7 +161,6 @@ class Store:
             if prod.productID.product_id == productId:
                 return self._buildProduct(prod.productID)
         raise ProductException("product not in store")
-
 
     def setStockManagementPermission(self, assigner, assignee):
         try:
@@ -466,13 +464,12 @@ class Store:
         assignee_permissions.discount = True
         assignee_permissions.save()
 
-
     # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):
         if assigner not in self.getStoreOwners():
-            raise Exception("user: " + str(assigner.getUserID()) + "is not an owner in store: " + str(self.__name))
+            raise Exception("user: " + str(assigner.getUserID()) + "is not an owner in store: " + str(self.__model.name))
         if assignee not in self.getStoreOwners():
-            raise Exception("user: " + str(assignee) + "is not an owner in store: " + str(self.__name))
+            raise Exception("user: " + str(assignee.getUserID()) + "is not an owner in store: " + str(self.__model.name))
         if not StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assigner.getModel(),
                                                    assingee=assignee.getModel()).exists():
             raise Exception("user: " + str(assigner.getUserID()) + "cannot remove the user: " +
@@ -481,6 +478,8 @@ class Store:
         assignees_of_assignee = StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assignee.getModel())
         if assignees_of_assignee.exists():
             for toRemoveOwner in assignees_of_assignee:
+                # in the future we need here to split to remove owner/manager - 4.8
+                # they didn't asked us yet to implement.
                 to_remove = self._buildMember(toRemoveOwner.assingee)
                 self.removeStoreOwner(assignee, to_remove)
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).delete()
@@ -684,7 +683,7 @@ class Store:
         rules = {}
         rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
         for r in rule_models:
-            rule = self._buildRule(r.discountID)
+            rule = self._buildRule(r.ruleID)
             rules[rule.getRuleId()] = rule
         return rules
 
@@ -694,7 +693,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         return permissions.first().discount
 
-    def addSimpleRule(self, user, dId, rule: IRule):
+    def addSimpleRule(self, user, dId, rule):
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
         if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -720,28 +719,35 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
 
+        rule1model = RuleModel.objects.filter(ruleID=rId1)
+        rule2model = RuleModel.objects.filter(ruleID=rId2)
+        rule1 = self._buildRule(rule1model.first())
+        rule2 = self._buildRule(rule2model.first())
+
         if ruleKind == 'Discount':
             discount_model = DiscountModel.objects.filter(discountID=dId)
             if not discount_model.exists():
                 raise Exception("discount does not exists")
             discount = self._buildDiscount(discount_model.first())
-            return discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType, ruleKind)
+            toReturnDiscount = discount.addCompositeRuleDiscount(ruleId, rule1, rule2, ruleType, ruleKind)
         elif ruleKind == 'Purchase':
-            rule1model = RuleModel.objects.filter(ruleID=rId1)
-            rule2model = RuleModel.objects.filter(ruleID=rId2)
             if not rule1model.exists():
                 raise Exception("rule1 is not an existing discount")
             if not rule2model.exists():
                 raise Exception("rule2 is not an existing discount")
-            rule1 = self._buildRule(rule1model.first())
-            rule2 = self._buildRule(rule2model.first())
-            newRule = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
-            # self.__rules.pop(rId1)
-            # self.__rules.pop(rId2)
-            # self.__rules[ruleId] = newRule
-            return newRule
+            toReturnDiscount = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
+            RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=toReturnDiscount.getModel())
+
+            RulesInStoreModel.objects.get(ruleID=rule1model.first()).delete()
+            RulesInStoreModel.objects.get(ruleID=rule2model.first()).delete()
         else:
             raise Exception("rule kind is illegal")
+
+        # self.__rules.pop(rId1)
+        # self.__rules.pop(rId2)
+        # self.__rules[ruleId] = newRule
+
+        return toReturnDiscount
 
     def removeRule(self, user, dId, rId, ruleKind):
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())

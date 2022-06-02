@@ -6,6 +6,8 @@ from collections import Counter
 import django
 
 from Backend.Business.Discounts.ProductDiscount import ProductDiscount
+from Backend.Business.Rules.PriceRule import PriceRule
+from Backend.Business.Rules.QuantityRule import quantityRule
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -135,13 +137,13 @@ class MyTestCase(unittest.TestCase):
         self.store.removeProductFromStore(self.member1, self.product1.getProductId())
         self.assertIsNone(self.store.getProducts().get(self.product1.getProductId()))
 
-    def test_get_product_by_name(self):   ###WORKING
+    def test_get_product_by_name(self):  ###WORKING
         self.test_add_product_quantity()
         self.assertEqual([self.product3, self.product5], self.store.getProductsByName("milk"))
         self.assertEqual([self.product2], self.store.getProductsByName("beef"))
         self.assertEqual([], self.store.getProductsByName("lollipop"))
 
-    def test_get_product_by_category(self): ###WORKING
+    def test_get_product_by_category(self):  ###WORKING
         self.test_add_product_quantity()
         self.assertEqual([self.product1, self.product3, self.product4, self.product5],
                          self.store.getProductsByCategory("dairy"))
@@ -189,28 +191,67 @@ class MyTestCase(unittest.TestCase):
         self.store.removeProductFromBag(self.product4.getProductId(), 5)
         self.assertEqual(10, self.store.getProductQuantity().get(self.product4.getProductId()))
 
-    def test_add_discount_permission(self):
+    def test_discount(self):
         self.test_add_product_quantity()
 
         discount1 = StoreDiscount(0, 0.25)
         discount2 = ProductDiscount(1, self.product1.getProductId(), 0.5)
         self.store.addSimpleDiscount(self.founder, discount1)
         self.store.addSimpleDiscount(self.founder, discount2)
-        discount3 = self.store.addCompositeDiscount(self.founder, 2, discount1.getDiscountId(), discount2.getDiscountId(), 'Max', None)
-
+        discount3 = self.store.addCompositeDiscount(self.founder, 2, discount1.getDiscountId(),
+                                                    discount2.getDiscountId(), 'Max', None)
         self.assertEqual(self.store.getAllDiscounts(), {2: discount3})
+
+        rule1 = PriceRule(0, 'Store', None, 0, 100, 'Discount')
+        self.store.addSimpleRule(self.founder, 2, rule1)
+        rule2 = quantityRule(1, 'Store', None, 0, 100, 'Discount')
+        self.store.addSimpleRule(self.founder, 2, rule2)
+        # need to check that rule1 and rule2 is in discount3
+
+        rule3 = self.store.addCompositeRule(self.founder, 2, 2, rule1.getRuleId(), rule2.getRuleId(), 'Composite',
+                                            'Discount')
+        # need to check that only rule3 is in discount3
+
+        self.store.removeDiscount(self.founder, discount3.getDiscountId())
+        self.assertEqual(self.store.getAllDiscounts(), {})
+        # need to make sure that all his rules has deleted as well.
+
+    def test_discount_permission(self):
+        self.assertTrue(self.store.hasDiscountPermission(self.founder))
+
+        self.store.appointOwnerToStore(self.founder, self.member1)
+        self.assertTrue(self.store.hasDiscountPermission(self.member1))
+
+        self.store.appointManagerToStore(self.member1, self.member2)
+        self.assertFalse(self.store.hasDiscountPermission(self.member2))
+        self.store.setDiscountPermission(self.member1, self.member2)
+        self.assertTrue(self.store.hasDiscountPermission(self.member2))
+
+    def test_PurchaseRules(self):
+        rule1 = PriceRule(0, 'Store', None, 0, 100, 'Purchase')
+        self.store.addSimpleRule(self.founder, 2, rule1)
+        rule2 = quantityRule(1, 'Store', None, 0, 100, 'Purchase')
+        self.store.addSimpleRule(self.founder, 2, rule2)
+        self.assertEqual(self.store.getAllRules(), {0: rule1, 1: rule2})
+
+        rule3 = self.store.addCompositeRule(self.founder, 2, 2, rule1.getRuleId(), rule2.getRuleId(), 'Composite',
+                                            'Purchase')
+        self.assertEqual(self.store.getAllRules(), {2: rule3})
+
+        self.store.removeRule(self.founder, None, rule3.getRuleId(), 'Purchase')
+        self.assertEqual(self.store.getAllRules(), {})
 
     def tearDown(self):
         self.bank.removeBank()
         self.address.removeAddress()
 
-        self.founder.removeMember()
+        self.founder.removeUser()
         self.store.removeStore()
 
-        self.member1.removeMember()
-        self.member2.removeMember()
-        self.member3.removeMember()
-        self.member4.removeMember()
+        self.member1.removeUser()
+        self.member2.removeUser()
+        self.member3.removeUser()
+        self.member4.removeUser()
 
         self.product1.removeProduct()
         self.product2.removeProduct()
