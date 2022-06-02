@@ -2,7 +2,7 @@ import os
 
 import django
 
-from ModelsBackend.models import MemberModel
+from ModelsBackend.models import MemberModel, UserModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -20,6 +20,7 @@ from typing import Dict
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.SystemManager import SystemManager
 import bcrypt
+from django.contrib.auth.hashers import make_password, check_password
 
 
 
@@ -40,7 +41,7 @@ class UserManagment(object):
         self.__market: IMarket = Market().getInstance()
         self.__activeUsers = None # <userId,User> should check how to initial all the activeStores into
         # dictionary
-        self.__guests: Dict[str: User] = {}
+        self.__guests= None
         self.__members = None
         self.__systemManager = None
 
@@ -114,7 +115,7 @@ class UserManagment(object):
             if member is None and system_manager is None:
                 raise NoSuchUserException("The user ID " + userName + " not registered!")
             if system_manager is not None:
-                if bcrypt.checkpw(password.encode('utf-8'), system_manager.getPassword()):
+                if check_password(password, system_manager.getPassword()):
                     self.__activeUsers[system_manager.getUserID()] = system_manager
                     system_manager.setLoggedIn(True)
                     system_manager.setMemberCheck(True)
@@ -122,7 +123,7 @@ class UserManagment(object):
                     system_manager.updateCart(self.__getUserCart(oldUserId))
                     return system_manager
             elif member is not None:
-                if bcrypt.checkpw(password.encode('utf-8'), member.getPassword()):
+                if check_password(password, member.getPassword()):
                     self.__activeUsers[member.getUserID()] = member
                     member.setLoggedIn(True)
                     member.setMemberCheck(True)
@@ -228,6 +229,12 @@ class UserManagment(object):
             raise NoSuchUserException("user: " + str(userId) + "is not exists")
         return self.__guests.get(userId).getCart()
 
+    def removeUserByUsername(self, username):
+        self._initializeDict()
+        for user in self.__members.values():
+            if user.getMemberName() == username:
+                user.removeUser()
+
     def getUser(self,uid):
         self._initializeDict()
         if uid not in self.__activeUsers:
@@ -250,11 +257,19 @@ class UserManagment(object):
     def _buildMember(self, model):
         return Member(model=model)
 
+    def _buildGuest(self, model):
+        return Guest(model=model)
+
     def _buildSystemManager(self, model):
         return SystemManager(model=model)
 
 
     def _initializeDict(self):
+        if self.__guests is None:
+            self.__guests: Dict[str: User] = {}
+            for guest_model in UserModel.objects.all():
+                guest = self._buildGuest(guest_model)
+                self.__guests.update({guest.getUserID() : guest})
         if self.__activeUsers is None:
             self.__activeUsers: Dict[str, User] = {}  # <userId,User> should check how to initial all the activeStores into dictionary
             for member_model in MemberModel.objects.filter(isLoggedIn=True):
@@ -270,5 +285,9 @@ class UserManagment(object):
             for member_model in MemberModel.objects.filter(is_admin=True):
                 member = self._buildSystemManager(member_model)
                 self.__systemManager.update({member.getUserID() : member})
+
+    def removeAllUsers(self):
+        UserModel.objects.all().delete()
+        MemberModel.objects.all().delete()
 
 

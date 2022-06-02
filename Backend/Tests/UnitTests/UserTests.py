@@ -34,6 +34,7 @@ class MyTestCase(unittest.TestCase):
         self.__bank2.removeBank()
         self.guest1.removeUser()
         self.member1.removeUser()
+        self.__userManager.removeAllUsers()
 
 
 
