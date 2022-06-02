@@ -652,6 +652,9 @@ class Store:
         #     self.__discounts[discount.getDiscountId()] = discount
         #     self.__discounts.pop(dId1)
         #     self.__discounts.pop(dId2)
+        DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d1.getModel()).delete()
+        DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d2.getModel()).delete()
         return discount
 
     def removeDiscount(self, user, dId):
