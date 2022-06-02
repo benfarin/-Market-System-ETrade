@@ -533,6 +533,8 @@ class Store:
         transaction_model = StoreTransactionModel.objects.get(transactionId=transactionId)
         return self._buildStoreTransactions(transaction_model)
 
+    def getName(self):
+        return self.__model.name
     # print all transactions in store - will be deleted in this version
     def printPurchaseHistoryInformation(self, user):  ###NEED TO CHANGE THIS
         permissions = self.__permissions.get(user)
@@ -831,9 +833,13 @@ class Store:
     def _buildPermission(self, model):
         return StorePermission(model=model)
 
+    def getModel(self):
+        return self.__model
+
     def __eq__(self, other):
         return isinstance(other, Store) and self.__model == other.getModel()
 
     def __hash__(self):
         return hash(self.__model.storeID)
+
 

@@ -64,11 +64,11 @@ class Market:
         self.__stores[storeID] = newStore
         return newStore
 
-    def isStoreExists(self, storeId):
+    def isStoreExists(self, storeId): #TESTED
         self.__initializeStoresDict()
         return storeId in self.__stores.keys()
 
-    def getStore(self, storeId):
+    def getStore(self, storeId):   #TESTED
         self.__initializeStoresDict()
         if storeId in self.__stores.keys():
             return self.__stores.get(storeId)
@@ -82,7 +82,7 @@ class Market:
                 allStores.append(store)
         return allStores
 
-    def getAllStores(self):
+    def getAllStores(self):  #TESTED
         self.__initializeStoresDict()
         return self.__stores.values()
 
@@ -142,7 +142,7 @@ class Market:
         except Exception as e:
             return e
 
-    def getProductByCategory(self, category):
+    def getProductByCategory(self, category):  # TESTED
         self.__initializeStoresDict()
         productsInStores = []
         keys = self.__stores.keys()
@@ -152,7 +152,7 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
-    def getProductsByName(self, nameProduct):
+    def getProductsByName(self, nameProduct):  # TESTED
         self.__initializeStoresDict()
         productsInStores = []
         keys = self.__stores.keys()
@@ -162,7 +162,7 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
-    def getProductByKeyWord(self, keyword):
+    def getProductByKeyWord(self, keyword):  # TESTED
         self.__initializeStoresDict()
         productsInStores = []
         keys = self.__stores.keys()
@@ -172,7 +172,7 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
-    def getProductByPriceRange(self, minPrice, highPrice):
+    def getProductByPriceRange(self, minPrice, highPrice):   # TESTED
         self.__initializeStoresDict()
         productsInStores = []
         keys = self.__stores.keys()
@@ -258,7 +258,7 @@ class Market:
             raise Exception(e)
 
     #  actions of roles - role managment
-    def appointManagerToStore(self, storeID, assigner, assignee):  # Tested
+    def appointManagerToStore(self, storeID, assigner, assignee):
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).appointManagerToStore(assigner, assignee)
@@ -274,7 +274,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def removeStoreOwner(self, storeID, assigner, assignee):  # unTested
+    def removeStoreOwner(self, storeID, assigner, assignee):
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).removeStoreOwner(assigner, assignee)
@@ -282,7 +282,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def setStockManagerPermission(self, storeID, assigner, assignee):  # Tested
+    def setStockManagerPermission(self, storeID, assigner, assignee):
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).setStockManagementPermission(assigner, assignee)
@@ -290,7 +290,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def setAppointOwnerPermission(self, storeID, assigner, assignee):  # Tested
+    def setAppointOwnerPermission(self, storeID, assigner, assignee):
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).setAppointOwnerPermission(assigner, assignee)
@@ -369,7 +369,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def removeProductFromStore(self, storeID, user, productId):
+    def removeProductFromStore(self, storeID, user, productId):  #TESTED
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).removeProductFromStore(user, productId)
@@ -391,7 +391,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def getStoreByName(self, store_name):
+    def getStoreByName(self, store_name):  #TESTED
         self.__initializeStoresDict()
         store_collection = []
         store_names = self.__stores.keys()
