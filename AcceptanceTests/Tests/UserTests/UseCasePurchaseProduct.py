@@ -19,9 +19,17 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                               "Ben Gurion", 1, 1)
 
         self.__guestId = self.user_proxy.login_guest().getData().getUserID()
+        self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
+        self.__guestId3 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
+        self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                                 "Ben Gurion", 0, "HaPoalim")
+        self.user_proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                                 "Ben Gurion", 0, "HaPoalim")
         self.user_id = self.user_proxy.login_member(self.__guestId, "user1", "1234").getData().getUserID()
+        self.user_id2 = self.user_proxy.login_member(self.__guestId, "user2", "1234").getData().getUserID()
+        self.user_id3 = self.user_proxy.login_member(self.__guestId, "user3", "1234").getData().getUserID()
 
         self.store_0 = self.user_proxy.open_store("s0", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                 0, "000000").getData().getStoreId()
@@ -134,6 +142,33 @@ class UseCasePurchaseProduct(unittest.TestCase):
         ut_1 = self.user_proxy.purchase_product(self.user_id, 50, 30)
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
+
+    def test_purchase_with_threads(self):
+        t1 = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args=(self.user_id2, self.store_0, self.product01, 100))
+        t2 = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args=(self.user_id3, self.store_0, self.product01, 100))
+        t1.start()
+        t2.start()
+
+        tran1 = self.user_proxy.purchase_product(self.user_id2, 10, 10)
+        tran2 = self.user_proxy.purchase_product(self.user_id3, 10, 10)
+        self.assertTrue(tran2.isError())
+        self.assertEqual(tran1.getData().getTotalAmount(), 10000.0)
+
+    def test_purchase_with_thread2(self):
+        t1 = [None] * 100
+        t2 = [None] * 100
+        for i in range(50):
+            t1[i] = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args = (self.user_id2, self.store_0, self.product01, 1))
+            t2[i] = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args = (self.user_id3, self.store_0, self.product01, 1))
+        for i in range(50):
+            t1[i].start()
+            t2[i].start()
+        trans1 = self.user_proxy.purchase_product(self.user_id2, 10, 10)
+        trans2 = self.user_proxy.purchase_product(self.user_id3, 10, 10)
+        print(trans1)
+        print(trans2)
+        self.assertEqual(trans1.getData().getTotalAmount(), 5000.0)
+        self.assertEqual(trans2.getData().getTotalAmount(), 5000.0)
 
 
 if __name__ == '__main__':

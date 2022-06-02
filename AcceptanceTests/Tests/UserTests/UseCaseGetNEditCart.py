@@ -12,6 +12,10 @@ class UseCaseGetCartNEdit(unittest.TestCase):
     # get_cart functions has all products of a user from all the stores
     # also check changes in cart are working!
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        print("NEVER CALLED")
+
     def setUp(self) -> None:
         # Proxies initialized
         self.proxy_market = MarketProxyBridge(MarketRealBridge())
@@ -42,8 +46,8 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.user_id1 = self.proxy_user.login_member(guest_id1, "testUser1", "1234").getData().getUserID()
         self.user_id2 = self.proxy_user.login_member(guest_id2, "testUser2", "1234").getData().getUserID()
         self.user_id3 = self.proxy_user.login_member(guest_id3, "testUser3", "1234").getData().getUserID()
-        self.user_id4 = self.proxy_user.login_member(guest_id3, "testUser4", "1234").getData().getUserID()
-        self.user_id5 = self.proxy_user.login_member(guest_id3, "testUser5", "1234").getData().getUserID()
+        self.user_id4 = self.proxy_user.login_member(guest_id4, "testUser4", "1234").getData().getUserID()
+        self.user_id5 = self.proxy_user.login_member(guest_id5, "testUser5", "1234").getData().getUserID()
 
         # Create 3 stores
         self.store_id1 = self.proxy_user.open_store("fruits_store", self.user_id1, 123, None, "Israel", "Beer Sheva",
@@ -113,13 +117,13 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         prods2 = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()[1].getAllProducts()
         self.assertEqual(list(prods2.values())[0], 40, "We added 30 more pieces to product3!")
 
-
     def test_cart_info_threads(self):
         # user2 shouldn't succeed to buy
-        t1 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id3, self.store_id1, self.p1_id, 10))
-        t2 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id4, self.store_id1, self.p1_id, 10))
-        t3 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id5, self.store_id1, self.p1_id, 10))
-        t4 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.p1_id, 100))
+        t1 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args =(self.user_id3, self.store_id1, self.p1_id, 10))
+        t2 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args = (self.user_id4, self.store_id1, self.p1_id, 10))
+        t3 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args =(self.user_id5, self.store_id1, self.p1_id, 10))
+        t4 = ThreadWithReturn(
+            target=self.proxy_user.add_product_to_cart, args = (self.user_id2, self.store_id1, self.p1_id, 100))
 
         t1.start()
         t2.start()
@@ -127,10 +131,11 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         t4.start()
 
         # user5 shouldn't succeed to buy
-        t1 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id3, self.store_id2, self.p3_id, 10))
-        t2 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id4, self.store_id2, self.p3_id, 10))
-        t3 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id5, self.store_id2, self.p3_id, 100))
-        t4 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id2, self.store_id2, self.p3_id, 10))
+        t1 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args = (self.user_id3, self.store_id2, self.p3_id, 10))
+        t2 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args = (self.user_id4, self.store_id2, self.p3_id, 10))
+        t3 = ThreadWithReturn(
+            target=self.proxy_user.add_product_to_cart, args = (self.user_id5, self.store_id2, self.p3_id, 100))
+        t4 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args =(self.user_id2, self.store_id2, self.p3_id, 10))
 
         t1.start()
         t2.start()
@@ -138,10 +143,11 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         t4.start()
 
         # user4 shouldn't succeed to buy
-        t1 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id3, self.store_id3, self.p5_id, 10))
-        t2 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id4, self.store_id3, self.p5_id, 100))
-        t3 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id5, self.store_id3, self.p5_id, 10))
-        t4 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart(self.user_id2, self.store_id3, self.p5_id, 10))
+        t1 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args=(self.user_id3, self.store_id3, self.p5_id, 10))
+        t2 = ThreadWithReturn(
+            target=self.proxy_user.add_product_to_cart, args = (self.user_id4, self.store_id3, self.p5_id, 100))
+        t3 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args= (self.user_id5, self.store_id3, self.p5_id, 10))
+        t4 = ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args = (self.user_id2, self.store_id3, self.p5_id, 10))
 
         t1.start()
         t2.start()
