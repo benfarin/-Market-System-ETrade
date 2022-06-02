@@ -1,5 +1,6 @@
 from Backend.Business.Address import Address
 from Backend.Business.Bank import Bank
+from Backend.Business.StorePackage.Cart import Cart
 from Backend.Business.UserPackage.User import User
 import bcrypt
 import threading
@@ -79,7 +80,8 @@ class Member(User):
         return super().getTransactions().values()
 
     def setCart(self, cart):
-        self._cart = cart
+        self.__m.cart = cart.getModel()
+        self.__m.save()
 
     def updateCart(self, cart):
         self.__market.updateCart(self._cart, cart)
@@ -318,6 +320,9 @@ class Member(User):
         CartModel.objects.filter(userid=self.__m.userid).delete()
         BagModel.objects.filter(userId=self.__m.userid).delete()
         self.__m.delete()
+
+    def _buildCart(self, model):
+        return Cart(model=model)
 
     def __eq__(self, other):
         return isinstance(other, Member) and self.__m == other.getModel()

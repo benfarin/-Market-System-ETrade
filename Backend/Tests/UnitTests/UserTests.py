@@ -1,9 +1,9 @@
 import unittest
-from Business.Address import Address
-from Business.Bank import Bank
-from Business.Managment.UserManagment import UserManagment
-from interfaces.IUser import IUser
-from Business.UserPackage.User import User
+from Backend.Business.Address import Address
+from Backend.Business.Bank import Bank
+from Backend.Business.Managment.UserManagment import UserManagment
+from Backend.Interfaces.IUser import IUser
+from Backend.Business.UserPackage.User import User
 
 
 class MyTestCase(unittest.TestCase):
@@ -17,10 +17,6 @@ class MyTestCase(unittest.TestCase):
         self.user_1 = User()
         self.user_2 = User()
 
-    def test_user(self):
-        print(self.user_1.getUserID())
-        print(self.user_2.getUserID())
-
 
     def test_memberSignUp(self):
         self.__userManager.memberSignUp("shalom","123456","089702342",self.__address1,self.__bank1,None)
@@ -30,6 +26,14 @@ class MyTestCase(unittest.TestCase):
         self.__userManager.memberSignUp("shalom","123456","089702342",self.__address1,self.__bank1,None)
         self.__userManager.systemManagerSignUp("bar","123","089362716",self.__address2,self.__bank2)
         self.assertEqual(self.__userManager.memberLogin("shalom","123456"), "member logged in succesfully!")
+
+    def tearDown(self):
+        self.__address1.removeAddress()
+        self.__address2.removeAddress()
+        self.__bank1.removeBank()
+        self.__bank2.removeBank()
+        self.user_1.removeUser()
+        self.user_2.removeUser()
 
 
 

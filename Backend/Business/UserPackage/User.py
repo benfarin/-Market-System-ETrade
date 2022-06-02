@@ -88,7 +88,7 @@ class User:
         # return self.__memberCheck
 
     def setICart(self, icart):
-        self._cart = icart
+        self.__model.cart = icart.getModel()
 
     def setMemberCheck(self, state):
         pass
@@ -170,4 +170,8 @@ class User:
 
     def _buildUserTransaction(self, model):
         return UserTransaction(model=model)
+
+
+    def removeUser(self):
+        self.__model.delete()
 
