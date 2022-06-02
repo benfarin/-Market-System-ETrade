@@ -1,4 +1,6 @@
 import unittest
+from collections import Counter
+import random
 
 from Backend.Business.Address import Address
 from Backend.Business.Bank import Bank
@@ -29,9 +31,9 @@ class MarketTests(unittest.TestCase):
         self.__storeId1 = self.__store.getStoreId()
 
 
-        self.__product1 = Product(1,0, "tara milk 5%", 5.5, "dairy", 10 ,["tara", "dairy drink", "5%"])
-        self.__product2 = Product(2,0, "shoko", 6.90, "dairy",15, ["sugar", "chocolate", "dairy drink"])
-        self.__product3 = Product(3,0, "dress", 199.99, "cloth",7, ["short sleeve", "red"])
+        self.__product1 = Product(random.randint(0, 9999999),self.__storeId1, "tara milk 5%", 5.5, "dairy", 10 ,["tara", "dairy drink", "5%"])
+        self.__product2 = Product(random.randint(0, 9999999),self.__storeId1, "shoko", 6.90, "dairy",15, ["sugar", "chocolate", "dairy drink"])
+        self.__product3 = Product(random.randint(0, 9999999),self.__storeId1, "dress", 199.99, "cloth",7, ["short sleeve", "red"])
 
         # store1: founder: member1, owners: [member1], managers: []
         # store2: founder: member2, owners: [member2], managers: []
@@ -161,6 +163,26 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.removeStore(self.__storeId1, self.__member1))
         self.assertTrue(self.__market.recreateStore(self.__storeId1, self.__member1))
 
+    def test_storeExist(self):  ##WORKING
+        self.test_createStore()
+        self.assertTrue(self.__market.isStoreExists(self.__storeId1))
+        self.assertEqual(self.__market.getStore(self.__storeId1), self.__store)
+        self.assertTrue(Counter(self.__market.getAllStores()) == Counter({self.__store, self.__store2}))
+        self.assertEqual(Counter(self.__market.getStoreByName("foot-locker")), Counter({self.__store}))
+
+    def test_products_functions(self):  ##WORKING
+        self.test_createStore()
+        self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1)
+        self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product2)
+        self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product3)
+        self.assertTrue(Counter(self.__market.getProductByCategory("dairy")) == Counter({self.__product1, self.__product2}))
+        self.assertTrue(
+            Counter(self.__market.getProductsByName("dress")) == Counter({self.__product3}))
+        self.assertTrue(
+            Counter(self.__market.getProductByPriceRange(5, 200)) == Counter({self.__product1, self.__product2, self.__product3}))
+        self.assertTrue(self.__market.removeProductFromStore(self.__storeId1, self.__member1, self.__product1.getProductId()))
+
+
 
     def tearDown(self):
         self.__address1.removeAddress()
@@ -169,9 +191,9 @@ class MarketTests(unittest.TestCase):
         self.__bank1.removeBank()
         self.__bank2.removeBank()
         self.__bank3.removeBank()
-        self.__member1.removeMember()
-        self.__member2.removeMember()
-        self.__member3.removeMember()
+        self.__member1.removeUser()
+        self.__member2.removeUser()
+        self.__member3.removeUser()
 
         self.__store.removeStore()
         self.__store2.removeStore()
