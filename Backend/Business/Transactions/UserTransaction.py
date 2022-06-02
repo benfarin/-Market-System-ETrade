@@ -17,7 +17,7 @@ class UserTransaction:
                                              date=datetime.datetime.now(), totalAmount=totalAmount)[0]
             self.__ut.save()
             for st in storeTransactions:
-                model = StoreTransactionModel.objects.get_or_create(transactionId=st)
+                model = StoreTransactionModel.objects.get(transactionId=st)
                 StoreTransactionsInUserTransactions.objects.get_or_create(userTransaction_id=self.__ut,
                                                                           storeTransaction_id=model)
         else:

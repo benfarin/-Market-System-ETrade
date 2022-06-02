@@ -1,5 +1,4 @@
 import unittest
-from collections import Counter
 import random
 
 from Backend.Business.Address import Address
@@ -13,7 +12,7 @@ import threading
 
 
 class MarketTests(unittest.TestCase):
-  
+
     def setUp(self):
         self.__market: IMarket = Market().getInstance()
         self.__address1 = Address("Israel", "modiin", "avni hoshen", 4, 71813)
@@ -27,18 +26,20 @@ class MarketTests(unittest.TestCase):
         self.__member3 = Member("gershon", "089717468", "2325", self.__address2, self.__bank2)
 
         self.__store = self.__market.createStore("foot-locker", self.__member1, self.__bank1,
-                                                    self.__address2)
+                                                 self.__address2)
         self.__storeId1 = self.__store.getStoreId()
 
-
-        self.__product1 = Product(random.randint(0, 9999999),self.__storeId1, "tara milk 5%", 5.5, "dairy", 10 ,["tara", "dairy drink", "5%"])
-        self.__product2 = Product(random.randint(0, 9999999),self.__storeId1, "shoko", 6.90, "dairy",15, ["sugar", "chocolate", "dairy drink"])
-        self.__product3 = Product(random.randint(0, 9999999),self.__storeId1, "dress", 199.99, "cloth",7, ["short sleeve", "red"])
+        self.__product1 = Product(random.randint(0, 9999999), self.__storeId1, "tara milk 5%", 5.5, "dairy", 10,
+                                  ["tara", "dairy drink", "5%"])
+        self.__product2 = Product(random.randint(0, 9999999), self.__storeId1, "shoko", 6.90, "dairy", 15,
+                                  ["sugar", "chocolate", "dairy drink"])
+        self.__product3 = Product(random.randint(0, 9999999), self.__storeId1, "dress", 199.99, "cloth", 7,
+                                  ["short sleeve", "red"])
 
         # store1: founder: member1, owners: [member1], managers: []
         # store2: founder: member2, owners: [member2], managers: []
 
-    def test_createStore(self):   ##WORKING
+    def test_createStore(self):  ##WORKING
         self.__store2 = self.__market.createStore("Decathlon", self.__member2, self.__bank1, self.__address3)
         self.assertIsNotNone(self.__store2)
         self.__storeId2 = self.__store2.getStoreId()
@@ -48,31 +49,35 @@ class MarketTests(unittest.TestCase):
         # # storeId2 = 1, founder: member2
         # self.assertEqual(1, self.__store2.getStoreId())
 
-    def test_addProductToStore(self): ##WORKING
+    def test_addProductToStore(self):  ##WORKING
         self.test_createStore()
         self.assertTrue(self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1))
         self.assertTrue(self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product2))
         self.assertTrue(self.__market.addProductToStore(self.__storeId2, self.__member2, self.__product3))
 
-
     def test_addProductToStore_FAIL(self):  ##WORKING
         # try to add a product to a non-existing store
-        self.assertRaises(Exception, lambda: self.__market.addProductToStore(self.__storeId2, self.__member1, self.__product1))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToStore(self.__storeId2, self.__member1, self.__product1))
         self.test_createStore()
         # member without the permission tries to add a product
-        self.assertRaises(Exception, lambda: self.__market.addProductToStore(self.__storeId1, self.__member2, self.__product1))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToStore(self.__storeId1, self.__member2, self.__product1))
         # try to add a product that all ready exists
         self.assertTrue(self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1))
-        self.assertRaises(Exception, lambda: self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1))
         # try to add in the same time
         self.__market.appointOwnerToStore(self.__storeId1, self.__member1, self.__member3)
         self.assertTrue(self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product3))
-        self.assertRaises(Exception, lambda: self.__market.addProductToStore(self.__storeId1, self.__member3, self.__product3))
+        self.assertRaises(Exception,
+                          lambda: self.__market.addProductToStore(self.__storeId1, self.__member3, self.__product3))
 
     def test_addProductQuantity(self):  ##WORKING
         self.test_addProductToStore()
         try:
-            self.__market.addProductQuantityToStore(self.__storeId1, self.__member1, self.__product1.getProductId(), 100)
+            self.__market.addProductQuantityToStore(self.__storeId1, self.__member1, self.__product1.getProductId(),
+                                                    100)
             self.__market.addProductQuantityToStore(self.__storeId1, self.__member1, self.__product2.getProductId(), 92)
             self.__market.addProductQuantityToStore(self.__storeId2, self.__member2, self.__product3.getProductId(), 31)
 
@@ -93,7 +98,7 @@ class MarketTests(unittest.TestCase):
         except:
             self.assertTrue(False)
 
-    def test_addProductQuantity_Fail(self): ##WORKING
+    def test_addProductQuantity_Fail(self):  ##WORKING
         # try to add quantity to a product that doesn't exist
         self.assertRaises(Exception, lambda: self.__market.addProductQuantityToStore(self.__storeId1, self.__member1,
                                                                                      self.__product1.getProductId(),
@@ -110,11 +115,15 @@ class MarketTests(unittest.TestCase):
         self.assertRaises(Exception, lambda: self.__market.addProductQuantityToStore(self.__storeId1, self.__member1,
                                                                                      self.__product1.getProductId(),
                                                                                      -3))
+
     def test_addProductToCart(self):  ##WORKING
         self.test_addProductQuantity()
-        self.assertTrue(self.__market.addProductToCart(self.__member1, self.__storeId1, self.__product1.getProductId(), 7))
-        self.assertTrue(self.__market.addProductToCart(self.__member1, self.__storeId2, self.__product3.getProductId(), 3))
-        self.assertTrue(self.__market.addProductToCart(self.__member2, self.__storeId1, self.__product2.getProductId(), 10))
+        self.assertTrue(
+            self.__market.addProductToCart(self.__member1, self.__storeId1, self.__product1.getProductId(), 7))
+        self.assertTrue(
+            self.__market.addProductToCart(self.__member1, self.__storeId2, self.__product3.getProductId(), 3))
+        self.assertTrue(
+            self.__market.addProductToCart(self.__member2, self.__storeId1, self.__product2.getProductId(), 10))
 
     def test_addProductToCartWithoutStoreID(self):  ##WORKING
         self.test_addProductQuantity()
@@ -122,43 +131,44 @@ class MarketTests(unittest.TestCase):
         self.assertTrue(self.__market.addProductToCartWithoutStore(self.__member1, self.__product3.getProductId(), 3))
         self.assertTrue(self.__market.addProductToCartWithoutStore(self.__member2, self.__product2.getProductId(), 10))
 
-
-    def test_addProductToCart_Fail(self): ##WORKING
+    def test_addProductToCart_Fail(self):  ##WORKING
         # try to add product to cart1111 from store that doesn't exist
         self.assertRaises(Exception,
-                          lambda: self.__market.addProductToCart(self.__member1, self.__storeId1, self.__product1.getProductId(), 10))
+                          lambda: self.__market.addProductToCart(self.__member1, self.__storeId1,
+                                                                 self.__product1.getProductId(), 10))
         self.test_createStore()
         # try to add product that doesn't exist in the store
         self.assertRaises(Exception,
-                          lambda: self.__market.addProductToCart(self.__member1, self.__storeId1, self.__product1.getProductId(), 10))
+                          lambda: self.__market.addProductToCart(self.__member1, self.__storeId1,
+                                                                 self.__product1.getProductId(), 10))
 
         self.assertTrue(self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1))
         self.__market.addProductQuantityToStore(self.__storeId1, self.__member1, self.__product1.getProductId(), 100)
         # try to buy product that doesn't have in stock
         self.assertRaises(Exception,
-                          lambda: self.__market.addProductToCart(self.__member1, self.__storeId1, self.__product1.getProductId(),
+                          lambda: self.__market.addProductToCart(self.__member1, self.__storeId1,
+                                                                 self.__product1.getProductId(),
                                                                  110))
 
     def test_removeProductFromCart(self):  ##WORKING
         self.test_addProductToCart()
-        self.assertTrue(self.__market.removeProductFromCart(self.__storeId1, self.__member1, self.__product1.getProductId()))
-
+        self.assertTrue(
+            self.__market.removeProductFromCart(self.__storeId1, self.__member1, self.__product1.getProductId()))
 
     def test_purchaseCart(self):  ##WORKING
         self.test_addProductToCart()
-        self.assertTrue(self.__market.purchaseCart(self.__member1, self.__bank1))
+        self.assertEqual(self.__market.purchaseCart(self.__member1, self.__bank1).getTotalAmount(), 638.47)
         # trans = self.__member1.getTransactionById(2)
-
 
         # print("\n")
         # for storeId in trans.getStoreTransactions().keys():
         #     print(trans.getStoreTransactions()[storeId].printPurchaseHistoryInformation())
 
-    def test_removeStore(self): ##WORKING
+    def test_removeStore(self):  ##WORKING
         self.test_createStore()
         self.assertTrue(self.__market.removeStore(self.__storeId1, self.__member1))
 
-    def test_recreateStore(self):   ##WORKING
+    def test_recreateStore(self):  ##WORKING
         self.test_createStore()
         self.assertTrue(self.__market.removeStore(self.__storeId1, self.__member1))
         self.assertTrue(self.__market.recreateStore(self.__storeId1, self.__member1))
@@ -167,22 +177,20 @@ class MarketTests(unittest.TestCase):
         self.test_createStore()
         self.assertTrue(self.__market.isStoreExists(self.__storeId1))
         self.assertEqual(self.__market.getStore(self.__storeId1), self.__store)
-        self.assertTrue(Counter(self.__market.getAllStores()) == Counter({self.__store, self.__store2}))
-        self.assertEqual(Counter(self.__market.getStoreByName("foot-locker")), Counter({self.__store}))
+        self.assertEqual(self.__market.getStores(), [self.__store, self.__store2])
+        self.assertEqual(self.__market.getStoreByName("foot-locker"), [self.__store])
 
     def test_products_functions(self):  ##WORKING
         self.test_createStore()
         self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product1)
         self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product2)
         self.__market.addProductToStore(self.__storeId1, self.__member1, self.__product3)
-        self.assertTrue(Counter(self.__market.getProductByCategory("dairy")) == Counter({self.__product1, self.__product2}))
-        self.assertTrue(
-            Counter(self.__market.getProductsByName("dress")) == Counter({self.__product3}))
-        self.assertTrue(
-            Counter(self.__market.getProductByPriceRange(5, 200)) == Counter({self.__product1, self.__product2, self.__product3}))
-        self.assertTrue(self.__market.removeProductFromStore(self.__storeId1, self.__member1, self.__product1.getProductId()))
-
-
+        self.assertEqual(self.__market.getProductByCategory("dairy"), [self.__product1, self.__product2])
+        self.assertEqual(self.__market.getProductsByName("dress"),  [self.__product3])
+        self.assertEqual(self.__market.getProductByPriceRange(5, 200),
+                         [self.__product1, self.__product2, self.__product3])
+        self.assertTrue(self.__market.removeProductFromStore(self.__storeId1,
+                                                             self.__member1, self.__product1.getProductId()))
 
     def tearDown(self):
         self.__address1.removeAddress()

@@ -81,10 +81,6 @@ class Market:
                 allStores.append(store)
         return allStores
 
-    def getAllStores(self):  #TESTED
-        self.__initializeStoresDict()
-        return self.__stores.values()
-
     def addProductToCart(self, user, storeID, productID, quantity):  # TESTED
         self.__initializeStoresDict()
         try:
@@ -235,7 +231,7 @@ class Market:
                                                                           storeAmount)
                     self.__stores.get(storeId).addTransaction(storeTransaction)
                     self.__transactionHistory.addStoreTransaction(storeTransaction)
-                    storeTransactions[storeId] = storeTransaction
+                    storeTransactions[transactionId] = storeTransaction
                     cart.cleanBag(storeId)
                 else:
                     storeFailed.append(storeId)
@@ -408,7 +404,10 @@ class Market:
 
     def getStores(self):
         self.__initializeStoresDict()
-        return self.__stores
+        stores = []
+        for store in self.__stores.values():
+            stores.append(store)
+        return stores
 
     # need to add to the service
     def removeStore(self, storeID, user):  #TESTED
