@@ -11,38 +11,38 @@ from Backend.Service.UserService import UserService
 
 class UseCasePurchaseProduct(unittest.TestCase):
     #usecase 2.9
-    @classmethod
-    def setUpClass(cls):
-        cls.market_proxy = MarketProxyBridge(MarketRealBridge())
-        cls.user_proxy = UserProxyBridge(UserRealBridge())
-        cls.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+
+    def setUp(self):
+        self.market_proxy = MarketProxyBridge(MarketRealBridge())
+        self.user_proxy = UserProxyBridge(UserRealBridge())
+        self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
 
-        cls.__guestId = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.__guestId = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, "HaPoalim")
-        cls.user_id = cls.user_proxy.login_member(cls.__guestId, "user1", "1234").getData().getUserID()
+        self.user_id = self.user_proxy.login_member(self.__guestId, "user1", "1234").getData().getUserID()
 
-        cls.store_0 = cls.user_proxy.open_store("s0", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+        self.store_0 = self.user_proxy.open_store("s0", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                 0, "000000").getData().getStoreId()
-        cls.store_1 = cls.user_proxy.open_store("s1", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+        self.store_1 = self.user_proxy.open_store("s1", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                 0, "000000").getData().getStoreId()
-        cls.store_2 = cls.user_proxy.open_store("s2", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+        self.store_2 = self.user_proxy.open_store("s2", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                 0, "000000").getData().getStoreId()
 
-        cls.product01 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-01", 100,
+        self.product01 = self.market_proxy.add_product_to_store(self.store_0, self.user_id, "Product-01", 100,
                                                               "Category", 8, ["Test1", "Test2"]).getData().getProductId()
-        cls.product02 = cls.market_proxy.add_product_to_store(cls.store_0, cls.user_id, "Product-02", 150,
+        self.product02 = self.market_proxy.add_product_to_store(self.store_0, self.user_id, "Product-02", 150,
                                                               "Category", 9,["Test1", "Test2"]).getData().getProductId()
-        cls.product1 = cls.market_proxy.add_product_to_store(cls.store_1, cls.user_id, "Product-1", 100,
+        self.product1 = self.market_proxy.add_product_to_store(self.store_1, self.user_id, "Product-1", 100,
                                                              "Category", 10, ["Test1", "Test2"]).getData().getProductId()
-        cls.product2 = cls.market_proxy.add_product_to_store(cls.store_2, cls.user_id, "Product-2", 10,
+        self.product2 = self.market_proxy.add_product_to_store(self.store_2, self.user_id, "Product-2", 10,
                                                              "Category", 11, ["Test1", "Test2"]).getData().getProductId()
 
-        cls.market_proxy.add_quantity_to_store(cls.store_0, cls.user_id, cls.product01, 100)
-        cls.market_proxy.add_quantity_to_store(cls.store_0, cls.user_id, cls.product02, 100)
-        cls.market_proxy.add_quantity_to_store(cls.store_1, cls.user_id, cls.product1, 100)
-        cls.market_proxy.add_quantity_to_store(cls.store_2, cls.user_id, cls.product2, 100)
+        self.market_proxy.add_quantity_to_store(self.store_0, self.user_id, self.product01, 100)
+        self.market_proxy.add_quantity_to_store(self.store_0, self.user_id, self.product02, 100)
+        self.market_proxy.add_quantity_to_store(self.store_1, self.user_id, self.product1, 100)
+        self.market_proxy.add_quantity_to_store(self.store_2, self.user_id, self.product2, 100)
 
     def test_purchase_positive1(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 20)

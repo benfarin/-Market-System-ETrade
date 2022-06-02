@@ -9,30 +9,29 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 class UseCaseAppointStoreOwner(unittest.TestCase):
     # use-case 4.4
-    @classmethod
-    def setUpClass(cls):
-        cls.proxy_market = MarketProxyBridge(MarketRealBridge())
-        cls.proxy_user = UserProxyBridge(UserRealBridge())
-        cls.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+    def setUp(self):
+        self.proxy_market = MarketProxyBridge(MarketRealBridge())
+        self.proxy_user = UserProxyBridge(UserRealBridge())
+        self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
-        cls.__guestId1 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
-        cls.__guestId2 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
-        cls.__guestId3 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser3", "4321", "0540000002", 124, [], "Israel", "Beer Sheva",
+        self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser", "1234", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
+        self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser3", "4321", "0540000002", 124, [], "Israel", "Beer Sheva",
                                 "Rager", 1, "testBank")
-        cls.__guestId4 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser4", "4321", "0540000003", 124, [], "Israel", "Tel aviv",
+        self.__guestId4 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser4", "4321", "0540000003", 124, [], "Israel", "Tel aviv",
                                 "Rager", 1, "testBank")
 
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        cls.user1_id = cls.proxy_user.login_member(cls.__guestId1, "testUser", "1234").getData().getUserID()
-        cls.user2_id = cls.proxy_user.login_member(cls.__guestId2, "testUser2", "4321").getData().getUserID()
-        cls.user3_id = cls.proxy_user.login_member(cls.__guestId3, "testUser3", "4321").getData().getUserID()
-        cls.user4_id = cls.proxy_user.login_member(cls.__guestId4, "testUser4", "4321").getData().getUserID()
-        cls.store_id = cls.proxy_user.open_store("testStore", cls.user1_id, 123, 2, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
+        self.user1_id = self.proxy_user.login_member(self.__guestId1, "testUser", "1234").getData().getUserID()
+        self.user2_id = self.proxy_user.login_member(self.__guestId2, "testUser2", "4321").getData().getUserID()
+        self.user3_id = self.proxy_user.login_member(self.__guestId3, "testUser3", "4321").getData().getUserID()
+        self.user4_id = self.proxy_user.login_member(self.__guestId4, "testUser4", "4321").getData().getUserID()
+        self.store_id = self.proxy_user.open_store("testStore", self.user1_id, 123, 2, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
 
     def test_AppointStoreOwnerPositive(self):
         # store_id, assigner_id, assignee_name
