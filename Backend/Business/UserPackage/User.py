@@ -52,8 +52,8 @@ class User:
         #     self._model = model
 
         self.userid = userid = uuid.uuid4()
-        self.__userCart = Cart(userid)
-        self.__model = UserModel.objects.get_or_create(userid=userid, cart=self.__userCart.getModel())[0]
+        self._userCart = Cart(userid)
+        self._model = UserModel.objects.get_or_create(userid=userid, cart=self._userCart.getModel())[0]
 
         # self.start()
 
@@ -78,17 +78,17 @@ class User:
         # return self.__transactions[transactionId]
 
     def getUserID(self):
-        return self.__model.userid
+        return self._model.userid
 
     def getCart(self):
-        return Cart(model=CartModel.objects.get(userid=self.__model.userid))
+        return Cart(model=CartModel.objects.get(userid=self._model.userid))
 
     def getMemberCheck(self):
         pass
         # return self.__memberCheck
 
     def setICart(self, icart):
-        self.__model.cart = icart.getModel()
+        self._model.cart = icart.getModel()
 
     def setMemberCheck(self, state):
         pass
@@ -149,7 +149,7 @@ class User:
             return None
 
     def is_authenticated(self):
-        return self.__model.is_authenticated
+        return self._model.is_authenticated
 
     @staticmethod
     def save(username, password):
@@ -160,7 +160,7 @@ class User:
         m_User.objects.create_superuser(username=username, password=password)
 
     def getModel(self):
-        return self.__model
+        return self._model
 
     # def __eq__(self, other):
     #     return isinstance(other, User) and self.__model == other.getModel()
@@ -173,5 +173,5 @@ class User:
 
 
     def removeUser(self):
-        self.__model.delete()
+        self._model.delete()
 

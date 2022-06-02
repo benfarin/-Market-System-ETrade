@@ -48,43 +48,44 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
-            self.__m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
+            self._m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
                                                          member_password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
                                                          cart=super().getCart().getModel())[0]
         else:
-            self.__m = model
+            self._m = model
 
     def setLoggedIn(self, state):
-        self.__m.isLoggedIn = state
+        self._m.isLoggedIn = state
 
     def addProductRating(self, productID, rating):
         pass
 
     def getPassword(self):
-        return self.__m.password
+        return self._m.password
 
     def getPhone(self):
-        return self.__m.phone
+        return self._m.phone
 
     def getAddress(self):
-        return self.__m.address
+        return self._m.address
 
     def getBank(self):
-        return self.__m.bank
+        return self._m.bank
 
     def getMemberName(self):
-        return self.__m.userName
+        return self._m.member_username
 
     def getMemberTransactions(self):
         return super().getTransactions().values()
 
     def setCart(self, cart):
-        self.__m.cart = cart.getModel()
-        self.__m.save()
+        self._m.cart = cart.getModel()
+        self._m.save()
 
     def updateCart(self, cart):
-        self.__market.updateCart(self._cart, cart)
+        oldCart = self._buildCart(self._m.cart)
+        self.__market.updateCart(oldCart, cart)
 
     def isStoreExists(self, storeId):
         return self.__market.isStoreExists(storeId)
@@ -96,15 +97,15 @@ class Member(User):
             raise Exception(e)
 
     def change_password(self, old_password, new_password):
-        if bcrypt.checkpw(old_password.encode('utf-8'), self.__m.password):
-            self.__m.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-            self.__m.save()
+        if bcrypt.checkpw(old_password.encode('utf-8'), self._m.password):
+            self._m.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            self._m.save()
             return "Password changed succesfully!"
         else:
             raise PasswordException("password not good!")
 
     def getModel(self):
-        return self.__m
+        return self._m
 
     @threaded
     def createStore(self, storeName, bank, address):
@@ -315,18 +316,19 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
-    def removeMember(self):
-        UserTransactionModel.objects.filter(userID=self.__m.userid).delete()
-        CartModel.objects.filter(userid=self.__m.userid).delete()
-        BagModel.objects.filter(userId=self.__m.userid).delete()
-        self.__m.delete()
+    def removeUser(self):
+        super().removeUser()
+        UserTransactionModel.objects.filter(userID=self._m.userid).delete()
+        CartModel.objects.filter(userid=self._m.userid).delete()
+        BagModel.objects.filter(userId=self._m.userid).delete()
+        self._m.delete()
 
     def _buildCart(self, model):
         return Cart(model=model)
 
     def __eq__(self, other):
-        return isinstance(other, Member) and self.__m == other.getModel()
+        return isinstance(other, Member) and self._m == other.getModel()
 
     def __hash__(self):
-        return hash(self.__m.userid)
+        return hash(self._m.userid)
 
