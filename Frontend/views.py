@@ -50,7 +50,7 @@ def home_page(request):
     #
     django_user = request.user
     title = "Welcome " + django_user.username
-    if django_user.username is "":
+    if django_user.username == "":
         title = "Welcome Guest!"
     is_admin = member_service.isSystemManger(django_user.username).getData()
     # if user is not None:

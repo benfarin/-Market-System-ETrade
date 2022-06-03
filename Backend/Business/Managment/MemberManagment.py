@@ -1,7 +1,14 @@
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
+django.setup()
+
 from Backend.Business.Managment.UserManagment import UserManagment
 from Backend.Exceptions.CustomExceptions import NoSuchMemberException
 import threading
 from concurrent.futures import Future
+
+
 
 
 def call_with_future(fn, future, args, kwargs):

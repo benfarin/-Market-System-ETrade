@@ -2,6 +2,7 @@ from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Business.Transactions.UserTransaction import UserTransaction
 from typing import Dict
 
+
 class TransactionHistory:
     __instance = None
 
@@ -14,8 +15,8 @@ class TransactionHistory:
 
     def __init__(self):
         """ Virtually private constructor. """
-        self.__storeTransactions : Dict[int: StoreTransaction] = {}
-        self.__userTransaction : Dict[int: UserTransaction] = {}
+        self.__storeTransactions: Dict[int: StoreTransaction] = {}
+        self.__userTransaction: Dict[int: UserTransaction] = {}
         if TransactionHistory.__instance is None:
             TransactionHistory.__instance = self
 
@@ -57,10 +58,10 @@ class TransactionHistory:
             raise Exception("transaction with Id: " + str(transactionId) + "doesn't exists")
         return transaction
 
-
     def __createStoreTransaction(self, st):
         return StoreTransaction(st.getStoreId(), st.getStoreName(), st.getTransactionID(),
                                 st.getPaymentId(), st.getProducts(), st.getAmount())
 
     def __createUserTransaction(self, ut):
-        return UserTransaction(ut.getUserId(), ut.getUserTransactionId(), ut.getStoreTransactions(), ut.getPaymentId(), ut.getTotalAmount())
+        return UserTransaction(ut.getUserId(), ut.getUserTransactionId(), ut.getStoreTransactions(), ut.getPaymentId(),
+                               ut.getTotalAmount())
