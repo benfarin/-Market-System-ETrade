@@ -23,3 +23,6 @@ class IDiscount(Interface):
 
     def getDiscountId(self):
         pass
+
+    def getAllDiscountRules(self):
+        pass

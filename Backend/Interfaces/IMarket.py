@@ -156,3 +156,6 @@ class IMarket(Interface):
 
     def removeRule(self, user, storeId, dId, rId, ruleKind):
         pass
+
+    def getCartSum(self, user):
+        pass

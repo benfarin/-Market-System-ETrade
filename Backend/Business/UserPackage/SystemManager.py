@@ -3,8 +3,13 @@ from Backend.Business.Market import Market
 
 
 class SystemManager(Member):
-    def __init__(self, userName, password, phone, address, bank):
-        super().__init__(userName, password, phone, address, bank)
+    def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
+        if model is None:
+            super().__init__(userName, password, phone, address, bank)
+        else:
+            super().__init__(model=model)
+        super()._m.is_admin = True
+        super()._m.save()
         self.__market = Market.getInstance()
 
     def getAllStoreTransactions(self):
