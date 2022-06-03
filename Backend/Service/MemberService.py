@@ -40,7 +40,7 @@ class MemberService:
     def removeStore(self, storeId, userId):
         try:
             isRemoved = self.__memberManage.removeStore(userId, storeId)
-            logging.info("remove store: " + userId)
+            logging.info("remove store: " + str(userId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed remove the store: " + str(storeId))
@@ -49,7 +49,7 @@ class MemberService:
     def recreateStore(self, founderId, storeId):
         try:
             isRemoved = self.__memberManage.recreateStore(founderId, storeId)
-            logging.info("recreate store: " + founderId)
+            logging.info("recreate store: " + str(founderId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed recreate the store: " + str(storeId))

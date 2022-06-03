@@ -51,9 +51,13 @@ class User:
         # if model is not None:
         #     self._model = model
 
-        self.userid = uuid.uuid4()
-        self._userCart = Cart(self.userid)
-        self._model = UserModel.objects.get_or_create(userid=self.userid, cart=self._userCart.getModel())[0]
+        if model is None:
+            self.userid = uuid.uuid4()
+            self._userCart = Cart(self.userid)
+            self._model = UserModel.objects.get_or_create(userid=self.userid, cart=self._userCart.getModel())[0]
+
+        else:
+            self._model = model
 
         # self.start()
 

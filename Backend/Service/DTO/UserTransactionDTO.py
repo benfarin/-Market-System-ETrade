@@ -11,8 +11,8 @@ class userTransactionDTO:
         self.__transactionId = userTransaction.getUserTransactionId()
         self.__paymentId = userTransaction.getPaymentId()
         self.__date = userTransaction.getDate()
-        self.__storeTransactions: Dict[int: storeTransactionForUserDTO] = self.__makeDtoTransaction(
-            userTransaction.getStoreTransactions())
+        self.__storeTransactions: Dict[int: storeTransactionForUserDTO] = \
+            self.__makeDtoTransaction(userTransaction.getStoreTransactions())
         self.__totalAmount = userTransaction.getTotalAmount()
 
     def getStoreTransaction(self, id):
@@ -50,7 +50,7 @@ class userTransactionDTO:
 
     def __makeDtoTransaction(self, storeTransactions: {int: StoreTransaction}):
         transactionList = {}
-        for st in storeTransactions.values():
+        for st in storeTransactions:
             transactionList[st.getStoreId()] = storeTransactionForUserDTO(st)
         return transactionList
 

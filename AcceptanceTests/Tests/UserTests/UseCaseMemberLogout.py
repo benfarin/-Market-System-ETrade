@@ -16,7 +16,7 @@ class UseCaseMemberLogout(unittest.TestCase):
 
         cls.__guestId1 = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                "Ben Gurion", 0, "HaPoalim")
+                                "Ben Gurion", 0, 0)
 
     def test_logout_positive(self):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")

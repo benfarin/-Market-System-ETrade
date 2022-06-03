@@ -10,42 +10,46 @@ from Backend.Service.UserService import UserService
 
 
 class UseCasePurchaseProduct(unittest.TestCase):
-    #usecase 2.9
+    # usecase 2.9
 
     def setUp(self):
         self.market_proxy = MarketProxyBridge(MarketRealBridge())
         self.user_proxy = UserProxyBridge(UserRealBridge())
         self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                              "Ben Gurion", 1, 1)
+                                               "Ben Gurion", 1, 1)
 
         self.__guestId = self.user_proxy.login_guest().getData().getUserID()
         self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
         self.__guestId3 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         self.user_proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         self.user_id = self.user_proxy.login_member(self.__guestId, "user1", "1234").getData().getUserID()
         self.user_id2 = self.user_proxy.login_member(self.__guestId, "user2", "1234").getData().getUserID()
         self.user_id3 = self.user_proxy.login_member(self.__guestId, "user3", "1234").getData().getUserID()
 
         self.store_0 = self.user_proxy.open_store("s0", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                0, "000000").getData().getStoreId()
+                                                  0, 0).getData().getStoreId()
         self.store_1 = self.user_proxy.open_store("s1", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                0, "000000").getData().getStoreId()
+                                                  0, 0).getData().getStoreId()
         self.store_2 = self.user_proxy.open_store("s2", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                0, "000000").getData().getStoreId()
+                                                  0, 0).getData().getStoreId()
 
         self.product01 = self.market_proxy.add_product_to_store(self.store_0, self.user_id, "Product-01", 100,
-                                                              "Category", 8, ["Test1", "Test2"]).getData().getProductId()
+                                                                "Category", 8,
+                                                                ["Test1", "Test2"]).getData().getProductId()
         self.product02 = self.market_proxy.add_product_to_store(self.store_0, self.user_id, "Product-02", 150,
-                                                              "Category", 9,["Test1", "Test2"]).getData().getProductId()
+                                                                "Category", 9,
+                                                                ["Test1", "Test2"]).getData().getProductId()
         self.product1 = self.market_proxy.add_product_to_store(self.store_1, self.user_id, "Product-1", 100,
-                                                             "Category", 10, ["Test1", "Test2"]).getData().getProductId()
+                                                               "Category", 10,
+                                                               ["Test1", "Test2"]).getData().getProductId()
         self.product2 = self.market_proxy.add_product_to_store(self.store_2, self.user_id, "Product-2", 10,
-                                                             "Category", 11, ["Test1", "Test2"]).getData().getProductId()
+                                                               "Category", 11,
+                                                               ["Test1", "Test2"]).getData().getProductId()
 
         self.market_proxy.add_quantity_to_store(self.store_0, self.user_id, self.product01, 100)
         self.market_proxy.add_quantity_to_store(self.store_0, self.user_id, self.product02, 100)
@@ -71,7 +75,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(guest2_id, self.store_2, self.product2, 1)
 
         self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         member2_id = self.user_proxy.login_member(guest2_id, "user2", "1234").getData().getUserID()
 
         userTransaction = self.user_proxy.purchase_product(member2_id, 500, 20)
@@ -87,7 +91,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(guest3_id, self.store_2, self.product2, 1)
 
         self.user_proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         member3_id = self.user_proxy.login_member(guest3_id, "user3", "1234").getData().getUserID()
 
         self.user_proxy.logout_member(member3_id)
@@ -101,7 +105,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
     def test_two_user_trying_to_by_in_the_same_time(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         member4_id = self.user_proxy.login_member(guest4_id, "user3", "1234").getData().getUserID()
 
         self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product01, 20)
@@ -143,26 +147,48 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
+    # there is problem with threads, sometimes doesn't work
+
     def test_purchase_with_threads(self):
-        t1 = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args=(self.user_id2, self.store_0, self.product01, 100))
-        t2 = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args=(self.user_id3, self.store_0, self.product01, 100))
+        t1 = ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
+                              args=(self.user_id2, self.store_0, self.product01, 100))
+        t2 = ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
+                              args=(self.user_id3, self.store_0, self.product01, 100))
         t1.start()
         t2.start()
 
+        t1.join()
+        t2.join()
+
         tran1 = self.user_proxy.purchase_product(self.user_id2, 10, 10)
         tran2 = self.user_proxy.purchase_product(self.user_id3, 10, 10)
-        self.assertTrue(tran2.isError())
-        self.assertEqual(tran1.getData().getTotalAmount(), 10000.0)
+
+        print(tran1)
+        print(tran2)
+
+        if tran1.isError():
+            self.assertEqual(tran2.getData().getTotalAmount(), 10000.0)
+        if tran2.isError():
+            self.assertEqual(tran1.getData().getTotalAmount(), 10000.0)
+        else:
+            self.assertTrue(False)
 
     def test_purchase_with_thread2(self):
         t1 = [None] * 100
         t2 = [None] * 100
         for i in range(50):
-            t1[i] = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args = (self.user_id2, self.store_0, self.product01, 1))
-            t2[i] = ThreadWithReturn(target= self.user_proxy.add_product_to_cart, args = (self.user_id3, self.store_0, self.product01, 1))
+            t1[i] = ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
+                                     args=(self.user_id2, self.store_0, self.product01, 1))
+            t2[i] = ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
+                                     args=(self.user_id3, self.store_0, self.product01, 1))
         for i in range(50):
             t1[i].start()
             t2[i].start()
+
+        for i in range(50):
+            t1[i].join()
+            t2[i].join()
+
         trans1 = self.user_proxy.purchase_product(self.user_id2, 10, 10)
         trans2 = self.user_proxy.purchase_product(self.user_id3, 10, 10)
         print(trans1)

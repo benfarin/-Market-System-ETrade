@@ -44,11 +44,10 @@ class MyTestCase(unittest.TestCase):
 
     def test_appoint_owners(self):  ###WORKING
         self.store.appointOwnerToStore(self.founder, self.member1)
-        self.assertEqual(Counter(self.store.getStoreOwners()) == Counter([self.founder, self.member1]), True)
+        self.assertEqual(self.store.getStoreOwners(), [self.founder, self.member1])
 
         self.store.appointOwnerToStore(self.member1, self.member3)
-        self.assertEqual(Counter(self.store.getStoreOwners()) == Counter([self.founder, self.member1, self.member3]),
-                         True)
+        self.assertEqual(self.store.getStoreOwners(), [self.founder, self.member1, self.member3])
 
     def test_appoint_owners_FAIL(self):  ###WORKING
         # user cannot assign himself

@@ -8,16 +8,19 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UseCaseMemberRegister(unittest.TestCase):
-    #usecase 2.3
-
+    # usecase 2.3
 
     def setUp(self):
         self.proxy = UserProxyBridge(UserRealBridge())
+        self.proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+                                          "Ben Gurion", 1, 1).getData()
+        self.__guestId_0 = self.proxy.login_guest().getData().getUserID()
+        self.systemManger = self.proxy.login_member(self.__guestId_0, "manager", "1234").getData()
 
     def test_register_positive_one(self):
         guestId = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                                         "Ben Gurion", 0, "HaPoalim")
+                            "Ben Gurion", 0, 0)
         self.assertTrue(self.proxy.login_member(guestId, "user1", "1234").getData())
 
     def test_register_positive_two(self):
@@ -32,7 +35,9 @@ class UseCaseMemberRegister(unittest.TestCase):
         t2.start()
         t1.join()
         t2.join()
-        self.assertTrue(self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2", "123456").getData())
+        self.assertTrue(
+            self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
+                                                                                                     "123456").getData())
 
     def test_register_negative_same_username(self):
         guestId1 = self.proxy.login_guest().getData().getUserID()
@@ -46,25 +51,24 @@ class UseCaseMemberRegister(unittest.TestCase):
         t2.start()
         t1.join()
         t2.join()
-        self.assertFalse(self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
+        self.assertFalse(
+            self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
                                                                                                      "123456").getData())
 
     def test_register_positive_same_username(self):
         guestId1 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                                         "Ben Gurion", 0, "HaPoalim")
-        user1 = self.proxy.login_member(guestId1, "user1", "1234").getData().getUserID()
-        self.proxy.logout_member(user1)
-        self.proxy.exit_system(guestId1)
+                            "Ben Gurion", 0, 0)
+        self.proxy.login_member(guestId1, "user1", "1234").getData().getUserID()
 
+        self.assertTrue(self.proxy.register("user1", "12345", "0500000001", "500", "20", "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 0).isError())
+
+        self.proxy.removeMember("manager", "user1")
         guestId2 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "12345", "0500000001", "500", "20", "Israel", "Beer Sheva",
-                            "Ben Gurion", 0, "HaPoalim")
+                            "Ben Gurion", 0, 0)
         self.assertTrue(self.proxy.login_member(guestId2, "user1", "12345").getData())
-        # should be ok because user1 exited the system -> his username is available
-
-
-
 
 
 if __name__ == '__main__':

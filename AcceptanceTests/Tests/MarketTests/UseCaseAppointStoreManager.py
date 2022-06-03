@@ -18,28 +18,28 @@ class UseCaseAppointStoreManager(unittest.TestCase):
 
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser", "1234", "0540000000", 123,[] ,"Israel", "Beer Sheva", "Rager", 1, "testBank")
+        self.proxy_user.register("testUser", "1234", "0540000000", 123, 1,"Israel", "Beer Sheva", "Rager", 1, 0)
         self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser2", "4321", "0540000001", 124, [], "Israel", "Beer Sheva", "Rager", 1, "testBank")
+        self.proxy_user.register("testUser2", "4321", "0540000001", 124, 1, "Israel", "Beer Sheva", "Rager", 1, 0)
         self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser3", "4321", "0540000002", 124, [], "Israel", "Beer Sheva",
-                                "Rager", 1, "testBank")
+        self.proxy_user.register("testUser3", "4321", "0540000002", 124, 1, "Israel", "Beer Sheva",
+                                "Rager", 1, 0)
         self.__guestId4 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser4", "4321", "0540000003", 124, [], "Israel", "Tel aviv",
-                                "Rager", 1, "testBank")
+        self.proxy_user.register("testUser4", "4321", "0540000003", 124, 1, "Israel", "Tel aviv",
+                                "Rager", 1, 0)
 
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
         self.user1_id = self.proxy_user.login_member(self.__guestId1, "testUser", "1234").getData().getUserID()
         self.user2_id = self.proxy_user.login_member(self.__guestId2, "testUser2", "4321").getData().getUserID()
         self.user3_id = self.proxy_user.login_member(self.__guestId3, "testUser3", "4321").getData().getUserID()
         self.user4_id = self.proxy_user.login_member(self.__guestId4, "testUser4", "4321").getData().getUserID()
-        self.store_id = self.proxy_user.open_store("testStore", self.user1_id, 123, None, "Israel", "Beer Sheva", "Rager",
+        self.store_id = self.proxy_user.open_store("testStore", self.user1_id, 123, 1, "Israel", "Beer Sheva", "Rager",
                                                  1, 00000).getData().getStoreId()
 
     def test_AppointStoreManagerPositive(self):
         # store_id, assigner_id, assignee_id
-        self.assertEqual(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser2").getData(), True)
-        self.assertEqual(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3").getData(), True)
+        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser2").getData())
+        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3").getData())
 
     def test_AppointStoreManagerNoStore(self):
         self.assertTrue(self.proxy_market.appoint_store_manager(-1, self.user1_id,  "testUser2").isError())
