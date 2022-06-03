@@ -51,7 +51,7 @@ class UserManagment(object):
     def checkOnlineUser(self, userId):
         self._initializeDict()
         if (self.__activeUsers.get(userId)) is None:
-            raise NotOnlineException("The member " + userId + " not online!")
+            raise NotOnlineException("The member " + str(userId) + " not online!")
         else:
             return True
 
@@ -159,6 +159,13 @@ class UserManagment(object):
                 #     User.save_admin(username=userName, password=password)
                 return systemManager
         return None
+
+    def removeSystemManger_forTests(self, systemMangerName):
+        self._initializeDict()
+        if self.__systemManager.get(systemMangerName) is None:
+            raise Exception("user : " + systemMangerName + " is not a system manager")
+        self.__systemManager.pop(systemMangerName)
+        return True
 
     # from here is to move to user class
     def addProductToCart(self, userID, storeID, product, quantity):

@@ -8,8 +8,8 @@ class SystemManager(Member):
             super().__init__(userName, password, phone, address, bank)
         else:
             super().__init__(model=model)
-        super()._m.is_admin = True
-        super()._m.save()
+        super().getModel().is_admin = True
+        super().getModel().save()
         self.__market = Market.getInstance()
 
     def getAllStoreTransactions(self):

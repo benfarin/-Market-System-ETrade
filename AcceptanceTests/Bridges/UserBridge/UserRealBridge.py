@@ -41,6 +41,9 @@ class UserRealBridge:
     def logout_member(self, user_id):
         return self._memberService.logoutMember(user_id)
 
+    def removeSystemManger_forTests(self, systemMangerName):
+        return self._userService.removeSystemManger_forTests(systemMangerName)
+
     def removeMember(self, systemManagerName, memberName):
         return self._roleService.removeMember(systemManagerName, memberName)
 

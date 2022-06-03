@@ -63,7 +63,7 @@ class UseCaseMemberLogin(unittest.TestCase):
             for j in range(6):
                 if i != j:
                     self.assertNotEqual(Id_i, uIds[j])
-            print("id of user " + str(i + 2) + " is: " + uIds[i])
+            print("id of user " + str(i + 2) + " is: " + str(uIds[i]))
 
 
 if __name__ == '__main__':

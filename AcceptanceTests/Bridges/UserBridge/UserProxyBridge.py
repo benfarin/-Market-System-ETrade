@@ -52,6 +52,12 @@ class UserProxyBridge:
         else:
             return self._real_subject.logout_member(user_id)
 
+    def removeSystemManger_forTests(self, systemMangerName):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.removeSystemManger_forTests(systemMangerName)
+
     def removeMember(self, systemManagerName, memberName):
         if self.check_access():
             return True

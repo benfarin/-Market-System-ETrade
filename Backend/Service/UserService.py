@@ -88,6 +88,15 @@ class UserService:
             logging.error("Cannot signup new System Manager")
             return Response(e.__str__())
 
+    def removeSystemManger_forTests(self, systemMangerName):
+        try:
+            isRemoved = self.__userManagment.removeSystemManger_forTests(systemMangerName)
+            logging.info("success to remove system manager " + systemMangerName)
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("failed to remove the system Manger")
+            return Response(e.__str__())
+
     def addProductToCart(self, userID, storeId, productId, quantity):
         try:
             isAdded = self.__userManagment.addProductToCart(userID, storeId, productId, quantity)

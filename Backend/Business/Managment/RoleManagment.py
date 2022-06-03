@@ -280,6 +280,7 @@ class RoleManagment:
 
             if self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID()):
                 self.__memberManagement.removeFromMembers(member.getUserID())
+                member.removeUser()
             return True
         except Exception as e:
             raise Exception(e)

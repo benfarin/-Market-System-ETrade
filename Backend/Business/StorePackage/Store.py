@@ -123,21 +123,21 @@ class Store:
 
     def getProducts(self):
         products: Dict[int: IProduct] = {}
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
+        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):
             product = self._buildProduct(prod.productID)
             products.update({product.getProductId(): product})
         return products
 
     def getProductQuantity(self):
         productsQuantity = {}
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
+        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):
             productsQuantity[prod.productID.product_id] = prod.quantity
         return productsQuantity
 
     def getTransactionForDTO(self):
         # self.__transactions: Dict[int: StoreTransaction] = {}
         transactions: Dict[int: StoreTransaction] = {}
-        for tran in StoreTransactionModel.objects.filter(storeId=self.__model):
+        for tran in StoreTransactionModel.objects.filter(storeId=self.__model.storeID):
             storeTransaction = self._buildStoreTransactions(tran)
             transactions.update({storeTransaction.getTransactionID(): storeTransaction})
         return transactions

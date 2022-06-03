@@ -21,8 +21,8 @@ class UseCaseGuestDisconnect(unittest.TestCase):
     def test_negative(self):
         guest_id = self.__guestId1 = self.proxy.login_guest().getData().getUserID()
         self.proxy.exit_system(guest_id)
-        res = self.proxy.exit_system(guest_id)
-        string = "The member "+str(guest_id)+ " not online!"
+        res = self.proxy.exit_system(guest_id).getError()
+        string = "The member " + str(guest_id) + " not online!"
         self.assertEqual(str(res), string, "guest was able to exit before logging in")
 
 

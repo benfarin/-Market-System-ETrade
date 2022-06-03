@@ -52,7 +52,7 @@ class UseCaseGuestLogin(unittest.TestCase):
             for j in range(8):
                 if i != j:
                     self.assertNotEqual(Id_i, uIds[j])
-            print("id of user " + str(i) + " is: " + uIds[i])
+            print("id of user " + str(i) + " is: " + str(uIds[i]))
 
 
 if __name__ == '__main__':
