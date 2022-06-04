@@ -499,8 +499,8 @@ class Store:
                 to_remove = self._buildMember(toRemoveOwner.assingee)
                 self.removeStoreOwner(assignee, to_remove)
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).delete()
-        for model in StoreModel.objects.filter(storeID=self.__model.storeID, owners=assignee.getModel()):
-            if assignee.getModel() == model:
+        for model in StoreModel.owners.through.objects.all():
+            if assignee.getModel() == model.membermodel:
                 model.delete()
         StoreAppointersModel.objects.get(storeID=self.__model, assigner=assigner.getModel(),
                                          assingee=assignee.getModel()).delete()

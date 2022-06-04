@@ -58,6 +58,8 @@ class User:
 
         else:
             self._model = model
+            self.userid = model.userid
+            self._userCart = Cart(self.userid)
 
         # self.start()
 

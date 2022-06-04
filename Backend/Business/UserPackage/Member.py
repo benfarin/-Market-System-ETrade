@@ -41,7 +41,7 @@ def threaded(fn):
 
 class Member(User):
     def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
-        super().__init__()  # extend the constructor of user class
+        super().__init__(model)  # extend the constructor of user class
         # self.__isLoggedIn = False
         # self.__userName = userName  # string
         # self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
