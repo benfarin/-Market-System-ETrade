@@ -41,7 +41,7 @@ def threaded(fn):
 
 class Member(User):
     def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
-        super().__init__()  # extend the constructor of user class
+        super().__init__(model)  # extend the constructor of user class
         # self.__isLoggedIn = False
         # self.__userName = userName  # string
         # self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
@@ -50,6 +50,10 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
+            isMemberHasSameUserName = MemberModel.objects.filter(member_username=userName)
+            if isMemberHasSameUserName.exists():
+                raise Exception("there is a member with the userName: " + userName + " all ready")
+
             self._m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
                                                          member_password=make_password(password),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
@@ -70,10 +74,10 @@ class Member(User):
         return self._m.phone
 
     def getAddress(self):
-        return self._m.address
+        return Address(model=self._m.address)
 
     def getBank(self):
-        return self._m.bank
+        return Bank(model=self._m.bank)
 
     def getMemberName(self):
         return self._m.member_username

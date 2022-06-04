@@ -14,8 +14,8 @@ class UseCaseSearchProduct(unittest.TestCase):
         cls.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
         cls.__guestId1 = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                                "Ben Gurion", 0, "HaPoalim")
+        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                                "Ben Gurion", 0, 0)
         cls.user_id = cls.user_proxy.login_member(cls.__guestId1, "user1", "1234").getData().getUserID()
         cls.store_id = cls.user_proxy.open_store("store", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                  0, 1).getData().getStoreId()

@@ -8,8 +8,8 @@ class CartDTO:
         self.__userId = cart.getUserId()
         # self.__sum = cart.calcSum()
         self.__bags = {}
-        for storeId in cart.getAllBags().keys():
-            self.__bags[storeId] = (BagDTO(cart.getAllBags().get(storeId)))
+        for storeId, bag in cart.getAllBags().items():
+            self.__bags[storeId] = (BagDTO(bag))
 
     def getUserId(self):
         return self.__userId

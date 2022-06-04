@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
 
         cls.__guestId = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, "HaPoalim")
+                                 "Ben Gurion", 0, 0)
         cls.founder = cls.user_proxy.login_member(cls.__guestId, "user1", "1234").getData().getUserID()
 
     def test_removeStore(self):

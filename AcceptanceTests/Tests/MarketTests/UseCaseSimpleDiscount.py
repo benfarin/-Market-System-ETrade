@@ -16,16 +16,15 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                               "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         cls.__guestId1 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser1", "1234", "0540000000", 123, [], "Israel", "Beer Sheva",
-                                "Rager", 1,
-                                "testBank")
+        cls.proxy_user.register("testUser1", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
+                                "Rager", 1, 0)
         cls.user_id1 = cls.proxy_user.login_member(cls.__guestId1, "testUser1", "1234").getData().getUserID()
 
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        cls.store_id1 = cls.proxy_user.open_store("testStore1", cls.user_id1, 123, None, "Israel", "Beer Sheva",
+        cls.store_id1 = cls.proxy_user.open_store("testStore1", cls.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
-        cls.store_id2 = cls.proxy_user.open_store("testStore2", cls.user_id1, 123, None, "Israel", "Beer Sheva",
+        cls.store_id2 = cls.proxy_user.open_store("testStore2", cls.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
         cls.product_id = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct1", 10,
@@ -164,7 +163,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
 
     def test_addSimpleDiscountRule_1(self):
         dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
-        self.proxy_market.addStoreQuantityDiscountRule(self.user_id1, self.store_id1, dId1, 200, float('inf'))
+        self.proxy_market.addStoreQuantityDiscountRule(self.user_id1, self.store_id1, dId1, 200, 1000000)
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
@@ -173,17 +172,17 @@ class UseCaseSimpleDiscount(unittest.TestCase):
 
     def test_addSimpleDiscountRule_2(self):
         dId1 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.1).getData().getDiscountId()
-        self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 900, 1000)
+        self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 0, 10000000)
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
 
-        self.assertEqual(1100, userTransaction.getData().getTotalAmount())
+        self.assertEqual(1090, userTransaction.getData().getTotalAmount())
 
     def test_addCondDiscountRule_AND(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
-        rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 100, float('inf')).getData().getRuleId()
+        rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 100, 1000000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityDiscountRule(self.user_id1, self.store_id1, dId1, "testCategory", 0, 5).getData().getRuleId()
         self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, rId1, rId2)
 
@@ -195,7 +194,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
 
     def test_addCondDiscountRule_OR(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
-        rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 1000, float('inf')).getData().getRuleId()
+        rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 1000, 1000000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityDiscountRule(self.user_id1, self.store_id1, dId1, "testCategory", 0, 5).getData().getRuleId()
         self.proxy_market.addCompositeRuleDiscountOr(self.user_id1, self.store_id1, dId1, rId1, rId2)
 
@@ -208,9 +207,9 @@ class UseCaseSimpleDiscount(unittest.TestCase):
     def test_addCondDiscountRule_OR_AND(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
 
-        rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 1000, float('inf')).getData().getRuleId()
+        rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 1000, 1000000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityDiscountRule(self.user_id1, self.store_id1, dId1, "testCategory", 0, 5).getData().getRuleId()
-        rId3 = self.proxy_market.addStoreTotalAmountDiscountRule(self.user_id1, self.store_id1, dId1, 2000, float('inf')).getData().getRuleId()
+        rId3 = self.proxy_market.addStoreTotalAmountDiscountRule(self.user_id1, self.store_id1, dId1, 2000, 1000000).getData().getRuleId()
 
         rOr_id = self.proxy_market.addCompositeRuleDiscountOr(self.user_id1, self.store_id1, dId1, rId1, rId2).getData().getRuleId()
         self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, rId3, rOr_id)

@@ -38,8 +38,11 @@ class UserRealBridge:
     def purchase_product(self, user_id, account_num, branch):
         return self._userService.purchaseCart(user_id, account_num, branch)
 
-    def logout_member(self, user_id):
-        return self._memberService.logoutMember(user_id)
+    def logout_member(self, userName):
+        return self._memberService.logoutMember(userName)
+
+    def removeSystemManger_forTests(self, systemMangerName):
+        return self._userService.removeSystemManger_forTests(systemMangerName)
 
     def removeMember(self, systemManagerName, memberName):
         return self._roleService.removeMember(systemManagerName, memberName)
@@ -56,5 +59,26 @@ class UserRealBridge:
     def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
         return self._userService.systemManagerSignUp(userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode)
 
-    # def logout_member(self, user_id, password):
-    #     return self._memberService.logoutMember(user_id, password)
+    def enter_system(self):
+        return self._userService.enterSystem()
+
+    def exit_system(self, guest_id):
+        return self._userService.exitSystem(guest_id)
+
+    def remove_product_from_cart(self, user_id, store_id, prod_id):
+        return self._userService.removeProductFromCart(user_id, store_id, prod_id)
+
+    def update_prod_from_cart(self, user_id, store_id, prod_id, quantity):
+        return self._userService.updateProductFromCart(user_id, store_id, prod_id, quantity)
+
+    def get_cart(self, user_id):
+        return self._userService.getCart(user_id)
+
+    def get_sum_after_discount(self, user_id):
+        return self._userService.getSumAfterDiscount(user_id)
+
+    def get_member_transaction(self, user_id):
+        return self._memberService.getMemberTransactions(user_id)
+
+
+

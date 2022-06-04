@@ -46,11 +46,17 @@ class UserProxyBridge:
             return True
         return self._real_subject.purchase_product(user_id, account_num, branch)
 
-    def logout_member(self, user_id):
+    def logout_member(self, userName):
         if self.check_access():
             return True
         else:
-            return self._real_subject.logout_member(user_id)
+            return self._real_subject.logout_member(userName)
+
+    def removeSystemManger_forTests(self, systemMangerName):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.removeSystemManger_forTests(systemMangerName)
 
     def removeMember(self, systemManagerName, memberName):
         if self.check_access():
@@ -79,13 +85,35 @@ class UserProxyBridge:
         return self._real_subject.appoint_system_manager(userName, password, phone, accountNumber, brunch,
                                                          country, city, street, apartmentNum, zipCode)
 
-    def removeMember(self, systemManagerName, memberName):
+    def enter_system(self):
         if self.check_access():
             return True
-        return self._real_subject.removeMember(systemManagerName, memberName)
+        return  self._real_subject.enter_system()
 
-    # def logout_member(self, user_id,password):
-    #     if self.check_access():
-    #         return True
-    #     else:
-    #         return self._real_subject.logout_member(user_id,password)
+    def exit_system(self, guest_id):
+        if self.check_access():
+            return True
+        return self._real_subject.exit_system(guest_id)
+
+    def remove_prod_from_cart(self, user_id, store_id, prod_id):
+        if self.check_access():
+            return True
+        return self._real_subject.remove_product_from_cart(user_id, store_id, prod_id)
+
+    def update_prod_from_cart(self, user_id, store_id, prod_id, quantity):
+        if self.check_access():
+            return True
+        return  self._real_subject.update_prod_from_cart(user_id, store_id, prod_id, quantity)
+
+    def get_cart(self, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_cart(user_id)
+
+    def get_sum_after_discount(self, user_id):
+        return self._real_subject.get_sum_after_discount(user_id)
+
+    def get_member_transaction(self, user_id):
+        return self._real_subject.get_member_transaction(user_id)
+
+

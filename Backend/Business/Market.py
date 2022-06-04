@@ -84,7 +84,7 @@ class Market:
     def addProductToCart(self, user, storeID, productID, quantity):  # TESTED
         self.__initializeStoresDict()
         try:
-            if self.__stores.get(storeID).hasProduct(productID) is None:
+            if not self.__stores.get(storeID).hasProduct(productID):
                 raise ProductException("The product id " + productID + " not in market!")
             if self.__stores.get(storeID).addProductToBag(productID, quantity):
                 product = self.__stores.get(storeID).getProduct(productID)

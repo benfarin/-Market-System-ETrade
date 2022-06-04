@@ -27,7 +27,8 @@ class Product:
                                                               , weight=weight)[0]
 
             for k in keyword:
-                ProductKeyword.objects.get_or_create(product_id=self.__model, keyword=k)
+                lowerKeyword = k.lower()
+                ProductKeyword.objects.get_or_create(product_id=self.__model, keyword=lowerKeyword)
 
         else:
             self.__model = model
@@ -95,7 +96,8 @@ class Product:
         ProductKeyword.objects.get(product_id=self.__model, keyword=keyword).delete()
 
     def isExistsKeyword(self, keyword):
-        return ProductKeyword.objects.filter(product_id=self.__model, keyword=keyword).exists()
+        lowerKeyword = keyword.lower()
+        return ProductKeyword.objects.filter(product_id=self.__model, keyword=lowerKeyword).exists()
 
     def removeProduct(self):
         if self.__model.product_id is not None:

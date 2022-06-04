@@ -18,7 +18,7 @@ class StorePermission:
             self.__model = model
 
     def getUserId(self):
-        return self.__model.userID
+        return self.__model.userID.userid
 
     def hasPermission_StockManagement(self):
         return self.__model.stockManagement

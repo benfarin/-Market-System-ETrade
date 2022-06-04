@@ -88,10 +88,10 @@ class DiscountComposite:
         return self.__model.discountID
 
     def getDiscount1(self):
-        return self.__model.dID1.discountID
+        return self.__buildDiscountObject(self.__model.dID1)
 
     def getDiscount2(self):
-        return self.__model.dID2.discountID
+        return self.__buildDiscountObject(self.__model.dID2)
 
     def getDiscountType(self):
         return self.__model.composite_type
@@ -107,10 +107,12 @@ class DiscountComposite:
             return DiscountComposite(model=discount_model)
 
     def remove(self):
-        discount1 = self.__buildDiscountObject(self.__model.dID1)
-        discount2 = self.__buildDiscountObject(self.__model.dID2)
-        discount1.remove()
-        discount2.remove()
+        if self.__model.dID1.discountID is not None:
+            discount1 = self.__buildDiscountObject(self.__model.dID1)
+            discount1.remove()
+        if self.__model.dID2.discountID is not None:
+            discount2 = self.__buildDiscountObject(self.__model.dID2)
+            discount2.remove()
         self.__model.delete()
 
     def getModel(self):

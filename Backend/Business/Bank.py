@@ -7,10 +7,13 @@ django.setup()
 from ModelsBackend.models import BankModel
 class Bank:
 
-    def __init__(self, accountNumber, branch):
+    def __init__(self, accountNumber=None, branch=None, model=None):
         # self.__accountNumber = accountNumber
         # self.__branch = branch
-        self.__b = BankModel.objects.get_or_create(accountNumber=accountNumber, branch=branch)[0]
+        if model is None:
+            self.__b = BankModel.objects.get_or_create(accountNumber=accountNumber, branch=branch)[0]
+        else:
+            self.__b = model
 
     def getAccountNumber(self):
         return self.__b.accountNumber

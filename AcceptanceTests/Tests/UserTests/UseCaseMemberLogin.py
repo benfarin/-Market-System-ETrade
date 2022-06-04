@@ -6,13 +6,14 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UseCaseMemberLogin(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.proxy = UserProxyBridge(UserRealBridge())
-        cls.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+    #usecase 2.4
+
+    def setUp(self):
+        self.proxy = UserProxyBridge(UserRealBridge())
+        self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                          "Ben Gurion", 1, 1)
-        cls.__guestId1 = cls.proxy.login_guest().getData().getUserID()
-        cls.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.__guestId1 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                            "Ben Gurion", 0, 1)
 
     def test_login_positive(self):
@@ -62,7 +63,7 @@ class UseCaseMemberLogin(unittest.TestCase):
             for j in range(6):
                 if i != j:
                     self.assertNotEqual(Id_i, uIds[j])
-            print("id of user " + str(i + 2) + " is: " + uIds[i])
+            print("id of user " + str(i + 2) + " is: " + str(uIds[i]))
 
 
 if __name__ == '__main__':

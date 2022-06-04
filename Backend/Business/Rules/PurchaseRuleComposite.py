@@ -39,9 +39,9 @@ class PurchaseRuleComposite:
         if rule1.getRuleKind() != rule2.getRuleKind():
             raise Exception("cannot concat discount rule and purchase rule")
 
-        if self.__ruleType == 'And':
+        if self.__model.composite_rule_type == 'And':
             return rule1.check(bag) and rule2.check(bag)
-        if self.__ruleType == 'Or':
+        if self.__model.composite_rule_type == 'Or':
             return rule1.check(bag) or rule2.check(bag)
         else:
             raise Exception("rule type doesn't exist")
@@ -50,10 +50,10 @@ class PurchaseRuleComposite:
         return self.__model.ruleID
 
     def getRule1(self):
-        return self.__model.ruleID1
+        return self.__buildRule(self.__model.ruleID1)
 
     def getRule2(self):
-        return self.__model.ruleID2
+        return self.__buildRule(self.__model.ruleID2)
 
     def getRuleType(self):
         return self.__model.rule_type

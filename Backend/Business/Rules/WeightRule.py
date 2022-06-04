@@ -35,11 +35,11 @@ class weightRule:
         for prod, quantity in bag.getProducts().items():
             if self.__model.simple_rule_type == 'Store':
                 s += quantity * prod.getProductWeight()
-            elif self.__model.simple_rule_type == 'Category' and prod.getProductCategory() == self.__filter:
+            elif self.__model.simple_rule_type == 'Category' and prod.getProductCategory() == self.__model.filter_type:
                 s += quantity * prod.getProductWeight()
-            elif self.__model.simple_rule_type == 'Product' and prod.getProductId() == self.__filter:
+            elif self.__model.simple_rule_type == 'Product' and '' + str(prod.getProductId()) == self.__model.filter_type:
                 s += quantity * prod.getProductWeight()
-        return self.__atLest <= s <= self.__atMost
+        return self.__model.at_least <= s <= self.__model.at_most
 
     def getRuleId(self):
         return self.__model.ruleID

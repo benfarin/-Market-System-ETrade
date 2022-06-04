@@ -25,14 +25,14 @@ class MyTestCase(unittest.TestCase):
 
         self.cart.addProduct(0, self.p1, 1)
         self.cart.addProduct(1, self.p2, 2)
-        self.assertEqual(self.cart.getAllBags(), [self.bag, self.bag_2])
+        self.assertEqual(self.cart.getAllBags(), {0: self.bag, 1: self.bag_2})
         self.assertEqual(self.cart.getBag(1), self.bag_2)
 
         self.cart.cleanBag(1)
         self.assertEqual(self.cart.getBag(1).getProducts(), {})
 
         self.cart.removeBag(1)
-        self.assertEqual(self.cart.getAllBags(), [self.bag])
+        self.assertEqual(self.cart.getAllBags(), {0: self.bag})
 
     def test_updateCart(self):
         self.cart.addProduct(0, self.p1, 1)
