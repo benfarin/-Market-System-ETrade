@@ -131,10 +131,10 @@ class Bag:
         return None
 
     def applyDiscount(self, discounts):
-        if discounts is None:
+        if discounts is None or discounts == {}:
             return self.calc()
         minPrice = float('inf')
-        for discount in discounts:
+        for discount in discounts.values():
             newPrice = self.calcWithDiscount(discount.calculate(self))
             if newPrice < minPrice:
                 minPrice = newPrice

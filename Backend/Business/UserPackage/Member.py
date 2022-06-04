@@ -50,7 +50,6 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
-
             isMemberHasSameUserName = MemberModel.objects.filter(member_username=userName)
             if isMemberHasSameUserName.exists():
                 raise Exception("there is a member with the userName: " + userName + " all ready")

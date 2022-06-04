@@ -72,7 +72,8 @@ class StoreDiscount:
         DiscountRulesModel.objects.get(discountID=self.__model, ruleID=rule).delete()
 
     def check(self, bag):
-        rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
+        rules = [RuleCreator.getInstance().buildRule(rule.ruleID)
+                 for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
         for rule in rules:
             if not rule.check(bag):
                 return False
@@ -81,9 +82,8 @@ class StoreDiscount:
     def getTotalPrice(self, bag):
         newPrices = self.calculate(bag)
         totalPrice = 0.0
-        for product in bag.getProducts():
-            totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * \
-                          ProductsInBagModel.objects.get(product_ID=product.getModel(), bag_ID=bag.getModel()).quantity
+        for product, quantity in bag.getProducts().items():
+            totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
         return totalPrice
 
         # newPrices = self.calculate(bag)

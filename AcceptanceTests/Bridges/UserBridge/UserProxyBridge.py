@@ -46,11 +46,11 @@ class UserProxyBridge:
             return True
         return self._real_subject.purchase_product(user_id, account_num, branch)
 
-    def logout_member(self, user_id):
+    def logout_member(self, userName):
         if self.check_access():
             return True
         else:
-            return self._real_subject.logout_member(user_id)
+            return self._real_subject.logout_member(userName)
 
     def removeSystemManger_forTests(self, systemMangerName):
         if self.check_access():

@@ -280,9 +280,8 @@ class Store:
 
     def hasProduct(self, productId):
         try:
-            with self.__stockLock:
-                product = ProductModel.objects.get(product_id=productId)
-                return ProductsInStoreModel.objects.get(storeID=self.__model, productID=product).quantity > 0
+            product = ProductModel.objects.get(product_id=productId)
+            return ProductsInStoreModel.objects.get(storeID=self.__model, productID=product).quantity > 0
         except:
             return False
 
@@ -535,7 +534,10 @@ class Store:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return permissions.first()
+        rulesPermissions = []
+        for permission in StoreUserPermissionsModel.objects.filter(storeID=self.__model):
+            rulesPermissions.append(StorePermission(model=permission.userID))
+        return rulesPermissions
 
     def addTransaction(self, transaction):
         TransactionsInStoreModel.objects.get_or_create(storeID=self.__model, transactionID=transaction.getModel())

@@ -88,10 +88,10 @@ class DiscountComposite:
         return self.__model.discountID
 
     def getDiscount1(self):
-        return self.__model.dID1.discountID
+        return self.__buildDiscountObject(self.__model.dID1)
 
     def getDiscount2(self):
-        return self.__model.dID2.discountID
+        return self.__buildDiscountObject(self.__model.dID2)
 
     def getDiscountType(self):
         return self.__model.composite_type

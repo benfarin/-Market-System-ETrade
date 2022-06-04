@@ -16,19 +16,19 @@ class UseCaseSaveProductToCart(unittest.TestCase):
         # --------------------------users register ------------------------------------
         cls.__guestId1 = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user1", "1234", "053643643", "500", "20", "Israel", "Beer Sheva",
-                                "Ben Gurion", 0, "HaPoalim")
+                                "Ben Gurion", 0, 0)
         cls.__guestId2 = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user2", "12345", "0500000000", "505", "21", "Israel", "Tel aviv",
-                                "Ben Gurion", 0, "HaPoalim")
+                                "Ben Gurion", 0, 0)
         cls.__guestId3 = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user3", "123451", "05325235", "506", "22", "Israel", "Tel aviv",
-                                "Ben Gurion", 0, "HaPoalim")
+                                "Ben Gurion", 0, 0)
         cls.__guestId4 = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user4", "123452", "0503643342", "402", "2124", "Israel", "Tel aviv",
-                                "Ben Gurion", 0, "HaPoalim")
+                                "Ben Gurion", 0, 0)
         cls.__guestId5 = cls.user_proxy.login_guest().getData().getUserID()
         cls.user_proxy.register("user5", "123456", "05043523523", "505", "21", "Israel", "ashdod",
-                                "Ben Gurion", 0, "le")
+                                "Ben Gurion", 0, 0)
 
         # ----------------------------user login --------------------------------------
         cls.user_id1 = cls.user_proxy.login_member(cls.__guestId1, "user1", "1234").getData().getUserID()

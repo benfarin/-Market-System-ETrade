@@ -38,8 +38,8 @@ class UserRealBridge:
     def purchase_product(self, user_id, account_num, branch):
         return self._userService.purchaseCart(user_id, account_num, branch)
 
-    def logout_member(self, user_id):
-        return self._memberService.logoutMember(user_id)
+    def logout_member(self, userName):
+        return self._memberService.logoutMember(userName)
 
     def removeSystemManger_forTests(self, systemMangerName):
         return self._userService.removeSystemManger_forTests(systemMangerName)

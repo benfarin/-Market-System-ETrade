@@ -53,24 +53,21 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
         __guestId2 = self.proxy_user.login_guest().getData().getUserID()
         __guestId3 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser1", "1234", "0540000000", 123, [], "Israel", "Beer Sheva",
-                                "Rager", 1,
-                                "testBank")
-        self.proxy_user.register("testUser2", "1234", "0540000000", 123, [], "Israel", "Beer Sheva",
-                                 "Rager", 1,
-                                 "testBank")
-        self.proxy_user.register("testUser3", "1234", "0540000000", 123, [], "Israel", "Beer Sheva",
-                                 "Rager", 1,
-                                 "testBank")
+        self.proxy_user.register("testUser1", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
+                                "Rager", 1, 0)
+        self.proxy_user.register("testUser2", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
+                                 "Rager", 1, 0)
+        self.proxy_user.register("testUser3", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
+                                 "Rager", 1, 0)
         self.user_id1 = self.proxy_user.login_member(self.__guestId1, "testUser1", "1234").getData().getUserID()
         self.user_id2 = self.proxy_user.login_member(self.__guestId1, "testUser2", "1234").getData().getUserID()
         self.user_id3 = self.proxy_user.login_member(self.__guestId1, "testUser3", "1234").getData().getUserID()
 
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.store_id1 = self.proxy_user.open_store("testStore1", self.user_id1, 123, None, "Israel", "Beer Sheva",
+        self.store_id1 = self.proxy_user.open_store("testStore1", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
-        self.store_id2 = self.proxy_user.open_store("testStore2", self.user_id1, 123, None, "Israel", "Beer Sheva",
+        self.store_id2 = self.proxy_user.open_store("testStore2", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
         self.product_id = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,
@@ -97,7 +94,7 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.assertEqual(1100, userTransaction.getData().getTotalAmount())
 
     def test_addSimpleRuleStore_NotPassing(self):
-        self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 1500, float('inf')).getData()
+        self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 1500, 10000).getData()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
@@ -106,7 +103,7 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.assertEqual(0, userTransaction.getData().getTotalAmount())
 
     def test_addCondPurchaseRule_AND(self):
-        rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, float('inf')).getData().getRuleId()
+        rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityPurchaseRule(self.user_id1, self.store_id1, "testCategory", 0, 5).getData().getRuleId()
         self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2)
 
@@ -117,7 +114,7 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.assertEqual(0, userTransaction.getData().getTotalAmount())
 
     def test_addCondDiscountRule_OR(self):
-        rId1 = self.proxy_market.addProductQuantityPurchaseRule(self.user_id1, self.store_id1, self.product_id, 5, float('inf')).getData().getRuleId()
+        rId1 = self.proxy_market.addProductQuantityPurchaseRule(self.user_id1, self.store_id1, self.product_id, 5, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addStoreQuantityPurchaseRule(self.user_id1, self.store_id1, 0, 30).getData().getRuleId()
         self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2)
 
@@ -130,9 +127,9 @@ class UseCasePurchaseRules(unittest.TestCase):
     def test_addCondDiscountRule_OR_AND_with_discount(self):
         self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
 
-        rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, float('inf')).getData().getRuleId()
+        rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityPurchaseRule(self.user_id1, self.store_id1, "testCategory", 0, 5).getData().getRuleId()
-        rId3 = self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 100, float('inf')).getData().getRuleId()
+        rId3 = self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 100, 100000).getData().getRuleId()
 
         rOr_id = self.proxy_market.addCompositeRulePurchaseOr(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
         self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId3, rOr_id)
@@ -142,7 +139,6 @@ class UseCasePurchaseRules(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
         print(userTransaction)
         self.assertEqual(1000, userTransaction.getData().getTotalAmount())
-
 
 
 if __name__ == '__main__':

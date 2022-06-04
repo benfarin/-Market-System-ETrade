@@ -28,12 +28,11 @@ class CategoryDiscount:
         isCheck = self.check(bag)
         newProductPrices: Dict[ProductModel, float] = {}
         products = bag.getProducts()
-        for prod in products:
-            product = ProductModel.objects.get(product_id=prod.product_ID)
-            if product == self.__model.category and isCheck:
-                newProductPrices[prod] = self.__model.percent
+        for product in products:
+            if product.getProductCategory() == self.__model.category and isCheck:
+                newProductPrices[product] = self.__model.percent
             else:
-                newProductPrices[prod] = 0
+                newProductPrices[product] = 0
         return newProductPrices
 
         # newProductPrices: Dict[Product, float] = {}
@@ -80,7 +79,8 @@ class CategoryDiscount:
         DiscountRulesModel.objects.get(discountID=self.__model, ruleID=rule).delete()
 
     def check(self, bag):
-        rules = [rule.ruleID for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
+        rules = [RuleCreator.getInstance().buildRule(rule.ruleID)
+                 for rule in DiscountRulesModel.objects.filter(discountID=self.__model.discountID)]
         for rule in rules:
             if not rule.check(bag):
                 return False
@@ -89,14 +89,11 @@ class CategoryDiscount:
     def getTotalPrice(self, bag):
         newPrices = self.calculate(bag)
         totalPrice = 0.0
-        for prod in bag.getProducts():
-            product = prod.product_ID
-            if product.category == self.__model.category:
-                totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * \
-                              ProductsInBagModel.objects.get(product_ID=product.getModel(), bag_ID=bag.getModel()).quantity
+        for product, quantity in bag.getProducts().items():
+            if product.getProductCategory() == self.__model.category:
+                totalPrice += (1 - newPrices.get(product)) * product.getProductPrice() * quantity
             else:
-                totalPrice += product.getProductPrice() * \
-                              ProductsInBagModel.objects.get(product_ID=product.getModel, bag_ID=bag.getModel()).quantity
+                totalPrice += product.getProductPrice() * quantity
         return totalPrice
 
     def getAllDiscountRules(self):

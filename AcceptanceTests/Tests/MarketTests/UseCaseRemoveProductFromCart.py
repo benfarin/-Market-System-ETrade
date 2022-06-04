@@ -15,11 +15,10 @@ class UseCaseRemoveProduct(unittest.TestCase):
                                                "Ben Gurion", 1, 1)
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         cls.__guestId1 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser", "1243", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1,
-                                 "testBank")
+        cls.proxy_user.register("testUser", "1243", "0540000000", 123, 1, "Israel", "Beer Sheva", "Rager", 1, 0)
         cls.user_id = cls.proxy_user.login_member(cls.__guestId1, "testUser", "1243").getData().getUserID()
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        cls.store_id = cls.proxy_user.open_store("testStore", cls.user_id, 123, None, "Israel", "Beer Sheva",
+        cls.store_id = cls.proxy_user.open_store("testStore", cls.user_id, 123, 1, "Israel", "Beer Sheva",
                                                    "Rager", 1, 00000).getData().getStoreId()
         # store_id, user_id, name, price, category, key_words
         cls.prod = cls.proxy_market.add_product_to_store(cls.store_id, cls.user_id, "testProduct", 10,
@@ -37,8 +36,7 @@ class UseCaseRemoveProduct(unittest.TestCase):
 
     def test_removeProductByManagerWithPermission(self):
         guestId2 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser2", "1243", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1,
-                                 "testBank")
+        self.proxy_user.register("testUser2", "1243", "0540000000", 123, 1, "Israel", "Beer Sheva", "Rager", 1, 0)
         self.user_id_2 = self.proxy_user.login_member(guestId2, "testUser2", "1243").getData().getUserID()
         self.proxy_market.appoint_store_manager(self.store_id, self.user_id, "testUser2")
         self.proxy_market.set_stock_manager_perm(self.store_id, self.user_id, "testUser2")
@@ -54,8 +52,7 @@ class UseCaseRemoveProduct(unittest.TestCase):
     def test_removeProductNoManager(self):
         self.assertTrue(self.proxy_market.remove_product_from_store(self.store_id, -1, self.prod.getProductId()).isError())
         guestId2 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser2", "1243", "0540000000", 123, [], "Israel", "Beer Sheva", "Rager", 1,
-                                "testBank")
+        self.proxy_user.register("testUser2", "1243", "0540000000", 123, 1,  "Israel", "Beer Sheva", "Rager", 1, 0)
         self.user_id_2 = self.proxy_user.login_member(guestId2, "testUser2", "1243").getData().getUserID()
         self.proxy_market.appoint_store_manager(self.store_id, self.user_id, "testUser2")
         self.assertTrue(self.proxy_market.remove_product_from_store(self.store_id, self.user_id_2, self.prod.getProductId()).isError())
