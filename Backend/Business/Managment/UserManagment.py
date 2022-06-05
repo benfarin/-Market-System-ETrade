@@ -97,8 +97,10 @@ class UserManagment(object):
     def exitSystem(self, guestID):  # need to remove cart!
         self._initializeDict()
         self.checkOnlineUser(guestID)
+        guest = self.__guests.get(guestID)
         self.__guests.pop(guestID)
         self.__activeUsers.pop(guestID)
+        guest.removeUser()
         return True
 
     def memberSignUp(self, userName, password, phone, address, bank):  # Tested
