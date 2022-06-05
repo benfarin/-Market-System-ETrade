@@ -56,7 +56,7 @@ def home_page(request):
     # if user is not None:
     #     login(request, user)
     all_stores = role_service.getAllStores().getData()
-    context = {"title": title, "user": user, "stores": all_stores, "is_admin": is_admin}
+    context = {"title": title, "user": user, "stores": all_stores, "is_admin": is_admin, 'room_name': "broadcast"}
     return render(request, "home.html", context)
 
 
