@@ -90,7 +90,7 @@ class MarketRealBridge:
     def close_store(self, store_id, user_id):
         return self._memberService.removeStore(store_id, user_id)
 
-    def removeStoreFoGood(self, user_id, store_id):
+    def removeStoreForGood(self, user_id, store_id):
         return self._memberService.removeStoreForGood(user_id, store_id)
 
     def addSimpleDiscount_Store(self, userId, storeId, precent):

@@ -83,9 +83,9 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_market.remove_product_from_store(self.store_id3, self.user_id1, self.p5_id)
         self.proxy_market.remove_product_from_store(self.store_id3, self.user_id1, self.p6_id)
         # delete stores
-        self.proxy_user.removeStore(self.store_id1, self.user_id1)
-        self.proxy_user.removeStore(self.store_id2, self.user_id1)
-        self.proxy_user.removeStore(self.store_id3, self.user_id1)
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id3)
         # delete users
         self.proxy_user.removeMember("Manager", "testUser1")
         self.proxy_user.removeMember("Manager", "testUser2")

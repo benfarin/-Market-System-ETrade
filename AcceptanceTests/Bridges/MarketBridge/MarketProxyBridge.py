@@ -91,7 +91,7 @@ class MarketProxyBridge:
     def removeStoreForGood(self, userId, storeId):
         if self.check_access():
             return True
-        return self._real_subject.removeStoreForGood(self, userId, storeId)
+        return self._real_subject.removeStoreForGood(userId, storeId)
 
 
     def get_store_info(self, store_id, user_id):
