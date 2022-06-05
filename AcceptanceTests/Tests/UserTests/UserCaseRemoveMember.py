@@ -33,6 +33,10 @@ class UserCaseRemoveMember(unittest.TestCase):
         self.assertTrue(self.user_proxy.removeMember(self.systemManger.getMemberName(), self.member1.getMemberName()).getData())
         self.assertTrue(self.user_proxy.logout_member(self.member1).isError())
 
+    def test_getAllActiveUsers(self):
+        for user in self.user_proxy.getAllActiveUsers(self.systemManger.getMemberName()).getData():
+            print(user)
+
     def test_removeMember_Fail(self):
         self.assertTrue(self.user_proxy.removeMember(self.member2.getMemberName(), self.member2.getMemberName()).isError())
         self.assertTrue(self.user_proxy.removeMember("moshe", self.member2.getMemberName()).isError())

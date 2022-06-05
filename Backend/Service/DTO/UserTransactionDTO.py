@@ -9,7 +9,6 @@ class userTransactionDTO:
     def __init__(self, userTransaction: UserTransaction):
         self.__userID = userTransaction.getUserId()
         self.__transactionId = userTransaction.getUserTransactionId()
-        self.__paymentId = userTransaction.getPaymentId()
         self.__date = userTransaction.getDate()
         self.__storeTransactions: Dict[int: storeTransactionForUserDTO] = \
             self.__makeDtoTransaction(userTransaction.getStoreTransactions())
@@ -23,9 +22,6 @@ class userTransactionDTO:
 
     def getStoreTransactions(self):
         return self.__storeTransactions
-
-    def getPaymentId(self):
-        return self.__paymentId
 
     def getUserID(self):
         return self.__userID
@@ -42,9 +38,6 @@ class userTransactionDTO:
     def setStoreTransactions(self, transaction):
         self.__storeTransactions = transaction
 
-    def setPaymentId(self, paymentId):
-        self.__paymentId = paymentId
-
     def setUserID(self, userid):
         __userID = userid
 
@@ -57,7 +50,6 @@ class userTransactionDTO:
     def __str__(self):
         toReturn = "user transaction of user: " + str(self.__userID) + ":"
         toReturn += "\n\ttransaction id: " + str(self.__transactionId)
-        toReturn += "\n\tpayment id: " + str(self.__paymentId)
         toReturn += "\n\tdate: " + str(self.__date)
         toReturn += "\n\tstore transactions: "
         for st in self.__storeTransactions.values():
@@ -67,7 +59,6 @@ class userTransactionDTO:
     def printUserTransactionWithSpace(self):
         toReturn = "\tuser transaction of user: " + str(self.__userID) + ":"
         toReturn += "\n\t\ttransaction id: " + str(self.__transactionId)
-        toReturn += "\n\t\tpayment id: " + str(self.__paymentId)
         toReturn += "\n\t\tdate: " + str(self.__date)
         toReturn += "\n\t\tstore transactions: "
         for st in self.__storeTransactions.values():

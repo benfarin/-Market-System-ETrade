@@ -18,7 +18,7 @@ class IUser(Interface):
     def updateProductFromCart(self, storeID, productId, quantity):
         pass
 
-    def purchaseCart(self, bank):
+    def purchaseCart(self, cardNumber, month, year, holderCardName, cvv, holderID, address):
         pass
 
     def getCartSum(self):

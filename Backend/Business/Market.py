@@ -5,6 +5,8 @@ import django, os
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
+from Backend.Delivery.DeliveryImpl import DeliveryImpl
+from Backend.Delivery.DeliveryDetails import DeliveryDetails
 from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
@@ -54,7 +56,6 @@ class Market:
 
         if Market.__instance is None:
             Market.__instance = self
-
 
     def createStore(self, storeName, user, bank, address):  #TESTED
         self.__initializeStoresDict()
@@ -187,24 +188,26 @@ class Market:
             totalAmount += storeAmount
         return totalAmount
 
-
     def __checkRules(self, rules, bag):
         for rule in rules.values():
             if not rule.check(bag):
                 return False
         return True
 
-    # need to remember that if a user add the product to the cart, then the product is in the stock.
-    def purchaseCart(self, user, bank): #TESTED - WORK ALONE
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address):  #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
             if cart.isEmpty():
                 raise EmptyCartException("cannot purchase an empty cart")
 
-            storeFailed = []
             storeTransactions: Dict[int: StoreTransaction] = {}
             totalAmount = 0.0
+            # both for dealing with unsuccessful payment
+            paymentStatuses = {}
+            deliveryStatuses = {}
+            isPaymentGood = True
+            isDeliveryGood = True
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 bag = cart.getBag(storeId)
@@ -218,39 +221,56 @@ class Market:
                 discounts = self.__stores.get(storeId).getAllDiscounts()
                 storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
+                paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
+                                                storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
 
                 if paymentStatus.getStatus() == "payment succeeded":
-                    productsInStore = cart.getAllProductsByStore()[storeId]
+                    deliveryDetails = DeliveryDetails(user.getUserID(), storeId, holderCardName, address)
+                    deliveryStatus = DeliveryImpl.getInstance().createDelivery(deliveryDetails)
 
-                    # user.addPaymentStatus(paymentStatus)
-                    transactionId = self.__getStoreTransactionId()
-                    storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
-                                                                          paymentStatus.getPaymentId(), productsInStore,
-                                                                          storeAmount)
-                    self.__stores.get(storeId).addTransaction(storeTransaction)
-                    self.__transactionHistory.addStoreTransaction(storeTransaction)
-                    storeTransactions[transactionId] = storeTransaction
-                    cart.cleanBag(storeId)
+                    if deliveryStatus.getStatus() == "delivery succeeded":
+                        productsInStore = cart.getAllProductsByStore()[storeId]
+
+                        transactionId = self.__getStoreTransactionId()
+                        storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
+                                                                              paymentStatus.getPaymentId(),
+                                                                              deliveryStatus.getDeliveryID(),
+                                                                              productsInStore, storeAmount)
+                        self.__stores.get(storeId).addTransaction(storeTransaction)
+                        self.__transactionHistory.addStoreTransaction(storeTransaction)
+                        storeTransactions[transactionId] = storeTransaction
+                        paymentStatuses[transactionId] = paymentStatuses
+                        deliveryStatuses[transactionId] = deliveryStatus
+                        cart.cleanBag(storeId)
+                    else:
+                        isDeliveryGood = False
+                        self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                        break
+
                 else:
-                    storeFailed.append(storeId)
+                    isPaymentGood = False
+                    self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                    break
 
-            userPaymentId = Paymentlmpl.getInstance().getPaymentId()
-            userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(), storeTransactions,
-                                              userPaymentId, totalAmount)
-            user.addTransaction(userTransaction)
-            # self.__transactionHistory.addUserTransaction(userTransaction)
-
-            # need to think what should we do if some of the payments failed
-            if len(storeFailed) == 0:
+            if isPaymentGood and isDeliveryGood:
+                userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(),
+                                                  storeTransactions, totalAmount)
+                user.addTransaction(userTransaction)
                 return userTransaction
             else:
-                raise PaymentException("failed to pay in stores: " + str(storeFailed))
+                raise PaymentException("failed to pay")
 
-            # here need to add delivary
         except Exception as e:
             raise Exception(e)
+
+    def __removeStatues(self, storeId, paymentsStatues, deliveryStatuses):
+        for transactionId, ps in paymentsStatues.items():
+            Paymentlmpl.getInstance().cancelPayment(ps)
+            self.__stores.get(storeId).removeTransaction(transactionId)
+
+        for transactionId, ds in deliveryStatuses.items():
+            DeliveryImpl.getInstance().cancelDelivery(ds)
 
     #  actions of roles - role managment
     def appointManagerToStore(self, storeID, assigner, assignee):
