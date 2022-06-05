@@ -23,23 +23,23 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         admin_id = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.login_member(admin_id, "Manager", "1234")
         # create 5 users
-        guest_id1 = self.proxy_user.login_guest().getData().getUserID()
+        self.guest_id1 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser1", "1234", "0540000000", 123, 5, "Israel", "Beer Sheva", "Rager", 1, 1)
-        guest_id2 = self.proxy_user.login_guest().getData().getUserID()
+        self.guest_id2 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser2", "1234", "0540000000", 123, 5, "Israel", "Beer Sheva", "Rager", 1, 1)
-        guest_id3 = self.proxy_user.login_guest().getData().getUserID()
+        self.guest_id3 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser3", "1234", "0540000000", 123, 5, "Israel", "Beer Sheva", "Rager", 1, 1)
-        guest_id4 = self.proxy_user.login_guest().getData().getUserID()
+        self.guest_id4 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser4", "1234", "0540000000", 123, 5, "Israel", "Beer Sheva", "Rager", 1, 1)
-        guest_id5 = self.proxy_user.login_guest().getData().getUserID()
+        self.guest_id5 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser5", "1234", "0540000000", 123, 5, "Israel", "Beer Sheva", "Rager", 1, 1)
 
         # 5 users log-in
-        self.user_id1 = self.proxy_user.login_member(guest_id1, "testUser1", "1234").getData().getUserID()
-        self.user_id2 = self.proxy_user.login_member(guest_id2, "testUser2", "1234").getData().getUserID()
-        self.user_id3 = self.proxy_user.login_member(guest_id3, "testUser3", "1234").getData().getUserID()
-        self.user_id4 = self.proxy_user.login_member(guest_id4, "testUser4", "1234").getData().getUserID()
-        self.user_id5 = self.proxy_user.login_member(guest_id5, "testUser5", "1234").getData().getUserID()
+        self.user_id1 = self.proxy_user.login_member(self.guest_id1, "testUser1", "1234").getData().getUserID()
+        self.user_id2 = self.proxy_user.login_member(self.guest_id2, "testUser2", "1234").getData().getUserID()
+        self.user_id3 = self.proxy_user.login_member(self.guest_id3, "testUser3", "1234").getData().getUserID()
+        self.user_id4 = self.proxy_user.login_member(self.guest_id4, "testUser4", "1234").getData().getUserID()
+        self.user_id5 = self.proxy_user.login_member(self.guest_id5, "testUser5", "1234").getData().getUserID()
 
         # Create 3 stores
         self.store_id1 = self.proxy_user.open_store("fruits_store", self.user_id1, 123, 1, "Israel", "Beer Sheva",
@@ -92,6 +92,12 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.removeMember("Manager", "testUser3")
         self.proxy_user.removeMember("Manager", "testUser4")
         self.proxy_user.removeMember("Manager", "testUser5")
+        self.proxy_user.exit_system(self.guest_id1)
+        self.proxy_user.exit_system(self.guest_id2)
+        self.proxy_user.exit_system(self.guest_id3)
+        self.proxy_user.exit_system(self.guest_id4)
+        self.proxy_user.exit_system(self.guest_id5)
+
         #remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
