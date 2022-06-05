@@ -5,6 +5,8 @@ import django, os
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
+from Backend.Delivery.DeliveryImpl import DeliveryImpl
+from Backend.Delivery.DeliveryDetails import DeliveryDetails
 from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
@@ -192,7 +194,7 @@ class Market:
                 return False
         return True
 
-    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID):  #TESTED - WORK ALONE
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address):  #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
@@ -203,7 +205,9 @@ class Market:
             totalAmount = 0.0
             # both for dealing with unsuccessful payment
             paymentStatuses = {}
+            deliveryStatuses = {}
             isPaymentGood = True
+            isDeliveryGood = True
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 bag = cart.getBag(storeId)
@@ -222,26 +226,34 @@ class Market:
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
 
                 if paymentStatus.getStatus() == "payment succeeded":
-                    productsInStore = cart.getAllProductsByStore()[storeId]
+                    deliveryDetails = DeliveryDetails(user.getUserID(), storeId, holderCardName, address)
+                    deliveryStatus = DeliveryImpl.getInstance().createDelivery(deliveryDetails)
 
-                    transactionId = self.__getStoreTransactionId()
-                    storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
-                                                                          paymentStatus.getPaymentId(), productsInStore,
-                                                                          storeAmount)
-                    self.__stores.get(storeId).addTransaction(storeTransaction)
-                    self.__transactionHistory.addStoreTransaction(storeTransaction)
-                    storeTransactions[transactionId] = storeTransaction
-                    paymentStatuses[transactionId] = paymentStatuses
-                    cart.cleanBag(storeId)
+                    if deliveryStatus.getStatus() == "delivery succeeded":
+                        productsInStore = cart.getAllProductsByStore()[storeId]
+
+                        transactionId = self.__getStoreTransactionId()
+                        storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
+                                                                              paymentStatus.getPaymentId(),
+                                                                              deliveryStatus.getDeliveryID(),
+                                                                              productsInStore, storeAmount)
+                        self.__stores.get(storeId).addTransaction(storeTransaction)
+                        self.__transactionHistory.addStoreTransaction(storeTransaction)
+                        storeTransactions[transactionId] = storeTransaction
+                        paymentStatuses[transactionId] = paymentStatuses
+                        deliveryStatuses[transactionId] = deliveryStatus
+                        cart.cleanBag(storeId)
+                    else:
+                        isDeliveryGood = False
+                        self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                        break
+
                 else:
                     isPaymentGood = False
-                    for transactionId, ps in paymentStatus.items():
-                        Paymentlmpl.getInstance().cancelPayment(ps)
-                        self.__stores.get(storeId).removeTransaction(transactionId)
+                    self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
                     break
 
-                # here need to add delivary
-            if isPaymentGood:
+            if isPaymentGood and isDeliveryGood:
                 userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(),
                                                   storeTransactions, totalAmount)
                 user.addTransaction(userTransaction)
@@ -251,6 +263,14 @@ class Market:
 
         except Exception as e:
             raise Exception(e)
+
+    def __removeStatues(self, storeId, paymentsStatues, deliveryStatuses):
+        for transactionId, ps in paymentsStatues.items():
+            Paymentlmpl.getInstance().cancelPayment(ps)
+            self.__stores.get(storeId).removeTransaction(transactionId)
+
+        for transactionId, ds in deliveryStatuses.items():
+            DeliveryImpl.getInstance().cancelDelivery(ds)
 
     #  actions of roles - role managment
     def appointManagerToStore(self, storeID, assigner, assignee):

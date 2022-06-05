@@ -55,6 +55,10 @@ class UserManagment(object):
         else:
             return True
 
+    def getActiveUsers(self):
+        self._initializeDict()
+        return self.__activeUsers
+
     def getMembers(self):
         self._initializeDict()
         return self.__members
@@ -164,7 +168,9 @@ class UserManagment(object):
         self._initializeDict()
         if self.__systemManager.get(systemMangerName) is None:
             raise Exception("user : " + systemMangerName + " is not a system manager")
+        systemManger = self.__systemManager.get(systemMangerName)
         self.__systemManager.pop(systemMangerName)
+        systemManger.removeUser()
         return True
 
     # from here is to move to user class
@@ -200,11 +206,20 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
-    def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID):
+    def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID, address=None):
         self._initializeDict()
         try:
             self.checkOnlineUser(userID)
-            return self.__activeUsers.get(userID).purchaseCart(cardNumber, month, year, holderCardName, cvv, holderID)
+            if address is not None:
+                return self.__activeUsers.get(userID).purchaseCart(cardNumber, month, year, holderCardName, cvv,
+                                                                   holderID, address)
+            else:
+                member = self.__members.get(userID)
+                if member is None:
+                    raise Exception("cannot purchase without an address!")
+                return self.__activeUsers.get(userID).purchaseCart(cardNumber, month, year, holderCardName, cvv,
+                                                                   holderID, member.getAddress())
+
         except Exception as e:
             raise Exception(e)
 

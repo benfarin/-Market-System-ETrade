@@ -136,9 +136,9 @@ class User:
             raise Exception(e)
 
     @threaded
-    def purchaseCart(self, cardNumber, month, year, holderCardName, cvv, holderID):
+    def purchaseCart(self, cardNumber, month, year, holderCardName, cvv, holderID, address):
         try:
-            return self.__market.purchaseCart(self, cardNumber, month, year, holderCardName, cvv, holderID)
+            return self.__market.purchaseCart(self, cardNumber, month, year, holderCardName, cvv, holderID, address)
         except Exception as e:
             raise Exception(e)
 

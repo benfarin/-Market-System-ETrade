@@ -185,6 +185,19 @@ class UserService:
             logging.error("Cannot find product by this price range")
             return Response(e.__str__())
 
+    def purchaseCartWithoutAddress(self, userID, cardNumber, month, year, holderCardName, cvv, holderID,
+                                   country, city, street, apartmentNum, zipCode):
+        try:
+            address = self.__userManagment.createAddress(country, city, street, apartmentNum, zipCode)
+            userTransaction = self.__userManagment.purchaseCart(userID, cardNumber, month,
+                                                                year, holderCardName, cvv, holderID, address=address)
+            logging.info("success to purchase cart for user " + str(userID))
+            return Response(userTransactionDTO(userTransaction))
+        except Exception as e:
+            logging.error("Failed to purchase cart for user" + str(userID))
+            return Response(e.__str__())
+
+    # here we assume that the user is a member!!
     def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID):
         try:
             userTransaction = self.__userManagment.purchaseCart(userID, cardNumber, month,

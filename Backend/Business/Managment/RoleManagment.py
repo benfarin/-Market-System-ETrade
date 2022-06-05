@@ -285,6 +285,14 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def getAllActiveUsers(self, systemManagerName):
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            return self.__memberManagement.getActiveUsers().values()
+        except Exception as e:
+            raise Exception(e)
+
     def getAllStoreTransactions(self, systemManagerName):
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
