@@ -1,7 +1,6 @@
-from Backend.Payment.PaymentSystem import PaymentSystem
+from Backend.ExternalSystem.ExternalSystem import ExternalSystem
 from Backend.Payment.PaymentStatus import PaymentStatus
 from Backend.Payment.PaymentDetails import PaymentDetails
-from Backend.Interfaces.IPayment import IPayment
 
 
 class Paymentlmpl:
@@ -15,33 +14,36 @@ class Paymentlmpl:
         return Paymentlmpl.__instance
 
     def __init__(self):
-        self.__paymentSystem: PaymentSystem = PaymentSystem().getInstance()
-        self.__messegeError = "error"
-        self.__paymentId = 0
+        self.__paymentSystem: ExternalSystem = ExternalSystem().getInstance()
         if Paymentlmpl.__instance is None:
             Paymentlmpl.__instance = self
 
     def createPayment(self, paymentDetails: PaymentDetails):
         try:
-            self.__paymentSystem.CreatePayment(paymentDetails.getUserId(),
-                                               paymentDetails.getClientBankAccount().getAccountNumber(),
-                                               paymentDetails.getClientBankAccount().getBranch(),
-                                               paymentDetails.getRecieverBankAccount().getAccountNumber(),
-                                               paymentDetails.getRecieverBankAccount().getBranch(),
-                                               paymentDetails.getPaymentAmount())
+            params = {"action_type": "pay",
+                      "card_number": paymentDetails.getCardNumber(),
+                      "month": paymentDetails.getMonth(),
+                      "year": paymentDetails.getYear(),
+                      "holder": paymentDetails.getHolderCardName(),
+                      "ccv": paymentDetails.getCVV(),
+                      "id": paymentDetails.getHolderID()
+                      }
 
-            return PaymentStatus(self.getPaymentId(), paymentDetails.getUserId(), "payment succeeded")
-        except Exception:
-            return PaymentStatus(self.getPaymentId(), paymentDetails.getUserId(), "payment failed")
+            paymentId = self.__paymentSystem.CreateRequest(params)
+
+            return PaymentStatus(paymentId, paymentDetails.getUserId(), "payment succeeded")
+
+        except Exception as e:
+            return PaymentStatus(-1, paymentDetails.getUserId(), e)
 
     def cancelPayment(self, paymentStatus: PaymentStatus):
         try:
-            self.__paymentSystem.CancelPayment(paymentStatus.paymentId)
+            params = {"action_type": "cancel_pay",
+                      "transaction_id": paymentStatus.getPaymentId(),
+                      }
+            self.__paymentSystem.CancelRequest(params)
             paymentStatus.setStatus("cancel payment succeeded")
-        except Exception:
+
+        except Exception as e:
             paymentStatus.status("cancel payment failed")
 
-    def getPaymentId(self):
-        paymentId = self.__paymentId
-        self.__paymentId += 1
-        return paymentId

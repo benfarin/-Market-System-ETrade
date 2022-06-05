@@ -23,8 +23,6 @@ class GuestDTO:
     def setUserID(self, uid):
         self.__id = uid
 
-
     def __str__(self):
-        toReturn = "guest:"
-        toReturn += "\n\tuserId: " + str(self.__id)
-        return toReturn + self.__cart.__str__()
+        toReturn = "\nuserId: " + str(self.__id)
+        return toReturn + "\n\t" + self.__cart.__str__()

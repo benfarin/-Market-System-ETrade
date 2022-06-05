@@ -60,7 +60,7 @@ class TransactionHistory:
 
     def __createStoreTransaction(self, st):
         return StoreTransaction(st.getStoreId(), st.getStoreName(), st.getTransactionID(),
-                                st.getPaymentId(), st.getProducts(), st.getAmount())
+                                st.getPaymentId(), st.getDeliveryId(), st.getProducts(), st.getAmount())
 
     def __createUserTransaction(self, ut):
         return UserTransaction(ut.getUserId(), ut.getUserTransactionId(), ut.getStoreTransactions(), ut.getPaymentId(),

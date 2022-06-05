@@ -11,7 +11,8 @@ from ModelsBackend.models import StoreTransactionModel, ProductsInStoreTransacti
 
 class StoreTransaction:
 
-    def __init__(self, storeId=None, storeName=None, transactionId=None, paymentId=None, products=None, amount=None, model=None):
+    def __init__(self, storeId=None, storeName=None, transactionId=None, paymentId=None, deliveryId=None,
+                 products=None, amount=None, model=None):
         # self.__storeId = storeId
         # self.__storeName = storeName
         # self.__transactionId = transactionId
@@ -20,8 +21,10 @@ class StoreTransaction:
         # self.__products = products
         # self.__amount = amount
         if model is None:
-            self.__st = StoreTransactionModel.objects.get_or_create(storeId=storeId, storeName=storeName, transactionId=transactionId,
-                                              paymentId=paymentId, date=datetime.datetime.now(), amount=amount)[0]
+            self.__st = StoreTransactionModel.objects.get_or_create(storeId=storeId, storeName=storeName,
+                                                                    transactionId=transactionId,
+                                                                    paymentId=paymentId, deliveryId=deliveryId,
+                                                                    date=datetime.datetime.now(), amount=amount)[0]
             for product in products:
                 ProductsInStoreTransactions.objects.get_or_create(transactionId=self.__st, productId=product.getModel())
         else:
@@ -38,6 +41,9 @@ class StoreTransaction:
 
     def getPaymentId(self):
         return self.__st.paymentId
+
+    def getDeliveryId(self):
+        return self.__st.deliveryId
 
     def getAmount(self):
         return self.__st.amount

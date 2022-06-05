@@ -2,6 +2,8 @@ import sys
 from datetime import datetime
 import django, os
 
+from Backend.Service.DTO.GuestDTO import GuestDTO
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
 from Backend.Business.Managment.MemberManagment import MemberManagment
@@ -257,6 +259,18 @@ class RoleService:
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed to remove member" + str(memberName))
+            return Response(e.__str__())
+
+    def getAllActiveUsers(self, systemManagerName):
+        try:
+            allActiveUsers = self.__roleManagment.getAllActiveUsers(systemManagerName)
+            logging.info("success to get all active users ")
+            users = []
+            for user in allActiveUsers:
+                users.append(GuestDTO(user))
+            return Response(users)
+        except Exception as e:
+            logging.error("Failed  to get all active users ")
             return Response(e.__str__())
 
     def getAllStoreTransactions(self, systemManagerName):
