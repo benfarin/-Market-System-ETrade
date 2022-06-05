@@ -41,10 +41,17 @@ class UserProxyBridge:
             return True
         return self._real_subject.add_product_to_cart(user_id, store_id, product_id, quantity)
 
-    def purchase_product(self, user_id, account_num, branch):
+    def purchaseProductWithoutAddress(self, userID, cardNumber, month, year, holderCardName, cvv, holderID,
+                                   country, city, street, apartmentNum, zipCode):
         if self.check_access():
             return True
-        return self._real_subject.purchase_product(user_id, account_num, branch)
+        return self._real_subject.purchaseProductWithoutAddress(userID, cardNumber, month, year, holderCardName, cvv, holderID,
+                                                    country, city, street, apartmentNum, zipCode)
+
+    def purchase_product(self, user_id, cardNumber, month, year, holderCardName, cvv, holderID):
+        if self.check_access():
+            return True
+        return self._real_subject.purchase_product(user_id, cardNumber, month, year, holderCardName, cvv, holderID)
 
     def logout_member(self, userName):
         if self.check_access():
@@ -63,6 +70,12 @@ class UserProxyBridge:
             return True
         else:
             return self._real_subject.removeMember(systemManagerName, memberName)
+
+    def getAllActiveUsers(self, systemManagerName):
+        if self.check_access():
+            return True
+        else:
+            return self._real_subject.getAllActiveUsers(systemManagerName)
 
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         if self.check_access():

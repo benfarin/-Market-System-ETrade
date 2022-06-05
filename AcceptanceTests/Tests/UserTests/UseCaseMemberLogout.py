@@ -8,15 +8,19 @@ from Backend.Service.UserService import UserService
 
 class UseCaseMemberLogout(unittest.TestCase):
     #usecase 3.1
-    @classmethod
-    def setUpClass(cls):
-        cls.user_proxy = UserProxyBridge(UserRealBridge())
-        cls.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+    user_proxy = UserProxyBridge(UserRealBridge())
+
+    def setUp(self):
+        self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
 
-        cls.__guestId1 = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, 0)
+
+    def tearDown(self) -> None:
+        self.user_proxy.exit_system(self.__guestId1)
+        self.user_proxy.removeSystemManger_forTests("Manager")
 
     def test_logout_positive(self):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")

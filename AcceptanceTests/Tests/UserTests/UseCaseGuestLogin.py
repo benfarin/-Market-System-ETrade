@@ -8,20 +8,18 @@ from Backend.Service.UserService import UserService
 
 
 class UseCaseGuestLogin(unittest.TestCase):
-
-    #usecase 2.2
+    # usecase 2.2
+    proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge())
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
 
+    def tearDown(self) -> None:
+        self.proxy.removeSystemManger_forTests("Manager")
+
     def test_login(self):
-        try:
-            self.proxy.login_guest()
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
+        self.assertIsNotNone(self.proxy.login_guest().getData().getUserID())
 
     def test_massive_login(self):
 

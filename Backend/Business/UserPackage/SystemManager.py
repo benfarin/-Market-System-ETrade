@@ -41,3 +41,6 @@ class SystemManager(Member):
             return self.__market.getStoreTransactionByStoreId(storeId)
         except Exception as e:
             raise Exception(e)
+
+    def removeUser(self):
+        super().removeUser()

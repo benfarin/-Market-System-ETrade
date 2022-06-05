@@ -33,7 +33,7 @@ class IMarket(Interface):
     def getProductByPriceRange(self, minPrice, highPrice):
         pass
 
-    def purchaseCart(self, user, bank):
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address):
         pass
 
     def appointManagerToStore(self, storeID, assigner, assignee):  # Tested
