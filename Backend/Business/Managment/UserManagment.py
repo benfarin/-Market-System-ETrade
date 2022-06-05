@@ -121,6 +121,8 @@ class UserManagment(object):
             if member is None and system_manager is None:
                 raise NoSuchUserException("The user ID " + userName + " not registered!")
             if system_manager is not None:
+                if (self.__activeUsers.get(system_manager.getUserID())) is not None:
+                    raise Exception("user is already logged-in!")
                 if check_password(password, system_manager.getPassword()):
                     self.__activeUsers[system_manager.getUserID()] = system_manager
                     system_manager.setLoggedIn(True)
@@ -129,6 +131,8 @@ class UserManagment(object):
                     system_manager.updateCart(self.__getUserCart(oldUserId))
                     return system_manager
             elif member is not None:
+                if (self.__activeUsers.get(member.getUserID())) is not None:
+                    raise Exception("user is already logged-in!")
                 if check_password(password, member.getPassword()):
                     self.__activeUsers[member.getUserID()] = member
                     member.setLoggedIn(True)
