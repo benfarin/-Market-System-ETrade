@@ -101,6 +101,8 @@ class Product:
 
     def removeProduct(self):
         if self.__model.product_id is not None:
+            for pk in ProductKeyword.objects.filter(product_id=self.__model):
+                pk.delete()
             self.__model.delete()
 
     def __eq__(self, other):
