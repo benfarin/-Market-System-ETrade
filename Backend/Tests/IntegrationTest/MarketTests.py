@@ -157,7 +157,8 @@ class MarketTests(unittest.TestCase):
 
     def test_purchaseCart(self):  ##WORKING
         self.test_addProductToCart()
-        self.assertEqual(self.__market.purchaseCart(self.__member1, self.__bank1).getTotalAmount(), 638.47)
+        self.assertEqual(self.__market.purchaseCart(self.__member1, "0000", "12", "2023",
+                                                    "Bar Rozenman", "123", "000000").getTotalAmount(), 638.47)
         # trans = self.__member1.getTransactionById(2)
 
         # print("\n")

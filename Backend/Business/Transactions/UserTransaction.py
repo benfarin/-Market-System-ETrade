@@ -5,15 +5,14 @@ import datetime
 
 
 class UserTransaction:
-    def __init__(self, userID=None, transactionId=None, storeTransactions=None, paymentId=None, totalAmount=None, model=None):
+    def __init__(self, userID=None, transactionId=None, storeTransactions=None, totalAmount=None, model=None):
         # self.__userID = userID
         # self.__transactionId = transactionId
-        # self.__paymentId = paymentId
         # self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
         # self.__storeTransactions: Dict[int: StoreTransaction] = storeTransactions
         # self.__totalAmount = totalAmount
         if model is None:
-            self.__ut = UserTransactionModel.objects.get_or_create(userID=userID, transactionId=transactionId, paymentId=paymentId,
+            self.__ut = UserTransactionModel.objects.get_or_create(userID=userID, transactionId=transactionId,
                                              date=datetime.datetime.now(), totalAmount=totalAmount)[0]
             self.__ut.save()
             for st in storeTransactions:
@@ -32,9 +31,6 @@ class UserTransaction:
     def getStoreTransactions(self):
         return [StoreTransaction(model=stiut.storeTransaction_id)
                 for stiut in StoreTransactionsInUserTransactions.objects.filter(userTransaction_id=self.__ut.transactionId)]
-
-    def getPaymentId(self):
-        return self.__ut.paymentId
 
     def getDate(self):
         return self.__ut.date

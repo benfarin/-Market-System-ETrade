@@ -39,7 +39,6 @@ class ProductsInStoreTransactions(models.Model):
 class UserTransactionModel(models.Model):
     userID = models.UUIDField()
     transactionId = models.IntegerField(primary_key=True)
-    paymentId = models.IntegerField()
     date = models.DateField(auto_now=True)
     totalAmount = models.IntegerField()
 

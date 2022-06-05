@@ -185,10 +185,10 @@ class UserService:
             logging.error("Cannot find product by this price range")
             return Response(e.__str__())
 
-    def purchaseCart(self, userID, accountNumber, branch):
+    def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID):
         try:
-            bank = self.__userManagment.createBankAcount(accountNumber, branch)
-            userTransaction = self.__userManagment.purchaseCart(userID, bank)
+            userTransaction = self.__userManagment.purchaseCart(userID, cardNumber, month,
+                                                                year, holderCardName, cvv, holderID)
             logging.info("success to purchase cart for user " + str(userID))
             return Response(userTransactionDTO(userTransaction))
         except Exception as e:

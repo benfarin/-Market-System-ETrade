@@ -200,11 +200,11 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
-    def purchaseCart(self, userID, bank):
+    def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID):
         self._initializeDict()
         try:
             self.checkOnlineUser(userID)
-            return self.__activeUsers.get(userID).purchaseCart(bank)
+            return self.__activeUsers.get(userID).purchaseCart(cardNumber, month, year, holderCardName, cvv, holderID)
         except Exception as e:
             raise Exception(e)
 

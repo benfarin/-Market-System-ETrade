@@ -41,10 +41,10 @@ class UserProxyBridge:
             return True
         return self._real_subject.add_product_to_cart(user_id, store_id, product_id, quantity)
 
-    def purchase_product(self, user_id, account_num, branch):
+    def purchase_product(self, user_id, cardNumber, month, year, holderCardName, cvv, holderID):
         if self.check_access():
             return True
-        return self._real_subject.purchase_product(user_id, account_num, branch)
+        return self._real_subject.purchase_product(user_id, cardNumber, month, year, holderCardName, cvv, holderID)
 
     def logout_member(self, userName):
         if self.check_access():

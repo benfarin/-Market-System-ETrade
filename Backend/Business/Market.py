@@ -55,7 +55,6 @@ class Market:
         if Market.__instance is None:
             Market.__instance = self
 
-
     def createStore(self, storeName, user, bank, address):  #TESTED
         self.__initializeStoresDict()
         storeID = self.__getGlobalStoreId()
@@ -187,24 +186,24 @@ class Market:
             totalAmount += storeAmount
         return totalAmount
 
-
     def __checkRules(self, rules, bag):
         for rule in rules.values():
             if not rule.check(bag):
                 return False
         return True
 
-    # need to remember that if a user add the product to the cart, then the product is in the stock.
-    def purchaseCart(self, user, bank): #TESTED - WORK ALONE
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID):  #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
             if cart.isEmpty():
                 raise EmptyCartException("cannot purchase an empty cart")
 
-            storeFailed = []
             storeTransactions: Dict[int: StoreTransaction] = {}
             totalAmount = 0.0
+            # both for dealing with unsuccessful payment
+            paymentStatuses = {}
+            isPaymentGood = True
 
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 bag = cart.getBag(storeId)
@@ -218,13 +217,13 @@ class Market:
                 discounts = self.__stores.get(storeId).getAllDiscounts()
                 storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(user.getUserID(), bank, storeBank, storeAmount)
+                paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
+                                                storeBank, storeAmount)
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
 
                 if paymentStatus.getStatus() == "payment succeeded":
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
-                    # user.addPaymentStatus(paymentStatus)
                     transactionId = self.__getStoreTransactionId()
                     storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
                                                                           paymentStatus.getPaymentId(), productsInStore,
@@ -232,23 +231,24 @@ class Market:
                     self.__stores.get(storeId).addTransaction(storeTransaction)
                     self.__transactionHistory.addStoreTransaction(storeTransaction)
                     storeTransactions[transactionId] = storeTransaction
+                    paymentStatuses[transactionId] = paymentStatuses
                     cart.cleanBag(storeId)
                 else:
-                    storeFailed.append(storeId)
+                    isPaymentGood = False
+                    for transactionId, ps in paymentStatus.items():
+                        Paymentlmpl.getInstance().cancelPayment(ps)
+                        self.__stores.get(storeId).removeTransaction(transactionId)
+                    break
 
-            userPaymentId = Paymentlmpl.getInstance().getPaymentId()
-            userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(), storeTransactions,
-                                              userPaymentId, totalAmount)
-            user.addTransaction(userTransaction)
-            # self.__transactionHistory.addUserTransaction(userTransaction)
-
-            # need to think what should we do if some of the payments failed
-            if len(storeFailed) == 0:
+                # here need to add delivary
+            if isPaymentGood:
+                userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(),
+                                                  storeTransactions, totalAmount)
+                user.addTransaction(userTransaction)
                 return userTransaction
             else:
-                raise PaymentException("failed to pay in stores: " + str(storeFailed))
+                raise PaymentException("failed to pay")
 
-            # here need to add delivary
         except Exception as e:
             raise Exception(e)
 

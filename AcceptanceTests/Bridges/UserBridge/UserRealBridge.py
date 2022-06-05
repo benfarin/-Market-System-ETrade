@@ -35,8 +35,8 @@ class UserRealBridge:
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         return self._userService.addProductToCart(user_id, store_id, product_id, quantity)
 
-    def purchase_product(self, user_id, account_num, branch):
-        return self._userService.purchaseCart(user_id, account_num, branch)
+    def purchase_product(self, user_id, cardNumber, month, year, holderCardName, cvv, holderID):
+        return self._userService.purchaseCart(user_id, cardNumber, month, year, holderCardName, cvv, holderID)
 
     def logout_member(self, userName):
         return self._memberService.logoutMember(userName)
