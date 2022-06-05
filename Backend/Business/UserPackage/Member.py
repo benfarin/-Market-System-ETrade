@@ -135,6 +135,13 @@ class Member(User):
             raise Exception(e)
 
     @threaded
+    def removeStoreForGood(self, storeId):
+        try:
+            return self.__market.removeStoreForGood(storeId, self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
     def appointManagerToStore(self, storeID, assignee):
         try:
             return self.__market.appointManagerToStore(storeID, self, assignee)

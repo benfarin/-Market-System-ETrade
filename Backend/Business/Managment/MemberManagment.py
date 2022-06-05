@@ -113,6 +113,23 @@ class MemberManagment(UserManagment):
         except Exception as e:
             raise Exception(e)
 
+    def removeStoreForGood(self, userId, storeId):
+        try:
+            self.checkOnlineUser(userId)
+            member = self.getMembers().get(userId)
+            if member is None:
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+
+            # need somehow to lock all function that trying to get to the store
+            member.removeStoreForGood(storeId)
+            for user in self.getActiveUser().values():
+                user.getCart().removeBag(storeId)
+
+            return True
+        except Exception as e:
+            raise Exception(e)
+
+
     def logoutMember(self, userName):
         try:
             user = self.getMemberByName(userName)
