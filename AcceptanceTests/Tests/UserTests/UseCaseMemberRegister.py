@@ -9,13 +9,17 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 class UseCaseMemberRegister(unittest.TestCase):
     # usecase 2.3
+    proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge())
         self.proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1).getData()
         self.__guestId_0 = self.proxy.login_guest().getData().getUserID()
         self.systemManger = self.proxy.login_member(self.__guestId_0, "manager", "1234").getData()
+
+    def tearDown(self):
+        self.proxy.exit_system(self.__guestId_0)
+        self.proxy.removeSystemManger_forTests("manager")
 
     def test_register_positive_one(self):
         guestId = self.proxy.login_guest().getData().getUserID()
