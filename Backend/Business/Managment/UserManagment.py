@@ -292,7 +292,6 @@ class UserManagment(object):
 
     def getUserByUserName(self, username):
         self._initializeDict()
-        self.thereIsSystemManger()
         for member in self.__members.values():
             if member.getMemberName() == username:
                 return member
@@ -305,15 +304,12 @@ class UserManagment(object):
         return None
 
     def _buildMember(self, model):
-        self.thereIsSystemManger()
         return Member(model=model)
 
     def _buildGuest(self, model):
-        self.thereIsSystemManger()
         return Guest(model=model)
 
     def _buildSystemManager(self, model):
-        self.thereIsSystemManger()
         return SystemManager(model=model)
 
     def thereIsSystemManger(self):
