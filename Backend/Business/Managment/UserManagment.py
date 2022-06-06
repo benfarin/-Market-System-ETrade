@@ -23,8 +23,6 @@ import bcrypt
 from django.contrib.auth.hashers import make_password, check_password
 
 
-
-
 class UserManagment(object):
     __instance = None
 
@@ -50,6 +48,7 @@ class UserManagment(object):
 
     def checkOnlineUser(self, userId):
         self._initializeDict()
+        self.thereIsSystemManger()
         if (self.__activeUsers.get(userId)) is None:
             raise NotOnlineException("The member " + str(userId) + " not online!")
         else:
@@ -57,33 +56,40 @@ class UserManagment(object):
 
     def getActiveUsers(self):
         self._initializeDict()
+        self.thereIsSystemManger()
         return self.__activeUsers
 
     def getMembers(self):
         self._initializeDict()
+        self.thereIsSystemManger()
         return self.__members
 
     def getActiveUser(self):
         self._initializeDict()
+        self.thereIsSystemManger()
         return self.__activeUsers
 
     def getSystemManagers(self):
         self._initializeDict()
+        self.thereIsSystemManger()
         return self.__systemManager
 
     def removeFromActiveUsers(self, userId):
         self._initializeDict()
+        self.thereIsSystemManger()
         self.checkOnlineUser(userId)
         self.__activeUsers.pop(userId)
 
     def removeFromMembers(self, memberId):
         self._initializeDict()
+        self.thereIsSystemManger()
         if memberId not in self.__members.keys():
             raise Exception("member: " + str(memberId) + " not exists")
         self.__members.pop(memberId)
 
     def enterSystem(self):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             guest = Guest()
             self.__guests[guest.getUserID()] = guest
@@ -96,6 +102,7 @@ class UserManagment(object):
 
     def exitSystem(self, guestID):  # need to remove cart!
         self._initializeDict()
+        self.thereIsSystemManger()
         self.checkOnlineUser(guestID)
         guest = self.__guests.get(guestID)
         self.__guests.pop(guestID)
@@ -105,6 +112,7 @@ class UserManagment(object):
 
     def memberSignUp(self, userName, password, phone, address, bank):  # Tested
         self._initializeDict()
+        self.thereIsSystemManger()
         if self.__isMemberExists(userName) is None:
             member = Member(userName, password, phone, address, bank)
             self.__members[member.getUserID()] = member
@@ -115,6 +123,7 @@ class UserManagment(object):
 
     def memberLogin(self, oldUserId, userName, password):  # Tested
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             system_manager: SystemManager = self.__systemManager.get(userName)
             member: Member = self.__isMemberExists(userName)
@@ -154,6 +163,7 @@ class UserManagment(object):
 
     def __isMemberExists(self, userName):
         self._initializeDict()
+        self.thereIsSystemManger()
         for member in self.__members.values():
             if member.getMemberName() == userName:
                 return member
@@ -172,6 +182,7 @@ class UserManagment(object):
 
     def removeSystemManger_forTests(self, systemMangerName):
         self._initializeDict()
+        self.thereIsSystemManger()
         if self.__systemManager.get(systemMangerName) is None:
             raise Exception("user : " + systemMangerName + " is not a system manager")
         systemManger = self.__systemManager.get(systemMangerName)
@@ -182,6 +193,7 @@ class UserManagment(object):
     # from here is to move to user class
     def addProductToCart(self, userID, storeID, product, quantity):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).addProductToCart(storeID, product, quantity)
@@ -190,6 +202,7 @@ class UserManagment(object):
 
     def addProductToCartWithoutStore(self, userID, productID, quantity):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).addProductToCartWithoutStore(productID, quantity)
@@ -198,6 +211,7 @@ class UserManagment(object):
 
     def removeProductFromCart(self, userID, storeID, productId):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).removeProductFromCart(storeID, productId)
@@ -206,6 +220,7 @@ class UserManagment(object):
 
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).updateProductFromCart(storeID, productId, quantity)
@@ -214,6 +229,7 @@ class UserManagment(object):
 
     def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID, address=None):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             if address is not None:
@@ -231,6 +247,7 @@ class UserManagment(object):
 
     def getCart(self, userID):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).getCart()
@@ -239,6 +256,7 @@ class UserManagment(object):
 
     def getSumAfterDiscount(self, userId):
         self._initializeDict()
+        self.thereIsSystemManger()
         try:
             self.checkOnlineUser(userId)
             return self.__activeUsers.get(userId).getCartSum()
@@ -253,24 +271,28 @@ class UserManagment(object):
 
     def __getUserCart(self, userId):
         self._initializeDict()
+        self.thereIsSystemManger()
         if userId not in self.__guests.keys():
             raise NoSuchUserException("user: " + str(userId) + "is not exists")
         return self.__guests.get(userId).getCart()
 
     def removeUserByUsername(self, username):
         self._initializeDict()
+        self.thereIsSystemManger()
         for user in self.__members.values():
             if user.getMemberName() == username:
                 user.removeUser()
 
     def getUser(self,uid):
         self._initializeDict()
+        self.thereIsSystemManger()
         if uid not in self.__activeUsers:
             raise NoSuchUserException("user: " + str(uid) + "is not exists")
         return self.__activeUsers.get(uid)
 
     def getUserByUserName(self, username):
         self._initializeDict()
+        self.thereIsSystemManger()
         for member in self.__members.values():
             if member.getMemberName() == username:
                 return member
@@ -283,14 +305,21 @@ class UserManagment(object):
         return None
 
     def _buildMember(self, model):
+        self.thereIsSystemManger()
         return Member(model=model)
 
     def _buildGuest(self, model):
+        self.thereIsSystemManger()
         return Guest(model=model)
 
     def _buildSystemManager(self, model):
+        self.thereIsSystemManger()
         return SystemManager(model=model)
 
+    def thereIsSystemManger(self):
+        if self.__systemManager != {} and self.__systemManager is not None:
+            return True
+        raise Exception("there is not system manger in this market!!")
 
     def _initializeDict(self):
         if self.__guests is None:
