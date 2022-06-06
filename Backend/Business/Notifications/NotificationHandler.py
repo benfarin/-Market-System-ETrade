@@ -6,7 +6,7 @@ import django
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from Backend.Business.Notifications import Notification
+from Backend.Business.Notifications.Notification import Notification
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.User import User
 from ModelsBackend.models import MemberModel, NotificationModel
@@ -37,10 +37,10 @@ class NotificationHandler:
             if owner in self.__activeUsers.values():
                 self.__send_channel_message(owner.getMemberName(),
                                             "user " + str(buyer.getUserID()) + " bought from store " + str(storeID))
-            # else:
-            #     model = NotificationModel.objects.get_or_create(userID=buyer, text="user " + str(buyer.getUserID()) +
-            #                                                                        "bought from store " + str(storeID))[0]
-            #     notification = self.__buildNotification(model)
+            else:
+                model = NotificationModel.objects.get_or_create(userID=owner.getModel(), text="user " + str(buyer.getUserID()) +
+                                                                                   " bought from store " + str(storeID))[0]
+                notification = self._buildNotification(model)
 
     def _buildMember(self, model):
         return Member(model=model)
@@ -52,8 +52,8 @@ class NotificationHandler:
                 member = self._buildMember(member_model)
                 self.__activeUsers.update({member.getUserID() : member})
 
-    def __buildNotification(self, model):
-        return Notification(model=model)
+    def _buildNotification(self, model):
+        return Notification(model)
 
 
     def __send_channel_message(self, group_name, message):

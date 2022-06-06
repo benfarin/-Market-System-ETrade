@@ -17,6 +17,7 @@ class MemberDTO:
         for transaction in member.getTransactions().values():
             self.__transactions.append(userTransactionDTO(transaction))
         self.__cart = CartDTO(member.getCart())
+        self.__model = member.getModel()
 
     def getUserID(self):
         return self.__memberId

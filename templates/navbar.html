@@ -52,8 +52,12 @@
                         <li class="dropdown-item">{{ i.message }}</li>
                         <hr class="dropdown-divider">
                         {% endfor %}
-                        {% comment %} <li class='dropdown-item'>Hello</li>
-                        <hr class="dropdown-divider"> {% endcomment %}
+                        {% for n in saved_notifications %}
+                        <li class="dropdown-item">{{ n.text }}</li>
+                        <hr class="dropdown-divider">
+                        {% endfor %}
+
+
 
                     </ul>
                 </li>

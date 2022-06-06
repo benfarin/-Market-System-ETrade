@@ -19,7 +19,7 @@ from Backend.Service.DTO.MemberDTO import MemberDTO
 from Backend.Service.MemberService import MemberService
 from Backend.Service.RoleService import RoleService
 from Backend.Service.UserService import UserService
-from ModelsBackend.models import UserModel, MemberModel
+from ModelsBackend.models import UserModel, MemberModel, NotificationModel
 
 role_service = RoleService()
 member_service = MemberService()
@@ -43,7 +43,15 @@ def home_page(request):  #FIXED
         title = "Welcome " + request.user.username
     is_admin = member_service.isSystemManger(request.user.username).getData()
     all_stores = role_service.getAllStores().getData()
-    context = {"title": title, "user": request.user, "stores": all_stores, "is_admin": is_admin, 'room_name': "broadcast"}
+    if request.user.username is not None:
+        notifications = NotificationModel.objects.filter(userID=request.user, read=False)
+        for notification in NotificationModel.objects.filter(userID=request.user, read=False):
+            notification.read = True
+            notification.save()
+    else:
+        notifications = []
+    context = {"title": title, "user": request.user, "stores": all_stores, "is_admin": is_admin,
+               'room_name': "broadcast", "saved_notifications" : notifications}
     return render(request, "home.html", context)
 
 

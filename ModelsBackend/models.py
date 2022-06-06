@@ -234,3 +234,4 @@ class RulesInStoreModel(models.Model):
 class NotificationModel(models.Model):
     userID = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
     text = models.TextField()
+    read = models.BooleanField(default=False)

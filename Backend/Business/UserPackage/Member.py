@@ -63,10 +63,7 @@ class Member(User):
             self._m = model
 
     def setLoggedIn(self, state):
-        username = super().getUsename()
-        self._m.isLoggedIn = state
-        self._m.save()
-        super().setUsername(username)
+        super().setLoggedIn(state)
 
     def addProductRating(self, productID, rating):
         pass
