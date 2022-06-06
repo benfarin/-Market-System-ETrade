@@ -306,7 +306,7 @@ class UserManagment(object):
             self.__systemManager: Dict[str, SystemManager] = {}
             for member_model in MemberModel.objects.filter(is_admin=True):
                 member = self._buildSystemManager(member_model)
-                self.__systemManager.update({member.getUserID() : member})
+                self.__systemManager.update({member.getMemberName() : member})
 
     def removeAllUsers(self):
         UserModel.objects.all().delete()

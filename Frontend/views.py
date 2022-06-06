@@ -176,7 +176,7 @@ def store_products_management(request, slug, slug2):  #FIXED
     return render(request, "products_manage.html", {})
 
 
-def appoint_manager(request, slug):
+def appoint_manager(request, slug):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
@@ -195,7 +195,7 @@ def appoint_manager(request, slug):
     return render(request, "form.html", context)
 
 
-def appoint_Owner(request, slug):
+def appoint_Owner(request, slug):   #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
@@ -268,7 +268,7 @@ def add_to_cart_page(request, slug, slug2): #FIXED
     return render(request, "form.html", context)
 
 
-def purchase_cart(request):
+def purchase_cart(request):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = PurchaseProductForm(request.POST or None)
     if form.is_valid():
@@ -291,7 +291,7 @@ def purchase_cart(request):
     return render(request, "form.html", context)
 
 
-def search_view(request):
+def search_view(request): #FIXED
     q = request.GET.get('q', None)
     context = {"query": q}
     searches = []
@@ -329,7 +329,7 @@ def show_history(request, slug):  #FIXED
     return render(request, "history.html", context)
 
 
-def product_update(request, slug, slug2):
+def product_update(request, slug, slug2):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = UpdateProductForm(request.POST or None)
     if form.is_valid():
@@ -350,13 +350,13 @@ def product_update(request, slug, slug2):
         if answer1.isError():
             messages.warning(request, answer3.getError())
     context = {
-        "title": "Purchase Cart",
+        "title": "Update Product",
         "form": form
     }
     return render(request, "form.html", context)
 
 
-def remove_product(request, slug, slug2):
+def remove_product(request, slug, slug2):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     answer = role_service.removeProductFromStore(int(slug), user.getUserID(), int(slug2))
     store = role_service.getUserStores(int(slug)).getData()
@@ -365,7 +365,7 @@ def remove_product(request, slug, slug2):
     messages.warning(request, answer.getError())
 
 
-def add_quantity(request, slug, slug2):
+def add_quantity(request, slug, slug2): #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = AddProductQuantity(request.POST or None)
     if form.is_valid():
@@ -396,7 +396,7 @@ def purchases_page(request):
     return render(request, "my_purchases.html", context)
 
 
-def permissions_page(request, slug):
+def permissions_page(request, slug):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
@@ -453,7 +453,7 @@ def close_store(request, slug):  #FIXED
     messages.warning(request, answer.getError())
 
 
-def discounts_page(request, slug):
+def discounts_page(request, slug):  #FIXED
     return render(request, "discounts.html")
 
 
