@@ -1,6 +1,11 @@
 import os , django
 import sys
 from datetime import datetime
+
+from django.db.models import Max
+
+from ModelsBackend.models import ProductModel, DiscountModel, RuleModel
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
 
@@ -35,9 +40,9 @@ class RoleManagment:
         """ Virtually private constructor. """
         super().__init__()
         self.__memberManagement = MemberManagment.getInstance()
-        self.__productId = 0
-        self.__discountId = 0
-        self.__ruleId = 0
+        self.__productId = None
+        self.__discountId = None
+        self.__ruleId = None
         self.__productId_lock = threading.Lock()
         self.__discountId_lock = threading.Lock()
         self.__ruleId_lock = threading.Lock()
@@ -469,20 +474,31 @@ class RoleManagment:
         return member.removeRule(storeId, dId, rId, ruleKind)
 
     def __getProductId(self):
-        with self.__productId_lock:
-            pId = self.__productId
-            self.__productId += 1
-            return pId
+        if self.__productId is None:
+            self.__productId = ProductModel.objects.aggregate(Max('product_id'))['product_id__max']
+            if self.__productId is None:
+                self.__productId = 0
+        pId = self.__productId
+        self.__productId += 1
+        return pId
 
     def __getDiscountId(self):
-        with self.__discountId_lock:
-            dId = self.__discountId
-            self.__discountId += 1
-            return dId
+        if self.__discountId is None:
+            self.__discountId = DiscountModel.objects.aggregate(Max('discountID'))[
+                'discountID__max']
+            if self.__discountId is None:
+                self.__discountId = 0
+        dId = self.__discountId
+        self.__discountId += 1
+        return dId
 
     def __getRuleId(self):
-        with self.__ruleId_lock:
-            rId = self.__ruleId
-            self.__ruleId += 1
-            return rId
+        if self.__ruleId is None:
+            self.__ruleId = RuleModel.objects.aggregate(Max('ruleID'))[
+                'ruleID__max']
+            if self.__ruleId is None:
+                self.__ruleId = 0
+        rId = self.__ruleId
+        self.__ruleId += 1
+        return rId
 

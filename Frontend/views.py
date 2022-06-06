@@ -122,18 +122,14 @@ def my_stores_page(request):  #FIXED
     return render(request, "my_stores.html", context)
 
 
-def create_store_page(request):
-    global user_service
-    global member_service
-    global user
-    global stores
+def create_store_page(request): #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = CreateStoreForm(request.POST or None)
     if form.is_valid():
         form = CreateStoreForm()
     store_name = request.POST.get("storeName")
-    account_num = request.POST.get("account_num")
-    branch_num = request.POST.get("branch_num")
+    account_num = request.POST.get("accountNumber")
+    branch_num = request.POST.get("brunch")
     country = request.POST.get("country")
     city = request.POST.get("city")
     street = request.POST.get("street")
@@ -168,7 +164,7 @@ def store_page(request, slug):  #FIXED
     return render(request, "store.html", context)
 
 
-def store_products_management(request, slug, slug2):
+def store_products_management(request, slug, slug2):  #FIXED
     return render(request, "products_manage.html", {})
 
 
@@ -210,7 +206,7 @@ def appoint_Owner(request, slug):
     return render(request, "form.html", context)
 
 
-def add_product(request, slug):
+def add_product(request, slug):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = AddProductForm(request.POST or None)
     if form.is_valid():
@@ -232,7 +228,7 @@ def add_product(request, slug):
     return render(request, "form.html", context)
 
 
-def get_cart(request):
+def get_cart(request):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     answer = user_service.getCart(user.getUserID())
     cart_sum = user_service.getSumAfterDiscount(user.getUserID()).getData()
@@ -246,7 +242,7 @@ def get_cart(request):
     return render(request, "cart.html", context)
 
 
-def add_to_cart_page(request, slug, slug2):
+def add_to_cart_page(request, slug, slug2): #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     form = AddProductToCartForm(request.POST or None)
     if form.is_valid():
@@ -269,10 +265,14 @@ def purchase_cart(request):
     form = PurchaseProductForm(request.POST or None)
     if form.is_valid():
         form = PurchaseProductForm()
-    accountNumber = request.POST.get("accountNumber")
-    branch = request.POST.get("branch")
-    if accountNumber is not None:
-        answer = user_service.purchaseCart(user.getUserID(), int(accountNumber), int(branch))
+    card_number = request.POST.get("card_number")
+    month = request.POST.get("month")
+    year = request.POST.get("year")
+    card_holder_name = request.POST.get("card_holder_name")
+    cvv = request.POST.get("cvv")
+    holderID = request.POST.get("holderID")
+    if card_number is not None:
+        answer = user_service.purchaseCart(user.getUserID(), card_number, month, year, card_holder_name, cvv, holderID)
         if not answer.isError():
             return HttpResponseRedirect("/cart/")
         messages.warning(request, answer.getError())
@@ -437,7 +437,7 @@ def remove_product_from_cart_with_store(request, slug, slug2):
     messages.warning(request, answer.getError())
 
 
-def close_store(request, slug):
+def close_store(request, slug):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     answer = member_service.removeStore(int(slug), user.getUserID())
     if not answer.isError():

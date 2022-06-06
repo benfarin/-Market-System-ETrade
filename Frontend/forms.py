@@ -76,8 +76,12 @@ class AddProductToCartForm(forms.Form):
 
 
 class PurchaseProductForm(forms.Form):
-    accountNumber = forms.IntegerField()
-    branch = forms.IntegerField()
+    card_number = forms.IntegerField()
+    month = forms.IntegerField()
+    year = forms.IntegerField()
+    card_holder_name = forms.CharField()
+    cvv  = forms.IntegerField()
+    holderID = forms.IntegerField()
 
 
 class AddProductQuantity(forms.Form):
