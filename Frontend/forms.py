@@ -111,6 +111,16 @@ class AddCondition(forms.Form):
 class AddRule(forms.Form):
     rule_context = forms.ChoiceField(choices=rules, widget=forms.Select(attrs={'style': 'width:190px'}))
     rule_type = forms.ChoiceField(choices=types, widget=forms.Select(attrs={'style': 'width:190px'}))
+    discountID = forms.IntegerField()
+    category = forms.CharField(required=False, label="Category")
+    product_ID = forms.IntegerField(required=False, label="Product ID")
+    min_value = forms.IntegerField()
+    max_value = forms.IntegerField()
+
+
+class AddPurchaseRule(forms.Form):
+    rule_context = forms.ChoiceField(choices=rules, widget=forms.Select(attrs={'style': 'width:190px'}))
+    rule_type = forms.ChoiceField(choices=types, widget=forms.Select(attrs={'style': 'width:190px'}))
     category = forms.CharField(required=False, label="Category")
     product_ID = forms.IntegerField(required=False, label="Product ID")
     min_value = forms.IntegerField()
@@ -158,7 +168,6 @@ class AddSimpleConditionDiscount_Product(forms.Form):  # done
 
 
 class AddConditionDiscountXor(forms.Form):
-    discount_ID = forms.IntegerField()
     rule_ID1 = forms.IntegerField()
     rule_ID2 = forms.IntegerField()
     decide = forms.ChoiceField(choices=decide, widget=forms.Select(attrs={'style': 'width:190px'}))
