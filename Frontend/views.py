@@ -19,6 +19,7 @@ from Backend.Service.DTO.MemberDTO import MemberDTO
 from Backend.Service.MemberService import MemberService
 from Backend.Service.RoleService import RoleService
 from Backend.Service.UserService import UserService
+from ModelsBackend.models import UserModel, MemberModel
 
 role_service = RoleService()
 member_service = MemberService()
@@ -30,33 +31,19 @@ from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdatePr
     AddSimpleConditionDiscount_Product, RemoveDiscount, RemoveForm, RemoveMemberForm, StoreTransactions, \
     UserTransactions, StoreTransactionsByID
 
-user = None
-stores = []
-was_logged_in = False
-signed_in_user = user_service.enterSystem().getData()
 
 def home_page(request):
-    global user
-    global was_logged_in
-    # print(user)
-    is_admin = False
-    # if was_logged_in is False:
-    #     login(request, User.get_user("Guest"))
-    #     was_logged_in = True
-    # if isinstance(user, GuestDTO):
-    #     title = "Welcome Guest!"
-    # else:
-    #     title = "Welcome " + user.getMemberName() + "!"
-    #
-    django_user = request.user
-    title = "Welcome " + django_user.username
-    if django_user.username == "":
+    if request.user.is_anonymous:
+        user = user_service.enterSystem().getData()
+        django_user = UserModel.objects.get(userid=user.getUserID())
+        login(request, django_user)
+    if request.user.username is None:
         title = "Welcome Guest!"
-    is_admin = member_service.isSystemManger(django_user.username).getData()
-    # if user is not None:
-    #     login(request, user)
+    else:
+        title = "Welcome " + request.user.username
+    is_admin = member_service.isSystemManger(request.user.username).getData()
     all_stores = role_service.getAllStores().getData()
-    context = {"title": title, "user": user, "stores": all_stores, "is_admin": is_admin, 'room_name': "broadcast"}
+    context = {"title": title, "user": request.user, "stores": all_stores, "is_admin": is_admin, 'room_name': "broadcast"}
     return render(request, "home.html", context)
 
 
@@ -90,9 +77,6 @@ def signup_page(request):
 
 
 def login_page(request):
-    global user_service
-    global member_service
-    global user
     form = LoginForm(request.POST or None)
     if form.is_valid():
         form = LoginForm()
@@ -102,9 +86,9 @@ def login_page(request):
         # answer = user_service.memberLogin(user.getUserID(), username, password)
         # if not answer.isError():
         #     user = answer.getData()
-        user = user_service.getUserByUserName(request.user.username).getData()
+        user = user_service.getUserByUserName(username).getData()
         user_service.memberLogin(user.getUserID(), username, password)
-        django_user = User.get_user(username)
+        django_user = MemberModel.objects.get(username=username)
         login(request, django_user)
         # print(user.getUserID())
         return HttpResponseRedirect("/")

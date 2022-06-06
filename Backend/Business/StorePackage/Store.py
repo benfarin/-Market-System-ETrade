@@ -23,7 +23,7 @@ from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from typing import Dict
 import threading
-from notifications.signals import notify
+from channels.layers import get_channel_layer
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \

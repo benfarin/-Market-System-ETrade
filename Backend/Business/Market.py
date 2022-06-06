@@ -20,6 +20,9 @@ from Backend.Business.Transactions.UserTransaction import UserTransaction
 from zope.interface import implements
 from typing import Dict
 import threading
+from channels.layers import get_channel_layer
+from channels.layers import get_channel_layer
+channel_layer = get_channel_layer()
 
 
 
@@ -195,7 +198,7 @@ class Market:
         return True
 
     # need to remember that if a user add the product to the cart, then the product is in the stock.
-    def purchaseCart(self, user, bank): #TESTED - WORK ALONE
+    async def purchaseCart(self, user, bank): #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
@@ -222,6 +225,11 @@ class Market:
                 paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
 
                 if paymentStatus.getStatus() == "payment succeeded":
+                    for owner_name in self.__stores.get(storeId).getStoreOwners:
+                        await channel_layer.group_send(
+                            owner_name,
+                            {"type": "chat.system_message", "text": "An Item has been bought!"},
+                        )
                     productsInStore = cart.getAllProductsByStore()[storeId]
 
                     # user.addPaymentStatus(paymentStatus)
@@ -240,6 +248,8 @@ class Market:
             userTransaction = UserTransaction(user.getUserID(), self.__getUserTransactionId(), storeTransactions,
                                               userPaymentId, totalAmount)
             user.addTransaction(userTransaction)
+
+
             # self.__transactionHistory.addUserTransaction(userTransaction)
 
             # need to think what should we do if some of the payments failed

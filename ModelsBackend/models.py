@@ -96,7 +96,7 @@ class AddressModel(models.Model):
 
 
 class MemberModel(UserModel):
-    member_username = models.CharField(max_length=100)
+    # member_username = models.CharField(max_length=100)
     member_password = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
     address = models.ForeignKey(AddressModel, on_delete=models.CASCADE)
