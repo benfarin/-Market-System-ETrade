@@ -113,6 +113,10 @@ class User:
         self._model.username = username
         self._model.save()
 
+    def loginUpdates(self):
+        self._model.isLoggedIn = True
+        self._model.save()
+
     @threaded
     def addProductToCart(self, storeID, product, quantity):
         try:

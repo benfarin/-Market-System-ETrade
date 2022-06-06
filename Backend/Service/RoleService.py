@@ -156,11 +156,11 @@ class RoleService:
 
     def getPurchaseHistoryInformation(self, storeID, userID):
         try:
-            transactions = self.__roleManagment.printPurchaseHistoryInformation(storeID, userID)
+            transactions = self.__roleManagment.getPurchaseHistoryInformation(storeID, userID)
             logging.info("success to get purchase history info from store" + str(storeID))
 
             transactionsDTOs = []
-            for transaction in transactions:
+            for transaction in transactions.values():
                 transactionsDTOs.append(storeTransactionDTO(transaction))
             return Response(transactionsDTOs)
         except Exception as e:

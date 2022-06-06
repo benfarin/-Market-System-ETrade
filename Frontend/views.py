@@ -109,7 +109,7 @@ def logout_page(request):  #FIXED
     return HttpResponseRedirect("/")
 
 
-def my_stores_page(request):
+def my_stores_page(request):  #FIXED
     if request.user.is_anonymous:
         usertype = True
         title = "Please login to see your stores page"
@@ -154,7 +154,7 @@ def create_store_page(request):
     return render(request, "form.html", context)
 
 
-def store_page(request, slug):
+def store_page(request, slug):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     store = role_service.getStore(int(slug)).getData()
     answer = role_service.getRolesInformation(int(slug), user.getUserID())
@@ -309,7 +309,7 @@ def search_view(request):
     return render(request, 'searches.html', context)
 
 
-def show_history(request, slug):
+def show_history(request, slug):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     answer = role_service.getPurchaseHistoryInformation(int(slug), user.getUserID())
     transactions = []

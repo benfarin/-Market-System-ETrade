@@ -63,7 +63,10 @@ class Member(User):
             self._m = model
 
     def setLoggedIn(self, state):
+        username = super().getUsename()
         self._m.isLoggedIn = state
+        self._m.save()
+        super().setUsername(username)
 
     def addProductRating(self, productID, rating):
         pass
@@ -99,6 +102,7 @@ class Member(User):
 
     def loginUpdates(self):
         try:
+            super().loginUpdates()
             return self.__market.loginUpdates(self)
         except Exception as e:
             raise Exception(e)
@@ -250,7 +254,7 @@ class Member(User):
     @threaded
     def getPurchaseHistoryInformation(self, storeID):
         try:
-            return self.__market.printPurchaseHistoryInformation(storeID, self)
+            return self.__market.getPurchaseHistoryInformation(storeID, self)
         except Exception as e:
             raise Exception(e)
 

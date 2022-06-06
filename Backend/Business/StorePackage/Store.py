@@ -527,7 +527,7 @@ class Store:
             info += "\n managerId: " + str(managerId) + permission.printPermission() + "\n"
         return info
 
-    def getPermissions(self, user):  ### NEED TO CHANGE + NO USE OF THIS FUNCTIONS?
+    def getPermissions(self, user):  ### NEED TO CHANGE
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
         if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -536,8 +536,8 @@ class Store:
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
         rulesPermissions = []
-        for permission in StoreUserPermissionsModel.objects.filter(storeID=self.__model):
-            rulesPermissions.append(StorePermission(model=permission.userID))
+        for permission in StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel()):
+            rulesPermissions.append(StorePermission(model=permission))
         return rulesPermissions
 
     def addTransaction(self, transaction):
@@ -570,15 +570,19 @@ class Store:
             info += storeTransaction.getPurchaseHistoryInformation() + "\n"
         return info
 
-    def getTransactionHistory(self, user):  ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def getTransactionHistory(self, user):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_RolesInformation():
+        if not permissions.first().rolesInformation:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return self.__transactions.values()
+        transactions: Dict[int: StoreTransaction] = {}
+        for transaction_model in StoreTransactionModel.objects.filter(storeId=self.__model.storeID):
+            transaction = self._buildStoreTransactions(transaction_model)
+            transactions.update({transaction.getTransactionID() : transaction})
+        return transactions
 
     def getProductsByName(self, productName):
         toReturnProducts = []
