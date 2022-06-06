@@ -16,9 +16,11 @@ class UseCaseUserOpenStore(unittest.TestCase):
     market_proxy = MarketProxyBridge(MarketRealBridge())
 
     def setUp(self):
-        #
-        self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                              "Ben Gurion", 1, 1)
+        # assign system manager
+        self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+                                               "Ben Gurion", 1, 1)
+        admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(admin_id, "manager", "1234")
 
         self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
@@ -36,7 +38,10 @@ class UseCaseUserOpenStore(unittest.TestCase):
         self.founder3_id = self.user_proxy.login_member(self.__guestId3, "user3", "1234").getData().getUserID()
 
     def tearDown(self) -> None:
-        pass
+        self.user_proxy.removeMember("manager", "user1")
+        self.user_proxy.removeMember("manager", "user2")
+        self.user_proxy.removeMember("manager", "user3")
+        self.user_proxy.removeSystemManger_forTests("manager")
 
     def test_open_store_positive1(self):
         store = self.user_proxy.open_store("store-1", self.founder1_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",

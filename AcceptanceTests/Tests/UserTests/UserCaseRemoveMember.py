@@ -11,11 +11,16 @@ from Backend.Service.Response import Response
 
 class UserCaseRemoveMember(unittest.TestCase):
 
+    market_proxy = MarketProxyBridge(MarketRealBridge())
+    user_proxy = UserProxyBridge(UserRealBridge())
+
     def setUp(self):
-        self.market_proxy = MarketProxyBridge(MarketRealBridge())
-        self.user_proxy = UserProxyBridge(UserRealBridge())
+        # assign system manager
         self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                                "Ben Gurion", 1, 1).getData()
+                                               "Ben Gurion", 1, 1)
+        admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(admin_id, "manager", "1234")
+
         self.__guestId_0 = self.user_proxy.login_guest().getData().getUserID()
         self.systemManger = self.user_proxy.login_member(self.__guestId_0, "manager", "1234").getData()
 
@@ -28,6 +33,11 @@ class UserCaseRemoveMember(unittest.TestCase):
         self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, 0)
         self.member2 = self.user_proxy.login_member(self.__guestId_2, "user2", "1234").getData()
+
+    def tearDown(self) -> None:
+        self.user_proxy.removeMember("manager","user1")
+        self.user_proxy.removeMember("manager","user2")
+        self.user_proxy.removeSystemManger_forTests("manager")
 
     def test_removeMember(self):
         self.assertTrue(self.user_proxy.removeMember(self.systemManger.getMemberName(), self.member1.getMemberName()).getData())

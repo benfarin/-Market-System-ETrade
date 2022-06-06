@@ -53,7 +53,7 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
 
 
     def tearDown(self) -> None:
-        # remove the store
+        # remove the store0*
         self.proxy_market.removeStoreForGood(self.user1_id, self.store_id)
         # remove users
         self.proxy_user.removeMember("Manager", "testUser")
@@ -62,7 +62,7 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
         self.proxy_user.removeMember("Manager", "testUser4")
         self.proxy_user.removeMember("Manager", "testUser5")
         self.proxy_user.removeMember("Manager", "testUser6")
-        # reove system manager
+        # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
 
