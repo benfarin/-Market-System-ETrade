@@ -3,17 +3,20 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'room'
-        print(self.room_group_name)
 
-        # Join room group
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+        if self.scope["user"].is_anonymous:
+            # Reject the connection
+            await self.close()
+        else:
+            # Accept the connection
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
+            await self.accept()
 
-        await self.accept()
+        print("channel name is " + self.channel_name)
 
     async def disconnect(self, close_code):
         # Leave room group

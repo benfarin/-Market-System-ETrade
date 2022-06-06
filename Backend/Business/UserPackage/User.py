@@ -106,6 +106,13 @@ class User:
         except Exception as e:
             raise Exception(e)
 
+    def getUsename(self):
+        return self._model.username
+
+    def setUsername(self, username):
+        self._model.username = username
+        self._model.save()
+
     @threaded
     def addProductToCart(self, storeID, product, quantity):
         try:

@@ -24,6 +24,7 @@ from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from typing import Dict
 import threading
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
@@ -820,6 +821,16 @@ class Store:
         self.__model.managers.remove()
         self.__removeDiscount()
         self.__model.delete()
+
+    def __send_channel_message(self, group_name, message):
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            '{}'.format(group_name),
+            {
+                'type': 'channel_message',
+                'message': message
+            }
+        )
 
     def __removeDiscount(self):
         for discountInStore in DiscountsInStoreModel.objects.filter(storeID=self.__model):

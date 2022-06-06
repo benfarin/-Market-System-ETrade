@@ -50,14 +50,15 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
-            isMemberHasSameUserName = MemberModel.objects.filter(member_username=userName)
+            isMemberHasSameUserName = MemberModel.objects.filter(username=userName)
             if isMemberHasSameUserName.exists():
                 raise Exception("there is a member with the userName: " + userName + " all ready")
 
-            self._m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
+            self._m = MemberModel.objects.get_or_create(userid=super().getUserID(),
                                                          member_password=make_password(password),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
                                                          cart=super().getCart().getModel())[0]
+            super().setUsername(userName)
         else:
             self._m = model
 
@@ -80,7 +81,7 @@ class Member(User):
         return Bank(model=self._m.bank)
 
     def getMemberName(self):
-        return self._m.member_username
+        return super().getUsename()
 
     def getMemberTransactions(self):
         return super().getTransactions().values()

@@ -32,7 +32,7 @@ from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdatePr
     UserTransactions, StoreTransactionsByID
 
 
-def home_page(request):
+def home_page(request):  #FIXED
     if request.user.is_anonymous:
         user = user_service.enterSystem().getData()
         django_user = UserModel.objects.get(userid=user.getUserID())
@@ -47,7 +47,7 @@ def home_page(request):
     return render(request, "home.html", context)
 
 
-def signup_page(request):
+def signup_page(request):   #FIXED
     global user_service
     global member_service
     form = SignupForm(request.POST or None)
@@ -76,7 +76,7 @@ def signup_page(request):
     return render(request, "form.html", context)
 
 
-def login_page(request):
+def login_page(request):  #FIXED
     form = LoginForm(request.POST or None)
     if form.is_valid():
         form = LoginForm()
@@ -100,11 +100,11 @@ def login_page(request):
     return render(request, "form.html", context)
 
 
-def logout_page(request):
+def logout_page(request):  #FIXED
     user = user_service.getUserByUserName(request.user.username).getData()
     member_service.logoutMember(user.getMemberName())
-    # user = user_service.enterSystem().getData()
-    django_user = User.get_user("Guest")
+    guest = user_service.enterSystem().getData()
+    django_user = UserModel.objects.get(userid=guest.getUserID())
     login(request, django_user)
     return HttpResponseRedirect("/")
 
