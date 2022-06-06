@@ -90,7 +90,6 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
         print(userTransaction)
 
-
     def test_guest_then_member_purchase(self):
         guest2_id = self.user_proxy.login_guest().getData().getUserID()
 
@@ -108,30 +107,33 @@ class UseCasePurchaseProduct(unittest.TestCase):
         print(userTransaction)
 
     def test_login_logout_login_purchase(self):
-        guest3_id = self.user_proxy.login_guest().getData().getUserID()
+        guest4_id = self.user_proxy.login_guest().getData().getUserID()
 
-        self.user_proxy.add_product_to_cart(guest3_id, self.store_0, self.product01, 20)
-        self.user_proxy.add_product_to_cart(guest3_id, self.store_0, self.product02, 2)
-        self.user_proxy.add_product_to_cart(guest3_id, self.store_1, self.product1, 10)
-        self.user_proxy.add_product_to_cart(guest3_id, self.store_2, self.product2, 1)
+        self.user_proxy.add_product_to_cart(guest4_id, self.store_0, self.product01, 20)
+        self.user_proxy.add_product_to_cart(guest4_id, self.store_0, self.product02, 2)
+        self.user_proxy.add_product_to_cart(guest4_id, self.store_1, self.product1, 10)
+        self.user_proxy.add_product_to_cart(guest4_id, self.store_2, self.product2, 1)
 
-        self.user_proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        member3_id = self.user_proxy.login_member(guest3_id, "user3", "1234").getData().getUserID()
+        member4_id = self.user_proxy.login_member(guest4_id, "user4", "1234").getData().getUserID()
 
-        self.user_proxy.logout_member(member3_id)
+        self.user_proxy.logout_member(member4_id)
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "user3", "1234")
 
-        userTransaction = self.user_proxy.purchase_product(member3_id,"1234123412341234", "2", "27", "Rotem", "123", "123")
+        userTransaction = self.user_proxy.purchase_product(member4_id,"1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
         print(userTransaction)
 
-    def test_two_user_trying_to_by_in_the_same_time(self):
+        # teardown stuff
+        self.user_proxy.removeMember("Manager", "user4")
+
+    def test_two_user_buy_same_time(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        member4_id = self.user_proxy.login_member(guest4_id, "user3", "1234").getData().getUserID()
+        member4_id = self.user_proxy.login_member(guest4_id, "user4", "1234").getData().getUserID()
 
         self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product02, 2)
@@ -155,6 +157,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.getData().getTotalAmount() == 3310 and ut_2.getData().getTotalAmount() == 2240)
         print(ut_1)
         print(ut_2)
+
+        # teardown stuff
+        self.user_proxy.removeMember("Manager", "user4")
 
     def test_cart_clean(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
@@ -233,7 +238,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         print(ut_1.__str__())
         print(ut_2.__str__())
 
-    def test_fail_purchase_cart_cvvNotGood(self):
+    def test_fail_purchase_cart_cvvNotGood2(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)

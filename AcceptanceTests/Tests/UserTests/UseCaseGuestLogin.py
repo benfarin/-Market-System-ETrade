@@ -51,6 +51,7 @@ class UseCaseGuestLogin(unittest.TestCase):
                 if i != j:
                     self.assertNotEqual(Id_i, uIds[j])
             print("id of user " + str(i) + " is: " + str(uIds[i]))
+
     def test_check_withAndWithoutSystemManager(self):
         self.proxy.removeSystemManger_forTests("Manager")
         guest2 = self.proxy.login_guest().getData().getUserID()
