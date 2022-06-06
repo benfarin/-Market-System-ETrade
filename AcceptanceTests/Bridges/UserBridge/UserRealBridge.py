@@ -35,8 +35,13 @@ class UserRealBridge:
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
         return self._userService.addProductToCart(user_id, store_id, product_id, quantity)
 
-    def purchase_product(self, user_id, account_num, branch):
-        return self._userService.purchaseCart(user_id, account_num, branch)
+    def purchaseProductWithoutAddress(self, userID, cardNumber, month, year, holderCardName, cvv, holderID,
+                                      country, city, street, apartmentNum, zipCode):
+        return self._userService.purchaseCartWithoutAddress(userID, cardNumber, month, year, holderCardName, cvv, holderID,
+                                                            country, city, street, apartmentNum, zipCode)
+
+    def purchase_product(self, user_id, cardNumber, month, year, holderCardName, cvv, holderID):
+        return self._userService.purchaseCart(user_id, cardNumber, month, year, holderCardName, cvv, holderID)
 
     def logout_member(self, userName):
         return self._memberService.logoutMember(userName)
@@ -46,6 +51,9 @@ class UserRealBridge:
 
     def removeMember(self, systemManagerName, memberName):
         return self._roleService.removeMember(systemManagerName, memberName)
+
+    def getAllActiveUsers(self, systemManagerName):
+        return self._roleService.getAllActiveUsers(systemManagerName)
 
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
         return self._memberService.createStore(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)

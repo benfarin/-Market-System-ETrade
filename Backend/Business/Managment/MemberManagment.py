@@ -50,6 +50,9 @@ class MemberManagment(UserManagment):
     def getActiveUserFromUser(self):
         return self.getActiveUser()
 
+    def getActiveUsers(self):
+        return super().getActiveUsers()
+
     def checkOnlineUserFromUser(self, userId):
         return super().checkOnlineUser(userId)
 

@@ -10,6 +10,7 @@ class storeTransactionDTO:
         self.__storeId = storeTransaction.getStoreId()
         self.__transactionId = storeTransaction.getTransactionID()
         self.__payemntId = storeTransaction.getPaymentId()
+        self.__deliveryId = storeTransaction.getDeliveryId()
         self.__date = datetime.datetime.now().strftime("%x") + " " + datetime.datetime.now().strftime("%X")
         self.__products: Dict[int: ProductDTO] = storeTransaction.getProducts()
         self.__amount = storeTransaction.getAmount()
@@ -28,6 +29,9 @@ class storeTransactionDTO:
 
     def getPaymentID(self):
         return self.__payemntId
+
+    def getDeliveryId(self):
+        return self.__deliveryId
 
     def getDate(self):
         return self.__date
@@ -57,6 +61,7 @@ class storeTransactionDTO:
         toReturn = "store transaction of store: " + str(self.__storeId) + ":"
         toReturn += "\n\ttransaction id: " + str(self.__transactionId)
         toReturn += "\n\tpayment id: " + str(self.__payemntId)
+        toReturn += "\n\tdelivery id: " + str(self.__deliveryId)
         toReturn += "\n\tdate: " + str(self.__date)
         toReturn += "\n\tproducts: "
         for product in self.__products.values():
