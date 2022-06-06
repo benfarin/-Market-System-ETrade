@@ -14,8 +14,10 @@ class UseCaseMemberRegister(unittest.TestCase):
     def setUp(self):
         self.proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1).getData()
+        admin_id = self.proxy.login_guest().getData().getUserID()
+        self.proxy.login_member(admin_id, "manager", "1234")
         self.__guestId_0 = self.proxy.login_guest().getData().getUserID()
-        self.systemManger = self.proxy.login_member(self.__guestId_0, "manager", "1234").getData()
+        # self.systemManger = self.proxy.login_member(self.__guestId_0, "manager", "1234").getData()
 
     def tearDown(self):
         self.proxy.exit_system(self.__guestId_0)
@@ -26,6 +28,9 @@ class UseCaseMemberRegister(unittest.TestCase):
         self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 0)
         self.assertTrue(self.proxy.login_member(guestId, "user1", "1234").getData())
+
+        # remove the user
+        self.proxy.removeMember("manager", "user1")
 
     def test_register_positive_two(self):
         guestId1 = self.proxy.login_guest().getData().getUserID()
@@ -42,6 +47,9 @@ class UseCaseMemberRegister(unittest.TestCase):
         self.assertTrue(
             self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
                                                                                                      "123456").getData())
+        # tear down stuff
+        self.proxy.removeMember("manager", "user1")
+        self.proxy.removeMember("manager", "user2")
 
     def test_register_negative_same_username(self):
         guestId1 = self.proxy.login_guest().getData().getUserID()
@@ -59,6 +67,10 @@ class UseCaseMemberRegister(unittest.TestCase):
             self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
                                                                                                      "123456").getData())
 
+        # tear down stuff
+        self.proxy.removeMember("manager", "user1")
+        self.proxy.removeMember("manager", "user2")
+
     def test_register_positive_same_username(self):
         guestId1 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
@@ -73,6 +85,9 @@ class UseCaseMemberRegister(unittest.TestCase):
         self.proxy.register("user1", "12345", "0500000001", "500", "20", "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 0)
         self.assertTrue(self.proxy.login_member(guestId2, "user1", "12345").getData())
+
+        # teardown stuff
+        self.proxy.removeMember("manager", "user1")
 
 
 if __name__ == '__main__':

@@ -12,10 +12,11 @@ from Backend.Service.UserService import UserService
 class UseCaseUserOpenStore(unittest.TestCase):
 
     #usecase 3.2
+    user_proxy = UserProxyBridge(UserRealBridge())
+    market_proxy = MarketProxyBridge(MarketRealBridge())
 
     def setUp(self):
-        self.user_proxy = UserProxyBridge(UserRealBridge())
-        self.market_proxy = MarketProxyBridge(MarketRealBridge())
+        #
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
 
@@ -33,6 +34,9 @@ class UseCaseUserOpenStore(unittest.TestCase):
         self.user_proxy.register("user3", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, 0)
         self.founder3_id = self.user_proxy.login_member(self.__guestId3, "user3", "1234").getData().getUserID()
+
+    def tearDown(self) -> None:
+        pass
 
     def test_open_store_positive1(self):
         store = self.user_proxy.open_store("store-1", self.founder1_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
