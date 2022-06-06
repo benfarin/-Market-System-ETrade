@@ -478,6 +478,8 @@ class RoleManagment:
             self.__productId = ProductModel.objects.aggregate(Max('product_id'))['product_id__max']
             if self.__productId is None:
                 self.__productId = 0
+            else:
+                self.__productId += 1
         pId = self.__productId
         self.__productId += 1
         return pId
@@ -488,6 +490,8 @@ class RoleManagment:
                 'discountID__max']
             if self.__discountId is None:
                 self.__discountId = 0
+            else:
+                self.__discountId += 1
         dId = self.__discountId
         self.__discountId += 1
         return dId
@@ -498,6 +502,8 @@ class RoleManagment:
                 'ruleID__max']
             if self.__ruleId is None:
                 self.__ruleId = 0
+            else:
+                self.__ruleId += 1
         rId = self.__ruleId
         self.__ruleId += 1
         return rId

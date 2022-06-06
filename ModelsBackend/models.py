@@ -229,3 +229,8 @@ class RulesInStoreModel(models.Model):
 
     class Meta:
         unique_together = ('storeID', 'ruleID',)
+
+
+class NotificationModel(models.Model):
+    userID = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
+    text = models.TextField()

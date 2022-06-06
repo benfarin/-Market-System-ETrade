@@ -15,7 +15,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
             await self.accept()
-        print("group channel name is " + self.room_group_name)
+            print("group channel name is " + self.room_group_name)
+
 
     async def disconnect(self, close_code):
         # Leave room group
@@ -39,8 +40,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     #     )
 
     # Receive message from room group
-    async def send_notification(self, event):
-        message = json.loads(event['message'])
+    async def channel_message(self, event):
+        message = event
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps(message))

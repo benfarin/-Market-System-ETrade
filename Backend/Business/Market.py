@@ -1,19 +1,16 @@
-import uuid
 import django, os
 
 
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
+from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Delivery.DeliveryImpl import DeliveryImpl
 from Backend.Delivery.DeliveryDetails import DeliveryDetails
-from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
+from Backend.Exceptions.CustomExceptions import ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
 from Backend.Interfaces.IStore import IStore
-from Backend.Interfaces.IMember import IMember
-from Backend.Interfaces.IUser import IUser
-from Backend.Payment.PaymentStatus import PaymentStatus
 from Backend.Business.Transactions.TransactionHistory import TransactionHistory
 from Backend.Payment.PaymentDetails import PaymentDetails
 from Backend.Payment.paymentlmpl import Paymentlmpl
@@ -22,6 +19,8 @@ from Backend.Business.Transactions.UserTransaction import UserTransaction
 from zope.interface import implements
 from typing import Dict
 import threading
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 
@@ -50,6 +49,7 @@ class Market:
         self.__userTransactionIdCounter = None
 
         self.__transactionHistory = TransactionHistory.getInstance()
+        self.__notificationHandler : NotificationHandler = NotificationHandler.getInstance()
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
@@ -237,6 +237,7 @@ class Market:
                                                                               paymentStatus.getPaymentId(),
                                                                               deliveryStatus.getDeliveryID(),
                                                                               productsInStore, storeAmount)
+                        self.__notificationHandler.notifyBoughtFromStore(self.__stores.get(storeId).getStoreOwners(), storeId, user)
                         self.__stores.get(storeId).addTransaction(storeTransaction)
                         self.__transactionHistory.addStoreTransaction(storeTransaction)
                         storeTransactions[transactionId] = storeTransaction
@@ -591,6 +592,8 @@ class Market:
                 'transactionId__max']
             if self.__storeTransactionIdCounter is None:
                 self.__storeTransactionIdCounter = 0
+            else:
+                self.__storeTransactionIdCounter += 1
         with self.__StoreTransactionId_lock:
             stId = self.__storeTransactionIdCounter
             self.__storeTransactionIdCounter += 1
@@ -602,6 +605,8 @@ class Market:
                 'transactionId__max']
             if self.__userTransactionIdCounter is None:
                 self.__userTransactionIdCounter = 0
+            else:
+                self.__userTransactionIdCounter += 1
         with self.__UserTransactionId_lock:
             utId = self.__userTransactionIdCounter
             self.__userTransactionIdCounter += 1
@@ -626,6 +631,16 @@ class Market:
     def resetDict(self):
         self.__stores = None
         self.__removedStores = None
+
+    def __send_channel_message(self, group_name, message):
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            '{}'.format(group_name),
+            {
+                'type': 'channel_message',
+                'message': message
+            }
+        )
 
 
 
