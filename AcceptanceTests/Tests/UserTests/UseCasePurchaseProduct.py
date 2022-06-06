@@ -221,7 +221,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertEqual(trans1.getData().getTotalAmount(), 5000.0)
         self.assertEqual(trans2.getData().getTotalAmount(), 5000.0)
 
-    def fail_purchase_cart_cvvNotGood(self):
+    def test_fail_purchase_cart_cvvNotGood(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -233,7 +233,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         print(ut_1.__str__())
         print(ut_2.__str__())
 
-    def fail_purchase_cart_cvvNotGood(self):
+    def test_fail_purchase_cart_cvvNotGood(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -243,7 +243,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_CardNumberNotGood(self):
+    def test_fail_purchase_cart_CardNumberNotGood(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -253,7 +253,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_MonthNotGood(self): #check available month
+    def test_fail_purchase_cart_MonthNotGood(self): #check available month
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -263,7 +263,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_YearNotGood(self): #check avialable year
+    def test_fail_purchase_cart_YearNotGood(self): #check avialable year
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -273,7 +273,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_ExpiredCard(self): # check if the date on the card is available.
+    def test_fail_purchase_cart_ExpiredCard(self): # check if the date on the card is available.
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -283,7 +283,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_availableMonth(self): # month cant be 80
+    def test_fail_purchase_cart_availableMonth(self): # month cant be 80
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -293,7 +293,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_availableCardNumber(self):  # CardNumber cant be 0
+    def test_fail_purchase_cart_availableCardNumber(self):  # CardNumber cant be 0
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
@@ -303,7 +303,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(ut_1.isError())
         print(ut_1.__str__())
 
-    def fail_purchase_cart_availableCardNumber2(self):  # CardNumber have to be 16 digits
+    def test_fail_purchase_cart_availableCardNumber2(self):  # CardNumber have to be 16 digits
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
