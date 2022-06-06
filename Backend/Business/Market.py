@@ -237,7 +237,8 @@ class Market:
                                                                               paymentStatus.getPaymentId(),
                                                                               deliveryStatus.getDeliveryID(),
                                                                               productsInStore, storeAmount)
-                        self.__notificationHandler.notifyBoughtFromStore(self.__stores.get(storeId).getStoreOwners(), storeId, user)
+                        self.__notificationHandler.notifyBoughtFromStore(self.__stores.get(storeId).getStoreOwners(),
+                                                                         storeId, user)
                         self.__stores.get(storeId).addTransaction(storeTransaction)
                         self.__transactionHistory.addStoreTransaction(storeTransaction)
                         storeTransactions[transactionId] = storeTransaction
