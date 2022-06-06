@@ -63,19 +63,6 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user2_id, "testUser3").isError())
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "").getError())
 
-    def test_for_bar_3_appoints(self):
-        self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser2")
-        self.proxy_market.appoint_store_owner(self.store_id, self.user2_id, "testUser3")
-        self.proxy_market.appoint_store_owner(self.store_id, self.user3_id, "testUser4")
-        storeOwnersDTOs = self.proxy_market.get_store_by_ID(self.store_id).getData().getStoreOwners()
-        storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
-        self.assertEqual(Counter(storeOwnersIds), Counter([self.user1_id, self.user2_id, self.user3_id, self.user4_id]))
-
-        self.proxy_market.removeStoreOwner(self.store_id, self.user1_id, "testUser2")
-        storeOwnersDTOs = self.proxy_market.get_store_by_ID(self.store_id).getData().getStoreOwners()
-        storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
-        self.assertEqual(storeOwnersIds, [self.user1_id])
-
 
 if __name__ == '__main__':
     unittest.main()

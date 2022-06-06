@@ -161,14 +161,14 @@ class UserManagment(object):
 
     def systemManagerSignUp(self, userName, password, phone, address, bank):
         self._initializeDict()
-        if self.__members.get(userName) is None:
+        member = self.__members.get(userName)
+        if member is None:
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
-            if systemManager:
-                self.__systemManager[userName] = systemManager
-                # if User.get_user(userName) is None:
-                #     User.save_admin(username=userName, password=password)
-                return systemManager
-        return None
+        else:
+            systemManager = SystemManager(model=member.getModel())
+        if systemManager:
+            self.__systemManager[userName] = systemManager
+            return systemManager
 
     def removeSystemManger_forTests(self, systemMangerName):
         self._initializeDict()
