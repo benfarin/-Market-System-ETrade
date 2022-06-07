@@ -71,8 +71,24 @@ class UseCaseAddProduct(unittest.TestCase):
         self.assertTrue(self.proxy_market.add_product_to_store(self.store_id2, self.user_id2, "testProduct", -1,
                                                                "testCategory", 10, ["test"]).isError())
 
-    def test_add_product_negative(self):
-        pass
+    def test_add_product_permission(self):
+        # user2 has no permission to add products to store
+        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id2, "testProduct1", 10,
+                                                       "testCategory", 15, ["test"]).isError())
+        self.proxy_market.appoint_store_owner(self.store_id1, self.user_id1, "testUser2")
+        # now user2 has permission to add products
+        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id2, "testProduct2", 10,
+                                                               "testCategory", 15, ["test"]).getData())
+        # manager doesn't have permission to add products to store
+        self.proxy_market.appoint_store_manager(self.store_id1, self.user_id1, "testUser3")
+        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id3, "testProduct", 10,
+                                                               "testCategory", 15, ["test"]).isError())
+
+    # def test_product_with_same_name(self):
+    #     self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,
+    #                                                    "testCategory", 15, ["test"]).getData())
+    #     self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,
+    #                                                    "testCategory", 15, ["test"]).isError())
 
 
 if __name__ == '__main__':

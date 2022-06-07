@@ -4,6 +4,7 @@ from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBr
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
+from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UserCaseRemoveMember(unittest.TestCase):
@@ -48,6 +49,17 @@ class UserCaseRemoveMember(unittest.TestCase):
         self.assertTrue(self.user_proxy.removeMember("manager", "user2").isError())
 
         self.assertTrue(self.user_proxy.removeMember("manager", "user1").getData())
+
+    def test_remove_member_threaded(self):
+        t1 = ThreadWithReturn(target=self.user_proxy.removeMember, args =("manager","user2"))
+        t2 = ThreadWithReturn(target=self.user_proxy.removeMember, args=("manager", "user2"))
+        t1.start()
+        t2.start()
+        ans1 = t1.join()
+        ans2 = t2.join()
+        self.assertTrue(ans1.isError() or ans2.isError())
+        self.assertTrue(self.user_proxy.removeMember("manager", "user1").getData())
+
 
 
 
