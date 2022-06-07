@@ -237,6 +237,17 @@ class UserService:
             logging.error("Failed to get user" + str(username))
             return Response(e.__str__())
 
+    def getUser(self, userID):
+        try:
+            user = self.__userManagment.getUser(userID)
+            logging.info("success get user " + str(userID))
+            if isinstance(user, Member):
+                return Response(MemberDTO(user))
+            return Response(GuestDTO(user))
+        except Exception as e:
+            logging.error("Failed to get user" + str(userID))
+            return Response(e.__str__())
+
 
 
 

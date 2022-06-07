@@ -1,5 +1,5 @@
 import os
-
+import threading
 import django
 
 from ModelsBackend.models import MemberModel, UserModel
@@ -42,7 +42,7 @@ class UserManagment(object):
         self.__guests= None
         self.__members = None
         self.__systemManager = None
-
+        self.__memberslock = threading.Lock()
         if UserManagment.__instance is None:
             UserManagment.__instance = self
 
@@ -113,12 +113,13 @@ class UserManagment(object):
     def memberSignUp(self, userName, password, phone, address, bank):  # Tested
         self._initializeDict()
         self.thereIsSystemManger()
-        if self.__isMemberExists(userName) is None:
-            member = Member(userName, password, phone, address, bank)
-            self.__members[member.getUserID()] = member
-            # if User.get_user(userName) is None:
-            #     User.save(username=userName, password=password)
-            return True
+        with self.__memberslock:
+            if self.__isMemberExists(userName) is None:
+                member = Member(userName, password, phone, address, bank)
+                self.__members[member.getUserID()] = member
+                # if User.get_user(userName) is None:
+                #     User.save(username=userName, password=password)
+                return True
         raise MemberAllReadyLoggedIn("user: " + userName + "is all ready loggedIn")
 
     def memberLogin(self, oldUserId, userName, password):  # Tested
@@ -171,11 +172,13 @@ class UserManagment(object):
 
     def systemManagerSignUp(self, userName, password, phone, address, bank):
         self._initializeDict()
-        member = self.__members.get(userName)
+        member = self.getUserByUserName(userName)
         if member is None:
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
         else:
-            systemManager = SystemManager(model=member.getModel())
+            member.getModel().is_admin = True
+            member.getModel().save()
+            systemManager: SystemManager = SystemManager(model=member.getModel())
         if systemManager:
             self.__systemManager[userName] = systemManager
             return systemManager
