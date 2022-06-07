@@ -26,15 +26,18 @@ class NotificationHandler:
         """ Virtually private constructor. """
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
         django.setup()
-        self.__activeUsers = None  # <userId,User> should check how to initial all the activeStores into
 
         if NotificationHandler.__instance is None:
             NotificationHandler.__instance = self
 
     def notifyBoughtFromStore(self, ownersDict, storeID, buyer):
-        self._initializeDict()
+        activeUsers: Dict[str, User] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+
         for owner in ownersDict:
-            if owner in self.__activeUsers.values():
+            if owner in activeUsers.values():
                 self.__send_channel_message(owner.getMemberName(),
                                             "user " + str(buyer.getUserID()) + " bought from store " + str(storeID))
             else:
@@ -44,13 +47,6 @@ class NotificationHandler:
 
     def _buildMember(self, model):
         return Member(model=model)
-
-    def _initializeDict(self):
-        if self.__activeUsers is None:
-            self.__activeUsers: Dict[str, User] = {}  # <userId,User> should check how to initial all the activeStores into dictionary
-            for member_model in MemberModel.objects.filter(isLoggedIn=True):
-                member = self._buildMember(member_model)
-                self.__activeUsers.update({member.getUserID() : member})
 
     def _buildNotification(self, model):
         return Notification(model)
