@@ -17,7 +17,7 @@ is_initialized = False
 def web_run():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
-    initialize_system()
+    # initialize_system()
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

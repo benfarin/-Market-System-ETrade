@@ -321,7 +321,9 @@ class Store:
             raise Exception(e)
         else:
             product_model = ProductModel.objects.get_or_create(product_id=productId)[0]
-            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).delete()
+            product = self._buildProduct(model=product_model)
+            product.removeProduct()
+
 
     def updateProductPrice(self, user, productId, newPrice):
         try:

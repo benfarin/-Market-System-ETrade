@@ -16,14 +16,17 @@ from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.User import User
 from Backend.Service.DTO.GuestDTO import GuestDTO
 from Backend.Service.DTO.MemberDTO import MemberDTO
+from Backend.Service.Initializer import Initializer
 from Backend.Service.MemberService import MemberService
 from Backend.Service.RoleService import RoleService
 from Backend.Service.UserService import UserService
 from ModelsBackend.models import UserModel, MemberModel, NotificationModel
 
-role_service = RoleService()
-member_service = MemberService()
-user_service = UserService()
+initializer = Initializer()
+role_service = initializer.getRoleService()
+member_service = initializer.getMemberService()
+user_service = initializer.getUserService()
+
 from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdateProductForm, AddProductForm, \
     AddProductToCartForm, PurchaseProductForm, AddProductQuantity, AddCondition, AddRule, \
     AddSimpleDiscount_Store, AddSimpleConditionDiscount_Store, AddConditionDiscountXor, AddConditionDiscountAndOr, \
