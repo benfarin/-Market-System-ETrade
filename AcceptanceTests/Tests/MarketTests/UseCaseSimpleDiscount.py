@@ -252,13 +252,23 @@ class UseCaseSimpleDiscount(unittest.TestCase):
 
     def test_addSimpleDiscountRule_2(self):
         dId1 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.1).getData().getDiscountId()
-        self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 0, 10000000)
+        r_id = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id,
+                                                              0, 10000000).getData().getRuleId()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(1090, userTransaction.getData().getTotalAmount())
+
+        discountIds = [discount.getDiscountId() for discount in
+                       self.proxy_market.getAllSimpleDiscountOfStore(self.user_id1, self.store_id1).getData()]
+        self.assertEqual(discountIds, [dId1])
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllSimpleRulesOfDiscount(self.user_id1,
+                                                                            self.store_id1, dId1).getData()]
+        self.assertEqual(rulesInDiscountIds, [r_id])
+
 
     def test_addCondDiscountRule_AND(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
