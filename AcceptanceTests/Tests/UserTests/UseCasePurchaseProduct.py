@@ -196,8 +196,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
             self.assertEqual(tran1.getData().getTotalAmount(), 2240)
 
 
-    ### payment details are wrong !
-    # doesn't really work..
+    ### payment details are wrong tests
+    # doesn't really work because the external system doesn't check all of that
 
 
     # def test_fail_purchase_cart_cvvNotGood(self):

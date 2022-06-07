@@ -85,5 +85,6 @@ class UseCaseRemoveProduct(unittest.TestCase):
         self.proxy_market.removeStoreForGood(self.user_id, self.store_id)
 
 
+
 if __name__ == '__main__':
     unittest.main()

@@ -75,13 +75,6 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id3, self.user_id1, self.p6_id, 100)
 
     def tearDown(self) -> None:
-        # remove products from stores
-        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.p1_id)
-        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.p2_id)
-        self.proxy_market.remove_product_from_store(self.store_id2, self.user_id1, self.p3_id)
-        self.proxy_market.remove_product_from_store(self.store_id2, self.user_id1, self.p4_id)
-        self.proxy_market.remove_product_from_store(self.store_id3, self.user_id1, self.p5_id)
-        self.proxy_market.remove_product_from_store(self.store_id3, self.user_id1, self.p6_id)
         # delete stores
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
@@ -190,6 +183,36 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         for bag in bags:
             bags_len += len(bag)
         self.assertEqual(bags_len, 3)
+
+    def test_add_n_remove_products_from_cart_threads(self):
+        t = []
+        for i in range(200):
+            t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart,
+                                  args=(self.user_id3, self.store_id1, self.p1_id, 1)))
+        for th in t:
+            th.start()
+        success = 0
+        fail = 0
+        for th in t:
+            if th.join().getData():
+                success += 1
+            else:
+                fail += 1
+        self.assertEqual(success,fail, "100 products in store - 100 should succeed to add and 100 should fail!")
+
+        t.clear()
+        t.append(ThreadWithReturn(target=self.proxy_user.remove_prod_from_cart,
+                                  args=(self.user_id3, self.store_id1, self.p1_id)))
+        t.append(ThreadWithReturn(target=self.proxy_user.remove_prod_from_cart,
+                                  args=(self.user_id3, self.store_id1, self.p1_id)))
+        t[0].start()
+        t[1].start()
+        ans1 = t[0].join()
+        ans2 = t[1].join()
+        print(ans1.getData())
+        print(ans2.getData())
+        self.assertTrue(ans1.isError() or ans2.isError(), "you can only delete product from cart once!")
+
 
 
 if __name__ == '__main__':
