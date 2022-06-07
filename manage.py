@@ -4,6 +4,7 @@ import os
 import sys
 from threading import Thread
 
+from Backend.Service.DTO import SimpleDiscountDTO
 from Backend.Service.Initializer import Initializer
 from ModelsBackend.models import Initialized
 
@@ -17,7 +18,7 @@ is_initialized = False
 def web_run():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
-    # initialize_system()
+    initialize_system()
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -48,6 +49,7 @@ def initialize_system():
                                                       1).getData()
         store2: StoreDTO = member_service.createStore("o2", user1.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1,
                                                       1).getData()
+        discount1 : SimpleDiscountDTO  = role_service.addStoreDiscount(user1Id, store1.getStoreId(), 0.5)
         computer: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.getUserID(), "Computer", 3000,
                                                               "Electric Devices", 50,
                                                               ["Electric Device", "Computer", "Check"]).getData()

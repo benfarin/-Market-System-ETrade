@@ -22,6 +22,15 @@
         <a class="btn btn-primary" href="user_transactions/" role="button">Get User Transactions</a>
         <a class="btn btn-primary" href="store_transactions_ID/" role="button">Get Store Transactions By StoreID</a>
         </div>
+
+        <h3>Active Users:</h3></div>
+        {% for active in actives %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ active.getUserID }}</h5>
+            </div>
+        </div>
+        {% endfor %}
     {% endif %}
 
     </div>

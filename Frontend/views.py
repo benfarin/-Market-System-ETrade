@@ -52,8 +52,12 @@ def home_page(request):  #FIXED
             notifications = has_notifications.getData()
     else:
         notifications = []
+    if is_admin:
+        active_users = role_service.getAllActiveUsers(request.user.username).getData()
+    else:
+        active_users = []
     context = {"title": title, "user": request.user, "stores": all_stores, "is_admin": is_admin,
-               'room_name': "broadcast", "saved_notifications" : notifications}
+               'room_name': "broadcast", "saved_notifications" : notifications, "actives" : active_users}
     return render(request, "home.html", context)
 
 
@@ -96,8 +100,10 @@ def login_page(request):  #FIXED
         # answer = user_service.memberLogin(user.getUserID(), username, password)
         # if not answer.isError():
         #     user = answer.getData()
+        guestID = request.user.userid
         user = user_service.getUserByUserName(username).getData()
-        user_service.memberLogin(user.getUserID(), username, password)
+        user_service.memberLogin(request.user.userid, username, password)
+        user_service.exitSystem(guestID)
         django_user = MemberModel.objects.get(username=username)
         login(request, django_user)
         # print(user.getUserID())
@@ -164,14 +170,14 @@ def store_page(request, slug):  #FIXED
     user = user_service.getUser(request.user.userid).getData()
     store = role_service.getStore(int(slug)).getData()
     answer = role_service.getRolesInformation(int(slug), user.getUserID())
+    discounts_and_rules_info = getDiscountsDTO(request, store.getStoreId())
     if not answer.isError():
         permissions = answer.getData()
-        discounts_and_rules_info = getDiscountsDTO(request, store.getStoreId())
         for permission in permissions:
             if permission.getUserId() == user.getUserID():
-                context = {"permissions": permission, "items": store.getProductsAsList()}
+                context = {"permissions": permission, "items": store.getProductsAsList(), "infos": discounts_and_rules_info}
                 return render(request, "store.html", context)
-    context = {"permissions": [], "items": store.getProductsAsList(), "info" : discounts_and_rules_info}
+    context = {"permissions": [], "items": store.getProductsAsList(), "infos": discounts_and_rules_info}
     return render(request, "store.html", context)
 
 
