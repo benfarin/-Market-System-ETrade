@@ -136,6 +136,9 @@ class IMarket(Interface):
     def recreateStore(self, storeID, founder):
         pass
 
+    def removeStoreForGood(self, storeId, founder):
+        pass
+
     def updateCart(self, cart1, cart2):
         pass
 
@@ -158,4 +161,13 @@ class IMarket(Interface):
         pass
 
     def getCartSum(self, user):
+        pass
+
+    def getAllDiscountOfStore(self, user, storeId, isComp):
+        pass
+
+    def getAllPurchaseRulesOfStore(self, user, storeId, isComp):
+        pass
+
+    def getAllRulesOfDiscount(self, user, storeId, discountId, isComp):
         pass

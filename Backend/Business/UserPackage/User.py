@@ -10,7 +10,7 @@ import threading
 from concurrent.futures import Future
 import os
 
-from ModelsBackend.models import CartModel, UserModel, UserTransactionModel
+from ModelsBackend.models import CartModel, UserModel, UserTransactionModel, BagModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -87,7 +87,7 @@ class User:
         return self._model.userid
 
     def getCart(self):
-        return Cart(model=CartModel.objects.get(userid=self._model.userid))
+        return Cart(model=CartModel.objects.get_or_create(userid=self._model.userid)[0])
 
     def getMemberCheck(self):
         pass
@@ -105,6 +105,23 @@ class User:
             return self.__market.getCartSum(self)
         except Exception as e:
             raise Exception(e)
+
+    def getUsename(self):
+        return self._model.username
+
+    def setUsername(self, username):
+        self._model.username = username
+        self._model.save()
+
+    def loginUpdates(self):
+        self._model.isLoggedIn = True
+        self._model.save()
+
+    def setLoggedIn(self, state):
+        username = self._model.username
+        self._model.isLoggedIn = state
+        self._model.save()
+        self.setUsername(username)
 
     @threaded
     def addProductToCart(self, storeID, product, quantity):
@@ -179,5 +196,8 @@ class User:
 
 
     def removeUser(self):
+        UserTransactionModel.objects.filter(userID=self._model.userid).delete()
+        CartModel.objects.filter(userid=self._model.userid).delete()
+        BagModel.objects.filter(userId=self._model.userid).delete()
         self._model.delete()
 

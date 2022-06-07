@@ -9,12 +9,16 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 class UseCaseAppointStoreManager(unittest.TestCase):
     # use-case 4.6
 
-    def setUp(self):
-        self.proxy_market = MarketProxyBridge(MarketRealBridge())
-        self.proxy_user = UserProxyBridge(UserRealBridge())
+    proxy_market = MarketProxyBridge(MarketRealBridge())
+    proxy_user = UserProxyBridge(UserRealBridge())
 
-        self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+    def setUp(self):
+
+        # assign system manager
+        self.proxy_user.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
+        admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(admin_id, "manager", "1234")
 
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
@@ -36,36 +40,33 @@ class UseCaseAppointStoreManager(unittest.TestCase):
         self.store_id = self.proxy_user.open_store("testStore", self.user1_id, 123, 1, "Israel", "Beer Sheva", "Rager",
                                                  1, 00000).getData().getStoreId()
 
+    def tearDown(self) -> None:
+        self.proxy_market.removeStoreForGood(self.user1_id, self.store_id)
+        self.proxy_user.removeMember("manager", "testUser")
+        self.proxy_user.removeMember("manager", "testUser2")
+        self.proxy_user.removeMember("manager", "testUser3")
+        self.proxy_user.removeMember("manager", "testUser4")
+        self.proxy_user.removeSystemManger_forTests("manager")
+
     def test_AppointStoreManagerPositive(self):
         # store_id, assigner_id, assignee_id
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser2").getData())
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3").getData())
 
-    def test_AppointStoreManagerNoStore(self):
+    def test_AppointStoreManagerNegativeArgument(self):
         self.assertTrue(self.proxy_market.appoint_store_manager(-1, self.user1_id,  "testUser2").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(-2, self.user1_id,  "testUser2").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(-3, self.user1_id,  "testUser2").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(-4, self.user1_id,  "testUser2").isError())
-
-    def test_AppointStoreManagerNoOwner(self):
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, -1,  "testUser2").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, -2,  "testUser3").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, -3,  "testUser4").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, -4,  "testUser2").isError())
-
-    def test_AppointStoreManagerNoNewManager(self):
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "noUser1").isError())
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "").isError())
-        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "2543").isError())
 
     def test_AppointStoreManagerTwice(self):
         # user was already appointed
         self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser2")
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id,  "testUser2").isError())
-        self.proxy_user.logout_member(self.user1_id)
+        self.proxy_user.logout_member("testUser")
         self.proxy_user.login_member(self.user1_id, "testUser", "1234")
-        self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3")
-        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3").isError())
+        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3"))
+        self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user1_id, "testUser3").isError(), "user3 is already manager")
 
     def test_AppointStoreManagerNoPermission(self):
         self.assertTrue(self.proxy_market.appoint_store_manager(self.store_id, self.user2_id, "testUser3").isError())

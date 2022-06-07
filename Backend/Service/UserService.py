@@ -118,7 +118,7 @@ class UserService:
     def removeProductFromCart(self, userId, storeId, productId):
         try:
             isRemoved = self.__userManagment.removeProductFromCart(userId, storeId, productId)
-            logging.info("removeed product " + str(productId) + " from cart for user " + userId)
+            logging.info("removeed product " + str(productId) + " from cart for user " + str(userId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed remove product from cart")
@@ -127,7 +127,7 @@ class UserService:
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
             isUpdated = self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
-            logging.info("updated product " + str(productId) + " from cart for user " + userID)
+            logging.info("updated product " + str(productId) + " from cart for user " + str(userID))
             return Response(isUpdated)
         except Exception as e:
             logging.error("Failed updating product in cart")
@@ -235,6 +235,17 @@ class UserService:
             return Response(GuestDTO(user))
         except Exception as e:
             logging.error("Failed to get user" + str(username))
+            return Response(e.__str__())
+
+    def getUser(self, userID):
+        try:
+            user = self.__userManagment.getUser(userID)
+            logging.info("success get user " + str(userID))
+            if isinstance(user, Member):
+                return Response(MemberDTO(user))
+            return Response(GuestDTO(user))
+        except Exception as e:
+            logging.error("Failed to get user" + str(userID))
             return Response(e.__str__())
 
 

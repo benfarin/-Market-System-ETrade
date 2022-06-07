@@ -151,3 +151,9 @@ PASSWORD_HASHERS = [
   'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
   'django.contrib.auth.hashers.CryptPasswordHasher',
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}

@@ -88,6 +88,12 @@ class MarketProxyBridge:
             return True
         return self._real_subject.close_store(store_id, user_id)
 
+    def removeStoreForGood(self, userId, storeId):
+        if self.check_access():
+            return True
+        return self._real_subject.removeStoreForGood(userId, storeId)
+
+
     def get_store_info(self, store_id, user_id):
         if self.check_access():
             return True
@@ -319,7 +325,32 @@ class MarketProxyBridge:
             return True
         return self._real_subject.get_store_tran_by_store_id(admin_name, store_id)
 
-    def get_all_rules(self, user_id, store_id):
+    def getAllSimpleDiscountOfStore(self, userId, storeId):
         if self.check_access():
             return True
-        return self._real_subject.get_all_rules(user_id, store_id)
+        return self._real_subject.getAllSimpleDiscountOfStore(userId, storeId)
+
+    def getAllCompositeDiscountOfStore(self, userId, storeId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllCompositeDiscountOfStore(userId, storeId)
+
+    def getAllSimplePurchaseRulesOfStore(self, userId, storeId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllSimplePurchaseRulesOfStore(userId, storeId)
+
+    def getAllCompositePurchaseRulesOfStore(self, userId, storeId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllCompositePurchaseRulesOfStore(userId, storeId)
+
+    def getAllSimpleRulesOfDiscount(self, userId, storeId, discountId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllSimpleRulesOfDiscount(userId, storeId, discountId)
+
+    def getAllCompositeRulesOfDiscount(self, userId, storeId, discountId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllCompositeRulesOfDiscount(userId, storeId, discountId)

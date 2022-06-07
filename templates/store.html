@@ -3,6 +3,13 @@
 {% block content%}
 <div style="text-align: center;">
         <div class="row">
+        {% for info in infos %}
+            <div class="card">
+                <div class="card-body">
+                {{ info.strForWeb }}
+                </div>
+            </div>
+        {% endfor %}
         {% for item in items %}
             <div class="card" style="width: 18rem;">
                 <h5 class="card-header">{{ item.getProductCategory }}</h5>
@@ -37,10 +44,12 @@
         {% endif %}
         {% if permissions.hasPermission_Discount %}
                 <a class="btn btn-primary" href="discounts/" role="button">Discounts</a>
+                <a class="btn btn-primary" href="purchase_rules/" role="button">Add Purchase Rules</a>
         {% endif %}
         {% if permissions.hasPermission_CloseStore %}
                 <a class="btn btn-danger" href="close/" role="button">Close Store</a>
         {% endif %}
+
 </div>
 
 {% endblock %}

@@ -54,6 +54,6 @@ class GetterManagment:
             raise Exception(e)
 
     def getAllStores(self):
-        return self.__market.getAllStores()
+        return self.__market.getStores()
 
 

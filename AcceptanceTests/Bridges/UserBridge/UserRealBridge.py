@@ -88,5 +88,8 @@ class UserRealBridge:
     def get_member_transaction(self, user_id):
         return self._memberService.getMemberTransactions(user_id)
 
+    def get_member_notifications(self, user_id):
+        return self._memberService.getAllNotificationsOfUser(user_id)
+
 
 

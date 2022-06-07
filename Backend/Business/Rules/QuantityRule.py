@@ -44,6 +44,21 @@ class quantityRule:
     def getRuleKind(self):
         return self.__model.rule_kind
 
+    def getRuleType(self):
+        return self.__model.simple_rule_type
+
+    def getRuleFilter(self):
+        return self.__model.filter_type
+
+    def getAtLeast(self):
+        return self.__model.simple_rule_type
+
+    def getAtMost(self):
+        return self.__model.at_most
+
+    def isComp(self):
+        return False
+
     def removeRule(self):
         self.__model.delete()
 

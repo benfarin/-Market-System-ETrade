@@ -6,10 +6,11 @@ class SystemManager(Member):
     def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
         if model is None:
             super().__init__(userName, password, phone, address, bank)
+            super().getModel().is_admin = True
+            super().getModel().username = userName
+            super().getModel().save()
         else:
             super().__init__(model=model)
-        super().getModel().is_admin = True
-        super().getModel().save()
         self.__market = Market.getInstance()
 
     def getAllStoreTransactions(self):

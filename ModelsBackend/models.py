@@ -3,7 +3,8 @@ from django.db import models
 
 
 # Create your models here.
-
+class Initialized(models.Model):
+    is_initialized = models.BooleanField(default=False)
 
 class ProductModel(models.Model):
     product_id = models.IntegerField(primary_key=True)
@@ -74,7 +75,7 @@ class BagsInCartModel(models.Model):
 
 
 class UserModel(AbstractBaseUser):
-    username = None
+    username = models.TextField(null=True)
     userid = models.UUIDField(primary_key=True)
     cart = models.ForeignKey(CartModel, on_delete=models.CASCADE)
     transactions = models.ForeignKey(UserTransactionModel, on_delete=models.CASCADE, null=True)
@@ -96,7 +97,6 @@ class AddressModel(models.Model):
 
 
 class MemberModel(UserModel):
-    member_username = models.CharField(max_length=100)
     member_password = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
     address = models.ForeignKey(AddressModel, on_delete=models.CASCADE)
@@ -229,3 +229,9 @@ class RulesInStoreModel(models.Model):
 
     class Meta:
         unique_together = ('storeID', 'ruleID',)
+
+
+class NotificationModel(models.Model):
+    userID = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
+    text = models.TextField()
+    read = models.BooleanField(default=False)

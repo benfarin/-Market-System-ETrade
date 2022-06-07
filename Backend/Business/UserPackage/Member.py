@@ -14,7 +14,7 @@ from Backend.Interfaces.IMarket import IMarket
 import Backend.Business.Market as m
 from concurrent.futures import Future
 
-from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel
+from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel, NotificationModel
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -40,8 +40,7 @@ def threaded(fn):
 
 
 class Member(User):
-    def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
-        super().__init__(model)  # extend the constructor of user class
+    def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):  # extend the constructor of user class
         # self.__isLoggedIn = False
         # self.__userName = userName  # string
         # self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
@@ -50,19 +49,18 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
-            isMemberHasSameUserName = MemberModel.objects.filter(member_username=userName)
-            if isMemberHasSameUserName.exists():
-                raise Exception("there is a member with the userName: " + userName + " all ready")
-
-            self._m = MemberModel.objects.get_or_create(userid=super().getUserID(), member_username=userName,
+            super().__init__()
+            self._m = MemberModel.objects.get_or_create(userid=super().getUserID(),
                                                          member_password=make_password(password),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
                                                          cart=super().getCart().getModel())[0]
+            super().setUsername(userName)
         else:
+            super().__init__(model)
             self._m = model
 
     def setLoggedIn(self, state):
-        self._m.isLoggedIn = state
+        super().setLoggedIn(state)
 
     def addProductRating(self, productID, rating):
         pass
@@ -80,7 +78,7 @@ class Member(User):
         return Bank(model=self._m.bank)
 
     def getMemberName(self):
-        return self._m.member_username
+        return super().getUsename()
 
     def getMemberTransactions(self):
         return super().getTransactions().values()
@@ -98,6 +96,7 @@ class Member(User):
 
     def loginUpdates(self):
         try:
+            super().loginUpdates()
             return self.__market.loginUpdates(self)
         except Exception as e:
             raise Exception(e)
@@ -113,6 +112,12 @@ class Member(User):
     def getModel(self):
         return self._m
 
+    def getAndReadNotification(self):
+        notifications = NotificationModel.objects.filter(userID=self._m, read=False)
+        for notification in notifications:
+            notification.read = True
+            notification.save()
+        return notifications
     @threaded
     def createStore(self, storeName, bank, address):
         try:
@@ -131,6 +136,13 @@ class Member(User):
     def recreateStore(self, storeId):
         try:
             return self.__market.recreateStore(storeId, self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeStoreForGood(self, storeId):
+        try:
+            return self.__market.removeStoreForGood(storeId, self)
         except Exception as e:
             raise Exception(e)
 
@@ -249,7 +261,7 @@ class Member(User):
     @threaded
     def getPurchaseHistoryInformation(self, storeID):
         try:
-            return self.__market.printPurchaseHistoryInformation(storeID, self)
+            return self.__market.getPurchaseHistoryInformation(storeID, self)
         except Exception as e:
             raise Exception(e)
 
@@ -322,11 +334,26 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
+    def getAllDiscountOfStore(self, storeId, isComp):
+        try:
+            return self.__market.getAllDiscountOfStore(self, storeId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllPurchaseRulesOfStore(self, storeId, isComp):
+        try:
+            return self.__market.getAllPurchaseRulesOfStore(self, storeId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllRulesOfDiscount(self, storeId, discountId, isComp):
+        try:
+            return self.__market.getAllRulesOfDiscount(self, storeId, discountId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
     def removeUser(self):
         super().removeUser()
-        UserTransactionModel.objects.filter(userID=self._m.userid).delete()
-        CartModel.objects.filter(userid=self._m.userid).delete()
-        BagModel.objects.filter(userId=self._m.userid).delete()
         self._m.delete()
 
     def _buildCart(self, model):

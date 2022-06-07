@@ -7,21 +7,27 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 class UseCaseMemberLogin(unittest.TestCase):
     #usecase 2.4
+    proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge())
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                          "Ben Gurion", 1, 1)
+        admin = self.proxy.login_guest().getData().getUserID()
+        self.proxy.login_member(admin, "Manager", "1234")
         self.__guestId1 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                            "Ben Gurion", 0, 1)
+
+    def tearDown(self):
+        self.proxy.removeMember("Manager", "user1")
+        self.proxy.removeSystemManger_forTests("Manager")
 
     def test_login_positive(self):
         member = self.proxy.login_member(self.__guestId1, "user1", "1234")
         self.assertTrue(member.getData())
         print(member.__str__())
 
-    def test_two_member_log_in_together(self):
+    def test_members_log_in_together(self):
         self.__guestId2 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 1)
@@ -65,6 +71,31 @@ class UseCaseMemberLogin(unittest.TestCase):
                     self.assertNotEqual(Id_i, uIds[j])
             print("id of user " + str(i + 2) + " is: " + str(uIds[i]))
 
+    def test_login_twice(self):
+        guest2 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.assertTrue(self.proxy.login_member(guest2, "user2", "1234").getData())
+        self.assertTrue(self.proxy.login_member(guest2, "user2", "1234").isError())
+
+        self.proxy.removeMember("Manager", "user2")
+
+    # def test_threaded_login_twice(self):
+    #     guest2 = self.proxy.login_guest().getData().getUserID()
+    #     self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+    #                         "Ben Gurion", 0, 1)
+    #     t1 = ThreadWithReturn(target=self.proxy.login_member, args=(guest2, "user2", "1234"))
+    #     t2 = ThreadWithReturn(target=self.proxy.login_member, args=(guest2, "user2", "1234"))
+    #
+    #     t1.start()
+    #     t2.start()
+    #
+    #     ans1 = t1.join()
+    #     ans2 = t2.join()
+    #     self.assertTrue(ans1.isError() or ans2.isError())
+    #     self.assertTrue(ans1.getData() is True or ans2.getData() is True)
+    #
+    #     self.proxy.removeMember("Manager", "user2")
 
 if __name__ == '__main__':
     unittest.main()

@@ -12,6 +12,9 @@ class IMember(Interface):
     def removeStore(self, storeId, user):
         pass
 
+    def removeStoreForGood(self, userId, storeId):
+        pass
+
     def getMemberTransactions(self):
         pass
 
@@ -95,4 +98,14 @@ class IMember(Interface):
 
     def removeRule(self, storeId, dId, rId, ruleKind):
         pass
+
+    def getAllDiscountOfStore(self, storeId, isComp):
+        pass
+
+    def getAllPurchaseRulesOfStore(self, storeId, isComp):
+        pass
+
+    def getAllRulesOfDiscount(self, storeId, discountId, isComp):
+        pass
+
 

@@ -8,57 +8,69 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 class UseCaseDiscount(unittest.TestCase):
     # use-case 4.2
-    @classmethod
-    def setUpClass(cls):
-        cls.proxy_market = MarketProxyBridge(MarketRealBridge())
-        cls.proxy_user = UserProxyBridge(UserRealBridge())
 
-        cls.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                              "Ben Gurion", 1, 1)
+    proxy_market = MarketProxyBridge(MarketRealBridge())
+    proxy_user = UserProxyBridge(UserRealBridge())
+
+    def setUp(self):
+        # assign system manager
+        self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+                                          "Ben Gurion", 1, 1)
+        admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(admin_id, "Manager", "1234")
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
-        cls.__guestId1 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser1", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
+        self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser1", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                 "Rager", 1, 0)
-        cls.user_id1 = cls.proxy_user.login_member(cls.__guestId1, "testUser1", "1234").getData().getUserID()
+        self.user_id1 = self.proxy_user.login_member(self.__guestId1, "testUser1", "1234").getData().getUserID()
 
-        cls.__guestId2 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser2", "12345", "0540000000", 123, 1,  "Israel", "Beer Sheva",
+        self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser2", "12345", "0540000000", 123, 1,  "Israel", "Beer Sheva",
                                 "Rager", 1, 0)
-        cls.user_id2 = cls.proxy_user.login_member(cls.__guestId2, "testUser2", "12345").getData().getUserID()
+        self.user_id2 = self.proxy_user.login_member(self.__guestId2, "testUser2", "12345").getData().getUserID()
 
-        cls.__guestId3 = cls.proxy_user.login_guest().getData().getUserID()
-        cls.proxy_user.register("testUser3", "123456", "0540000000", 123, 1, "Israel", "Beer Sheva",
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser3", "123456", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                 "Rager", 1, 0)
-        cls.user_id3 = cls.proxy_user.login_member(cls.__guestId3, "testUser3", "123456").getData().getUserID()
+        self.user_id3 = self.proxy_user.login_member(self.__guestId3, "testUser3", "123456").getData().getUserID()
 
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        cls.store_id1 = cls.proxy_user.open_store("testStore1", cls.user_id1, 123, 1, "Israel", "Beer Sheva",
+        self.store_id1 = self.proxy_user.open_store("testStore1", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
-        cls.store_id2 = cls.proxy_user.open_store("testStore2", cls.user_id2, 123, 1, "Israel", "Beer Sheva",
+        self.store_id2 = self.proxy_user.open_store("testStore2", self.user_id2, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
-        cls.store_id3 = cls.proxy_user.open_store("testStore3", cls.user_id3, 123, 1, "Israel", "Beer Sheva",
+        self.store_id3 = self.proxy_user.open_store("testStore3", self.user_id3, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
-        cls.product_id = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct1", 10,
+        self.product_id = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,
                                                                "testCategory", 150, ["test"]).getData().getProductId()
-        cls.product_id_2 = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct2", 100,
+        self.product_id_2 = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct2", 100,
                                                                  "testCategory1", 150,
                                                                  ["test"]).getData().getProductId()
-        cls.product_id_3 = cls.proxy_market.add_product_to_store(cls.store_id1, cls.user_id1, "testProduct3", 20,
+        self.product_id_3 = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct3", 20,
                                                                  "testCategory", 150, ["test"]).getData().getProductId()
 
-        cls.product_id_4 = cls.proxy_market.add_product_to_store(cls.store_id2, cls.user_id2, "testProduct4", 20,
+        self.product_id_4 = self.proxy_market.add_product_to_store(self.store_id2, self.user_id2, "testProduct4", 20,
                                                                  "testCategory1", 150,
                                                                  ["test"]).getData().getProductId()
 
-        cls.product_id_5 = cls.proxy_market.add_product_to_store(cls.store_id3, cls.user_id3, "testProduct5", 45,
+        self.product_id_5 = self.proxy_market.add_product_to_store(self.store_id3, self.user_id3, "testProduct5", 45,
                                                                  "testCategory", 10, ["test"]).getData().getProductId()
 
-        cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id, 100)
-        cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id_2, 100)
-        cls.proxy_market.add_quantity_to_store(cls.store_id1, cls.user_id1, cls.product_id_3, 100)
-        cls.proxy_market.add_quantity_to_store(cls.store_id2, cls.user_id2, cls.product_id_4, 150)
-        cls.proxy_market.add_quantity_to_store(cls.store_id3, cls.user_id3, cls.product_id_5, 200)
+        self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id, 100)
+        self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_2, 100)
+        self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_3, 100)
+        self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id2, self.product_id_4, 150)
+        self.proxy_market.add_quantity_to_store(self.store_id3, self.user_id3, self.product_id_5, 200)
+
+    def tearDown(self) -> None:
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
+        self.proxy_market.removeStoreForGood(self.user_id2, self.store_id2)
+        self.proxy_market.removeStoreForGood(self.user_id3, self.store_id3)
+        self.proxy_user.removeMember("Manager", "testUser1")
+        self.proxy_user.removeMember("Manager", "testUser2")
+        self.proxy_user.removeMember("Manager", "testUser3")
+        self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_armagdonCheckOfDiscounts(self):
         dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1,
@@ -131,7 +143,7 @@ class UseCaseDiscount(unittest.TestCase):
                                                                      rId3_6).getData().getRuleId()
         fourt_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, first_rule_3,
                                                                     second_rule_3).getData().getRuleId()
-        fifth_rule_3 = self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, third_rule_3,
+        self.proxy_market.addCompositeRuleDiscountOr(self.user_id3, self.store_id3, dId3, third_rule_3,
                                                                     fourt_rule_3).getData().getRuleId()
 
         # ----------------------------------------------------
@@ -152,7 +164,7 @@ class UseCaseDiscount(unittest.TestCase):
                                                                     rId2_6).getData().getRuleId()
         fourt_rule_2 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, first_rule_2,
                                                                      second_rule_2).getData().getRuleId()
-        fifth_rule_2 = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, third_rule_2,
+        self.proxy_market.addCompositeRuleDiscountAnd(self.user_id2, self.store_id2, dId2, third_rule_2,
                                                                      fourt_rule_2).getData().getRuleId()
 
         first_rule = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, rId1,
@@ -163,7 +175,7 @@ class UseCaseDiscount(unittest.TestCase):
                                                                   rId6).getData().getRuleId()
         fourt_rule = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, first_rule,
                                                                    second_rule).getData().getRuleId()
-        fifth_rule = self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, third_rule,
+        self.proxy_market.addCompositeRuleDiscountAnd(self.user_id1, self.store_id1, dId1, third_rule,
                                                                    fourt_rule).getData().getRuleId()
 
         dId4 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory",
@@ -173,11 +185,11 @@ class UseCaseDiscount(unittest.TestCase):
         dId6 = self.proxy_market.addSimpleDiscount_Product(self.user_id3, self.store_id3, self.product_id_5,
                                                            0.3).getData().getDiscountId()  # 10 percent off to all store
 
-        sixth_xor = self.proxy_market.addConditionDiscountXor(self.user_id1, self.store_id1, dId1, dId4, 1)
-        sixth_max_2 = self.proxy_market.addConditionDiscountMax(self.user_id2, self.store_id2, dId2, dId5)
-        sixth_add_3 = self.proxy_market.addConditionDiscountAdd(self.user_id3, self.store_id3, dId3, dId6)
+        self.proxy_market.addConditionDiscountXor(self.user_id1, self.store_id1, dId1, dId4, 1)
+        self.proxy_market.addConditionDiscountMax(self.user_id2, self.store_id2, dId2, dId5)
+        self.proxy_market.addConditionDiscountAdd(self.user_id3, self.store_id3, dId3, dId6)
 
-        userTransaction = self.proxy_user.purchase_product(self.user_id1, 10, 10)
+        userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Kfir", "123", "123")
         if userTransaction.isError():
             print(userTransaction.getError())
         self.assertEqual(1440, userTransaction.getData().getTotalAmount())

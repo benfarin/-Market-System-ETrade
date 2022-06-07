@@ -1,19 +1,16 @@
-import uuid
 import django, os
 
 
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
+from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Delivery.DeliveryImpl import DeliveryImpl
 from Backend.Delivery.DeliveryDetails import DeliveryDetails
-from Backend.Exceptions.CustomExceptions import NotOnlineException, ProductException, QuantityException, \
+from Backend.Exceptions.CustomExceptions import ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
 from Backend.Interfaces.IStore import IStore
-from Backend.Interfaces.IMember import IMember
-from Backend.Interfaces.IUser import IUser
-from Backend.Payment.PaymentStatus import PaymentStatus
 from Backend.Business.Transactions.TransactionHistory import TransactionHistory
 from Backend.Payment.PaymentDetails import PaymentDetails
 from Backend.Payment.paymentlmpl import Paymentlmpl
@@ -22,6 +19,8 @@ from Backend.Business.Transactions.UserTransaction import UserTransaction
 from zope.interface import implements
 from typing import Dict
 import threading
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 
@@ -50,6 +49,7 @@ class Market:
         self.__userTransactionIdCounter = None
 
         self.__transactionHistory = TransactionHistory.getInstance()
+        self.__notificationHandler : NotificationHandler = NotificationHandler.getInstance()
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
@@ -237,6 +237,8 @@ class Market:
                                                                               paymentStatus.getPaymentId(),
                                                                               deliveryStatus.getDeliveryID(),
                                                                               productsInStore, storeAmount)
+                        self.__notificationHandler.notifyBoughtFromStore(self.__stores.get(storeId).getStoreOwners(),
+                                                                         storeId, user)
                         self.__stores.get(storeId).addTransaction(storeTransaction)
                         self.__transactionHistory.addStoreTransaction(storeTransaction)
                         storeTransactions[transactionId] = storeTransaction
@@ -461,6 +463,29 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def removeStoreForGood(self, storeID, user):  #TESTED
+        self.__initializeStoresDict()
+        try:
+            store = self.__stores.get(storeID)
+            removed_store = self.__removedStores.get(storeID)
+            if store is None and removed_store is None:
+                raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
+            elif store is not None:
+                founderId = store.getStoreFounderId()
+                if founderId != user.getUserID():
+                    raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+                store.removeStore()
+                self.__stores.pop(storeID)
+            elif removed_store is not None:
+                founderId = removed_store.getStoreFounderId()
+                if founderId != user.getUserID():
+                    raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+                removed_store.removeStore()
+                self.__removedStores.pop(storeID)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         self.__initializeStoresDict()
         # the user that get in the system!
@@ -575,6 +600,33 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def getAllDiscountOfStore(self, user, storeId, isComp):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllDiscountOfStore(user, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllPurchaseRulesOfStore(self, user, storeId, isComp):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllPurchaseRulesOfStore(user, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllRulesOfDiscount(self, user, storeId, discountId, isComp):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllRulesOfDiscount(user, discountId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
     def __getGlobalStoreId(self):
         if self.__globalStore is None:
             self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))['storeID__max']
@@ -591,6 +643,8 @@ class Market:
                 'transactionId__max']
             if self.__storeTransactionIdCounter is None:
                 self.__storeTransactionIdCounter = 0
+            else:
+                self.__storeTransactionIdCounter += 1
         with self.__StoreTransactionId_lock:
             stId = self.__storeTransactionIdCounter
             self.__storeTransactionIdCounter += 1
@@ -602,6 +656,8 @@ class Market:
                 'transactionId__max']
             if self.__userTransactionIdCounter is None:
                 self.__userTransactionIdCounter = 0
+            else:
+                self.__userTransactionIdCounter += 1
         with self.__UserTransactionId_lock:
             utId = self.__userTransactionIdCounter
             self.__userTransactionIdCounter += 1
@@ -626,6 +682,16 @@ class Market:
     def resetDict(self):
         self.__stores = None
         self.__removedStores = None
+
+    def __send_channel_message(self, group_name, message):
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            '{}'.format(group_name),
+            {
+                'type': 'channel_message',
+                'message': message
+            }
+        )
 
 
 

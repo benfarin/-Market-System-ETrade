@@ -90,6 +90,9 @@ class MarketRealBridge:
     def close_store(self, store_id, user_id):
         return self._memberService.removeStore(store_id, user_id)
 
+    def removeStoreForGood(self, user_id, store_id):
+        return self._memberService.removeStoreForGood(user_id, store_id)
+
     def addSimpleDiscount_Store(self, userId, storeId, precent):
         return self._roleService.addStoreDiscount(userId, storeId, precent)
 
@@ -201,8 +204,24 @@ class MarketRealBridge:
     def get_store_tran_by_store_id(self, admin_name, store_id):
         return self._roleService.getStoreTransactionByStoreId(admin_name, store_id)
 
-    def get_all_rules(self, user_id, store_id):
-        return self._roleService.getAllRules(user_id, store_id)
+    def getAllSimpleDiscountOfStore(self, userId, storeId):
+        return self._roleService.getAllSimpleDiscountOfStore(userId, storeId)
+
+    def getAllCompositeDiscountOfStore(self, userId, storeId):
+        return self._roleService.getAllCompositeDiscountOfStore(userId, storeId)
+
+    def getAllSimplePurchaseRulesOfStore(self, userId, storeId):
+        return self._roleService.getAllSimplePurchaseRulesOfStore(userId, storeId)
+
+    def getAllCompositePurchaseRulesOfStore(self, userId, storeId):
+        return self._roleService.getAllCompositePurchaseRulesOfStore(userId, storeId)
+
+    def getAllSimpleRulesOfDiscount(self, userId, storeId, discountId):
+        return self._roleService.getAllSimpleRulesOfDiscount(userId, storeId, discountId)
+
+    def getAllCompositeRulesOfDiscount(self, userId, storeId, discountId):
+        return self._roleService.getAllCompositeRulesOfDiscount(userId, storeId, discountId)
+
 
 
 

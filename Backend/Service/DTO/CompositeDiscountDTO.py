@@ -7,9 +7,16 @@ from Backend.Service.DTO.SimpleDiscountDTO import simpleDiscountDTO
 class compositeDiscountDTO:
     def __init__(self, discount: DiscountComposite):
         self.__discountId = discount.getDiscountId()
-        self.__discount1 = simpleDiscountDTO(discount.getDiscount1())
-        self.__discount2 = simpleDiscountDTO(discount.getDiscount2())
+        if discount.getDiscount1().getClassType() == 'Composite':
+            self.__discount1 = compositeDiscountDTO(discount.getDiscount1())
+        else:
+            self.__discount1 = simpleDiscountDTO(discount.getDiscount1())
+        if discount.getDiscount2().getClassType() == 'Composite':
+            self.__discount2 = compositeDiscountDTO(discount.getDiscount2())
+        else:
+            self.__discount2 = simpleDiscountDTO(discount.getDiscount2())
         self.__discountType = discount.getDiscountType()
+        self.__decide = discount.getDecide()
 
     def getDiscountId(self):
         return self.__discountId
@@ -35,10 +42,19 @@ class compositeDiscountDTO:
     def setDiscountType(self, newType):
         self.__discountType = newType
 
-    def __str__(self):
-        toReturn = "Product discount: "
-        toReturn += "\n\t discount id: " + str(self.__discountId)
-        toReturn += "\n\t\t\t" + self.__discount1.__str__()
-        toReturn += "\n\t\t\t" + self.__discount2.__str__()
-        toReturn += "\n\tType: " + str(self.__discountType)
+    def strForWeb(self):
+        toReturn = self.__discountType + " discount: "
+        toReturn += "\n\tdiscount id: " + str(self.__discountId)
+        # toReturn += "\n\t discount1: " + self.__discount1.strForWeb()
+        # toReturn += "\n\t discount2: " + self.__discount2.strForWeb()
+        toReturn += "\n\tdiscount1: " + str(self.__discount1.getDiscountId())
+        toReturn += "\n\tdiscount2: " + str(self.__discount2.getDiscountId())
+        if self.__discountType == 'XOR':
+            if self.__decide == 1:
+                toReturn += "\n\tdecide: first"
+            else:
+                toReturn += "\n\tdecide: second"
         return toReturn
+
+    def __str__(self):
+        return self.strForWeb()

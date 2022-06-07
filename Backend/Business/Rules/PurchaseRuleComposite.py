@@ -15,8 +15,8 @@ from ModelsBackend.models import RuleModel
 @zope.interface.implementer(IRule)
 class PurchaseRuleComposite:
 
-    # rulesTypes: and = 1, or = 2
-    # ruleKind: discountRule = 1 , purchaseRule = 2
+    # rulesTypes: and ,or
+    # ruleKind: discountRule , purchaseRule
     def __init__(self, ruleId=None, rule1=None, rule2=None, ruleType=None, ruleKind=None, model=None):
         # self.__ruleId = ruleId
         # self.__ruleKind = ruleKind
@@ -56,10 +56,13 @@ class PurchaseRuleComposite:
         return self.__buildRule(self.__model.ruleID2)
 
     def getRuleType(self):
-        return self.__model.rule_type
+        return self.__model.composite_rule_type
 
     def getRuleKind(self):
         return self.__model.rule_kind
+
+    def isComp(self):
+        return True
 
     def removeRule(self):
         rule1 = self.__buildRule(self.__model.ruleID1)

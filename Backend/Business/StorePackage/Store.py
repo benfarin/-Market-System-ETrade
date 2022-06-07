@@ -23,7 +23,8 @@ from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Business.Discounts.DiscountComposite import DiscountComposite
 from typing import Dict
 import threading
-from notifications.signals import notify
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
@@ -320,7 +321,9 @@ class Store:
             raise Exception(e)
         else:
             product_model = ProductModel.objects.get_or_create(product_id=productId)[0]
-            ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).delete()
+            product = self._buildProduct(model=product_model)
+            product.removeProduct()
+
 
     def updateProductPrice(self, user, productId, newPrice):
         try:
@@ -526,7 +529,7 @@ class Store:
             info += "\n managerId: " + str(managerId) + permission.printPermission() + "\n"
         return info
 
-    def getPermissions(self, user):  ### NEED TO CHANGE + NO USE OF THIS FUNCTIONS?
+    def getPermissions(self, user):  ### NEED TO CHANGE
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
         if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -535,8 +538,8 @@ class Store:
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
         rulesPermissions = []
-        for permission in StoreUserPermissionsModel.objects.filter(storeID=self.__model):
-            rulesPermissions.append(StorePermission(model=permission.userID))
+        for permission in StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel()):
+            rulesPermissions.append(StorePermission(model=permission))
         return rulesPermissions
 
     def addTransaction(self, transaction):
@@ -569,15 +572,19 @@ class Store:
             info += storeTransaction.getPurchaseHistoryInformation() + "\n"
         return info
 
-    def getTransactionHistory(self, user):  ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
-        permissions = self.__permissions.get(user)
-        if permissions is None:
+    def getTransactionHistory(self, user):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.hasPermission_RolesInformation():
+        if not permissions.first().rolesInformation:
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        return self.__transactions.values()
+        transactions: Dict[int: StoreTransaction] = {}
+        for transaction_model in StoreTransactionModel.objects.filter(storeId=self.__model.storeID):
+            transaction = self._buildStoreTransactions(transaction_model)
+            transactions.update({transaction.getTransactionID() : transaction})
+        return transactions
 
     def getProductsByName(self, productName):
         toReturnProducts = []
@@ -613,22 +620,22 @@ class Store:
         return toReturnProducts
 
     def addProductToBag(self, productId, quantity):
-        product_model = ProductModel.objects.get(product_id=productId)
-        if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
-            raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
-        if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
-            raise ProductException("cannot add a negative quantity to bag")
-        else:
-            with self.__stockLock:
-                quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
-                quantity_to_change.quantity -= quantity
-                quantity_to_change.save()
-                return True
+        with self.__stockLock:
+            product_model = ProductModel.objects.get(product_id=productId)
+            if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
+                raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
+            if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
+                raise ProductException("cannot add a negative quantity to bag")
+            quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
+            quantity_to_change.quantity -= quantity
+            quantity_to_change.save()
+            return True
 
     def removeProductFromBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
-        if not ProductModel.objects.filter(product_id=productId).exists():
-            raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         with self.__stockLock:
+            if not ProductModel.objects.filter(product_id=productId).exists():
+                raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
+
             product_model = ProductModel.objects.get(product_id=productId)
             product_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
             product_to_change.quantity += quantity
@@ -806,6 +813,59 @@ class Store:
         else:
             raise Exception("rule kind is illegal")
 
+    def getAllDiscountOfStore(self, user, isComp):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.first().discount:
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        discounts = []
+        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
+        for d in discount_models:
+            discount = self._buildDiscount(d.discountID)
+            if isComp and discount.isComp():
+                discounts.append(discount)
+            if not isComp and not discount.isComp():
+                discounts.append(discount)
+        return discounts
+
+    def getAllPurchaseRulesOfStore(self, user, isComp):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.first().discount:
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        rules = []
+        rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
+        for r in rule_models:
+            rule = RuleCreator.getInstance().buildRule(r.ruleID)
+            if isComp and rule.isComp():
+                rules.append(rule)
+            if not isComp and not rule.isComp():
+                rules.append(rule)
+        return rules
+
+    def getAllRulesOfDiscount(self, user, discountId, isComp):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.first().discount:
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        discount_model = DiscountModel.objects.get(discountID=discountId)
+        discount = self._buildDiscount(discount_model)
+        discountRules = discount.getAllDiscountRules()
+        rules = []
+        for rule in discountRules:
+            if isComp and rule.isComp():
+                rules.append(rule)
+            if not isComp and not rule.isComp():
+                rules.append(rule)
+        return rules
+
     def closeStore(self):
         self.__model.is_active = False
         self.__model.save()
@@ -815,11 +875,24 @@ class Store:
         self.__model.save()
 
     def removeStore(self):
+        for prod_model in ProductsInStoreModel.objects.filter(storeID= self.__model.storeID):
+            model = prod_model.productID
+            model.delete()
         StoreTransactionModel.objects.filter(storeId=self.__model.storeID).delete()
         self.__model.owners.remove()
         self.__model.managers.remove()
         self.__removeDiscount()
         self.__model.delete()
+
+    def __send_channel_message(self, group_name, message):
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            '{}'.format(group_name),
+            {
+                'type': 'channel_message',
+                'message': message
+            }
+        )
 
     def __removeDiscount(self):
         for discountInStore in DiscountsInStoreModel.objects.filter(storeID=self.__model):

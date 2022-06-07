@@ -1,6 +1,11 @@
 import os , django
 import sys
 from datetime import datetime
+
+from django.db.models import Max
+
+from ModelsBackend.models import ProductModel, DiscountModel, RuleModel
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
 
@@ -35,9 +40,9 @@ class RoleManagment:
         """ Virtually private constructor. """
         super().__init__()
         self.__memberManagement = MemberManagment.getInstance()
-        self.__productId = 0
-        self.__discountId = 0
-        self.__ruleId = 0
+        self.__productId = None
+        self.__discountId = None
+        self.__ruleId = None
         self.__productId_lock = threading.Lock()
         self.__discountId_lock = threading.Lock()
         self.__ruleId_lock = threading.Lock()
@@ -46,6 +51,7 @@ class RoleManagment:
 
     def appointManagerToStore(self, storeID, assignerID,
                               assigneeName):  # check if the asssignee he member and assignerID!!
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -58,6 +64,7 @@ class RoleManagment:
 
     def appointOwnerToStore(self, storeID, assignerID,
                             assigneeName):  # check if the assignee he member and assignerID!!
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -69,6 +76,7 @@ class RoleManagment:
             raise Exception(e)
 
     def setStockManagerPermission(self, storeID, assignerID, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -80,6 +88,7 @@ class RoleManagment:
             return e
 
     def setAppointOwnerPermission(self, storeID, assignerID, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -91,6 +100,7 @@ class RoleManagment:
             raise Exception(e)
 
     def setChangePermission(self, storeID, assignerID, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -102,6 +112,7 @@ class RoleManagment:
             raise Exception(e)
 
     def setRolesInformationPermission(self, storeID, assignerID, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -113,6 +124,7 @@ class RoleManagment:
             raise Exception(e)
 
     def setPurchaseHistoryInformationPermission(self, storeID, assignerID, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -124,6 +136,7 @@ class RoleManagment:
             raise Exception(e)
 
     def setDiscountPermission(self, storeID, assignerID, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerID)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerID)
@@ -135,6 +148,7 @@ class RoleManagment:
             raise Exception(e)
 
     def addProductToStore(self, storeID, userID, product):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -148,6 +162,7 @@ class RoleManagment:
             raise Exception(e)
 
     def addProductQuantityToStore(self, storeID, userID, productId, quantity):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -158,6 +173,7 @@ class RoleManagment:
             raise Exception(e)
 
     def removeProductFromStore(self, storeID, userID, product):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -168,6 +184,7 @@ class RoleManagment:
             raise Exception(e)
 
     def updateProductPrice(self, userID, storeID, productId, newPrice):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -178,6 +195,7 @@ class RoleManagment:
             raise Exception(e)
 
     def updateProductName(self, userID, storeID, productID, newName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -188,6 +206,7 @@ class RoleManagment:
             raise Exception(e)
 
     def updateProductCategory(self, userID, storeID, productID, newCategory):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -198,6 +217,7 @@ class RoleManagment:
             raise Exception(e)
 
     def updateProductWeight(self, userID, storeID, productID, newWeight):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -207,8 +227,8 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
-
     def getRolesInformation(self, storeID, userID):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -219,6 +239,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getPurchaseHistoryInformation(self, storeID, userID):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(userID)
             member = self.__memberManagement.getMembersFromUser().get(userID)
@@ -229,6 +250,7 @@ class RoleManagment:
             raise Exception(e)
 
     def createProduct(self, userId, storeId, name, price, category, weight, keywords):
+        self.__memberManagement.thereIsSystemManger()
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -246,6 +268,7 @@ class RoleManagment:
         return Product(self.__getProductId(), storeId, name, price, category, weight, keywords)
 
     def getUserStores(self, userId):
+        self.__memberManagement.thereIsSystemManger()
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -256,6 +279,7 @@ class RoleManagment:
             raise Exception(e)
 
     def removeStoreOwner(self, storeId, assignerId, assigneeName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             self.__memberManagement.checkOnlineUserFromUser(assignerId)
             assigner = self.__memberManagement.getMembersFromUser().get(assignerId)
@@ -267,6 +291,7 @@ class RoleManagment:
             raise Exception(e)
 
     def removeMember(self, systemManagerName, memberName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -286,6 +311,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getAllActiveUsers(self, systemManagerName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -294,6 +320,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getAllStoreTransactions(self, systemManagerName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -304,6 +331,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getAllUserTransactions(self, systemManagerName):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -314,6 +342,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getStoreTransaction(self, systemManagerName, transactionId):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -324,6 +353,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getUserTransaction(self, systemManagerName, transactionId):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -334,6 +364,7 @@ class RoleManagment:
             raise Exception(e)
 
     def getStoreTransactionByStoreId(self, systemManagerName, storeId):
+        self.__memberManagement.thereIsSystemManger()
         try:
             system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
@@ -344,6 +375,8 @@ class RoleManagment:
             raise Exception(e)
 
     def addStoreDiscount(self, userId, storeId, percent):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -357,6 +390,8 @@ class RoleManagment:
         return discount
 
     def addProductDiscount(self, userId, storeId, productId, percent):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -370,6 +405,8 @@ class RoleManagment:
         return discount
 
     def addCategoryDiscount(self, userId, storeId, category, percent):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -383,6 +420,8 @@ class RoleManagment:
         return discount
 
     def addCompositeDiscount(self, userId, storeId, dId1, dId2, discountType, decide):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -394,6 +433,8 @@ class RoleManagment:
         return member.addCompositeDiscount(storeId, self.__getDiscountId(), dId1, dId2, discountType, decide)
 
     def removeDiscount(self, userId, storeId, discountId):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -405,6 +446,8 @@ class RoleManagment:
         return member.removeDiscount(storeId, discountId)
 
     def addPriceRule(self, userId, storeId, discountId, atLeast, atMost, ruleKind):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -419,6 +462,8 @@ class RoleManagment:
         return rule
 
     def addQuantityRule(self, userId, storeId, discountId, ruleType, filterType, atLeast, atMost, ruleKind):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -433,6 +478,8 @@ class RoleManagment:
         return rule
 
     def addWeightRule(self, userId, storeId, discountId, ruleType, filterType, atLeast, atMost, ruleKind):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -447,6 +494,8 @@ class RoleManagment:
         return rule
 
     def addCompositeRule(self, userId, storeId, dId, rId1, rId2, ruleType, ruleKind):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -454,10 +503,12 @@ class RoleManagment:
         if not member.isStoreExists(storeId):
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
-            raise Exception("member does not have the permission to add disconts")
+            raise Exception("member does not have the permission to add discuonts")
         return member.addCompositeRule(storeId, dId, self.__getRuleId(), rId1, rId2, ruleType, ruleKind)
 
     def removeRule(self, userId, storeId, dId, rId, ruleKind):
+        self.__memberManagement.thereIsSystemManger()
+
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -465,24 +516,78 @@ class RoleManagment:
         if not member.isStoreExists(storeId):
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
-            raise Exception("member does not have the permission to add disconts")
+            raise Exception("member does not have the permission to add discounts")
         return member.removeRule(storeId, dId, rId, ruleKind)
 
+    def getAllDiscountOfStore(self, userId, storeId, isComp):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+        if not member.hasDiscountPermission(storeId):
+            raise Exception("member does not have the permission to add discounts")
+        return member.getAllDiscountOfStore(storeId, isComp)
+
+    def getAllPurchaseRulesOfStore(self, userId, storeId, isComp):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+        if not member.hasDiscountPermission(storeId):
+            raise Exception("member does not have the permission to add discounts")
+        return member.getAllPurchaseRulesOfStore(storeId, isComp)
+
+    def getAllRulesOfDiscount(self, userId, storeId, discountId, isComp):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+        if not member.hasDiscountPermission(storeId):
+            raise Exception("member does not have the permission to add discounts")
+        return member.getAllRulesOfDiscount(storeId, discountId, isComp)
+
+
     def __getProductId(self):
-        with self.__productId_lock:
-            pId = self.__productId
-            self.__productId += 1
-            return pId
+        if self.__productId is None:
+            self.__productId = ProductModel.objects.aggregate(Max('product_id'))['product_id__max']
+            if self.__productId is None:
+                self.__productId = 0
+            else:
+                self.__productId += 1
+        pId = self.__productId
+        self.__productId += 1
+        return pId
 
     def __getDiscountId(self):
-        with self.__discountId_lock:
-            dId = self.__discountId
-            self.__discountId += 1
-            return dId
+        if self.__discountId is None:
+            self.__discountId = DiscountModel.objects.aggregate(Max('discountID'))[
+                'discountID__max']
+            if self.__discountId is None:
+                self.__discountId = 0
+            else:
+                self.__discountId += 1
+        dId = self.__discountId
+        self.__discountId += 1
+        return dId
 
     def __getRuleId(self):
-        with self.__ruleId_lock:
-            rId = self.__ruleId
-            self.__ruleId += 1
-            return rId
+        if self.__ruleId is None:
+            self.__ruleId = RuleModel.objects.aggregate(Max('ruleID'))[
+                'ruleID__max']
+            if self.__ruleId is None:
+                self.__ruleId = 0
+            else:
+                self.__ruleId += 1
+        rId = self.__ruleId
+        self.__ruleId += 1
+        return rId
 

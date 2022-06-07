@@ -36,11 +36,33 @@
             {% endif %}
           {% endif %}
         </ul>
-        <button type="button" class="btn btn-primary position-relative">Inbox
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ user.getCheck }}
-            <span class="visually-hidden">unread messages</span>
-            </span>
-        </button>
+
+
+      <li class="nav-item dropdown notification-section">
+                    <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="true">
+                        <span><i class='fa fa-bell'></i></span>
+                        <span class="badge" id="notification-badge">0</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
+                        data-popper-placement="bottom-end"
+                        style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
+
+                        {% for i in notifications %}
+                        <li class="dropdown-item">{{ i.message }}</li>
+                        <hr class="dropdown-divider">
+                        {% endfor %}
+                        {% for n in saved_notifications %}
+                        <li class="dropdown-item">{{ n.text }}</li>
+                        <hr class="dropdown-divider">
+                        {% endfor %}
+
+
+
+                    </ul>
+                </li>
+
+
         <form class="d-flex" action='/search/'>
           <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
