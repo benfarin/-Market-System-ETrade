@@ -45,18 +45,23 @@ class MemberManagment(UserManagment):
             MemberManagment.__instance = self
 
     def getMembersFromUser(self):
+        super().thereIsSystemManger()
         return self.getMembers()
 
     def getActiveUserFromUser(self):
+        super().thereIsSystemManger()
         return self.getActiveUser()
 
     def getActiveUsers(self):
+        super().thereIsSystemManger()
         return super().getActiveUsers()
 
     def checkOnlineUserFromUser(self, userId):
+        super().thereIsSystemManger()
         return super().checkOnlineUser(userId)
 
     def getMemberByName(self, memberName):
+        super().thereIsSystemManger()
         for member in super().getMembers().values():
             if member.getMemberName() == memberName:
                 return member
@@ -64,6 +69,7 @@ class MemberManagment(UserManagment):
         # raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
 
     def getSystemMangerByName(self, memberName):
+        super().thereIsSystemManger()
         for sm in super().getSystemManagers().values():
             if sm.getMemberName() == memberName:
                 return sm
@@ -71,15 +77,19 @@ class MemberManagment(UserManagment):
         # raise NoSuchMemberException("member: " + str(memberName) + " is not exists")
 
     def getSystemManagers(self):
+        super().thereIsSystemManger()
         return super().getSystemManagers()
 
     def removeFromActiveUsers(self, userId):
+        super().thereIsSystemManger()
         return super().removeFromActiveUsers(userId)
 
     def removeFromMembers(self,userId):
+        super().thereIsSystemManger()
         return super().removeFromMembers(userId)
 
     def createStore(self, storeName, userID, bank, address):
+        super().thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             member = self.getMembers().get(userID)
@@ -90,6 +100,7 @@ class MemberManagment(UserManagment):
             raise Exception(e)
 
     def removeStore(self, userID, storeId):
+        super().thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             member = self.getMembers().get(userID)
@@ -106,6 +117,7 @@ class MemberManagment(UserManagment):
             raise Exception(e)
 
     def recreateStore(self, founderId, storeId):
+        super().thereIsSystemManger()
         try:
             self.checkOnlineUser(founderId)
             member = self.getMembers().get(founderId)
@@ -116,7 +128,25 @@ class MemberManagment(UserManagment):
         except Exception as e:
             raise Exception(e)
 
+    def removeStoreForGood(self, userId, storeId):
+        super().thereIsSystemManger()
+        try:
+            self.checkOnlineUser(userId)
+            member = self.getMembers().get(userId)
+            if member is None:
+                raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+
+            # need somehow to lock all function that trying to get to the store
+            member.removeStoreForGood(storeId)
+            for user in self.getActiveUser().values():
+                user.getCart().removeBag(storeId)
+
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def logoutMember(self, userName):
+        super().thereIsSystemManger()
         try:
             user = self.getMemberByName(userName)
             system_manager = self.getSystemManagers().get(userName)
@@ -147,6 +177,7 @@ class MemberManagment(UserManagment):
             raise Exception(e)
 
     def getMemberTransactions(self, userID):
+        super().thereIsSystemManger()
         self.checkOnlineUser(userID)
         member = self.getMembers().get(userID)
         if member is None:
@@ -156,9 +187,13 @@ class MemberManagment(UserManagment):
     def isSystemManger(self, userName):
         return self.getSystemManagers().get(userName) is not None
 
+    def thereIsSystemManger(self):
+        return super().thereIsSystemManger()
+
 
 # NOT IMPORTANT FUNCTION ---
     def change_password(self,userID,old_password,new_password):
+        super().thereIsSystemManger()
         try:
             self.checkOnlineUser(userID)
             member = self.getMembers().get(userID)

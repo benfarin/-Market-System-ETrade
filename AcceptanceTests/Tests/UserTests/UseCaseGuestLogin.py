@@ -8,20 +8,20 @@ from Backend.Service.UserService import UserService
 
 
 class UseCaseGuestLogin(unittest.TestCase):
-
-    #usecase 2.2
+    # usecase 2.2
+    proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
-        self.proxy = UserProxyBridge(UserRealBridge())
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
 
+    def tearDown(self) -> None:
+        self.proxy.removeSystemManger_forTests("Manager")
+
     def test_login(self):
-        try:
-            self.proxy.login_guest()
-            self.assertTrue(True)
-        except:
-            self.assertTrue(False)
+        guest = self.proxy.login_guest().getData().getUserID()
+        self.assertIsNotNone(guest)
+        self.proxy.exit_system(guest)
 
     def test_massive_login(self):
 
@@ -53,6 +53,22 @@ class UseCaseGuestLogin(unittest.TestCase):
                 if i != j:
                     self.assertNotEqual(Id_i, uIds[j])
             print("id of user " + str(i) + " is: " + str(uIds[i]))
+        for id in uIds:
+            self.proxy.exit_system(id)
+
+    def test_check_withAndWithoutSystemManager(self):
+        self.proxy.removeSystemManger_forTests("Manager")
+        guest2 = self.proxy.login_guest().getData()
+        self.assertIsNone(guest2)
+        check_reg = self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.assertTrue(check_reg.isError())
+        self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+                                          "Ben Gurion", 1, 1)
+        guest3 = self.proxy.login_guest().getData().getUserID()
+        self.assertIsNotNone(guest3)
+        self.proxy.exit_system(guest3)
+
 
 
 if __name__ == '__main__':

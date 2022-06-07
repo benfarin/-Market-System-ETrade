@@ -10,16 +10,17 @@ from Backend.Service.UserService import UserService
 class UseCaseAddProduct(unittest.TestCase):
     # use-case 4.1.1
 
+    proxy_market = MarketProxyBridge(MarketRealBridge())
+    proxy_user = UserProxyBridge(UserRealBridge())
+
     # @classmethod
     def setUp(self):
-        # Proxies
-        self.proxy_market = MarketProxyBridge(MarketRealBridge())
-        self.proxy_user = UserProxyBridge(UserRealBridge())
 
-        # Assign system manager
+        # assign system manager
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                               "Ben Gurion", 1, 1)
-
+                                          "Ben Gurion", 1, 1)
+        admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(admin_id, "Manager", "1234")
         # Create 3 users
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser1", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva", "Rager", 1, 0)
@@ -40,6 +41,16 @@ class UseCaseAddProduct(unittest.TestCase):
                                                     "Rager", 1, 00000).getData().getStoreId()
         self.store_id3 = self.proxy_user.open_store("testStore3", self.user_id3, 123, 1, "Israel", "Beer Sheva",
                                                     "Rager", 1, 00000).getData().getStoreId()
+
+    def tearDown(self) -> None:
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
+        self.proxy_market.removeStoreForGood(self.user_id2, self.store_id2)
+        self.proxy_market.removeStoreForGood(self.user_id3, self.store_id3)
+        self.proxy_user.removeMember("Manager", "testUser1")
+        self.proxy_user.removeMember("Manager", "testUser2")
+        self.proxy_user.removeMember("Manager", "testUser3")
+        self.proxy_user.removeMember("Manager")
+
 
     def test_addProductPositive(self):
         p1_id = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,

@@ -118,7 +118,7 @@ class UserService:
     def removeProductFromCart(self, userId, storeId, productId):
         try:
             isRemoved = self.__userManagment.removeProductFromCart(userId, storeId, productId)
-            logging.info("removeed product " + str(productId) + " from cart for user " + userId)
+            logging.info("removeed product " + str(productId) + " from cart for user " + str(userId))
             return Response(isRemoved)
         except Exception as e:
             logging.error("Failed remove product from cart")
@@ -127,7 +127,7 @@ class UserService:
     def updateProductFromCart(self, userID, storeID, productId, quantity):
         try:
             isUpdated = self.__userManagment.updateProductFromCart(userID, storeID, productId, quantity)
-            logging.info("updated product " + str(productId) + " from cart for user " + userID)
+            logging.info("updated product " + str(productId) + " from cart for user " + str(userID))
             return Response(isUpdated)
         except Exception as e:
             logging.error("Failed updating product in cart")

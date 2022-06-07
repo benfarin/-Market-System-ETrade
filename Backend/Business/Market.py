@@ -463,6 +463,20 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def removeStoreForGood(self, storeID, user):  #TESTED
+        self.__initializeStoresDict()
+        try:
+            if self.__stores.get(storeID) is None:
+                raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
+            founderId = self.__stores.get(storeID).getStoreFounderId()
+            if founderId != user.getUserID():
+                raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+            self.__stores.get(storeID).removeStore()
+            self.__stores.pop(storeID)
+            return True
+        except Exception as e:
+            raise Exception(e)
+
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         self.__initializeStoresDict()
         # the user that get in the system!

@@ -12,6 +12,9 @@ class IMember(Interface):
     def removeStore(self, storeId, user):
         pass
 
+    def removeStoreForGood(self, userId, storeId):
+        pass
+
     def getMemberTransactions(self):
         pass
 

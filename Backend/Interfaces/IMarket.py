@@ -136,6 +136,9 @@ class IMarket(Interface):
     def recreateStore(self, storeID, founder):
         pass
 
+    def removeStoreForGood(self, storeId, founder):
+        pass
+
     def updateCart(self, cart1, cart2):
         pass
 

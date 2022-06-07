@@ -50,10 +50,6 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
-            isMemberHasSameUserName = MemberModel.objects.filter(username=userName)
-            if isMemberHasSameUserName.exists():
-                raise Exception("there is a member with the userName: " + userName + " all ready")
-
             self._m = MemberModel.objects.get_or_create(userid=super().getUserID(),
                                                          member_password=make_password(password),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
@@ -133,6 +129,13 @@ class Member(User):
     def recreateStore(self, storeId):
         try:
             return self.__market.recreateStore(storeId, self)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def removeStoreForGood(self, storeId):
+        try:
+            return self.__market.removeStoreForGood(storeId, self)
         except Exception as e:
             raise Exception(e)
 
