@@ -94,5 +94,14 @@ class MemberService:
             logging.error("Failed to get system manager! ")
             return Response(e.__str__())
 
+    def getAllNotificationsOfUser(self, userID):
+        try:
+            have_notifications = self.__memberManage.getAllNotificationsOfUser(userID)
+            logging.info("succeeded to get all notification from user " + str(userID))
+            return Response(have_notifications)
+        except Exception as e:
+            logging.error("Failed to get user's notifications")
+            return Response(e.__str__())
+
 
 
