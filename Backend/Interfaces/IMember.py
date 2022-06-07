@@ -99,3 +99,13 @@ class IMember(Interface):
     def removeRule(self, storeId, dId, rId, ruleKind):
         pass
 
+    def getAllDiscountOfStore(self, storeId, isComp):
+        pass
+
+    def getAllPurchaseRulesOfStore(self, storeId, isComp):
+        pass
+
+    def getAllRulesOfDiscount(self, storeId, discountId, isComp):
+        pass
+
+

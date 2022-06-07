@@ -61,6 +61,9 @@ class PurchaseRuleComposite:
     def getRuleKind(self):
         return self.__model.rule_kind
 
+    def isComp(self):
+        return True
+
     def removeRule(self):
         rule1 = self.__buildRule(self.__model.ruleID1)
         rule2 = self.__buildRule(self.__model.ruleID2)

@@ -813,6 +813,59 @@ class Store:
         else:
             raise Exception("rule kind is illegal")
 
+    def getAllDiscountOfStore(self, user, isComp):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.first().discount:
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        discounts = []
+        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
+        for d in discount_models:
+            discount = self._buildDiscount(d.discountID)
+            if isComp and discount.isComp():
+                discounts.append(discount)
+            if not isComp and not discount.isComp():
+                discounts.append(discount)
+        return discounts
+
+    def getAllPurchaseRulesOfStore(self, user, isComp):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.first().discount:
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+        rules = []
+        rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
+        for r in rule_models:
+            rule = RuleCreator.getInstance().buildRule(r.ruleID)
+            if isComp and rule.isComp():
+                rules.append(rule)
+            if not isComp and not rule.isComp():
+                rules.append(rule)
+        return rules
+
+    def getAllRulesOfDiscount(self, user, discountId, isComp):
+        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
+        if not permissions.exists():
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        if not permissions.first().discount:
+            raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
+                                      self.__name)
+
+        discount_model = DiscountModel.objects.get(discountID=discountId)
+        discount = self._buildDiscount(discount_model)
+        discountRules = discount.getAllDiscountRules()
+        rules = []
+        for rule in discountRules:
+            if isComp and rule.isComp():
+                rules.append(rule)
+            if not isComp and not rule.isComp():
+                rules.append(rule)
+        return rules
+
     def closeStore(self):
         self.__model.is_active = False
         self.__model.save()

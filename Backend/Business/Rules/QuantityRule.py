@@ -44,6 +44,9 @@ class quantityRule:
     def getRuleKind(self):
         return self.__model.rule_kind
 
+    def isComp(self):
+        return False
+
     def removeRule(self):
         self.__model.delete()
 

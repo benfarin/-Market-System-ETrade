@@ -334,6 +334,24 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
+    def getAllDiscountOfStore(self, storeId, isComp):
+        try:
+            return self.__market.getAllDiscountOfStore(self, storeId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllPurchaseRulesOfStore(self, storeId, isComp):
+        try:
+            return self.__market.getAllPurchaseRulesOfStore(self, storeId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllRulesOfDiscount(self, storeId, discountId, isComp):
+        try:
+            return self.__market.getAllRulesOfDiscount(self, storeId, discountId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
     def removeUser(self):
         super().removeUser()
         self._m.delete()

@@ -50,6 +50,9 @@ class weightRule:
     def removeRule(self):
         self.__model.delete()
 
+    def isComp(self):
+        return False
+
     def getModel(self):
         return self.__model
 

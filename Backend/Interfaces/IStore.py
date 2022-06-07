@@ -140,4 +140,11 @@ class IStore(Interface):
     def removeRuleDiscount(self, user, dId, rId):
         pass
 
+    def getAllDiscountOfStore(self, user, isComp):
+        pass
 
+    def getAllPurchaseRulesOfStore(self, user, isComp):
+        pass
+
+    def getAllRulesOfDiscount(self, user, discountId, isComp):
+        pass

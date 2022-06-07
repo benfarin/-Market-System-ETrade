@@ -521,7 +521,6 @@ class RoleManagment:
 
     def getAllDiscountOfStore(self, userId, storeId, isComp):
         self.__memberManagement.thereIsSystemManger()
-
         self.__memberManagement.checkOnlineUserFromUser(userId)
         member = self.__memberManagement.getMembersFromUser().get(userId)
         if userId not in self.__memberManagement.getMembersFromUser().keys():
@@ -530,15 +529,31 @@ class RoleManagment:
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
             raise Exception("member does not have the permission to add discounts")
-        return member.removeRule(storeId, dId, rId, ruleKind)
+        return member.getAllDiscountOfStore(storeId, isComp)
 
-
-def getAllPurchaseRulesOfStore(self, userId, storeId, isComp):
-        pass
+    def getAllPurchaseRulesOfStore(self, userId, storeId, isComp):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+        if not member.hasDiscountPermission(storeId):
+            raise Exception("member does not have the permission to add discounts")
+        return member.getAllPurchaseRulesOfStore(storeId, isComp)
 
     def getAllRulesOfDiscount(self, userId, storeId, discountId, isComp):
-        pass
-
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+        if not member.hasDiscountPermission(storeId):
+            raise Exception("member does not have the permission to add discounts")
+        return member.getAllRulesOfDiscount(storeId, discountId, isComp)
 
 
     def __getProductId(self):

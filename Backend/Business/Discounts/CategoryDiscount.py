@@ -112,8 +112,8 @@ class CategoryDiscount:
     def getDiscountPercent(self):
         return self.__model.percent
 
-    def getDiscountType(self):
-        return self.__model.type
+    def isComp(self):
+        return False
 
     def getModel(self):
         return self.__model

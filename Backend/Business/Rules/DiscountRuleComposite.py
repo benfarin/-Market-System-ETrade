@@ -60,6 +60,9 @@ class DiscountRuleComposite:
     def getRuleType(self):
         return self.__model.rule_type
 
+    def isComp(self):
+        return True
+
     def getRuleKind(self):
         return self.__model.rule_kind
 

@@ -162,3 +162,12 @@ class IMarket(Interface):
 
     def getCartSum(self, user):
         pass
+
+    def getAllDiscountOfStore(self, user, storeId, isComp):
+        pass
+
+    def getAllPurchaseRulesOfStore(self, user, storeId, isComp):
+        pass
+
+    def getAllRulesOfDiscount(self, user, storeId, discountId, isComp):
+        pass

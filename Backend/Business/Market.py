@@ -600,6 +600,33 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def getAllDiscountOfStore(self, user, storeId, isComp):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllDiscountOfStore(user, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllPurchaseRulesOfStore(self, user, storeId, isComp):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllPurchaseRulesOfStore(user, isComp)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllRulesOfDiscount(self, user, storeId, discountId, isComp):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllRulesOfDiscount(user, discountId, isComp)
+        except Exception as e:
+            raise Exception(e)
+
     def __getGlobalStoreId(self):
         if self.__globalStore is None:
             self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))['storeID__max']

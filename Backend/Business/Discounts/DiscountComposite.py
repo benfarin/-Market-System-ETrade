@@ -96,6 +96,9 @@ class DiscountComposite:
     def getDiscountType(self):
         return self.__model.composite_type
 
+    def isComp(self):
+        return True
+
     def __buildDiscountObject(self, discount_model):
         if discount_model.type == 'Product':
             return ProductDiscount(model=discount_model)
