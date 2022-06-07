@@ -113,8 +113,8 @@ class Member(User):
         return self._m
 
     def getAndReadNotification(self):
-        notifications = NotificationModel.objects.filter(userID=self.getModel(), read=False)
-        for notification in NotificationModel.objects.filter(userID=self.getModel(), read=False):
+        notifications = NotificationModel.objects.filter(userID=self._m, read=False)
+        for notification in notifications:
             notification.read = True
             notification.save()
         return notifications

@@ -129,4 +129,9 @@ class UserProxyBridge:
     def get_member_transaction(self, user_id):
         return self._real_subject.get_member_transaction(user_id)
 
+    def get_member_notifications(self, user_id):
+        if self.check_access():
+            return True
+        return self._real_subject.get_member_notifications(user_id)
+
 
