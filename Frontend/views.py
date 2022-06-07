@@ -47,10 +47,9 @@ def home_page(request):  #FIXED
     is_admin = member_service.isSystemManger(request.user.username).getData()
     all_stores = role_service.getAllStores().getData()
     if request.user.username is not None:
-        notifications = NotificationModel.objects.filter(userID=request.user, read=False)
-        for notification in NotificationModel.objects.filter(userID=request.user, read=False):
-            notification.read = True
-            notification.save()
+        has_notifications = member_service.getAllNotificationsOfUser(request.user.userid)
+        if not has_notifications.isError():
+            notifications = has_notifications.getData()
     else:
         notifications = []
     context = {"title": title, "user": request.user, "stores": all_stores, "is_admin": is_admin,
@@ -112,7 +111,7 @@ def login_page(request):  #FIXED
 
 
 def logout_page(request):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     member_service.logoutMember(user.getMemberName())
     guest = user_service.enterSystem().getData()
     django_user = UserModel.objects.get(userid=guest.getUserID())
@@ -127,14 +126,14 @@ def my_stores_page(request):  #FIXED
     else:
         usertype = False
         title = "My Stores"
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     stores = role_service.getUserStores(user.getUserID()).getData()
     context = {"title": title, "usertype": usertype, "user": user, "stores": stores}
     return render(request, "my_stores.html", context)
 
 
 def create_store_page(request): #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = CreateStoreForm(request.POST or None)
     if form.is_valid():
         form = CreateStoreForm()
@@ -162,7 +161,7 @@ def create_store_page(request): #FIXED
 
 
 def store_page(request, slug):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     store = role_service.getStore(int(slug)).getData()
     answer = role_service.getRolesInformation(int(slug), user.getUserID())
     if not answer.isError():
@@ -180,7 +179,7 @@ def store_products_management(request, slug, slug2):  #FIXED
 
 
 def appoint_manager(request, slug):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
         form = AppointForm()
@@ -199,7 +198,7 @@ def appoint_manager(request, slug):  #FIXED
 
 
 def appoint_Owner(request, slug):   #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
         form = AppointForm()
@@ -218,7 +217,7 @@ def appoint_Owner(request, slug):   #FIXED
 
 
 def add_product(request, slug):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddProductForm(request.POST or None)
     if form.is_valid():
         form = AddProductForm()
@@ -240,7 +239,7 @@ def add_product(request, slug):  #FIXED
 
 
 def get_cart(request):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = user_service.getCart(user.getUserID())
     cart_sum = user_service.getSumAfterDiscount(user.getUserID()).getData()
     bags = []
@@ -254,7 +253,7 @@ def get_cart(request):  #FIXED
 
 
 def add_to_cart_page(request, slug, slug2): #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddProductToCartForm(request.POST or None)
     if form.is_valid():
         form = AddProductToCartForm()
@@ -272,7 +271,7 @@ def add_to_cart_page(request, slug, slug2): #FIXED
 
 
 def purchase_cart(request):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = PurchaseProductForm(request.POST or None)
     if form.is_valid():
         form = PurchaseProductForm()
@@ -321,7 +320,7 @@ def search_view(request): #FIXED
 
 
 def show_history(request, slug):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.getPurchaseHistoryInformation(int(slug), user.getUserID())
     transactions = []
     if not answer.isError():
@@ -333,7 +332,7 @@ def show_history(request, slug):  #FIXED
 
 
 def product_update(request, slug, slug2):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = UpdateProductForm(request.POST or None)
     if form.is_valid():
         form = UpdateProductForm()
@@ -360,7 +359,7 @@ def product_update(request, slug, slug2):  #FIXED
 
 
 def remove_product(request, slug, slug2):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.removeProductFromStore(int(slug), user.getUserID(), int(slug2))
     store = role_service.getUserStores(int(slug)).getData()
     if not answer.isError():
@@ -369,7 +368,7 @@ def remove_product(request, slug, slug2):  #FIXED
 
 
 def add_quantity(request, slug, slug2): #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddProductQuantity(request.POST or None)
     if form.is_valid():
         form = AddProductQuantity()
@@ -393,14 +392,14 @@ def purchases_page(request):
     else:
         usertype = False
         title = "My Purchases"
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     purchases = member_service.getMemberTransactions(user.getUserID()).getData()
     context = {"title": title, "usertype": usertype, "user": user, "purchases": purchases}
     return render(request, "my_purchases.html", context)
 
 
 def permissions_page(request, slug):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
         form = AppointForm()
@@ -434,14 +433,14 @@ def permissions_page(request, slug):  #FIXED
 
 
 def remove_product_from_cart(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = user_service.removeProductFromCart(user.getUserID(), 0, int(slug))
     if not answer.isError():
         return HttpResponseRedirect("/cart/")
     messages.warning(request, answer.getError())
 
 def remove_product_from_cart_with_store(request, slug, slug2):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = user_service.removeProductFromCart(user.getUserID(), int(slug2), int(slug))
     if not answer.isError():
         return HttpResponseRedirect("/cart/")
@@ -449,7 +448,7 @@ def remove_product_from_cart_with_store(request, slug, slug2):
 
 
 def close_store(request, slug):  #FIXED
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = member_service.removeStore(int(slug), user.getUserID())
     if not answer.isError():
         return HttpResponseRedirect("/my_stores/")
@@ -461,7 +460,7 @@ def discounts_page(request, slug):  #FIXED
 
 
 def add_condition_add(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddCondition(request.POST or None)
     if form.is_valid():
         form = AddCondition()
@@ -480,7 +479,7 @@ def add_condition_add(request, slug):
 
 
 def add_condition_max(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddCondition(request.POST or None)
     if form.is_valid():
         form = AddCondition()
@@ -499,7 +498,7 @@ def add_condition_max(request, slug):
 
 
 def add_rule(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddRule(request.POST or None)
     if form.is_valid():
         form = AddRule()
@@ -558,7 +557,7 @@ def add_rule(request, slug):
 
 
 def add_purchase_rule(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddPurchaseRule(request.POST or None)
     if form.is_valid():
         form = AddPurchaseRule()
@@ -616,7 +615,7 @@ def add_purchase_rule(request, slug):
 
 
 def add_store_simple_discount(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddSimpleDiscount_Store(request.POST or None)
     if form.is_valid():
         form = AddSimpleDiscount_Store()
@@ -634,7 +633,7 @@ def add_store_simple_discount(request, slug):
 
 
 def add_store_simple_condition_discount(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddSimpleConditionDiscount_Store(request.POST or None)
     if form.is_valid():
         form = AddSimpleConditionDiscount_Store()
@@ -656,7 +655,7 @@ def add_store_simple_condition_discount(request, slug):
 
 
 def add_category_simple_discount(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddSimpleDiscount_Category(request.POST or None)
     if form.is_valid():
         form = AddSimpleDiscount_Category()
@@ -675,7 +674,7 @@ def add_category_simple_discount(request, slug):
 
 
 def add_category_simple_condition_discount(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddSimpleConditionDiscount_Category(request.POST or None)
     if form.is_valid():
         form = AddSimpleConditionDiscount_Category()
@@ -699,7 +698,7 @@ def add_category_simple_condition_discount(request, slug):
 
 
 def add_product_simple_discount(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddSimpleDiscount_Product(request.POST or None)
     if form.is_valid():
         form = AddSimpleDiscount_Product()
@@ -718,7 +717,7 @@ def add_product_simple_discount(request, slug):
 
 
 def add_product_simple_condition_discount(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddSimpleConditionDiscount_Product(request.POST or None)
     if form.is_valid():
         form = AddSimpleConditionDiscount_Product()
@@ -741,7 +740,7 @@ def add_product_simple_condition_discount(request, slug):
 
 
 def add_condition_or(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddConditionDiscountAndOr(request.POST or None)
     if form.is_valid():
         form = AddConditionDiscountAndOr()
@@ -761,7 +760,7 @@ def add_condition_or(request, slug):
 
 
 def add_condition_xor(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddConditionDiscountXor(request.POST or None)
     if form.is_valid():
         form = AddConditionDiscountXor()
@@ -782,7 +781,7 @@ def add_condition_xor(request, slug):
 
 
 def add_condition_and(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = AddConditionDiscountAndOr(request.POST or None)
     if form.is_valid():
         form = AddConditionDiscountAndOr()
@@ -803,7 +802,7 @@ def add_condition_and(request, slug):
 
 
 def remove_condition(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = RemoveDiscount(request.POST or None)
     if form.is_valid():
         form = RemoveDiscount()
@@ -821,7 +820,7 @@ def remove_condition(request, slug):
 
 
 def remove_Owner(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = RemoveForm(request.POST or None)
     if form.is_valid():
         form = RemoveForm()
@@ -839,7 +838,7 @@ def remove_Owner(request, slug):
 
 
 def remove_member(request):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = RemoveMemberForm(request.POST or None)
     if form.is_valid():
         form = RemoveMemberForm()
@@ -857,7 +856,7 @@ def remove_member(request):
 
 
 def all_stores_transactions(request):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.getAllStoreTransactions(user.getMemberName())
     stores_transactions = []
     if not answer.isError():
@@ -867,7 +866,7 @@ def all_stores_transactions(request):
 
 
 def all_user_transactions(request):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.getAllUserTransactions(user.getMemberName())
     user_transactions = []
     if not answer.isError():
@@ -877,7 +876,7 @@ def all_user_transactions(request):
 
 
 def store_transactions(request):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = StoreTransactions(request.POST or None)
     if form.is_valid():
         form = StoreTransactions()
@@ -895,7 +894,7 @@ def store_transactions(request):
 
 
 def user_transactions(request):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = UserTransactions(request.POST or None)
     if form.is_valid():
         form = UserTransactions()
@@ -913,7 +912,7 @@ def user_transactions(request):
 
 
 def store_transactions_ID(request):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     form = StoreTransactionsByID(request.POST or None)
     if form.is_valid():
         form = StoreTransactionsByID()
@@ -931,7 +930,7 @@ def store_transactions_ID(request):
 
 
 def show_store_transactions(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.getStoreTransaction(user.getMemberName(), int(slug))
     stores_transactions = []
     if not answer.isError():
@@ -941,7 +940,7 @@ def show_store_transactions(request, slug):
 
 
 def show_user_transactions(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.getUserTransaction(user.getMemberName(), slug)
     user_transactions = []
     if not answer.isError():
@@ -951,7 +950,7 @@ def show_user_transactions(request, slug):
 
 
 def show_store_transactions_ID(request, slug):
-    user = user_service.getUserByUserName(request.user.username).getData()
+    user = user_service.getUser(request.user.userid).getData()
     answer = role_service.getStoreTransactionByStoreId(user.getMemberName(), int(slug))
     stores_transactions = []
     if not answer.isError():

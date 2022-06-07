@@ -14,7 +14,7 @@ from Backend.Interfaces.IMarket import IMarket
 import Backend.Business.Market as m
 from concurrent.futures import Future
 
-from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel
+from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel, NotificationModel
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -112,6 +112,12 @@ class Member(User):
     def getModel(self):
         return self._m
 
+    def getAndReadNotification(self):
+        notifications = NotificationModel.objects.filter(userID=self.getModel(), read=False)
+        for notification in NotificationModel.objects.filter(userID=self.getModel(), read=False):
+            notification.read = True
+            notification.save()
+        return notifications
     @threaded
     def createStore(self, storeName, bank, address):
         try:
