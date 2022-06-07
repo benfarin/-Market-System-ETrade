@@ -14,19 +14,23 @@ class UseCaseMemberRegister(unittest.TestCase):
     def setUp(self):
         self.proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1).getData()
-        admin_id = self.proxy.login_guest().getData().getUserID()
-        self.proxy.login_member(admin_id, "manager", "1234")
+        self.admin_id = self.proxy.login_guest().getData().getUserID()
+        self.proxy.login_member(self.admin_id, "manager", "1234")
 
     def tearDown(self):
+        self.proxy.exit_system(self.admin_id)
         self.proxy.removeSystemManger_forTests("manager")
+        self.proxy.reset_management()
 
     def test_register_positive_one(self):
-        self.proxy.login_guest().getData().getUserID()
+        guestid = self.proxy.login_guest().getData().getUserID()
         self.assertTrue(self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 0))
 
         # remove the user
         self.proxy.removeMember("manager", "user1")
+        self.proxy.exit_system(guestid)
+
 
     def test_register_positive_two(self):
 

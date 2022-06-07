@@ -222,6 +222,9 @@ class MarketRealBridge:
     def getAllCompositeRulesOfDiscount(self, userId, storeId, discountId):
         return self._roleService.getAllCompositeRulesOfDiscount(userId, storeId, discountId)
 
+    def reset_management(self):
+        return self._userService.resetManagement()
+
 
 
 

@@ -18,8 +18,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
         # assign system manager
         self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(admin_id, "manager", "1234")
+        self.admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.admin_id, "manager", "1234")
 
         # create 3 users
         self.__guestId = self.user_proxy.login_guest().getData().getUserID()
@@ -64,6 +64,10 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.market_proxy.add_quantity_to_store(self.store_2, self.user_id, self.product2, 100)
 
     def tearDown(self) -> None:
+        self.user_proxy.exit_system(self.admin_id)
+        self.user_proxy.exit_system(self.__guestId)
+        self.user_proxy.exit_system(self.__guestId2)
+        self.user_proxy.exit_system(self.__guestId3)
         # remove products from stores
         self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product01)
         self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product02)
@@ -78,6 +82,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.removeMember("manager", "user2")
         self.user_proxy.removeMember("manager", "user3")
         self.user_proxy.removeSystemManger_forTests("manager")
+        self.user_proxy.reset_management()
 
     def test_purchase_positive1(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 20)
@@ -106,6 +111,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
 
         # teardown stuff
         self.user_proxy.removeMember("manager","user4")
+        self.user_proxy.exit_system(guest2_id)
+
 
     def test_login_logout_login_purchase(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
@@ -128,6 +135,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
 
         # teardown stuff
         self.user_proxy.removeMember("manager", "user4")
+        self.user_proxy.exit_system(guest4_id)
+        self.user_proxy.exit_system(guest)
 
     def test_two_user_buy_same_time(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
@@ -156,7 +165,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
 
         self.assertTrue(ut_1.getData().getTotalAmount() == 3310 and ut_2.getData().getTotalAmount() == 2240)
         # teardown stuff
-        self.user_proxy.removeMember("Manager", "user4")
+        self.user_proxy.removeMember("manager", "user4")
+        self.user_proxy.exit_system(guest4_id)
 
     def test_cart_clean(self):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)

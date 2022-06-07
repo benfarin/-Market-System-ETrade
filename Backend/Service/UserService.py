@@ -248,6 +248,10 @@ class UserService:
             logging.error("Failed to get user" + str(userID))
             return Response(e.__str__())
 
+    def resetManagement(self):
+        self.__userManagment.resetManagement()
+
+
 
 
 

@@ -91,6 +91,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.exit_system(self.guest_id4)
         self.proxy_user.exit_system(self.guest_id5)
 
+        self.proxy_user.reset_management()
         # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 

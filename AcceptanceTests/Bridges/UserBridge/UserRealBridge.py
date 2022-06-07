@@ -91,5 +91,8 @@ class UserRealBridge:
     def get_member_notifications(self, user_id):
         return self._memberService.getAllNotificationsOfUser(user_id)
 
+    def reset_management(self):
+        return self._userService.resetManagement()
+
 
 

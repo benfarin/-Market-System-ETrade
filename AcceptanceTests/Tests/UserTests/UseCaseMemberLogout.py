@@ -14,14 +14,17 @@ class UseCaseMemberLogout(unittest.TestCase):
     def setUp(self):
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                               "Ben Gurion", 1, 1)
-        admin_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(admin_id, "Manager", "1234")
+        self.admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.admin_id, "Manager", "1234")
         self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva", "Ben Gurion", 0, 0)
 
     def tearDown(self) -> None:
+        self.user_proxy.exit_system(self.admin_id)
+        self.user_proxy.exit_system(self.__guestId1)
         self.user_proxy.removeMember("Manager", "user1")
         self.user_proxy.removeSystemManger_forTests("Manager")
+        self.user_proxy.reset_management()
 
     def test_logout_positive(self):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")
@@ -32,14 +35,16 @@ class UseCaseMemberLogout(unittest.TestCase):
         self.assertTrue(self.user_proxy.logout_member("Manager").isError())
         guestId = self.user_proxy.login_guest().getData().getUserID()
         self.assertTrue(self.user_proxy.login_member(guestId, "Manager", "1234").getData())
+        self.user_proxy.exit_system(guestId)
 
     def test_logout_login_logout(self):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
 
-        self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(self.__guestId1, "user1", "1234")
+        self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.__guestId2, "user1", "1234")
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
+        self.user_proxy.exit_system(self.__guestId2)
 
     def test_logout_FAIL(self):
         user_id = self.user_proxy.login_member(self.__guestId1, "user1", "1234").getData().getUserID()

@@ -12,15 +12,18 @@ class UseCaseMemberLogin(unittest.TestCase):
     def setUp(self):
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                          "Ben Gurion", 1, 1)
-        admin = self.proxy.login_guest().getData().getUserID()
-        self.proxy.login_member(admin, "Manager", "1234")
+        self.admin = self.proxy.login_guest().getData().getUserID()
+        self.proxy.login_member(self.admin, "Manager", "1234")
         self.__guestId1 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                            "Ben Gurion", 0, 1)
 
     def tearDown(self):
+        self.proxy.exit_system(self.admin)
+        self.proxy.exit_system(self.__guestId1)
         self.proxy.removeMember("Manager", "user1")
         self.proxy.removeSystemManger_forTests("Manager")
+        self.proxy.reset_management()
 
     def test_login_positive(self):
         member = self.proxy.login_member(self.__guestId1, "user1", "1234")
@@ -71,6 +74,20 @@ class UseCaseMemberLogin(unittest.TestCase):
                     self.assertNotEqual(Id_i, uIds[j])
             print("id of user " + str(i + 2) + " is: " + str(uIds[i]))
 
+        self.proxy.exit_system(self.__guestId2)
+        self.proxy.exit_system(self.__guestId3)
+        self.proxy.exit_system(self.__guestId4)
+        self.proxy.exit_system(self.__guestId5)
+        self.proxy.exit_system(self.__guestId6)
+        self.proxy.exit_system(self.__guestId7)
+        self.proxy.removeMember("Manager", "user2")
+        self.proxy.removeMember("Manager", "user3")
+        self.proxy.removeMember("Manager", "user4")
+        self.proxy.removeMember("Manager", "user5")
+        self.proxy.removeMember("Manager", "user6")
+        self.proxy.removeMember("Manager", "user7")
+
+
     def test_login_twice(self):
         guest2 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
@@ -78,6 +95,8 @@ class UseCaseMemberLogin(unittest.TestCase):
         self.assertTrue(self.proxy.login_member(guest2, "user2", "1234").getData())
         self.assertTrue(self.proxy.login_member(guest2, "user2", "1234").isError())
 
+
+        self.proxy.exit_system(guest2)
         self.proxy.removeMember("Manager", "user2")
 
     # def test_threaded_login_twice(self):

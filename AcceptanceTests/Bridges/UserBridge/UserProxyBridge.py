@@ -134,4 +134,7 @@ class UserProxyBridge:
             return True
         return self._real_subject.get_member_notifications(user_id)
 
+    def reset_management(self):
+        return self._real_subject.reset_management()
+
 

@@ -12,11 +12,13 @@ class UseCaseGuestDisconnect(unittest.TestCase):
         # assign system manager
         self.proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.proxy.login_guest().getData().getUserID()
-        self.proxy.login_member(admin_id, "manager", "1234")
+        self.admin_id = self.proxy.login_guest().getData().getUserID()
+        self.proxy.login_member(self.admin_id, "manager", "1234")
 
     def tearDown(self) -> None:
+        self.proxy.exit_system(self.admin_id)
         self.proxy.removeSystemManger_forTests("manager")
+        self.proxy.reset_management()
 
     def test_positive(self):
         guest_id = self.__guestId1 = self.proxy.login_guest().getData().getUserID()

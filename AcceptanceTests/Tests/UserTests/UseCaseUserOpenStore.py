@@ -19,8 +19,8 @@ class UseCaseUserOpenStore(unittest.TestCase):
         # assign system manager
         self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(admin_id, "manager", "1234")
+        self.admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.admin_id, "manager", "1234")
 
         self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
@@ -38,6 +38,10 @@ class UseCaseUserOpenStore(unittest.TestCase):
         self.founder3_id = self.user_proxy.login_member(self.__guestId3, "user3", "1234").getData().getUserID()
 
     def tearDown(self) -> None:
+        self.user_proxy.exit_system(self.admin_id)
+        self.user_proxy.exit_system(self.__guestId1)
+        self.user_proxy.exit_system(self.__guestId2)
+        self.user_proxy.exit_system(self.__guestId3)
         self.user_proxy.removeMember("manager", "user1")
         self.user_proxy.removeMember("manager", "user2")
         self.user_proxy.removeMember("manager", "user3")
@@ -48,24 +52,24 @@ class UseCaseUserOpenStore(unittest.TestCase):
                                            0, "000000")
         self.assertTrue(store.getData())
 
-        self.market_proxy.removeStoreForGood(self.founder1_id, store)
+        self.market_proxy.removeStoreForGood(self.founder1_id, store.getData().getStoreId())
 
     def test_open_stores_at_the_same_time(self):
         t1 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-1", self.founder1_id, 0, 0,
                                                                        "israel", "Beer-Sheva", "Ben-Gurion",
-                                                                       0, "000000"))
+                                                                       0, "000000",))
         t2 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-2", self.founder2_id, 0, 0,
                                                                        "israel", "Beer-Sheva", "Ben-Gurion",
-                                                                       0, "000000"))
+                                                                       0, "000000",))
         t3 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-3", self.founder2_id, 0, 0,
                                                                        "israel", "Beer-Sheva", "Ben-Gurion",
-                                                                       0, "000000"))
+                                                                       0, "000000",))
         t4 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-4", self.founder3_id, 0, 0,
                                                                        "israel", "Beer-Sheva", "Ben-Gurion",
-                                                                       0, "000000"))
+                                                                       0, "000000",))
         t5 = ThreadWithReturn(target=self.user_proxy.open_store, args=("store-5", self.founder3_id, 0, 0,
                                                                        "israel", "Beer-Sheva", "Ben-Gurion",
-                                                                       0, "000000"))
+                                                                       0, "000000",))
 
         t1.start()
         t2.start()
@@ -108,8 +112,9 @@ class UseCaseUserOpenStore(unittest.TestCase):
                                            0, "000000")
         self.assertTrue(store.getData())
 
-        self.market_proxy.removeStoreForGood(founder, store)
+        self.market_proxy.removeStoreForGood(founder, store.getData().getStoreId())
         self.user_proxy.removeMember("manager", "user4")
+        self.user_proxy.exit_system(guestId)
 
 
 

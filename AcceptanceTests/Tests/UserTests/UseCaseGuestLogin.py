@@ -17,6 +17,7 @@ class UseCaseGuestLogin(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.proxy.removeSystemManger_forTests("Manager")
+        self.proxy.reset_management()
 
     def test_login(self):
         guest = self.proxy.login_guest().getData().getUserID()
