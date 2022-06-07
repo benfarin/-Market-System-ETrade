@@ -10,7 +10,7 @@ import threading
 from concurrent.futures import Future
 import os
 
-from ModelsBackend.models import CartModel, UserModel, UserTransactionModel
+from ModelsBackend.models import CartModel, UserModel, UserTransactionModel, BagModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -196,5 +196,8 @@ class User:
 
 
     def removeUser(self):
+        UserTransactionModel.objects.filter(userID=self._model.userid).delete()
+        CartModel.objects.filter(userid=self._model.userid).delete()
+        BagModel.objects.filter(userId=self._model.userid).delete()
         self._model.delete()
 

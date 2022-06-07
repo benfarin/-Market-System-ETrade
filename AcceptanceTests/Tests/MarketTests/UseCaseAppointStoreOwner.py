@@ -15,9 +15,7 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())
 
-
     def setUp(self):
-
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
         admin = self.proxy_user.login_guest().getData().getUserID()
@@ -65,14 +63,14 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
         # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
+    def test_appoint_store_owner_positive(self):
+        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser2").getData())
 
-    def test_AppointStoreOwnerPositive(self):
+    def test_AppointStoreOwnerTwice(self):
         # store_id, assigner_id, assignee_name
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser2").getData())
+        # can't appoint owner twice
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser2").isError())
-        self.proxy_user.logout_member(self.user1_id)
-        self.proxy_user.login_member(self.user1_id, "testUser", "1234")
-        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser3").getData())
 
     def test_AppointStoreOwnerNoStore(self):
         self.assertTrue(self.proxy_market.appoint_store_owner(-1, self.user1_id, "testUser2").isError())
@@ -80,20 +78,11 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
 
     def test_AppointStoreOwnerNoOwner(self):
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, -1, "testUser2").isError())
-        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, 2, "egeadasd").isError())
-
-    def test_AppointStoreOwnerTwice(self):
-        # user was already appointed
-        self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser2")
-        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser2").getError())
-        self.proxy_user.logout_member(self.user1_id)
-        self.proxy_user.login_member(self.user1_id, "testUser", "1234")
-        self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser3")
-        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "testUser3").getError())
+        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "Ori").isError())
 
     def test_AppointStoreOwnerNoPermission(self):
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user2_id, "testUser3").isError())
-        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "").getError())
+        self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id, self.user1_id, "Niv").isError())
 
 
 

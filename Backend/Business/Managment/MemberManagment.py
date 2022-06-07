@@ -202,3 +202,13 @@ class MemberManagment(UserManagment):
             return member.change_password(old_password, new_password)
         except Exception as e:
             raise Exception(e)
+
+    def getAllNotificationsOfUser(self, userID):
+        super().thereIsSystemManger()
+        try:
+            member = self.getMembers().get(userID)
+            notifications = member.getAndReadNotification()
+            return notifications
+        except Exception as e:
+            raise Exception(e)
+

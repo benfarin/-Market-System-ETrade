@@ -7,22 +7,31 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 
 class UseCaseSearchProduct(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.market_proxy = MarketProxyBridge(MarketRealBridge())
-        cls.user_proxy = UserProxyBridge(UserRealBridge())
-        cls.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                              "Ben Gurion", 1, 1)
-        cls.__guestId1 = cls.user_proxy.login_guest().getData().getUserID()
-        cls.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+    market_proxy = MarketProxyBridge(MarketRealBridge())
+    user_proxy = UserProxyBridge(UserRealBridge())
+
+    def setUp(self):
+        # assign system manager
+        self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
+                                               "Ben Gurion", 1, 1)
+        admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(admin_id, "Manager", "1234")
+
+        self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register("Rotem", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, 0)
-        cls.user_id = cls.user_proxy.login_member(cls.__guestId1, "user1", "1234").getData().getUserID()
-        cls.store_id = cls.user_proxy.open_store("store", cls.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                                 0, 1).getData().getStoreId()
-        cls.product1 = cls.market_proxy.add_product_to_store(cls.store_id, cls.user_id, "Product", 500,
+        self.user_id = self.user_proxy.login_member(self.__guestId1, "Rotem", "1234").getData().getUserID()
+        self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
+                                                   0, 1).getData().getStoreId()
+        self.product1 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
                                                              "Milk", 10, ["Test1", "Test2"]).getData()
-        cls.product2 = cls.market_proxy.add_product_to_store(cls.store_id, cls.user_id, "Product2", 10,
+        self.product2 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product2", 10,
                                                              "Meat", 10, ["Test3", "Test4"]).getData()
+
+    def tearDown(self) -> None:
+        self.market_proxy.removeStoreForGood(self.user_id, self.store_id)
+        self.user_proxy.removeMember("Manager", "Rotem")
+        self.user_proxy.removeSystemManger_forTests("Manager")
 
     def test_search_by_name(self):
         self.assertEqual(self.market_proxy.search_product_name("ProduCt").getData()[0].getProductId(),

@@ -14,7 +14,7 @@ from Backend.Interfaces.IMarket import IMarket
 import Backend.Business.Market as m
 from concurrent.futures import Future
 
-from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel
+from ModelsBackend.models import MemberModel, CartModel, BagModel, UserTransactionModel, NotificationModel
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -40,8 +40,7 @@ def threaded(fn):
 
 
 class Member(User):
-    def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):
-        super().__init__(model)  # extend the constructor of user class
+    def __init__(self, userName=None, password=None, phone=None, address=None, bank=None, model=None):  # extend the constructor of user class
         # self.__isLoggedIn = False
         # self.__userName = userName  # string
         # self.__password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())  # string
@@ -50,12 +49,14 @@ class Member(User):
         # self.__bank :Bank = bank  # type bank
         self.__market: IMarket = m.Market.getInstance()
         if model is None:
+            super().__init__()
             self._m = MemberModel.objects.get_or_create(userid=super().getUserID(),
                                                          member_password=make_password(password),
                                                          phone=phone, address=address.getModel(), bank=bank.getModel(),
                                                          cart=super().getCart().getModel())[0]
             super().setUsername(userName)
         else:
+            super().__init__(model)
             self._m = model
 
     def setLoggedIn(self, state):
@@ -111,6 +112,12 @@ class Member(User):
     def getModel(self):
         return self._m
 
+    def getAndReadNotification(self):
+        notifications = NotificationModel.objects.filter(userID=self.getModel(), read=False)
+        for notification in NotificationModel.objects.filter(userID=self.getModel(), read=False):
+            notification.read = True
+            notification.save()
+        return notifications
     @threaded
     def createStore(self, storeName, bank, address):
         try:
@@ -329,9 +336,6 @@ class Member(User):
 
     def removeUser(self):
         super().removeUser()
-        UserTransactionModel.objects.filter(userID=self._m.userid).delete()
-        CartModel.objects.filter(userid=self._m.userid).delete()
-        BagModel.objects.filter(userId=self._m.userid).delete()
         self._m.delete()
 
     def _buildCart(self, model):

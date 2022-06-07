@@ -7,23 +7,30 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 class UseCaseEditProduct(unittest.TestCase):
     # use-case 4.1.3
-    @classmethod
-    def setUpClass(self):
 
-        self.proxy_market = MarketProxyBridge(MarketRealBridge())
-        self.proxy_user = UserProxyBridge(UserRealBridge())
+    proxy_market = MarketProxyBridge(MarketRealBridge())
+    proxy_user = UserProxyBridge(UserRealBridge())
 
+    def setUp(self):
+        # assign manager
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
+        admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(admin_id, "Manager", "1234")
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.register("testUser", "1234", "0540000000", 123, 1 ,"Israel", "Beer Sheva", "Rager", 1, 0)
+        self.proxy_user.register("Bar", "1234", "0540000000", 123, 1 ,"Israel", "Beer Sheva", "Rager", 1, 0)
         # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        self.user_id = self.proxy_user.login_member(self.__guestId1, "testUser", "1234").getData().getUserID()
+        self.user_id = self.proxy_user.login_member(self.__guestId1, "Bar", "1234").getData().getUserID()
         self.store_id = self.proxy_user.open_store("testStore", self.user_id, 123, 1, "Israel", "Beer Sheva", "Rager", 1, 00000).getData().getStoreId()
         # store_id, user_id, name, price, category, key_words
         self.prod_id = self.proxy_market.add_product_to_store(self.store_id, self.user_id, "testProduct", 10,
                                                               "testCategory", 10,  ["testKeyWord"]).getData()
+
+    def tearDown(self) -> None:
+        self.proxy_market.removeStoreForGood(self.user_id, self.store_id)
+        self.proxy_user.removeMember("Manager", "Bar")
+        self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_editProductPricePositive(self):
         # store_id, user_id, prod_id, new_price

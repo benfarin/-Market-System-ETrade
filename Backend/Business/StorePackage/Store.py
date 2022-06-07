@@ -620,22 +620,22 @@ class Store:
         return toReturnProducts
 
     def addProductToBag(self, productId, quantity):
-        product_model = ProductModel.objects.get(product_id=productId)
-        if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
-            raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
-        if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
-            raise ProductException("cannot add a negative quantity to bag")
-        else:
-            with self.__stockLock:
-                quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
-                quantity_to_change.quantity -= quantity
-                quantity_to_change.save()
-                return True
+        with self.__stockLock:
+            product_model = ProductModel.objects.get(product_id=productId)
+            if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
+                raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
+            if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
+                raise ProductException("cannot add a negative quantity to bag")
+            quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
+            quantity_to_change.quantity -= quantity
+            quantity_to_change.save()
+            return True
 
     def removeProductFromBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
-        if not ProductModel.objects.filter(product_id=productId).exists():
-            raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
         with self.__stockLock:
+            if not ProductModel.objects.filter(product_id=productId).exists():
+                raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
+
             product_model = ProductModel.objects.get(product_id=productId)
             product_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
             product_to_change.quantity += quantity
@@ -822,6 +822,9 @@ class Store:
         self.__model.save()
 
     def removeStore(self):
+        for prod_model in ProductsInStoreModel.objects.filter(storeID= self.__model.storeID):
+            model = prod_model.productID
+            model.delete()
         StoreTransactionModel.objects.filter(storeId=self.__model.storeID).delete()
         self.__model.owners.remove()
         self.__model.managers.remove()

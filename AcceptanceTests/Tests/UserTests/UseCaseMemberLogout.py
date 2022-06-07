@@ -28,11 +28,10 @@ class UseCaseMemberLogout(unittest.TestCase):
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
 
     def test_logout_systemManger(self):
-        # system manager is not a member!
-        self.assertFalse(self.user_proxy.logout_member("Manager").isError())
-
+        self.assertTrue(self.user_proxy.logout_member("Manager").getData())
+        self.assertTrue(self.user_proxy.logout_member("Manager").isError())
         guestId = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guestId, "Manager", "1234")
+        self.assertTrue(self.user_proxy.login_member(guestId, "Manager", "1234").getData())
 
     def test_logout_login_logout(self):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")
