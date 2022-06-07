@@ -6,8 +6,8 @@ class CompositeRuleDTO:
 
     def __init__(self, rule: DiscountRuleComposite):
         self.__rId = rule.getRuleId()
-        self.__rule1 = RuleDTO(rule.getRule1().getRuleId())
-        self.__rule2 = RuleDTO(rule.getRule2().getRuleId())
+        self.__rule1 = RuleDTO(rule.getRule1())
+        self.__rule2 = RuleDTO(rule.getRule2())
 
     def getRuleId(self):
         return self.__rId

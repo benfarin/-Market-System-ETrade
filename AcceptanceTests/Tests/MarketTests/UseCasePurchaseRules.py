@@ -61,44 +61,70 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_addSimpleRuleStore(self):
-        self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 100, 2000).getData()
+        r_id = self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1,
+                                                                 100, 2000).getData().getRuleId()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(1100, userTransaction.getData().getTotalAmount())
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllSimplePurchaseRulesOfStore(self.user_id1,
+                                                                                 self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [r_id])
 
     def test_addSimpleRuleStore_NotPassing(self):
-        self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 1500, 10000).getData()
+        r_id = self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1,
+                                                                 1500, 10000).getData().getRuleId()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(0, userTransaction.getData().getTotalAmount())
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllSimplePurchaseRulesOfStore(self.user_id1,
+                                                                                 self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [r_id])
 
     def test_addCondPurchaseRule_AND(self):
         rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityPurchaseRule(self.user_id1, self.store_id1, "testCategory", 0, 5).getData().getRuleId()
-        self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2)
+        r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(0, userTransaction.getData().getTotalAmount())
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllSimplePurchaseRulesOfStore(self.user_id1,
+                                                                                 self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [])
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllCompositePurchaseRulesOfStore(self.user_id1,
+                                                                                    self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [r_id])
 
     def test_addCondDiscountRule_OR(self):
         rId1 = self.proxy_market.addProductQuantityPurchaseRule(self.user_id1, self.store_id1, self.product_id, 5, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addStoreQuantityPurchaseRule(self.user_id1, self.store_id1, 0, 30).getData().getRuleId()
-        self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2)
+        r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(1100, userTransaction.getData().getTotalAmount())
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllSimplePurchaseRulesOfStore(self.user_id1,
+                                                                                 self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [])
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllCompositePurchaseRulesOfStore(self.user_id1,
+                                                                                    self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [r_id])
 
     def test_addCondDiscountRule_OR_AND_with_discount(self):
         self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
@@ -108,13 +134,22 @@ class UseCasePurchaseRules(unittest.TestCase):
         rId3 = self.proxy_market.addStoreTotalAmountPurchaseRule(self.user_id1, self.store_id1, 100, 100000).getData().getRuleId()
 
         rOr_id = self.proxy_market.addCompositeRulePurchaseOr(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
-        self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId3, rOr_id)
+        r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId3, rOr_id).getData().getRuleId()
 
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
         print(userTransaction)
+
         self.assertEqual(1000, userTransaction.getData().getTotalAmount())
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllSimplePurchaseRulesOfStore(self.user_id1,
+                                                                                 self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [])
+        rulesInDiscountIds = [rule.getRuleId() for rule in
+                              self.proxy_market.getAllCompositePurchaseRulesOfStore(self.user_id1,
+                                                                                    self.store_id1).getData()]
+        self.assertEqual(rulesInDiscountIds, [r_id])
 
 
 if __name__ == '__main__':
