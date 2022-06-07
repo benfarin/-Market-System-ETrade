@@ -166,11 +166,12 @@ def store_page(request, slug):  #FIXED
     answer = role_service.getRolesInformation(int(slug), user.getUserID())
     if not answer.isError():
         permissions = answer.getData()
+        discounts_and_rules_info = getDiscountsDTO(request, store.getStoreId())
         for permission in permissions:
             if permission.getUserId() == user.getUserID():
                 context = {"permissions": permission, "items": store.getProductsAsList()}
                 return render(request, "store.html", context)
-    context = {"permissions": [], "items": store.getProductsAsList()}
+    context = {"permissions": [], "items": store.getProductsAsList(), "info" : discounts_and_rules_info}
     return render(request, "store.html", context)
 
 
@@ -957,3 +958,23 @@ def show_store_transactions_ID(request, slug):
         stores_transactions += (answer.getData())
     context = {"title": "Store Transaction", "transactions": stores_transactions}
     return render(request, "transactions.html", context)
+
+
+def getDiscountsDTO(request, storeID):
+    info = []
+    simple_discount = role_service.getAllSimpleDiscountOfStore(request.user.userid, storeID)
+    if not simple_discount.isError():
+        info += simple_discount.getData()
+    composite_discount = role_service.getAllCompositeDiscountOfStore(request.user.userid, storeID)
+    if not composite_discount.isError():
+        info += composite_discount.getData()
+    simple_purchase_rule = role_service.getAllSimplePurchaseRulesOfStore(request.user.userid, storeID)
+    if not simple_purchase_rule.isError():
+        info += simple_purchase_rule.getData()
+    composite_purchase_rule = role_service.getAllCompositePurchaseRulesOfStore(request.user.userid, storeID)
+    if not composite_purchase_rule.isError():
+        info += composite_purchase_rule.getData()
+    # role_service.getAllSimpleRulesOfDiscount()
+    # role_service.getAllCompositeRulesOfDiscount()
+
+    return info
