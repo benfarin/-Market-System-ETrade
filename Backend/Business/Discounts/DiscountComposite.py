@@ -96,6 +96,12 @@ class DiscountComposite:
     def getDiscountType(self):
         return self.__model.composite_type
 
+    def getClassType(self):
+        return self.__model.type
+
+    def getDecide(self):
+        return self.__model.decide
+
     def isComp(self):
         return True
 
