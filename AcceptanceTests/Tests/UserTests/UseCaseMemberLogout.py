@@ -57,14 +57,16 @@ class UseCaseMemberLogout(unittest.TestCase):
 
     def test_threaded_logout_twice(self):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")
-        t1 = ThreadWithReturn(target=self.user_proxy.logout_member, args=("user1"))
-        t2 = ThreadWithReturn(target=self.user_proxy.logout_member, args=("user1"))
+        t1 = ThreadWithReturn(target=self.user_proxy.logout_member, args=(("user1"),))
+        t2 = ThreadWithReturn(target=self.user_proxy.logout_member, args=(("user1"),))
         t1.start()
         t2.start()
         ans1 = t1.join()
         ans2 = t2.join()
         print(ans1)
         print(ans2)
+        self.assertTrue(ans1.isError() or ans2.isError())
+        self.assertTrue(ans1.getData() is True or ans2.getData() is True)
 
 
 

@@ -21,17 +21,14 @@ class UseCaseMemberRegister(unittest.TestCase):
         self.proxy.removeSystemManger_forTests("manager")
 
     def test_register_positive_one(self):
-        guestId = self.proxy.login_guest().getData().getUserID()
-        self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
-                            "Ben Gurion", 0, 0)
-        self.assertTrue(self.proxy.login_member(guestId, "user1", "1234").getData())
+        self.proxy.login_guest().getData().getUserID()
+        self.assertTrue(self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 0))
 
         # remove the user
         self.proxy.removeMember("manager", "user1")
 
     def test_register_positive_two(self):
-        guestId1 = self.proxy.login_guest().getData().getUserID()
-        guestId2 = self.proxy.login_guest().getData().getUserID()
 
         t1 = ThreadWithReturn(target=self.proxy.register, args=("user1", "1234", "0500000000", "500",
                                                                 "20", "Israel", "Beer Sheva", "Ben Gurion", 0, 0))
@@ -39,36 +36,27 @@ class UseCaseMemberRegister(unittest.TestCase):
                                                                 "200", "UK", "Tel Aviv", "center", 1, 0))
         t1.start()
         t2.start()
-        t1.join()
-        t2.join()
-        self.assertTrue(
-            self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
-                                                                                                     "123456").getData())
+        self.assertTrue(t1.join() and t2.join())
+
         # tear down stuff
         self.proxy.removeMember("manager", "user1")
         self.proxy.removeMember("manager", "user2")
 
     def test_register_negative_same_username(self):
-        guestId1 = self.proxy.login_guest().getData().getUserID()
-        guestId2 = self.proxy.login_guest().getData().getUserID()
-
         t1 = ThreadWithReturn(target=self.proxy.register, args=("user1", "1234", "0500000000", "500",
                                                                 "20", "Israel", "Beer Sheva", "Ben Gurion", 0, 0))
-        t2 = ThreadWithReturn(target=self.proxy.register, args=("user2", "123456", "0505555555", "501",
+        t2 = ThreadWithReturn(target=self.proxy.register, args=("user1", "123456", "0505555555", "501",
                                                                 "200", "UK", "Tel Aviv", "center", 1, 0))
         t1.start()
         t2.start()
-        t1.join()
-        t2.join()
-        self.assertFalse(
-            self.proxy.login_member(guestId1, "user1", "1234").getData() and self.proxy.login_member(guestId2, "user2",
-                                                                                                     "123456").getData())
+        ans1 = t1.join()
+        ans2 = t2.join()
+        self.assertTrue(ans1.isError() or ans2.isError())
 
         # tear down stuff
         self.proxy.removeMember("manager", "user1")
-        self.proxy.removeMember("manager", "user2")
 
-    def test_register_positive_same_username(self):
+    def test_register_same_username(self):
         self.proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 0)
 

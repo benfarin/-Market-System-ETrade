@@ -98,7 +98,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.exit_system(self.guest_id4)
         self.proxy_user.exit_system(self.guest_id5)
 
-        #remove system manager
+        # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_cart_info_positive_simple(self):
@@ -115,8 +115,6 @@ class UseCaseGetCartNEdit(unittest.TestCase):
 
         # teardown stuff - remove the prod from the cart
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id1, self.p1_id)
-
-
 
     def test_cart_info_positive_sequence_complex(self):
         # add products to cart

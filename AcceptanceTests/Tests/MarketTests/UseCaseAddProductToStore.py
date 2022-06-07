@@ -13,7 +13,6 @@ class UseCaseAddProduct(unittest.TestCase):
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())
 
-    # @classmethod
     def setUp(self):
 
         # assign system manager
@@ -49,8 +48,7 @@ class UseCaseAddProduct(unittest.TestCase):
         self.proxy_user.removeMember("Manager", "testUser1")
         self.proxy_user.removeMember("Manager", "testUser2")
         self.proxy_user.removeMember("Manager", "testUser3")
-        self.proxy_user.removeMember("Manager")
-
+        self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_addProductPositive(self):
         p1_id = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,
@@ -62,6 +60,10 @@ class UseCaseAddProduct(unittest.TestCase):
         self.assertEqual(storeProductsIds, [p1_id, p2_id])
         self.assertNotEqual(p1_id, p2_id)
 
+        # tear down stuff
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, p1_id)
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, p2_id)
+
     def test_addProductNegativePrice(self):
         # price is negative
         self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct", -20,
@@ -69,26 +71,8 @@ class UseCaseAddProduct(unittest.TestCase):
         self.assertTrue(self.proxy_market.add_product_to_store(self.store_id2, self.user_id2, "testProduct", -1,
                                                                "testCategory", 10, ["test"]).isError())
 
-    def test_addProductNoCategory(self):
-        # no category
-        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1",
-                                                               10, "Category", 10, ["test"]).isError())
-        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id2, self.user_id2, "testProduct2",
-                                                               10, "Category1", 10, ["test"]).isError())
-
-    def test_addProductIllegalStoreId(self):
-        # illegal store id
-        self.assertTrue(self.proxy_market.add_product_to_store(-1, self.user_id1, "testProduct", 10,
-                                                               "testCategory", 10, ["test"]).isError())
-        self.assertTrue(self.proxy_market.add_product_to_store(11, self.user_id1, "testProduct", 10,
-                                                               "testCategory", 10, ["test"]).isError())
-
-    def test_addProductIllegalUserId(self):
-        # illegal user id
-        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, -1, "testProduct", 10,
-                                                               "testCategory", 10, ["test"]).isError())
-        self.assertTrue(self.proxy_market.add_product_to_store(self.store_id1, 8, "testProduct", 10,
-                                                               "testCategory", 10, ["test"]).isError())
+    def test_add_product_negative(self):
+        pass
 
 
 if __name__ == '__main__':

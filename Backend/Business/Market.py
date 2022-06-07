@@ -466,13 +466,22 @@ class Market:
     def removeStoreForGood(self, storeID, user):  #TESTED
         self.__initializeStoresDict()
         try:
-            if self.__stores.get(storeID) is None:
+            store = self.__stores.get(storeID)
+            removed_store = self.__removedStores.get(storeID)
+            if store is None and removed_store is None:
                 raise NoSuchStoreException("Store " + str(storeID) + " is not exist in system!")
-            founderId = self.__stores.get(storeID).getStoreFounderId()
-            if founderId != user.getUserID():
-                raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
-            self.__stores.get(storeID).removeStore()
-            self.__stores.pop(storeID)
+            elif store is not None:
+                founderId = store.getStoreFounderId()
+                if founderId != user.getUserID():
+                    raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+                store.removeStore()
+                self.__stores.pop(storeID)
+            elif removed_store is not None:
+                founderId = removed_store.getStoreFounderId()
+                if founderId != user.getUserID():
+                    raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+                removed_store.removeStore()
+                self.__removedStores.pop(storeID)
             return True
         except Exception as e:
             raise Exception(e)

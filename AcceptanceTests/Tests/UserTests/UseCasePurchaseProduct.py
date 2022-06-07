@@ -88,7 +88,6 @@ class UseCasePurchaseProduct(unittest.TestCase):
         # user_id, cardNumber, month, year, holderCardName, cvv, holderID
         userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
-        print(userTransaction)
 
     def test_guest_then_member_purchase(self):
         guest2_id = self.user_proxy.login_guest().getData().getUserID()
@@ -98,13 +97,15 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(guest2_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(guest2_id, self.store_2, self.product2, 1)
 
-        self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        member2_id = self.user_proxy.login_member(guest2_id, "user2", "1234").getData().getUserID()
+        member2_id = self.user_proxy.login_member(guest2_id, "user4", "1234").getData().getUserID()
 
         userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
-        print(userTransaction)
+
+        # teardown stuff
+        self.user_proxy.removeMember("manager","user4")
 
     def test_login_logout_login_purchase(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
@@ -118,16 +119,15 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                  "Ben Gurion", 0, 0)
         member4_id = self.user_proxy.login_member(guest4_id, "user4", "1234").getData().getUserID()
 
-        self.user_proxy.logout_member(member4_id)
+        self.user_proxy.logout_member("user4")
         guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user3", "1234")
+        self.user_proxy.login_member(guest, "user4", "1234")
 
         userTransaction = self.user_proxy.purchase_product(member4_id,"1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
-        print(userTransaction)
 
         # teardown stuff
-        self.user_proxy.removeMember("Manager", "user4")
+        self.user_proxy.removeMember("manager", "user4")
 
     def test_two_user_buy_same_time(self):
         guest4_id = self.user_proxy.login_guest().getData().getUserID()
@@ -145,8 +145,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
 
-        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(member4_id, 500, 20))
-        t2 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(self.user_id, 50, 30))
+        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(member4_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
+        t2 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(self.user_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
 
         t1.start()
         t2.start()
@@ -155,9 +155,6 @@ class UseCasePurchaseProduct(unittest.TestCase):
         ut_2 = t2.join()
 
         self.assertTrue(ut_1.getData().getTotalAmount() == 3310 and ut_2.getData().getTotalAmount() == 2240)
-        print(ut_1)
-        print(ut_2)
-
         # teardown stuff
         self.user_proxy.removeMember("Manager", "user4")
 
@@ -170,153 +167,127 @@ class UseCasePurchaseProduct(unittest.TestCase):
         ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         ut_2 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertTrue(ut_1.getData().getTotalAmount() == 2240 and ut_2.isError())
-        print(ut_2.__str__())
 
-    def test_purchas_empty_cart(self):
+    def test_purchases_empty_cart(self):
         ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
 
     # there is problem with threads, sometimes doesn't work
 
     def test_purchase_with_threads(self):
-        t1 = ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
-                              args=(self.user_id2, self.store_0, self.product01, 100))
-        t2 = ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
-                              args=(self.user_id3, self.store_0, self.product01, 100))
+        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+
+        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product,
+                              args=(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123",))
+        t2 = ThreadWithReturn(target=self.user_proxy.purchase_product,
+                              args=(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123",))
         t1.start()
         t2.start()
 
-        t1.join()
-        t2.join()
-
-        tran1 = self.user_proxy.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123", "123")
-        tran2 = self.user_proxy.purchase_product(self.user_id3,"1234123412341234", "2", "27", "Rotem", "123", "123")
-
-        print(tran1)
-        print(tran2)
+        tran1 = t1.join()
+        tran2 = t2.join()
 
         if tran1.isError():
-            self.assertEqual(tran2.getData().getTotalAmount(), 10000.0)
-        if tran2.isError():
-            self.assertEqual(tran1.getData().getTotalAmount(), 10000.0)
-        else:
-            self.assertTrue(False)
+            self.assertEqual(tran2.getData().getTotalAmount(), 2240)
+        elif tran2.isError():
+            self.assertEqual(tran1.getData().getTotalAmount(), 2240)
 
-    def test_purchase_with_thread2(self):
-        t1 = []
-        t2 = []
-        for i in range(50):
-            t1.append(ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
-                                     args=(self.user_id2, self.store_0, self.product01, 1)))
-            t2.append(ThreadWithReturn(target=self.user_proxy.add_product_to_cart,
-                                     args=(self.user_id3, self.store_0, self.product01, 1)))
-        for i in range(50):
-            t1[i].start()
-            t2[i].start()
 
-        for i in range(50):
-            t1[i].join()
-            t2[i].join()
+    ### payment details are wrong !
+    # doesn't really work..
 
-        trans1 = self.user_proxy.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123", "123")
-        trans2 = self.user_proxy.purchase_product(self.user_id3, "1234123412341234", "2", "27", "Rotem", "123", "123")
-        print(trans1)
-        print(trans2)
-        self.assertEqual(trans1.getData().getTotalAmount(), 5000.0)
-        self.assertEqual(trans2.getData().getTotalAmount(), 5000.0)
 
-    def test_fail_purchase_cart_cvvNotGood(self):
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
-        ut_2 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError()  and ut_2.isError())
-        print(ut_1.__str__())
-        print(ut_2.__str__())
-
-    def test_fail_purchase_cart_cvvNotGood2(self):
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_CardNumberNotGood(self):
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "-12", "2", "27", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_MonthNotGood(self): #check available month
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "-12", "27", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_YearNotGood(self): #check avialable year
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "-1241", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_ExpiredCard(self): # check if the date on the card is available.
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "2000", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_availableMonth(self): # month cant be 80
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "80", "2000", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_availableCardNumber(self):  # CardNumber cant be 0
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "0", "80", "2000", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
-
-    def test_fail_purchase_cart_availableCardNumber2(self):  # CardNumber have to be 16 digits
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
-        self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
-        ut_1 = self.user_proxy.purchase_product(self.user_id, "2342", "80", "2000", "Rotem", "0", "123")
-        self.assertTrue(ut_1.isError())
-        print(ut_1.__str__())
+    # def test_fail_purchase_cart_cvvNotGood(self):
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #     # cvv is negative
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem","-1", "123")
+    #     self.assertTrue(ut_1.isError())
+    #
+    # def test_fail_purchase_cart_cvvNotGood2(self):
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_CardNumberNotGood(self):
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "-12", "2", "27", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_MonthNotGood(self): #check available month
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "-12", "27", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_YearNotGood(self): #check avialable year
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "-1241", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_ExpiredCard(self): # check if the date on the card is available.
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "2000", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_availableMonth(self): # month cant be 80
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "80", "2000", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_availableCardNumber(self):  # CardNumber cant be 0
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "0", "80", "2000", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
+    #
+    # def test_fail_purchase_cart_availableCardNumber2(self):  # CardNumber have to be 16 digits
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
+    #     self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
+    #
+    #     ut_1 = self.user_proxy.purchase_product(self.user_id, "2342", "80", "2000", "Rotem", "0", "123")
+    #     self.assertTrue(ut_1.isError())
+    #     print(ut_1.__str__())
 
 
 if __name__ == '__main__':

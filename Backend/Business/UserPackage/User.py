@@ -87,7 +87,7 @@ class User:
         return self._model.userid
 
     def getCart(self):
-        return Cart(model=CartModel.objects.get(userid=self._model.userid))
+        return Cart(model=CartModel.objects.get_or_create(userid=self._model.userid)[0])
 
     def getMemberCheck(self):
         pass

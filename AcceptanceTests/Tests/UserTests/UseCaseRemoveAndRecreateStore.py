@@ -37,12 +37,16 @@ class RemoveAndRecreateStore(unittest.TestCase):
         # remove store!
         self.market_proxy.removeStoreForGood(self.founder, storeId)
 
-    def test_removeStore_Fail(self):
+    def test_removeStore_negative(self):
+        # store doesn't exist
         self.assertTrue(self.user_proxy.removeStore(10, self.founder).isError())
         storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                              0, "000000").getData().getStoreId()
+        # founder doesn't exist
         self.assertTrue(self.user_proxy.removeStore(storeId, 10).isError())
+
         self.market_proxy.removeStoreForGood(self.founder, storeId)
+
 
     def test_recreate_store(self):
         storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
@@ -50,15 +54,24 @@ class RemoveAndRecreateStore(unittest.TestCase):
         self.user_proxy.removeStore(storeId, self.founder)
         self.assertTrue(self.user_proxy.recreateStore(self.founder, storeId).getData())
 
-    def test_recreateStore_Fail(self):
+        # teardown stuff
+        self.market_proxy.removeStoreForGood(self.founder, storeId)
+
+    def test_recreateStore_few_cases(self):
+        # recreate store that doesn't exist
         self.assertTrue(self.user_proxy.recreateStore(10, self.founder).isError())
 
         storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                              0, "000000").getData().getStoreId()
+        # recreate store that is open
         self.assertTrue(self.user_proxy.recreateStore(storeId, self.founder).isError())
 
+        # should work
         self.user_proxy.removeStore(storeId, self.founder)
-        self.assertTrue(self.user_proxy.recreateStore(storeId, 10).isError())
+        self.assertFalse(self.user_proxy.recreateStore(self.founder, storeId).isError())
+
+        # remove for good :)
+        self.market_proxy.removeStoreForGood(self.founder, storeId)
 
 
 if __name__ == '__main__':
