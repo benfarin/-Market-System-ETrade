@@ -503,7 +503,7 @@ class RoleManagment:
         if not member.isStoreExists(storeId):
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
-            raise Exception("member does not have the permission to add disconts")
+            raise Exception("member does not have the permission to add discuonts")
         return member.addCompositeRule(storeId, dId, self.__getRuleId(), rId1, rId2, ruleType, ruleKind)
 
     def removeRule(self, userId, storeId, dId, rId, ruleKind):
@@ -516,8 +516,30 @@ class RoleManagment:
         if not member.isStoreExists(storeId):
             raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
         if not member.hasDiscountPermission(storeId):
-            raise Exception("member does not have the permission to add disconts")
+            raise Exception("member does not have the permission to add discounts")
         return member.removeRule(storeId, dId, rId, ruleKind)
+
+    def getAllDiscountOfStore(self, userId, storeId, isComp):
+        self.__memberManagement.thereIsSystemManger()
+
+        self.__memberManagement.checkOnlineUserFromUser(userId)
+        member = self.__memberManagement.getMembersFromUser().get(userId)
+        if userId not in self.__memberManagement.getMembersFromUser().keys():
+            raise NoSuchMemberException("user: " + str(userId) + "is not a member")
+        if not member.isStoreExists(storeId):
+            raise NoSuchStoreException("store: " + str(storeId) + "is not exists in the market")
+        if not member.hasDiscountPermission(storeId):
+            raise Exception("member does not have the permission to add discounts")
+        return member.removeRule(storeId, dId, rId, ruleKind)
+
+
+def getAllPurchaseRulesOfStore(self, userId, storeId, isComp):
+        pass
+
+    def getAllRulesOfDiscount(self, userId, storeId, discountId, isComp):
+        pass
+
+
 
     def __getProductId(self):
         if self.__productId is None:

@@ -120,6 +120,9 @@ class ProductDiscount:
     def getDiscountPercent(self):
         return self.__model.percent
 
+    def getDiscountType(self):
+        return self.__model.type
+
     def getModel(self):
         return self.__model
 

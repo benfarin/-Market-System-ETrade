@@ -333,20 +333,6 @@ class RoleService:
             logging.error("Failed to get store transaction by id " + str(self))
             return Response(e.__str__())
 
-    # need to go down with it until the store, because the store all-ready have the functionality.
-    def getAllRules(self, userId, storeId):
-        try:
-            rules = self.__roleManagment.getAllRules(userId, storeId)
-            logging.info("success to get all rules:  " + str(userId))
-
-            DtoRules = []
-            for rId in rules.keys():
-                DtoRules.append(RuleDTO(rId, rules.get(rId)))
-            return Response(DtoRules)
-        except Exception as e:
-            logging.error("Failed to get all rules! ")
-            return Response(e.__str__())
-
     def addStoreDiscount(self, userId, storeId, percent):
         try:
             simpleDis = self.__roleManagment.addStoreDiscount(userId, storeId, percent)
@@ -610,4 +596,76 @@ class RoleService:
             return Response(isRemoved)
         except Exception as e:
             logging.info("failed to remove purchase rule, with rule id " + str(rId))
+            return Response(e.__str__())
+
+    def getAllSimpleDiscountOfStore(self, userId, storeId):
+        try:
+            discounts = self.__roleManagment.getAllDiscountOfStore(userId, storeId, False)
+            discountsDTOs = []
+            for discount in discounts:
+                discountsDTOs.append(simpleDiscountDTO(discount))
+            logging.info("success to get all simple discounts of store: " + str(storeId))
+            return Response(discountsDTOs)
+        except Exception as e:
+            logging.info("failed to get all composite discounts of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getAllCompositeDiscountOfStore(self, userId, storeId):
+        try:
+            discounts = self.__roleManagment.getAllDiscountOfStore(userId, storeId, True)
+            discountsDTOs = []
+            for discount in discounts:
+                discountsDTOs.append(compositeDiscountDTO(discount))
+            logging.info("success to get all composite discounts of store: " + str(storeId))
+            return Response(discountsDTOs)
+        except Exception as e:
+            logging.info("failed to get all composite discounts of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getAllSimplePurchaseRulesOfStore(self, userId, storeId):
+        try:
+            rules = self.__roleManagment.getAllPurchaseRulesOfStore(userId, storeId, False)
+            rulesDTOs = []
+            for rule in rules:
+                rulesDTOs.append(RuleDTO(rule))
+            logging.info("success to get all simple purchase rules of store: " + str(storeId))
+            return Response(rulesDTOs)
+        except Exception as e:
+            logging.info("failed to get all simple purchase rules of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getAllCompositePurchaseRulesOfStore(self, userId, storeId):
+        try:
+            rules = self.__roleManagment.getAllPurchaseRulesOfStore(userId, storeId, True)
+            rulesDTOs = []
+            for rule in rules:
+                rulesDTOs.append(CompositeRuleDTO(rule))
+            logging.info("success to get all composite purchase rules of store: " + str(storeId))
+            return Response(rulesDTOs)
+        except Exception as e:
+            logging.info("failed to get all composite purchase rules of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getAllSimpleRulesOfDiscount(self, userId, storeId, discountId):
+        try:
+            rules = self.__roleManagment.getAllRulesOfDiscount(userId, storeId, discountId, False)
+            rulesDTOs = []
+            for rule in rules:
+                rulesDTOs.append(RuleDTO(rule))
+            logging.info("success to get all simple discount rules of store: " + str(storeId))
+            return Response(rulesDTOs)
+        except Exception as e:
+            logging.info("failed to get all simple discount rules of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getAllCompositeRulesOfDiscount(self, userId, storeId, discountId):
+        try:
+            rules = self.__roleManagment.getAllRulesOfDiscount(userId, storeId, discountId, True)
+            rulesDTOs = []
+            for rule in rules:
+                rulesDTOs.append(CompositeRuleDTO(rule))
+            logging.info("success to get all simple discount rules of store: " + str(storeId))
+            return Response(rulesDTOs)
+        except Exception as e:
+            logging.info("failed to get all simple discount rules of store: " + str(storeId))
             return Response(e.__str__())
