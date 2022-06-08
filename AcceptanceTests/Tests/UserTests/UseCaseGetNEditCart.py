@@ -16,12 +16,12 @@ class UseCaseGetCartNEdit(unittest.TestCase):
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())
 
-    def setUp(self) -> None:
+    def setUp(self):
         # assign system manager & login system manager
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1).getData()
-        admin_id = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.login_member(admin_id, "Manager", "1234")
+        self.admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.admin_id, "Manager", "1234")
         # create 5 users
         self.guest_id1 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser1", "1234", "0540000000", 123, 5, "Israel", "Beer Sheva", "Rager", 1, 1)
@@ -74,7 +74,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
                                                             "board_games", 10, ["board"]).getData().getProductId()
         self.proxy_market.add_quantity_to_store(self.store_id3, self.user_id1, self.p6_id, 100)
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         # delete stores
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
@@ -85,13 +85,12 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.removeMember("Manager", "testUser3")
         self.proxy_user.removeMember("Manager", "testUser4")
         self.proxy_user.removeMember("Manager", "testUser5")
+        self.proxy_user.exit_system(self.admin_id)
         self.proxy_user.exit_system(self.guest_id1)
         self.proxy_user.exit_system(self.guest_id2)
         self.proxy_user.exit_system(self.guest_id3)
         self.proxy_user.exit_system(self.guest_id4)
         self.proxy_user.exit_system(self.guest_id5)
-
-        self.proxy_user.reset_management()
         # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
@@ -99,7 +98,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         # add product to user2's cart
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.p1_id, 1)
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
-        prods = bags[0].getAllProducts()
+        prods = list(bags.values())[0].getAllProducts()
         # user2 should have one bag (from one store)
         # user2 should have one product in the bag
         self.assertEqual(len(bags), 1, "There should only be one one bag.")
@@ -185,34 +184,34 @@ class UseCaseGetCartNEdit(unittest.TestCase):
             bags_len += len(bag)
         self.assertEqual(bags_len, 3)
 
-    def test_add_n_remove_products_from_cart_threads(self):
-        t = []
-        for i in range(200):
-            t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart,
-                                  args=(self.user_id3, self.store_id1, self.p1_id, 1)))
-        for th in t:
-            th.start()
-        success = 0
-        fail = 0
-        for th in t:
-            if th.join().getData():
-                success += 1
-            else:
-                fail += 1
-        self.assertEqual(success,fail, "100 products in store - 100 should succeed to add and 100 should fail!")
-
-        t.clear()
-        t.append(ThreadWithReturn(target=self.proxy_user.remove_prod_from_cart,
-                                  args=(self.user_id3, self.store_id1, self.p1_id)))
-        t.append(ThreadWithReturn(target=self.proxy_user.remove_prod_from_cart,
-                                  args=(self.user_id3, self.store_id1, self.p1_id)))
-        t[0].start()
-        t[1].start()
-        ans1 = t[0].join()
-        ans2 = t[1].join()
-        print(ans1.getData())
-        print(ans2.getData())
-        self.assertTrue(ans1.isError() or ans2.isError(), "you can only delete product from cart once!")
+    # def test_add_n_remove_products_from_cart_threads(self):
+    #     t = []
+    #     for i in range(200):
+    #         t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart,
+    #                               args=(self.user_id3, self.store_id1, self.p1_id, 1)))
+    #     for th in t:
+    #         th.start()
+    #     success = 0
+    #     fail = 0
+    #     for th in t:
+    #         if th.join().getData():
+    #             success += 1
+    #         else:
+    #             fail += 1
+    #     self.assertEqual(success,fail, "100 products in store - 100 should succeed to add and 100 should fail!")
+    #
+    #     t.clear()
+    #     t.append(ThreadWithReturn(target=self.proxy_user.remove_prod_from_cart,
+    #                               args=(self.user_id3, self.store_id1, self.p1_id)))
+    #     t.append(ThreadWithReturn(target=self.proxy_user.remove_prod_from_cart,
+    #                               args=(self.user_id3, self.store_id1, self.p1_id)))
+    #     t[0].start()
+    #     t[1].start()
+    #     ans1 = t[0].join()
+    #     ans2 = t[1].join()
+    #     print(ans1.getData())
+    #     print(ans2.getData())
+    #     self.assertTrue(ans1.isError() or ans2.isError(), "you can only delete product from cart once!")
 
 
 

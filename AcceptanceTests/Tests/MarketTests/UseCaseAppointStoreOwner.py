@@ -18,8 +18,8 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
     def setUp(self):
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.login_member(admin, "Manager", "1234")
+        self.admin = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.admin, "Manager", "1234")
 
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
@@ -51,6 +51,14 @@ class UseCaseAppointStoreOwner(unittest.TestCase):
 
 
     def tearDown(self) -> None:
+        self.proxy_user.exit_system(self.admin)
+        self.proxy_user.exit_system(self.__guestId1)
+        self.proxy_user.exit_system(self.__guestId2)
+        self.proxy_user.exit_system(self.__guestId3)
+        self.proxy_user.exit_system(self.__guestId4)
+        self.proxy_user.exit_system(self.__guestId5)
+        self.proxy_user.exit_system(self.__guestId6)
+
         # remove the store0*
         self.proxy_market.removeStoreForGood(self.user1_id, self.store_id)
         # remove users

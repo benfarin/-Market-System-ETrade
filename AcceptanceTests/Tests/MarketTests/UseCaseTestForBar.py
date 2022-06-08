@@ -15,8 +15,12 @@ class UseCaseForBar(unittest.TestCase):
         # assign system manager
         self.proxy_user.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
-        admin_id = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.login_member(admin_id, "manager", "1234")
+        self.admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.admin_id, "manager", "1234")
+
+    def tearDown(self) -> None:
+        self.proxy_user.exit_system(self.admin_id)
+        self.proxy_user.removeSystemManger_forTests("manager")
 
     def test_for_bar_6_users(self):
         guestId1 = self.proxy_user.login_guest().getData().getUserID()
@@ -64,6 +68,12 @@ class UseCaseForBar(unittest.TestCase):
         self.assertEqual(products, [p_id])
         self.assertTrue(self.proxy_user.logout_member("Bar").isError())
 
+        self.proxy_user.exit_system(guestId1)
+        self.proxy_user.exit_system(guestId2)
+        self.proxy_user.exit_system(guestId3)
+        self.proxy_user.exit_system(guestId4)
+        self.proxy_user.exit_system(guestId5)
+        self.proxy_user.exit_system(guestId6)
         self.proxy_market.removeStoreForGood(u2_id, s1_id)
         self.proxy_user.removeMember("AdminUser", "Rotem")  #can be done only because the store has deleted!
         self.proxy_user.removeMember("AdminUser", "Kfir")
@@ -106,6 +116,10 @@ class UseCaseForBar(unittest.TestCase):
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
         self.assertEqual(storeOwnersIds, [user1_id])
 
+        self.proxy_user.exit_system(guestId1)
+        self.proxy_user.exit_system(guestId2)
+        self.proxy_user.exit_system(guestId3)
+        self.proxy_user.exit_system(guestId4)
         self.proxy_market.removeStoreForGood(user1_id, store_id)
         self.proxy_user.removeMember("manager", "Ori")
         self.proxy_user.removeMember("manager", "Bar")  #can be done only because the store has deleted!

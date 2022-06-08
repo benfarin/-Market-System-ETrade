@@ -66,6 +66,7 @@ class UseCaseGuestLogin(unittest.TestCase):
         self.assertTrue(check_reg.isError())
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
+        self.proxy.exit_system(guest2)
         guest3 = self.proxy.login_guest().getData().getUserID()
         self.assertIsNotNone(guest3)
         self.proxy.exit_system(guest3)

@@ -177,7 +177,9 @@ class UserManagment(object):
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
         else:
             member.getModel().is_admin = True
+            member.getModel().username = userName
             member.getModel().save()
+
             systemManager: SystemManager = SystemManager(model=member.getModel())
         if systemManager:
             self.__systemManager[userName] = systemManager

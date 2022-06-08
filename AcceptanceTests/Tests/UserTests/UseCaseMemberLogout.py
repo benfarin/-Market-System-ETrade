@@ -41,10 +41,10 @@ class UseCaseMemberLogout(unittest.TestCase):
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
 
-        self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(self.__guestId2, "user1", "1234")
+        guestId2 = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(guestId2, "user1", "1234")
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
-        self.user_proxy.exit_system(self.__guestId2)
+        self.user_proxy.exit_system(guestId2)
 
     def test_logout_FAIL(self):
         user_id = self.user_proxy.login_member(self.__guestId1, "user1", "1234").getData().getUserID()
