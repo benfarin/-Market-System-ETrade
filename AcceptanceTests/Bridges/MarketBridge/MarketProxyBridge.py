@@ -354,3 +354,6 @@ class MarketProxyBridge:
         if self.check_access():
             return True
         return self._real_subject.getAllCompositeRulesOfDiscount(userId, storeId, discountId)
+
+    def reset_management(self):
+        return self._real_subject.reset_management()

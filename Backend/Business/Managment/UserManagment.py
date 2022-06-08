@@ -177,7 +177,9 @@ class UserManagment(object):
             systemManager: SystemManager = SystemManager(userName, password, phone, address, bank)
         else:
             member.getModel().is_admin = True
+            member.getModel().username = userName
             member.getModel().save()
+
             systemManager: SystemManager = SystemManager(model=member.getModel())
         if systemManager:
             self.__systemManager[userName] = systemManager
@@ -345,5 +347,21 @@ class UserManagment(object):
     def removeAllUsers(self):
         UserModel.objects.all().delete()
         MemberModel.objects.all().delete()
+
+    def resetManagement(self):
+        self._initializeDict()
+        # for guest in self.__guests.values():
+        #     guest.getModel().delete()
+        # for member in self.__activeUsers.values():
+        #     member.getModel().delete()
+        # for member in self.__members.values():
+        #     member.getModel().delete()
+        # for member in self.__systemManager.values():
+        #     member.getModel().delete()
+
+        self.__guests = None
+        self.__activeUsers = None
+        self.__members = None
+        self.__systemManager = None
 
 

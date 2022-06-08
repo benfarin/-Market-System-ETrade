@@ -14,8 +14,8 @@ class UseCaseSearchProduct(unittest.TestCase):
         # assign system manager
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(admin_id, "Manager", "1234")
+        self.admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.admin_id, "Manager", "1234")
 
         self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("Rotem", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
@@ -29,6 +29,8 @@ class UseCaseSearchProduct(unittest.TestCase):
                                                              "Meat", 10, ["Test3", "Test4"]).getData()
 
     def tearDown(self) -> None:
+        self.user_proxy.exit_system(self.admin_id)
+        self.user_proxy.exit_system(self.__guestId1)
         self.market_proxy.removeStoreForGood(self.user_id, self.store_id)
         self.user_proxy.removeMember("Manager", "Rotem")
         self.user_proxy.removeSystemManger_forTests("Manager")

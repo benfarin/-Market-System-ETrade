@@ -18,8 +18,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
         # assign system manager
         self.user_proxy.appoint_system_manager("manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(admin_id, "manager", "1234")
+        self.admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.admin_id, "manager", "1234")
 
         # create 3 users
         self.__guestId = self.user_proxy.login_guest().getData().getUserID()
@@ -69,6 +69,10 @@ class UseCasePurchaseProduct(unittest.TestCase):
 
     def tearDown(self) -> None:
         # remove products from stores
+        self.user_proxy.exit_system(self.admin_id)
+        self.user_proxy.exit_system(self.__guestId)
+        self.user_proxy.exit_system(self.__guestId2)
+        self.user_proxy.exit_system(self.__guestId3)
         self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product01)
         self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product02)
         self.market_proxy.remove_product_from_store(self.store_1, self.user_id, self.product1)
@@ -97,6 +101,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
 
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
+        self.user_proxy.exit_system(guest)
 
 
     def test_purchase_founder_logged_in(self):
@@ -127,6 +132,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
         self.user_proxy.login_member(guest, "user3", "1234").getData().getUserID()
+        self.user_proxy.exit_system(guest)
 
     def test_purchase_several_founders_not_logged_in_and_logged_in(self):
         self.market_proxy.appoint_store_owner(self.store_0, self.user_id, "user3")
@@ -143,6 +149,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(notifications_user_2.exists())
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "user3", "1234").getData().getUserID()
+        self.user_proxy.exit_system(guest)
 
     def test_purchase_only_owner_get_notifications(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
@@ -161,6 +168,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertFalse(notifications_user_3.exists())
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
+        self.user_proxy.exit_system(guest)
 
     def test_purchase_buy_from_several_stores(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
@@ -180,6 +188,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
         self.user_proxy.login_member(guest, "user4", "1234").getData().getUserID()
+        self.user_proxy.exit_system(guest)
 
 
 

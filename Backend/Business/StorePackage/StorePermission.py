@@ -17,6 +17,7 @@ class StorePermission:
         else:
             self.__model = model
 
+
     def getUserId(self):
         return self.__model.userID.userid
 

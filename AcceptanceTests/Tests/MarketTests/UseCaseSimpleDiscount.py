@@ -14,8 +14,8 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         # assign system manager
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.proxy_user.login_guest().getData().getUserID()
-        self.proxy_user.login_member(admin_id, "Manager", "1234")
+        self.admin_id = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.admin_id, "Manager", "1234")
 
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
@@ -45,6 +45,8 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id1, self.product_id_4, 100)
 
     def tearDown(self) -> None:
+        self.proxy_user.exit_system(self.admin_id)
+        self.proxy_user.exit_system(self.__guestId1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
         self.proxy_user.removeMember("Manager", "Kfir")

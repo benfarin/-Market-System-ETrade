@@ -13,8 +13,8 @@ class UseCaseSaveProductToCart(unittest.TestCase):
     def setUp(self):
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
-        admin_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(admin_id, "Manager", "1234")
+        self.admin_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.login_member(self.admin_id, "Manager", "1234")
         # --------------------------users register ------------------------------------
         self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("user1", "1234", "053643643", "500", "20", "Israel", "Beer Sheva",
@@ -151,6 +151,12 @@ class UseCaseSaveProductToCart(unittest.TestCase):
 
 
     def tearDown(self) -> None:
+        self.user_proxy.exit_system(self.admin_id)
+        self.user_proxy.exit_system(self.__guestId1)
+        self.user_proxy.exit_system(self.__guestId2)
+        self.user_proxy.exit_system(self.__guestId3)
+        self.user_proxy.exit_system(self.__guestId4)
+        self.user_proxy.exit_system(self.__guestId5)
         self.market_proxy.removeStoreForGood(self.user_id3, self.store_id8)
         self.market_proxy.removeStoreForGood(self.user_id2, self.store_id7)
         self.market_proxy.removeStoreForGood(self.user_id1, self.store_id6)
@@ -190,6 +196,8 @@ class UseCaseSaveProductToCart(unittest.TestCase):
                                                             30).getData())
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id4, self.store_id2, self.product9.getProductId(),
                                                             30).getData())
+
+        self.user_proxy.exit_system(guest_id_2)
 
     def test_add_to_cart_negative1(self):
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, -50, 10).isError())
