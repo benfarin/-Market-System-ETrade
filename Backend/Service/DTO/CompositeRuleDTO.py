@@ -12,7 +12,7 @@ class CompositeRuleDTO:
             self.__rule1 = CompositeRuleDTO(rule.getRule1())
         else:
             self.__rule1 = RuleDTO(rule.getRule1())
-        rule2Type = rule.getRule1().getRuleType()
+        rule2Type = rule.getRule2().getRuleType()
         if rule2Type == 'Or' or rule2Type == 'And':
             self.__rule2 = CompositeRuleDTO(rule.getRule2())
         else:
