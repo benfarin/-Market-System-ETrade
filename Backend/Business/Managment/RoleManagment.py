@@ -555,6 +555,11 @@ class RoleManagment:
             raise Exception("member does not have the permission to add discounts")
         return member.getAllRulesOfDiscount(storeId, discountId, isComp)
 
+    def getUsersByDates(self, systemManger):
+        #check systemmanger
+        pass
+
+
 
     def __getProductId(self):
         if self.__productId is None:
@@ -590,4 +595,5 @@ class RoleManagment:
         rId = self.__ruleId
         self.__ruleId += 1
         return rId
+
 

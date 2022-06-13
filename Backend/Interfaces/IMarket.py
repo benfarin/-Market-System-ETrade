@@ -171,3 +171,12 @@ class IMarket(Interface):
 
     def getAllRulesOfDiscount(self, user, storeId, discountId, isComp):
         pass
+
+    def getCheckNoOwnerYesManage(self, user):
+        pass
+
+    def getCheckNoOwnerNoManage(self, user):
+        pass
+
+    def getCheckOwner(self, user):
+        pass

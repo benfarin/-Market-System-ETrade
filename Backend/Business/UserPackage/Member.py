@@ -352,6 +352,24 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
+    def getCheckNoOwnerYesManage(self):
+        try:
+            return self.__market.getCheckNoOwnerYesManage(self)
+        except Exception as e:
+            raise Exception(e)
+
+    def getCheckOwner(self):
+        try:
+            return self.__market.getCheckOwner(self)
+        except Exception as e:
+            raise Exception(e)
+
+    def getCheckNoOwnerNoManage(self):
+        try:
+            return self.__market.getCheckNoOwnerNoManage(self)
+        except Exception as e:
+            raise Exception(e)
+
     def removeUser(self):
         super().removeUser()
         self._m.delete()
