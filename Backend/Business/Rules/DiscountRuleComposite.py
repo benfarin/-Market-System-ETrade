@@ -1,7 +1,6 @@
 import zope
 import os, django
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
 
@@ -14,57 +13,65 @@ from ModelsBackend.models import RuleModel
 import os, django
 
 
-
 @zope.interface.implementer(IRule)
 class DiscountRuleComposite:
 
     # rulesTypes: and = 1, or = 2
     # ruleKind: discountRule = 1 , purchaseRule = 2
     def __init__(self, ruleId=None, rule1=None, rule2=None, ruleType=None, ruleKind=None, model=None):
-        # self.__ruleId = ruleId
-        # self.__rulKind = ruleKind
-        # if rule1.getRuleKind() != ruleKind or rule2.getRuleKind() != ruleKind:
-        #     raise Exception("cannot concat between purchase rule and discount rule")
-        # self.__rule1: IRule = rule1
-        # self.__rule2: IRule = rule2
-        # self.__ruleType = ruleType
         if model is None:
             self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, composite_rule_type=ruleType, rule_kind=ruleKind,
                                                            ruleID1=rule1.getModel(), ruleID2=rule2.getModel(),
                                                            rule_class='DiscountComposite')[0]
+            self.__ruleId = ruleId
+            self.__rulKind = ruleKind
+            if rule1.getRuleKind() != ruleKind or rule2.getRuleKind() != ruleKind:
+                raise Exception("cannot concat between purchase rule and discount rule")
+            self.__rule1 = rule1
+            self.__rule2 = rule2
+            self.__ruleType = ruleType
         else:
             self.__model = model
+            self.__ruleId = model.ruleID
+            self.__rulKind = model.rule_kind
+            self.__rule1 = self.__buildRule(model.ruleID1)
+            self.__rule2 = self.__buildRule(model.ruleID2)
+            if self.__rule1.getRuleKind() != self.__rulKind or self.__rule2.getRuleKind() != self.__rulKind:
+                raise Exception("cannot concat between purchase rule and discount rule")
+            self.__ruleType = model.composite_rule_type
 
     def check(self, bag):
-        rule1 = self.__buildRule(self.__model.ruleID1)
-        rule2 = self.__buildRule(self.__model.ruleID2)
-        if rule1.getRuleKind() != rule2.getRuleKind():
+        if self.__rule1.getRuleKind() != self.__rule2.getRuleKind():
             raise Exception("cannot concat discount rule and purchase rule")
 
-        if self.__model.composite_rule_type == 'And':
-            return rule1.check(bag) and rule2.check(bag)
-        if self.__model.composite_rule_type == 'Or':
-            return rule1.check(bag) or rule2.check(bag)
+        if self.__ruleType == 'And':
+            return self.__rule1.check(bag) and self.__rule2.check(bag)
+        if self.__ruleType == 'Or':
+            return self.__rule1.check(bag) or self.__rule2.check(bag)
         else:
             raise Exception("rule type doesn't exist")
 
     def getRuleId(self):
-        return self.__model.ruleID
+        return self.__ruleId
+        # return self.__model.ruleID
 
     def getRule1(self):
-        return self.__buildRule(self.__model.ruleID1)
+        return self.__rule1
+        # return self.__buildRule(self.__model.ruleID1)
 
     def getRule2(self):
-        return self.__buildRule(self.__model.ruleID2)
+        return self.__rule2
+        # return self.__buildRule(self.__model.ruleID2)
 
     def getRuleType(self):
-        return self.__model.composite_rule_type
+        return self.__ruleType
+        # return self.__model.composite_rule_type
 
     def isComp(self):
         return True
 
     def getRuleKind(self):
-        return self.__model.rule_kind
+        return self.__rulKind
 
     def __buildRule(self, rule_model):
         if rule_model.rule_class == 'Price':
@@ -81,10 +88,8 @@ class DiscountRuleComposite:
             raise Exception("cannot concat discount rule and purchase rule")
 
     def removeRule(self):
-        rule1 = self.__buildRule(self.__model.ruleID1)
-        rule2 = self.__buildRule(self.__model.ruleID2)
-        rule1.removeRule()
-        rule2.removeRule()
+        self.__rule1.removeRule()
+        self.__rule2.removeRule()
         self.__model.delete()
 
     def getModel(self):
