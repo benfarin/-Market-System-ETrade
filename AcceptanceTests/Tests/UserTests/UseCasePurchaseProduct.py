@@ -33,8 +33,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                  "Ben Gurion", 0, 0)
         # login 3 users
         self.user_id = self.user_proxy.login_member(self.__guestId, "user1", "1234").getData().getUserID()
-        self.user_id2 = self.user_proxy.login_member(self.__guestId, "user2", "1234").getData().getUserID()
-        self.user_id3 = self.user_proxy.login_member(self.__guestId, "user3", "1234").getData().getUserID()
+        self.user_id2 = self.user_proxy.login_member(self.__guestId2, "user2", "1234").getData().getUserID()
+        self.user_id3 = self.user_proxy.login_member(self.__guestId3, "user3", "1234").getData().getUserID()
 
         # create 3 stores
         self.store_0 = self.user_proxy.open_store("s0", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
@@ -64,10 +64,10 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.market_proxy.add_quantity_to_store(self.store_2, self.user_id, self.product2, 100)
 
     def tearDown(self) -> None:
-        self.user_proxy.exit_system(self.admin_id)
-        self.user_proxy.exit_system(self.__guestId)
-        self.user_proxy.exit_system(self.__guestId2)
-        self.user_proxy.exit_system(self.__guestId3)
+        # self.user_proxy.exit_system(self.admin_id)
+        # self.user_proxy.exit_system(self.__guestId)
+        # self.user_proxy.exit_system(self.__guestId2)
+        # self.user_proxy.exit_system(self.__guestId3)
         # remove products from stores
         self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product01)
         self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product02)

@@ -131,7 +131,7 @@ class MemberManagment(UserManagment):
     def removeStoreForGood(self, userId, storeId):
         super().thereIsSystemManger()
         try:
-            self.checkOnlineUser(userId)
+            # self.checkOnlineUser(userId)
             member = self.getMembers().get(userId)
             if member is None:
                 raise NoSuchMemberException("user: " + str(userId) + "is not a member")

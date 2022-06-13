@@ -62,6 +62,20 @@ class Store:
                                                                 stockManagement=True,
                                                                 changePermission=True, rolesInformation=True,
                                                                 purchaseHistoryInformation=True, discount=True)[0]
+
+            self.__id = storeId
+            self.__name = storeName
+            self.__founderId = founder.getUserID()
+            self.__bankAccount: Bank = bankAccount
+            self.__address: Address = address
+            # self.__appointers: Dict[IMember: []] = {}  # Member : Members list
+            # self.__managers = []  # Members
+            # self.__owners = [founder]  # Members
+            # self.__products: Dict[int: IProduct] = {}  # productId : Product
+            # self.__productsQuantity = {}  # productId : quantity
+            # self.__transactions: Dict[int: StoreTransaction] = {}
+            # self.__discounts: {int: IDiscount} = {}
+            # self.__rules: {int: IRule} = {}
         else:
             self.__model = model
             self.__permissions_model = \
@@ -71,6 +85,12 @@ class Store:
                                                                 stockManagement=True,
                                                                 changePermission=True, rolesInformation=True,
                                                                 purchaseHistoryInformation=True, discount=True)[0]
+
+            self.__id = self.__model.storeID
+            self.__name = self.__model.name
+            self.__founderId = self.__model.founderId
+            self.__bankAccount: Bank = self._buildBankAccount(self.__model.bankAccount)
+            self.__address: Address = self._buildAddress(self.__model.address)
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -94,19 +114,19 @@ class Store:
         # self.__permissions[founder].setPermission_Discount(True)
 
     def getStoreId(self):
-        return self.__model.storeID
+        return self.__id
 
     def getStoreName(self):
-        return self.__model.name
+        return self.__name
 
     def getStoreFounderId(self):
-        return self.__model.founderId.userid
+        return self.__founderId
 
     def getStoreBankAccount(self):
-        return self._buildBankAccount(self.__model.bankAccount)
+        return self.__bankAccount
 
     def getStoreAddress(self):
-        return self._buildAddress(self.__model.address)
+        return self.__address
 
     def getStoreOwners(self):
         owners = []

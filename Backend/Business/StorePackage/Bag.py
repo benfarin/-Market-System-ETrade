@@ -20,17 +20,24 @@ class Bag:
         # self.__products = {}  # product : quantity
         if model is None:
             self.__b = BagModel.objects.get_or_create(storeId=storeId, userId=userId)[0]
+            self.__storeId = storeId
+            self.__products = {}  # product : quantity
         else:
             self.__b = model
+            self.__storeId = self.__b.storeId
+            self.__products = {}  # product : quantity
+            for product_in_bag in ProductsInBagModel.objects.filter(bag_ID=self.__b):
+                product = self._buildProduct(product_in_bag.product_ID)
+                self.__products[product] = product_in_bag.quantity
 
     def getStore(self):
         pass
 
     def isEmpty(self):
-        return not ProductsInBagModel.objects.filter(bag_ID=self.__b).exists()
+        return len(self.__products) == 0
 
     def getStoreId(self):
-        return self.__b.storeId
+        return self.__storeId
 
     def getBag(self):
         return self
@@ -38,54 +45,54 @@ class Bag:
     def addProduct(self, product, quantity):
         if quantity <= 0:
             raise QuantityException("cannot add negative quantity of product")
-        check = ProductsInBagModel.objects.filter(bag_ID=self.__b, product_ID=product.getModel())
-        if len(check) > 1:
-            raise Exception("there is more then one product with that id in this bag!")
-        if not check.exists():
+        check = self.__products.__contains__(product)
+        # if len(check) > 1:
+        #     raise Exception("there is more then one product with that id in this bag!")
+        if not check:
             ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product.getModel(), quantity=quantity)
+            self.__products[product] = quantity
             return True
-        p = check[0]
+        self.__products[product] = self.__products[product] + quantity
+        p = ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=product.getModel())[0]
         p.quantity += quantity
         p.save()
         return True
 
     def removeProduct(self, productId):
-        for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            if product.product_ID.product_id == productId:
-                quantity = product.quantity
-                ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.product_ID,
-                                               quantity=quantity).delete()
+        for product in self.__products.keys():
+            if product.getProductId() == productId:
+                quantity = self.__products[product]
+                self.__products.pop(product)
+                ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel(), quantity=quantity).delete()
                 return quantity
         raise ProductException("no such product in the Bag")
 
     def updateBag(self, productId, quantity):
-        for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            if product.product_ID.product_id == productId:
-                product.quantity += quantity
-                product.save()
-                if product.quantity <= 0:
-                    ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.product_ID.product_id).delete()
+        for product in self.__products.keys():
+            if product.getProductId() == productId:
+                p = ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel(), quantity=self.__products[product])
+                self.__products[product] += quantity
+                p.quantity += quantity
+                p.save()
+                if self.__products[product] <= 0:
+                    self.__products.pop(product)
+                    p.delete()
                 return True
         raise ProductException("no such product in the Bag")
 
     def getProducts(self):
-        products = {}
-        for prod in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            product = self._buildProduct(prod.product_ID)
-            products[product] = prod.quantity
-        return products
+        return self.__products
 
     def addBag(self, bag):
-        for product in ProductsInBagModel.objects.filter(bag_ID=bag.getModel()):
-
+        for product in bag.__products.keys():
             productInBag = self.checkSameProduct(product)
-            if productInBag is not None:
+            if product in self.__products:
+                self.__products[product] += bag.getProducts()[product]
                 productInBag.quantity += ProductsInBagModel.objects.get(bag_ID=bag.getModel(),
                                                                         product_ID=product.product_ID.product_id).quantity
                 productInBag.save()
             else:
-                if len(ProductModel.objects.filter(product_id=product.product_ID.product_id)) != 1:
-                    raise NotFoundException("product: " + str(product.product_ID.product_id) + "has not found")
+                self.__products[product] = bag.getProducts()[product]
 
                 p = ProductModel.objects.get(product_id=product.product_ID.product_id)
                 newProduct = ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=p,
@@ -94,22 +101,18 @@ class Bag:
         return True
 
     def checkSameProduct(self, product):
-        for p in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            if product.product_ID == p.product_ID:
-                return p
+        for p in self.__products.keys():
+            if product.getProductId() == p.getProductId():
+                return p.getModel()
         return None
 
     def getProductQuantity(self, product):
-        try:
-            return ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=product.getModel()).quantity
-        except:
-            raise NotFoundException("product: " + str(product.getProductId()) + "has not found")
+        return self.__products[product]
 
     def getProductQuantityByProductId(self, productId):
-        if len(ProductModel.objects.filter(product_id=productId)) != 1:
-            raise NotFoundException("product: " + str(productId) + "has not found")
-        product = self._buildProduct(ProductModel.objects.get(product_id=productId))
-        return self.getProductQuantity(product)
+        for product in self.__products.keys():
+            if product.getProductId() == productId:
+                return self.__products[product]
 
     def calcSum(self, discounts):
         return self.applyDiscount(discounts)
