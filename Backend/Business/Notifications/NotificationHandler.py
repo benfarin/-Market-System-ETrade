@@ -30,6 +30,9 @@ class NotificationHandler:
         if NotificationHandler.__instance is None:
             NotificationHandler.__instance = self
 
+    ###ownersDict - who to sent to the message
+    ###storeID - for information, so the member(owner) would know in what store the buyer bought
+    ###buyer - the user object who bought (for information sake)
     def notifyBoughtFromStore(self, ownersDict, storeID, buyer):
         activeUsers: Dict[str, User] = {}
         for member_model in MemberModel.objects.filter(isLoggedIn=True):
@@ -41,8 +44,11 @@ class NotificationHandler:
                 self.__send_channel_message(owner.getMemberName(),
                                             "user " + str(buyer.getUserID()) + " bought from store " + str(storeID))
             else:
-                model = NotificationModel.objects.get_or_create(userID=owner.getModel(), text="user " + str(buyer.getUserID()) +
-                                                                                   " bought from store " + str(storeID))[0]
+                model = \
+                    NotificationModel.objects.get_or_create(userID=owner.getModel(),
+                                                            text="user " + str(buyer.getUserID()) +
+                                                                 " bought from store " + str(
+                                                                storeID))[0]
                 notification = self._buildNotification(model)
 
     def _buildMember(self, model):
@@ -50,7 +56,6 @@ class NotificationHandler:
 
     def _buildNotification(self, model):
         return Notification(model)
-
 
     def __send_channel_message(self, group_name, message):
         channel_layer = get_channel_layer()
