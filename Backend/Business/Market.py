@@ -650,6 +650,36 @@ class Market:
             self.__storeTransactionIdCounter += 1
             return stId
 
+    def getCheckNoOwnerNoManage(self, user):
+        for store in self.__stores.values():
+            if store.hasPermissions(user):
+                return False
+        return True
+
+    def getCheckNoOwnerYesManage(self, user):
+        check = False
+        for store in self.__stores.values():
+            managers = store.getStoreManagers()
+            if check == False:
+                for manage in managers:
+                    if manage.getUserID() == user.getUserID():
+                        check = True
+                        break
+            owners = store.getStoreOwners()
+            for owner in owners:
+                if owner.getUserID() == user.getUserID():
+                    return False
+        return check
+
+    def getCheckOwner(self, user):
+        for store in self.__stores.values():
+            owners = store.getStoreOwners()
+            for owner in owners:
+                if owner.getUserID() == user.getUserID():
+                    return True
+        return False
+
+
     def __getUserTransactionId(self):
         if self.__userTransactionIdCounter is None:
             self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))[
