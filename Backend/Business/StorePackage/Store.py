@@ -8,6 +8,8 @@ from Backend.Business.Discounts.StoreDiscount import StoreDiscount
 from Backend.Business.Rules.RuleCreator import RuleCreator
 from Backend.Business.StorePackage.Product import Product
 import Backend.Business.UserPackage.Member as m
+from Backend.Interfaces.IDiscount import IDiscount
+from Backend.Interfaces.IRule import IRule
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Frontend.settings")
 django.setup()
@@ -33,22 +35,7 @@ from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductM
 
 @zope.interface.implementer(IStore)
 class Store:
-
     def __init__(self, storeId=None, storeName=None, founder=None, bankAccount=None, address=None, model=None):
-        # self.__id = storeId
-        # self.__name = storeName
-        # self.__founderId = founder.getUserID()
-        # self.__bankAccount: Bank = bankAccount
-        # self.__address: Address = address
-        # self.__appointers: Dict[IMember: []] = {}  # Member : Members list
-        # self.__managers = []  # Members
-        # self.__owners = [founder]  # Members
-        # self.__products: Dict[int: IProduct] = {}  # productId : Product
-        # self.__productsQuantity = {}  # productId : quantity
-        # self.__transactions: Dict[int: StoreTransaction] = {}
-        # self.__discounts: {int: IDiscount} = {}
-        # self.__rules: {int: IRule} = {}
-
         if model is None:
             self.__model = \
             StoreModel.objects.get_or_create(storeID=storeId, name=storeName, founderId=founder.getModel(),
@@ -69,13 +56,13 @@ class Store:
             self.__bankAccount: Bank = bankAccount
             self.__address: Address = address
             # self.__appointers: Dict[IMember: []] = {}  # Member : Members list
-            # self.__managers = []  # Members
-            # self.__owners = [founder]  # Members
-            # self.__products: Dict[int: IProduct] = {}  # productId : Product
-            # self.__productsQuantity = {}  # productId : quantity
-            # self.__transactions: Dict[int: StoreTransaction] = {}
-            # self.__discounts: {int: IDiscount} = {}
-            # self.__rules: {int: IRule} = {}
+            self.__managers = []  # Members
+            self.__owners = [founder]  # Members
+            self.__products: Dict[int: IProduct] = {}  # productId : Product
+            self.__productsQuantity = {}  # productId : quantity
+            self.__transactions: Dict[int: StoreTransaction] = {}
+            self.__discounts: {int: IDiscount} = {}
+            self.__rules: {int: IRule} = {}
         else:
             self.__model = model
             self.__permissions_model = \
@@ -91,6 +78,35 @@ class Store:
             self.__founderId = self.__model.founderId
             self.__bankAccount: Bank = self._buildBankAccount(self.__model.bankAccount)
             self.__address: Address = self._buildAddress(self.__model.address)
+            self.__owners = []
+            for owner_model in self.__model.owners.all():
+                owner = self._buildMember(owner_model)
+                self.__owners.append(owner)
+            self.__managers = []
+            for manager_model in self.__model.managers.all():
+                manager = self._buildMember(manager_model)
+                self.__managers.append(manager)
+            self.__products: Dict[int: IProduct] = {}
+            for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):  ####MAYBE NEED TO SAVE BEFORE
+                product = self._buildProduct(prod.productID)
+                self.__products.update({product.getProductId(): product})
+            self.__productsQuantity = {}  # productId : quantity
+            for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):
+                self.__productsQuantity[prod.productID.product_id] = prod.quantity
+            self.__transactions: Dict[int: StoreTransaction] = {}
+            for tran in StoreTransactionModel.objects.filter(storeId=self.__model.storeID):
+                storeTransaction = self._buildStoreTransactions(tran)
+                self.__transactions.update({storeTransaction.getTransactionID(): storeTransaction})
+            self.__discounts: {int: IDiscount} = {}
+            discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
+            for d in discount_models:
+                discount = self._buildDiscount(d.discountID)
+                self.__discounts[discount.getDiscountId()] = discount
+            self.__rules: {int: IRule} = {}
+            rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
+            for r in rule_models:
+                rule = RuleCreator.getInstance().buildRule(r.ruleID)
+                self.__rules[rule.getRuleId()] = rule
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -119,6 +135,9 @@ class Store:
     def getStoreName(self):
         return self.__name
 
+    def getName(self):
+        return self.__name
+
     def getStoreFounderId(self):
         return self.__founderId
 
@@ -129,39 +148,20 @@ class Store:
         return self.__address
 
     def getStoreOwners(self):
-        owners = []
-        for owner_model in self.__model.owners.all():
-            owner = self._buildMember(owner_model)
-            owners.append(owner)
-        return owners
+        return self.__owners
 
     def getStoreManagers(self):
-        managers = []
-        for manager_model in self.__model.managers.all():
-            manager = self._buildMember(manager_model)
-            managers.append(manager)
-        return managers
+        return self.__managers
 
     def getProducts(self):
-        products: Dict[int: IProduct] = {}
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):
-            product = self._buildProduct(prod.productID)
-            products.update({product.getProductId(): product})
-        return products
+        return self.__products
 
     def getProductQuantity(self):
-        productsQuantity = {}
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):
-            productsQuantity[prod.productID.product_id] = prod.quantity
-        return productsQuantity
+        return self.__productsQuantity
 
     def getTransactionForDTO(self):
         # self.__transactions: Dict[int: StoreTransaction] = {}
-        transactions: Dict[int: StoreTransaction] = {}
-        for tran in StoreTransactionModel.objects.filter(storeId=self.__model.storeID):
-            storeTransaction = self._buildStoreTransactions(tran)
-            transactions.update({storeTransaction.getTransactionID(): storeTransaction})
-        return transactions
+        return self.__transactions
 
     def getPermissionForDto(self):
         # self.__permissions: Dict[IMember: StorePermission] = {}
@@ -173,9 +173,8 @@ class Store:
         return permissions
 
     def getProduct(self, productId):
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
-            if prod.productID.product_id == productId:
-                return self._buildProduct(prod.productID)
+        if productId in self.__products:
+            return self.__products.get(productId)
         raise ProductException("product not in store")
 
     def setStockManagementPermission(self, assigner, assignee):
@@ -300,27 +299,23 @@ class Store:
                                       assignee.getUserID(), " because he didn't assign him")
 
     def hasProduct(self, productId):
-        try:
-            product = ProductModel.objects.get(product_id=productId)
-            return ProductsInStoreModel.objects.get(storeID=self.__model, productID=product).quantity > 0
-        except:
-            return False
+        return productId in self.__products.keys()
 
     def addProductToStore(self, user, product):
         try:
             self.__checkPermissions_ChangeStock(user)
-            if ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product.getModel()).exists():
+            if product.getProductId() in self.__products.keys():
                 raise ProductException("Product already exists!")
         except Exception as e:
             raise Exception(e)
         else:
             ProductsInStoreModel.objects.get_or_create(storeID=self.__model, productID=product.getModel(), quantity=0)
+            self.__products[product.getProductId()] = product
 
     def addProductQuantityToStore(self, user, productId, quantity):
         try:
             self.__checkPermissions_ChangeStock(user)
-            product_model = ProductModel.objects.get_or_create(product_id=productId)
-            if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=productId).exists():
+            if self.__products.get(productId) is None:
                 raise ProductException("cannot add quantity to a product who doesn't exist, in store: " + self.__name)
             if quantity <= 0:
                 raise ProductException("cannot add a non-positive quantity")
@@ -331,6 +326,7 @@ class Store:
                 # self.__productsQuantity[productId] += quantity
                 quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model,
                                                                       productID=productId)
+                self.__productsQuantity[productId] += quantity
                 quantity_to_change.quantity += quantity
                 quantity_to_change.save()
 
@@ -340,6 +336,10 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
+            with self.__productsLock:
+                self.__products.pop(productId)
+            with self.__stockLock:
+                self.__productsQuantity.pop(productId)
             product_model = ProductModel.objects.get_or_create(product_id=productId)[0]
             product = self._buildProduct(model=product_model)
             product.removeProduct()
@@ -434,13 +434,14 @@ class Store:
             raise PermissionException("User ", assignee.getUserID(),
                                       "cannot assign manager to hwo made him owner in store: ",
                                       self.__name)
+        with self.__rolesLock:
+            self.__managers.append(assignee)
+            self.__model.managers.add(assignee.getModel())
+            StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(),
+                                                       assingee=assignee.getModel())
 
-        self.__model.managers.add(assignee.getModel())
-        StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(),
-                                                   assingee=assignee.getModel())
-
-        if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
-            StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__model).save()
+            if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
+                StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__model).save()
 
         with self.__permissionsLock:
             permission = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
@@ -476,12 +477,14 @@ class Store:
                                       "cannot assign manager to hwo made him owner in store: ",
                                       self.__name)
 
-        self.__model.owners.add(assignee.getModel())
-        StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(),
-                                                   assingee=assignee.getModel())
+        with self.__rolesLock:
+            self.__owners.append(assignee)
+            self.__model.owners.add(assignee.getModel())
+            StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(),
+                                                       assingee=assignee.getModel())
 
-        if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
-            StoreUserPermissionsModel(storeID=self.__model, userID=assignee.getModel()).save()
+            if not StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=assignee.getModel()).exists():
+                StoreUserPermissionsModel(storeID=self.__model, userID=assignee.getModel()).save()
 
         with self.__permissionsLock:
             assignee_permissions = StoreUserPermissionsModel.objects.get(storeID=self.__model,
@@ -521,6 +524,7 @@ class Store:
                 # they didn't asked us yet to implement.
                 to_remove = self._buildMember(toRemoveOwner.assingee)
                 self.removeStoreOwner(assignee, to_remove)
+        self.__owners.remove(assignee)
         StoreUserPermissionsModel.objects.get(storeID=self.__model, userID=assignee.getModel()).delete()
         for model in StoreModel.owners.through.objects.all():
             if assignee.getModel() == model.membermodel:
@@ -549,7 +553,7 @@ class Store:
             info += "\n managerId: " + str(managerId) + permission.printPermission() + "\n"
         return info
 
-    def getPermissions(self, user):  ### NEED TO CHANGE
+    def getPermissions(self, user):
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
         if not permissions.exists():
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
@@ -563,20 +567,22 @@ class Store:
         return rulesPermissions
 
     def addTransaction(self, transaction):
-        TransactionsInStoreModel.objects.get_or_create(storeID=self.__model, transactionID=transaction.getModel())
+        with self.__transactionLock:
+            self.__transactions[transaction.getTransactionID()] = transaction
+            TransactionsInStoreModel.objects.get_or_create(storeID=self.__model, transactionID=transaction.getModel())
 
     def removeTransaction(self, transactionId):
-        transaction_model = StoreTransactionModel.objects.get(transactionId=transactionId)
-        TransactionsInStoreModel.objects.get(storeID=self.__model, transactionID=transaction_model).delete()
+        with self.__transactions:
+            if transactionId in self.__transactions.keys():
+                self.__transactions.pop(transactionId)
+                transaction_model = StoreTransactionModel.objects.get(transactionId=transactionId)
+                TransactionsInStoreModel.objects.get(storeID=self.__model, transactionID=transaction_model).delete()
 
     def getTransaction(self, transactionId):
-        if not StoreTransactionModel.objects.filter(transactionId=transactionId).exists():
+        if transactionId not in self.__transactions.keys():
             raise TransactionException("in store: ", self.__id, "there is not transaction with Id: ", transactionId)
-        transaction_model = StoreTransactionModel.objects.get(transactionId=transactionId)
-        return self._buildStoreTransactions(transaction_model)
+        self.__transactions.get(transactionId)
 
-    def getName(self):
-        return self.__model.name
 
     # print all transactions in store - will be deleted in this version
     def printPurchaseHistoryInformation(self, user):  ###NEED TO CHANGE THIS
@@ -608,32 +614,28 @@ class Store:
 
     def getProductsByName(self, productName):
         toReturnProducts = []
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
-            product = self._buildProduct(prod.productID)
+        for product in self.__products.values():
             if product.getProductName().lower() == productName.lower():
                 toReturnProducts.append(product)
         return toReturnProducts
 
     def getProductsByKeyword(self, keyword):
         products = []
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
-            product = self._buildProduct(prod.productID)
+        for product in self.__products.values():
             if product.isExistsKeyword(keyword):
                 products.append(product)
         return products
 
     def getProductsByCategory(self, productCategory):
         toReturnProducts = []
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
-            product = self._buildProduct(prod.productID)
+        for product in self.__products.values():
             if product.getProductCategory().lower() == productCategory.lower():
                 toReturnProducts.append(product)
         return toReturnProducts
 
     def getProductsByPriceRange(self, minPrice, maxPrice):
         toReturnProducts = []
-        for prod in ProductsInStoreModel.objects.filter(storeID=self.__model):
-            product = self._buildProduct(prod.productID)
+        for product in self.__products.values():
             price = product.getProductPrice()
             if minPrice <= price <= maxPrice:
                 toReturnProducts.append(product)
@@ -642,29 +644,33 @@ class Store:
     def addProductToBag(self, productId, quantity):
         with self.__stockLock:
             product_model = ProductModel.objects.get(product_id=productId)
-            if not ProductsInStoreModel.objects.filter(storeID=self.__model, productID=product_model).exists():
-                raise ProductException("product: ", productId, "cannot be added because he is not in store: ", self.__id)
-            if ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model).quantity < quantity:
+            if self.__products.get(productId) is None:
+                raise ProductException("product: ", productId, "cannot be added because it is not in store: ",
+                                       self.__id)
+            if self.__productsQuantity[productId] < quantity:
                 raise ProductException("cannot add a negative quantity to bag")
             quantity_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
             quantity_to_change.quantity -= quantity
             quantity_to_change.save()
+            self.__productsQuantity[productId] -= quantity
             return True
 
     def removeProductFromBag(self, productId, quantity):  ###NO USE OF THIS FUNCTION - NEED TO DELETE IT?
         with self.__stockLock:
-            if not ProductModel.objects.filter(product_id=productId).exists():
-                raise ProductException("product: ", productId, "cannot be remove because he is not in store: ", self.__id)
+            if productId not in self.__products.keys():
+                raise ProductException("product: ", productId, "cannot be remove because it is not in store: ",
+                                       self.__id)
 
             product_model = ProductModel.objects.get(product_id=productId)
             product_to_change = ProductsInStoreModel.objects.get(storeID=self.__model, productID=product_model)
             product_to_change.quantity += quantity
             product_to_change.save()
+            self.__productsQuantity[productId] += quantity
 
     def hasRole(self, user):
         return user in self.getStoreOwners() or user in self.getStoreManagers()
 
-    def getTransactionsForSystemManager(self):  ###NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
+    def getTransactionsForSystemManager(self):
         return self.__transactions.values()
 
     def hasPermissions(self, user):
@@ -681,6 +687,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
+        self.__discounts[discount.getDiscountId()] = discount
 
     def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):  ###NEED TO CHANGE THIS
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
@@ -704,8 +711,11 @@ class Store:
         #     self.__discounts.pop(dId2)
         discount = DiscountComposite(discountId, d1, d2, discountType, decide)
         DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
+        self.__discounts[discount.getDiscountId()] = discount
         DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d1.getModel()).delete()
+        self.__discounts.pop(d1.getDiscountId())
         DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=d2.getModel()).delete()
+        self.__discounts.pop(d2.getDiscountId())
         return discount
 
     def removeDiscount(self, user, dId):
@@ -715,33 +725,20 @@ class Store:
         if not permissions.first().discount:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
-        discount_model = DiscountModel.objects.get(discountID=dId)
-        discountInStore = DiscountsInStoreModel.objects.filter(storeID=self.__model, discountID=discount_model)
-        if not discountInStore.exists():
+        if self.__discounts.get(dId) is None:
             raise Exception("the discount is not an existing discount")
 
         with self.__discountsLock:
-            discount = self._buildDiscount(discount_model)
+            discount = self.__discounts.get(dId)
+            self.__discounts.pop(dId)
             discount.remove()
-        # DiscountsInStoreModel.objects.get(storeID=self.__model, discountID=discount_model).delete()
         return True
 
     def getAllDiscounts(self):
-        # self.__discounts: {int: IDiscount} = {}
-        discounts = {}
-        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
-        for d in discount_models:
-            discount = self._buildDiscount(d.discountID)
-            discounts[discount.getDiscountId()] = discount
-        return discounts
+        return self.__discounts
 
     def getAllRules(self):
-        rules = {}
-        rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
-        for r in rule_models:
-            rule = RuleCreator.getInstance().buildRule(r.ruleID)
-            rules[rule.getRuleId()] = rule
-        return rules
+        return self.__rules
 
     def hasDiscountPermission(self, user):
         permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
@@ -764,6 +761,7 @@ class Store:
             discount.addSimpleRuleDiscount(rule)
         elif rule.getRuleKind() == 'Purchase':
             RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=rule.getModel())
+            self.__rules[rule.getRuleId()] = rule
         else:
             raise Exception("rule kind is illegal")
 
@@ -797,12 +795,15 @@ class Store:
                 raise Exception("rule2 is not an existing discount")
             toReturnDiscount = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
             RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=toReturnDiscount.getModel())
+            self.__rules[toReturnDiscount.getRuleId()] = toReturnDiscount
             with self.__discountsLock:
                 toReturnDiscount.getModel().rule_class = 'PurchaseComposite'
                 toReturnDiscount.getModel().save()
 
             RulesInStoreModel.objects.get(ruleID=rule1model.first()).delete()
+            self.__rules.pop(rule1)
             RulesInStoreModel.objects.get(ruleID=rule2model.first()).delete()
+            self.__rules.pop(rule2)
         else:
             raise Exception("rule kind is illegal")
 
@@ -828,6 +829,7 @@ class Store:
         elif ruleKind == 'Purchase':
             rule_model = RuleModel.objects.get(ruleID=rId)
             rule = RuleCreator.getInstance().buildRule(rule_model)
+            self.__rules.pop(rule.getRuleId())
             rule.removeRule()
             # RulesInStoreModel.objects.get(storeID=self.__model, ruleID=rule_model).delete()
         else:
@@ -841,13 +843,11 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         discounts = []
-        discount_models = DiscountsInStoreModel.objects.filter(storeID=self.__model)
-        for d in discount_models:
-            discount = self._buildDiscount(d.discountID)
-            if isComp and discount.isComp():
-                discounts.append(discount)
-            if not isComp and not discount.isComp():
-                discounts.append(discount)
+        for d in self.__discounts.values():
+            if isComp and d.isComp():
+                discounts.append(d)
+            if not isComp and not d.isComp():
+                discounts.append(d)
         return discounts
 
     def getAllPurchaseRulesOfStore(self, user, isComp):
@@ -858,13 +858,11 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         rules = []
-        rule_models = RulesInStoreModel.objects.filter(storeID=self.__model)
-        for r in rule_models:
-            rule = RuleCreator.getInstance().buildRule(r.ruleID)
-            if isComp and rule.isComp():
-                rules.append(rule)
-            if not isComp and not rule.isComp():
-                rules.append(rule)
+        for r in self.__rules.values():
+            if isComp and r.isComp():
+                rules.append(r)
+            if not isComp and not r.isComp():
+                rules.append(r)
         return rules
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
@@ -875,8 +873,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
 
-        discount_model = DiscountModel.objects.get(discountID=discountId)
-        discount = self._buildDiscount(discount_model)
+        discount = self.__discounts[discountId]
         discountRules = discount.getAllDiscountRules()
         rules = []
         for rule in discountRules:
@@ -921,6 +918,7 @@ class Store:
                 rule = RuleCreator.getInstance().buildRule(ruleInDiscount.ruleID)
                 rule.removeRule()
             discount.remove()
+            self.__discounts.pop(discount.getDiscountId())
 
     def _buildProduct(self, model):
         return Product(model=model)
