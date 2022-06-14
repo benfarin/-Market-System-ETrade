@@ -24,3 +24,6 @@ class IUser(Interface):
     def getCartSum(self):
         pass
 
+    def openNewBidOffer(self, storeID, productID, newPrice):
+        pass
+

@@ -180,3 +180,6 @@ class IMarket(Interface):
 
     def getCheckOwner(self, user):
         pass
+
+    def openNewBidOffer(self, user, storeID, productID, newPrice):
+        pass

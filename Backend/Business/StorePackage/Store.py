@@ -6,6 +6,7 @@ from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
 from Backend.Business.Discounts.ProductDiscount import ProductDiscount
 from Backend.Business.Discounts.StoreDiscount import StoreDiscount
 from Backend.Business.Rules.RuleCreator import RuleCreator
+from Backend.Business.StorePackage.BidOffer import BidOffer
 from Backend.Business.StorePackage.Product import Product
 import Backend.Business.UserPackage.Member as m
 from Backend.Interfaces.IDiscount import IDiscount
@@ -857,6 +858,10 @@ class Store:
             if not isComp and not r.isComp():
                 rules.append(r)
         return rules
+
+    def openNewBidOffer(self, user , productID, newPrice):
+        newBid = BidOffer(user,self.__id,productID,newPrice,self.__owners)
+        
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
         permissions = self.__permissions.get(user)

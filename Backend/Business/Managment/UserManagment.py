@@ -331,6 +331,15 @@ class UserManagment(object):
             return lst[0]
         return None
 
+    def openNewBidOffer(self, userID, storeID, productID, newPrice):
+        self._initializeDict()
+        self.thereIsSystemManger()
+        try:
+            self.checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).openNewBidOffer(storeID, productID, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
     def _buildMember(self, model):
         return Member(model=model)
 

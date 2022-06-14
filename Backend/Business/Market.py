@@ -582,6 +582,17 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def openNewBidOffer(self, user ,storeID, productID, newPrice):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            if not self.__stores.get(storeID).hasProduct(productID):
+                raise ProductException("The product id " + productID + " not in market!")
+            return self.__stores.get(storeID).openNewBidOffer(user , productID, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
     def addCompositeRule(self, user, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
         self.__initializeStoresDict()
         try:

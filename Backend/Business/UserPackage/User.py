@@ -159,6 +159,13 @@ class User:
         except Exception as e:
             raise Exception(e)
 
+    @threaded
+    def openNewBidOffer(self,storeID, productID, newPrice):
+        try:
+            return self.__market.openNewBidOffer(self,storeID, productID, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
 
     @staticmethod
     def get_user(username):
