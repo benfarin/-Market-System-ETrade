@@ -63,6 +63,20 @@ class Store:
             self.__transactions: Dict[int: StoreTransaction] = {}
             self.__discounts: {int: IDiscount} = {}
             self.__rules: {int: IRule} = {}
+
+            self.__permissions: Dict[IMember: StorePermission] = \
+                {founder: StorePermission(founder.getUserID())}  # member : storePermission
+            self.__permissions[founder].setPermission_AppointManager(True)
+            self.__permissions[founder].setPermission_AppointOwner(True)
+            self.__permissions[founder].setPermission_CloseStore(True)
+            self.__permissions[founder].setPermission_StockManagement(True)
+            self.__permissions[founder].setPermission_AppointManager(True)
+            self.__permissions[founder].setPermission_AppointOwner(True)
+            self.__permissions[founder].setPermission_ChangePermission(True)
+            self.__permissions[founder].setPermission_CloseStore(True)
+            self.__permissions[founder].setPermission_RolesInformation(True)
+            self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
+            self.__permissions[founder].setPermission_Discount(True)
         else:
             self.__model = model
             self.__permissions_model = \
@@ -107,6 +121,12 @@ class Store:
             for r in rule_models:
                 rule = RuleCreator.getInstance().buildRule(r.ruleID)
                 self.__rules[rule.getRuleId()] = rule
+            self.__permissions: Dict[IMember: StorePermission] = {}
+            store_permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model)
+            for permission_model in store_permissions:
+                member = self._buildMember(permission_model.userID)
+                permission = self._buildPermission(permission_model)
+                self.__permissions.update({member: permission})
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -115,19 +135,7 @@ class Store:
         self.__transactionLock = threading.Lock()
         self.__discountsLock = threading.Lock()
 
-        # self.__permissions: Dict[IMember: StorePermission] = {
-        #     founder: StorePermission(founder.getUserID())}  # member : storePermission
-        # self.__permissions[founder].setPermission_AppointManager(True)
-        # self.__permissions[founder].setPermission_AppointOwner(True)
-        # self.__permissions[founder].setPermission_CloseStore(True)
-        # self.__permissions[founder].setPermission_StockManagement(True)
-        # self.__permissions[founder].setPermission_AppointManager(True)
-        # self.__permissions[founder].setPermission_AppointOwner(True)
-        # self.__permissions[founder].setPermission_ChangePermission(True)
-        # self.__permissions[founder].setPermission_CloseStore(True)
-        # self.__permissions[founder].setPermission_RolesInformation(True)
-        # self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
-        # self.__permissions[founder].setPermission_Discount(True)
+
 
     def getStoreId(self):
         return self.__id
@@ -160,17 +168,11 @@ class Store:
         return self.__productsQuantity
 
     def getTransactionForDTO(self):
-        # self.__transactions: Dict[int: StoreTransaction] = {}
         return self.__transactions
 
     def getPermissionForDto(self):
-        # self.__permissions: Dict[IMember: StorePermission] = {}
-        permissions: Dict[IMember: StorePermission] = {}
-        for per in StoreUserPermissionsModel.objects.filter(storeID=self.__model):
-            permission = self._buildPermission(per)
-            member = self._buildMember(per.userID)
-            permissions.update({member: permission})
-        return permissions
+        return self.__permissions
+
 
     def getProduct(self, productId):
         if productId in self.__products:
@@ -188,10 +190,10 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
+                self.__permissions[assignee].setPermission_StockManagement(True)
                 assignee_permissions.stockManagement = True
                 assignee_permissions.save()
-            # with self.__permissionsLock:
-            #     self.__permissions[assignee].setPermission_StockManagement(True)
+
 
     def setAppointManagerPermission(self, assigner, assignee):
         try:
@@ -204,10 +206,10 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
-                assignee_permissions.appointManagera = True
+                self.__permissions[assignee].setPermission_AppointManager(True)
+                assignee_permissions.appointManager = True
                 assignee_permissions.save()
-            # with self.__permissionsLock:
-            #     self.__permissions[assignee].setPermission_AppointManager(True)
+
 
     def setAppointOwnerPermission(self, assigner, assignee):
         try:
@@ -222,10 +224,10 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
+                self.__permissions[assignee].setPermission_AppointOwner(True)
                 assignee_permissions.appointOwner = True
                 assignee_permissions.save()
-            # with self.__permissionsLock:
-            #     self.__permissions[assignee].setPermission_AppointOwner(True)
+
 
     def setChangePermission(self, assigner, assignee):
         try:
@@ -238,6 +240,7 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
+                self.__permissions[assignee].setPermission_ChangePermission(True)
                 assignee_permissions.changePermission = True
                 assignee_permissions.save()
 
@@ -252,6 +255,7 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
+                self.__permissions[assignee].setPermission_RolesInformation(True)
                 assignee_permissions.rolesInformation = True
                 assignee_permissions.save()
 
@@ -266,6 +270,7 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
+                self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
                 assignee_permissions.purchaseHistoryInformation = True
                 assignee_permissions.save()
 
@@ -280,21 +285,18 @@ class Store:
             with self.__permissionsLock:
                 assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
                                                                              storeID=self.__model)
+                self.__permissions[assignee].setPermission_Discount(True)
                 assignee_permissions.discount = True
                 assignee_permissions.save()
 
     def __haveAllPermissions(self, assigner, assignee):
         # next version need to add parameter for removing.
-        permissions = StoreUserPermissionsModel.objects.filter(userID=assigner.getModel(), storeID=self.__model)
-        if not permissions.exists():
+        permissions = self.__permissions[assigner]
+        if permissions is None:
             raise PermissionException("User ", assigner, " doesn't have any permissions is store: ", self.__id)
-        if not permissions.first().changePermission:
+        if not permissions.hasPermission_ChangePermission():
             raise PermissionException("User ", assigner, "cannot change permission in store: ", self.__id)
-        if not StoreUserPermissionsModel.objects.filter(userID=assignee.getModel(), storeID=self.__model).exists():
-            raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
-                                      assignee.getUserID(), " because he didn't assign him")
-        if not StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assignee.getModel(),
-                                                   storeID=self.__model).exists():
+        if assignee not in self.__appointers[assigner]:
             raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
                                       assignee.getUserID(), " because he didn't assign him")
 
@@ -309,8 +311,12 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            ProductsInStoreModel.objects.get_or_create(storeID=self.__model, productID=product.getModel(), quantity=0)
-            self.__products[product.getProductId()] = product
+            with self.__productsLock:
+                self.__products[product.getProductId()] = product
+                ProductsInStoreModel.objects.get_or_create(storeID=self.__model, productID=product.getModel(),
+                                                           quantity=0)
+            with self.__stockLock:
+                self.__productsQuantity[product.getProductId()] = 0
 
     def addProductQuantityToStore(self, user, productId, quantity):
         try:
@@ -398,13 +404,11 @@ class Store:
             return product
 
     def __checkPermissions_ChangeStock(self, user):
-        permissions = StoreUserPermissionsModel.objects.filter(userID=user.getModel(), storeID=self.__model)
-        if not permissions.exists():
-            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ",
-                                      self.__name)
-        if not permissions.first().stockManagement:
-            raise PermissionException("User ", user.getUserID(),
-                                      " doesn't have the permission to change the stock in store: ",
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ", self.__name)
+        if not permissions.hasPermission_StockManagement():
+            raise PermissionException("User ", user.getUserID(), " doesn't have the permission to change the stock in store: ",
                                       self.__name)
 
     def appointManagerToStore(self, assigner, assignee):
@@ -444,7 +448,10 @@ class Store:
                 StoreUserPermissionsModel(userID=assignee.getModel(), storeID=self.__model).save()
 
         with self.__permissionsLock:
-            permission = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(), storeID=self.__model)
+            if self.__permissions.get(assignee) is None:
+                self.__permissions[assignee] = StorePermission(assignee.getUserID())
+            self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
+            permission = self.__permissions[assignee].getModel()
             permission.purchaseHistoryInformation = True
             permission.save()
 
@@ -487,22 +494,15 @@ class Store:
                 StoreUserPermissionsModel(storeID=self.__model, userID=assignee.getModel()).save()
 
         with self.__permissionsLock:
-            assignee_permissions = StoreUserPermissionsModel.objects.get(storeID=self.__model,
-                                                                         userID=assignee.getModel())
-            assignee_permissions.stockManagement = True
-            assignee_permissions.save()
-            assignee_permissions.appointManager = True
-            assignee_permissions.save()
-            assignee_permissions.appointOwner = True
-            assignee_permissions.save()
-            assignee_permissions.changePermission = True
-            assignee_permissions.save()
-            assignee_permissions.rolesInformation = True
-            assignee_permissions.save()
-            assignee_permissions.purchaseHistoryInformation = True
-            assignee_permissions.save()
-            assignee_permissions.discount = True
-            assignee_permissions.save()
+            if self.__permissions.get(assignee) is None:
+                self.__permissions[assignee] = StorePermission(assignee.getUserID())
+            self.__permissions[assignee].setPermission_StockManagement(True)
+            self.__permissions[assignee].setPermission_AppointManager(True)
+            self.__permissions[assignee].setPermission_AppointOwner(True)
+            self.__permissions[assignee].setPermission_ChangePermission(True)
+            self.__permissions[assignee].setPermission_RolesInformation(True)
+            self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
+            self.__permissions[assignee].setPermission_Discount(True)
 
     # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):
@@ -554,17 +554,14 @@ class Store:
         return info
 
     def getPermissions(self, user):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().rolesInformation:
+        if not permissions.hasPermission_RolesInformation():
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        rulesPermissions = []
-        for permission in StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel()):
-            rulesPermissions.append(StorePermission(model=permission))
-        return rulesPermissions
+        return self.__permissions.values()
 
     def addTransaction(self, transaction):
         with self.__transactionLock:
@@ -599,18 +596,14 @@ class Store:
         return info
 
     def getTransactionHistory(self, user):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().rolesInformation:
+        if not permissions.hasPermission_RolesInformation():
             raise PermissionException("User ", user.getUserID(),
                                       " doesn't have the permission - get roles information in store: ",
                                       self.__name)
-        transactions: Dict[int: StoreTransaction] = {}
-        for transaction_model in StoreTransactionModel.objects.filter(storeId=self.__model.storeID):
-            transaction = self._buildStoreTransactions(transaction_model)
-            transactions.update({transaction.getTransactionID() : transaction})
-        return transactions
+        return self.__transactions.values()
 
     def getProductsByName(self, productName):
         toReturnProducts = []
@@ -674,26 +667,26 @@ class Store:
         return self.__transactions.values()
 
     def hasPermissions(self, user):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             return False
         return True
 
     def addSimpleDiscount(self, user, discount):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         DiscountsInStoreModel.objects.get_or_create(storeID=self.__model, discountID=discount.getModel())
         self.__discounts[discount.getDiscountId()] = discount
 
-    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):  ###NEED TO CHANGE THIS
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+    def addCompositeDiscount(self, user, discountId, dId1, dId2, discountType, decide):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         d1_model = DiscountModel.objects.filter(discountID=dId1)
@@ -719,10 +712,10 @@ class Store:
         return discount
 
     def removeDiscount(self, user, dId):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         if self.__discounts.get(dId) is None:
@@ -741,16 +734,16 @@ class Store:
         return self.__rules
 
     def hasDiscountPermission(self, user):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        return permissions.first().discount
+        return permissions.hasPermission_Discount()
 
     def addSimpleRule(self, user, dId, rule):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         if rule.getRuleKind() == 'Discount':
@@ -766,10 +759,10 @@ class Store:
             raise Exception("rule kind is illegal")
 
     def addCompositeRule(self, user, dId, ruleId, rId1, rId2, ruleType, ruleKind):  ###NEED TO CHANGE THIS
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
 
@@ -814,10 +807,10 @@ class Store:
         return toReturnDiscount
 
     def removeRule(self, user, dId, rId, ruleKind):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         if ruleKind == 'Discount':
@@ -836,10 +829,10 @@ class Store:
             raise Exception("rule kind is illegal")
 
     def getAllDiscountOfStore(self, user, isComp):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         discounts = []
@@ -851,10 +844,10 @@ class Store:
         return discounts
 
     def getAllPurchaseRulesOfStore(self, user, isComp):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         rules = []
@@ -866,10 +859,10 @@ class Store:
         return rules
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
-        permissions = StoreUserPermissionsModel.objects.filter(storeID=self.__model, userID=user.getModel())
-        if not permissions.exists():
+        permissions = self.__permissions.get(user)
+        if permissions is None:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
-        if not permissions.first().discount:
+        if not permissions.hasPermission_Discount():
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
 

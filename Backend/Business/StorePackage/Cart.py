@@ -67,7 +67,7 @@ class Cart:
 
 
 
-    def updateCart(self, cart):   ###NEED TO CHANGE
+    def updateCart(self, cart):
         for bag in cart.getAllBags().values():
             cartBag = self.__buildBag(BagsInCartModel.objects.get(cart=cart.getModel(), storeID=bag.getStoreId()))
             matchingBag = BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.getStoreId())
