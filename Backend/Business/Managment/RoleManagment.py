@@ -560,7 +560,7 @@ class RoleManagment:
         for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,
                                                             date__gte=fromDate, date__lte=untilDate):
             member = self.__memberManagement.getMemberByName(userLogInModel.username)
-            if member is None:  # the member can be systemManger
+            if member is None:  # the member can be system managers
                 member = self.__memberManagement.getSystemManagers().get(userLogInModel.username)
             members.append(member)
         return members
@@ -590,13 +590,13 @@ class RoleManagment:
 
             for member in members:
                 if self.__memberManagement.getSystemManagers().get(member.getMemberName()) is not None:
-                    loginDateRecords[4].append(member)
+                    loginDateRecords[4].append(member.getMemberName())
                 elif member.getCheckNoOwnerNoManage():
-                    loginDateRecords[1].append(member)
+                    loginDateRecords[1].append(member.getMemberName())
                 elif member.getCheckNoOwnerYesManage():
-                    loginDateRecords[2].append(member)
+                    loginDateRecords[2].append(member.getMemberName())
                 elif member.getCheckOwner():
-                    loginDateRecords[3].append(member)
+                    loginDateRecords[3].append(member.getMemberName())
 
             return loginDateRecords
         except Exception as e:

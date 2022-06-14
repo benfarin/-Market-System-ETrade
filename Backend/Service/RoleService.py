@@ -3,6 +3,7 @@ from datetime import datetime
 import django, os
 
 from Backend.Service.DTO.GuestDTO import GuestDTO
+from Backend.Service.DTO.LoginRecordDTO import LoginRecordDTO
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -277,10 +278,7 @@ class RoleService:
         try:
             allUsersByDates = self.__roleManagment.getUsersByDates(systemManagerName, fromDate, untilDate)
             logging.info("success to get all user by dates")
-            # users = []
-            # for user in allUsersByDates:
-            #     users.append(GuestDTO(user))
-            return Response(allUsersByDates)
+            return Response(LoginRecordDTO(allUsersByDates))
         except Exception as e:
             logging.error("Failed to get all user by dates")
             return Response(e.__str__())
