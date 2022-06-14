@@ -1,10 +1,10 @@
-import os , django
+import os, django
 import sys
 from datetime import datetime
 
 from django.db.models import Max
 
-from ModelsBackend.models import ProductModel, DiscountModel, RuleModel
+from ModelsBackend.models import ProductModel, DiscountModel, RuleModel, LoginDateModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -22,8 +22,6 @@ from Backend.Business.Rules.PriceRule import PriceRule
 from Backend.Business.Rules.WeightRule import weightRule
 from Backend.Business.Rules.QuantityRule import quantityRule
 import threading
-
-
 
 
 class RoleManagment:
@@ -306,6 +304,8 @@ class RoleManagment:
             if self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID()):
                 self.__memberManagement.removeFromMembers(member.getUserID())
                 member.removeUser()
+                for memberLogIn in LoginDateModel.objects.filter(username=memberName):
+                    memberLogIn.delete()
             return True
         except Exception as e:
             raise Exception(e)
@@ -555,10 +555,25 @@ class RoleManagment:
             raise Exception("member does not have the permission to add discounts")
         return member.getAllRulesOfDiscount(storeId, discountId, isComp)
 
-    def getUsersByDates(self, systemManger):
-        #check systemmanger
-        pass
+    def __getAllMembersByDates(self, fromDate, untilDate):
+        members = []
+        for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,
+                                                            date__gte=fromDate, date__lte=untilDate):
+            member = self.__memberManagement.getMemberByName(userLogInModel.username)
+            members.append(member)
+        return members
 
+    def __getAllGuestByDates(self, fromDate, untilDate):
+        guests = []
+        for userLogInModel in LoginDateModel.objects.filter(username=None,
+                                                            date__gte=fromDate, date__lte=untilDate):
+            guests.append(userLogInModel.userID)
+        return guests
+
+    def getUsersByDates(self, systemManger, fromDate, untilDate):
+        users = self.__getAllGuestByDates(fromDate, untilDate)
+        members = self.__getAllMembersByDates(fromDate, untilDate)
+        return True
 
 
     def __getProductId(self):
@@ -595,5 +610,3 @@ class RoleManagment:
         rId = self.__ruleId
         self.__ruleId += 1
         return rId
-
-

@@ -2,7 +2,7 @@ import os
 import threading
 import django
 
-from ModelsBackend.models import MemberModel, UserModel
+from ModelsBackend.models import MemberModel, UserModel, LoginDateModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -94,6 +94,7 @@ class UserManagment(object):
             guest = Guest()
             self.__guests[guest.getUserID()] = guest
             self.__activeUsers[guest.getUserID()] = guest
+            LoginDateModel.objects.get_or_create(userID=guest.getUserID())
             # if User.get_user("Guest") is None:
             #     User.save(username="Guest", password="")
             return guest
@@ -142,6 +143,8 @@ class UserManagment(object):
                     self._removeGuest(oldUserId)
                     self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
                     self.__guests.pop(oldUserId)  # we can delete the guest.
+
+                    LoginDateModel.objects.get_or_create(userID=member.getUserID(), username=userName)
                     return system_manager
             elif member is not None:
                 if (self.__activeUsers.get(member.getUserID())) is not None:
@@ -156,6 +159,8 @@ class UserManagment(object):
                     self._removeGuest(oldUserId)
                     self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
                     self.__guests.pop(oldUserId)  # we can delete the guest.
+
+                    LoginDateModel.objects.get_or_create(userID=member.getUserID(), username=userName)
                     return member
                 else:
                     raise PasswordException("password not good!")
@@ -304,6 +309,13 @@ class UserManagment(object):
         if uid not in self.__activeUsers:
             raise NoSuchUserException("user: " + str(uid) + "is not exists")
         return self.__activeUsers.get(uid)
+
+    def getGuest(self, uid):
+        self._initializeDict()
+        self.thereIsSystemManger()
+        if uid not in self.__activeUsers:
+            raise NoSuchUserException("user: " + str(uid) + "is not exists")
+        return self.__guests.get(uid)
 
     def getUserByUserName(self, username):
         self._initializeDict()

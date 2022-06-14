@@ -273,6 +273,18 @@ class RoleService:
             logging.error("Failed  to get all active users ")
             return Response(e.__str__())
 
+    def getUsersByDates(self, systemManagerName, fromDate, untilDate):
+        try:
+            allUsersByDates = self.__roleManagment.getUsersByDates(systemManagerName, fromDate, untilDate)
+            logging.info("success to get all user by dates")
+            # users = []
+            # for user in allUsersByDates:
+            #     users.append(GuestDTO(user))
+            return Response(True)
+        except Exception as e:
+            logging.error("Failed to get all user by dates")
+            return Response(e.__str__())
+
     def getAllStoreTransactions(self, systemManagerName):
         try:
             storeTransactions = self.__roleManagment.getAllStoreTransactions(systemManagerName)

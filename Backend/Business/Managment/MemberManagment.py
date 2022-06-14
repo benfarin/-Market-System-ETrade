@@ -190,6 +190,8 @@ class MemberManagment(UserManagment):
     def thereIsSystemManger(self):
         return super().thereIsSystemManger()
 
+    def getGuest(self, uId):
+        return super().getGuest(uId)
 
 # NOT IMPORTANT FUNCTION ---
     def change_password(self,userID,old_password,new_password):

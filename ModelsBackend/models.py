@@ -6,6 +6,7 @@ from django.db import models
 class Initialized(models.Model):
     is_initialized = models.BooleanField(default=False)
 
+
 class ProductModel(models.Model):
     product_id = models.IntegerField(primary_key=True)
     storeId = models.IntegerField()
@@ -235,3 +236,10 @@ class NotificationModel(models.Model):
     userID = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
     text = models.TextField()
     read = models.BooleanField(default=False)
+
+
+class LoginDateModel(models.Model):
+    userID = models.UUIDField()
+    username = models.TextField(null=True)
+    date = models.DateTimeField(auto_now=True)
+

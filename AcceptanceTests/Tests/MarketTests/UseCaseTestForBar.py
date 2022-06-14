@@ -1,5 +1,6 @@
 import unittest
 from collections import Counter
+import datetime
 
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
@@ -58,6 +59,8 @@ class UseCaseForBar(unittest.TestCase):
         self.proxy_market.appoint_store_owner(s1_id, u2_id, "Ori")
         self.proxy_market.appoint_store_owner(s1_id, u2_id, "Bar")
         self.proxy_user.logout_member("Bar")
+
+        self.proxy_market.getUsersByDates("AdminUser", datetime.date(2022, 6, 14), datetime.date(2022, 6, 15))
 
         storeDTO = self.proxy_market.get_store_by_ID(s1_id).getData()
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeDTO.getStoreOwners()]

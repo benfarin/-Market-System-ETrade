@@ -357,3 +357,8 @@ class MarketProxyBridge:
 
     def reset_management(self):
         return self._real_subject.reset_management()
+
+    def getUsersByDates(self, systemManagerName, fromDate, untilDate):
+        if self.check_access():
+            return True
+        return self._real_subject.getUsersByDates(systemManagerName, fromDate, untilDate)
