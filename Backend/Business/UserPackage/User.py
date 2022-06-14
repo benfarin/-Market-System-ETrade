@@ -166,6 +166,27 @@ class User:
         except Exception as e:
             raise Exception(e)
 
+    @threaded
+    def acceptBidOffer(self, storeID, bID):
+        try:
+            return self.__market.acceptBidOffer(self,storeID, bID)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def rejectOffer(self, storeID, bID):
+        try:
+            return self.__market.rejectOffer( storeID, bID)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def offerAlternatePrice(self, storeID, bID, new_price):
+        try:
+            return self.__market.offerAlternatePrice(storeID, bID, new_price)
+        except Exception as e:
+            raise Exception(e)
+
 
     @staticmethod
     def get_user(username):

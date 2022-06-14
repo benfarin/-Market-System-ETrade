@@ -15,7 +15,7 @@ class BidOffer:
             for receiver in permissionsGuys:
                 self.__model.permissionsGuys.add(receiver.getModel())
             self.__bID = self.__model.id
-            self.__userID = user.getUserID()
+            self.__user = user
             self.__storeID = storeID.getStoreId()
             self.__productID = productID
             self.__newPrice = newPrice
@@ -39,20 +39,36 @@ class BidOffer:
     def get_bID(self):
         return self.__bID
 
+    def get_user(self):
+        return self.__user
+
+    def get_storeID(self):
+        return self.__storeID
+
+    def get_productID(self):
+        return self.__productID
+
+    def get_newPrice(self):
+        return self.__newPrice
+
+    def get_Accepted(self):
+        return self.__accepted
+
 
     def acceptOffer(self, userID):
         self.__permissionsGuys[userID] = True
         self.__accepted += 1
         if self.__accepted == len(self.__permissionsGuys):
             notification_handler: NotificationHandler = NotificationHandler.getInstance()
-            notification_handler.notifyBidAccepted(self.__userID, self.__storeID, self.__bID)
+            notification_handler.notifyBidAccepted(self.__user.getUserID(), self.__storeID, self.__bID)
+            self.__user.addBidProductToCart(self.__productID)
 
     def rejectOffer(self):
         self.__active = False
         self.__model.active = False
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
-        notification_handler.notifyBidDeclined(self.__userID, self.__storeID, self.__bID)
+        notification_handler.notifyBidDeclined(self.__user.getUserID(), self.__storeID, self.__bID)
 
 
     def offerAlternatePrice(self, new_price):
@@ -60,7 +76,7 @@ class BidOffer:
         self.__model.newPrice = new_price
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
-        notification_handler.notifyBidAlternateOffer(self.__userID, self.__storeID, self.__bID)
+        notification_handler.notifyBidAlternateOffer(self.__user.getUserID(), self.__storeID, self.__bID)
 
 
 

@@ -27,3 +27,12 @@ class IUser(Interface):
     def openNewBidOffer(self, storeID, productID, newPrice):
         pass
 
+    def acceptBidOffer(self, storeID, bID):
+        pass
+
+    def rejectOffer(self, storeID, bID):
+        pass
+
+    def offerAlternatePrice(self, storeID, bID, new_price):
+        pass
+

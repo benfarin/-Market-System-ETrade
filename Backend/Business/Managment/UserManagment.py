@@ -340,15 +340,6 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
-    def acceptBidOffer(self, userID, storeID, bID):
-        pass
-
-    def rejectOffer(self, userID, storeID, bID):
-        pass
-
-    def offerAlternatePrice(self, userID, storeID, bID, new_price):
-        pass
-
 
     def _buildMember(self, model):
         return Member(model=model)

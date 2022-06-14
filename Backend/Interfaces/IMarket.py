@@ -183,3 +183,12 @@ class IMarket(Interface):
 
     def openNewBidOffer(self, user, storeID, productID, newPrice):
         pass
+
+    def acceptBidOffer(self, user,storeID, bID):
+        pass
+
+    def rejectOffer(self,storeID, bID):
+        pass
+
+    def offerAlternatePrice(self,storeID, bID, new_price):
+        pass

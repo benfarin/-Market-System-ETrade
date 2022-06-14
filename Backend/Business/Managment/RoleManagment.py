@@ -555,6 +555,30 @@ class RoleManagment:
             raise Exception("member does not have the permission to add discounts")
         return member.getAllRulesOfDiscount(storeId, discountId, isComp)
 
+    def acceptBidOffer(self, userID, storeID, bID):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userID)
+        try:
+            return self.__memberManagement.getActiveUsers().values().get(userID).acceptBidOffer(storeID, bID)
+        except Exception as e:
+            raise Exception(e)
+
+    def rejectOffer(self, userID, storeID, bID):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userID)
+        try:
+            return self.__memberManagement.getActiveUsers().values().get(userID).rejectOffer(storeID, bID)
+        except Exception as e:
+            raise Exception(e)
+
+    def offerAlternatePrice(self, userID, storeID, bID, new_price):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userID)
+        try:
+            return self.__memberManagement.getActiveUsers().values().get(userID).offerAlternatePrice(storeID, bID, new_price)
+        except Exception as e:
+            raise Exception(e)
+
     def __getAllMembersByDates(self, fromDate, untilDate):
         members = []
         for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,

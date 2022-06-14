@@ -64,6 +64,7 @@ class Store:
             self.__productsQuantity = {}  # productId : quantity
             self.__transactions: Dict[int: StoreTransaction] = {}
             self.__discounts: {int: IDiscount} = {}
+            self.__bids: {int: BidOffer} = {} #have to set model
             self.__rules: {int: IRule} = {}
 
             self.__permissions: Dict[IMember: StorePermission] = \
@@ -141,6 +142,7 @@ class Store:
     def getStoreId(self):
         return self.__id
 
+
     def getStoreName(self):
         return self.__name
 
@@ -158,6 +160,9 @@ class Store:
 
     def getStoreOwners(self):
         return self.__owners
+
+    def getBids(self):
+        return self.__bids
 
     def getStoreManagers(self):
         return self.__managers
@@ -863,10 +868,34 @@ class Store:
         try:
             newBid = BidOffer(user, self,productID,newPrice,self.__owners)
             self.__notificationHandler.notifyForBidOffer(self.__owners, self.__id, user)
+            self.__bids.update({newBid.get_bID(): newBid})
             return newBid
         except:
             raise Exception("cannot open new bid for product " + str(productID))
-        
+
+    def acceptBidOffer(self, user , bID):
+        try:
+            bid: BidOffer = self.__bids.get(bID)
+            bid.acceptOffer(user.getUserID())
+            return True
+        except:
+            raise Exception("cannot accept bid " + str(bID))
+
+    def rejectOffer(self, bID):
+        try:
+            bid: BidOffer = self.__bids.get(bID)
+            bid.rejectOffer()
+            return True
+        except:
+            raise Exception("cannot accept bid " + str(bID))
+
+    def offerAlternatePrice(self , bID, new_price):
+        try:
+            bid: BidOffer = self.__bids.get(bID)
+            bid.offerAlternatePrice(new_price)
+            return True
+        except:
+            raise Exception("cannot accept bid " + str(bID))
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
         permissions = self.__permissions.get(user)
