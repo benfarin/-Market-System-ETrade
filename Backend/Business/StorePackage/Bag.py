@@ -9,7 +9,7 @@ django.setup()
 
 from Backend.Exceptions.CustomExceptions import QuantityException, ProductException, NotFoundException
 from Backend.Interfaces.IBag import IBag
-from ModelsBackend.models import BagModel, ProductsInBagModel, ProductModel
+from ModelsBackend.models import BagModel, ProductsInBagModel, ProductModel, BidOfferModel
 
 
 @zope.interface.implementer(IBag)
@@ -162,16 +162,26 @@ class Bag:
         for prod in discount_of_product:
             first = (1 - discount_of_product[prod])
             second = ProductsInBagModel.objects.get(bag_ID=self.__b, product_ID=prod.getModel()).quantity
-            third = prod.getProductPrice()
+            third = self.__getNewPrice(prod)
+            if third is None:
+                third = prod.getProductPrice()
             s += first * second * third
-
         return s
 
     def calc(self):
         s = 0.0
         for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            s += product.product_ID.price * product.quantity
+            productPrice = self.__getNewPrice(Product(model=product.product_ID))
+            if productPrice is None:
+                productPrice = product.product_ID.price
+            s += productPrice * product.quantity
         return s
+
+    def __getNewPrice(self, product):
+        BIDModel = BidOfferModel.objects.filter(productID=product.getModel())
+        if not BIDModel.exists():
+            return None
+        return BIDModel[0].newPrice
 
     def getModel(self):
         return self.__b

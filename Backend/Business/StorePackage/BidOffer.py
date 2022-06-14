@@ -7,7 +7,7 @@ from ModelsBackend.models import BidOfferModel, ProductModel
 
 class BidOffer:
 
-    def __init__(self, user=None, storeID=None, productID=None, newPrice=None , permissionsGuys=None, model=None):
+    def __init__(self, user=None, storeID=None, productID=None, newPrice=None, permissionsGuys=None, model=None):
         if model is None:
             self.__model = BidOfferModel.objects.get_or_create(user=user.getModel(), storeID=storeID.getModel(),
                                                                productID=ProductModel.objects.get(product_id=productID),
@@ -54,7 +54,6 @@ class BidOffer:
     def get_Accepted(self):
         return self.__accepted
 
-
     def acceptOffer(self, userID):
         self.__permissionsGuys[userID] = True
         self.__accepted += 1
@@ -70,18 +69,9 @@ class BidOffer:
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
         notification_handler.notifyBidDeclined(self.__user.getUserID(), self.__storeID, self.__bID)
 
-
     def offerAlternatePrice(self, new_price):
         self.__newPrice = new_price
         self.__model.newPrice = new_price
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
         notification_handler.notifyBidAlternateOffer(self.__user.getUserID(), self.__storeID, self.__bID)
-
-
-
-
-
-
-
-
