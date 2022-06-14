@@ -82,6 +82,9 @@ class UserRealBridge:
     def get_cart(self, user_id):
         return self._userService.getCart(user_id)
 
+    def removeCart(self, userId):
+        return self._userService.removeCart(userId)
+
     def get_sum_after_discount(self, user_id):
         return self._userService.getSumAfterDiscount(user_id)
 

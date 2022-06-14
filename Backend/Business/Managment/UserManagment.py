@@ -234,6 +234,14 @@ class UserManagment(object):
         except Exception as e:
             raise Exception(e)
 
+    def removeCart(self, userId):
+        self._initializeDict()
+        self.thereIsSystemManger()
+        try:
+            self.getCart(userId).removeCart()
+        except Exception as e:
+            raise Exception(e)
+
     def purchaseCart(self, userID, cardNumber, month, year, holderCardName, cvv, holderID, address=None):
         self._initializeDict()
         self.thereIsSystemManger()

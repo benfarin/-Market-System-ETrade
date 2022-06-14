@@ -123,6 +123,11 @@ class UserProxyBridge:
             return True
         return self._real_subject.get_cart(user_id)
 
+    def removeCart(self, userId):
+        if self.check_access():
+            return True
+        return self._real_subject.removeCart(userId)
+
     def get_sum_after_discount(self, user_id):
         return self._real_subject.get_sum_after_discount(user_id)
 
