@@ -81,9 +81,9 @@ class Cart:
                 newBag.addBag(cartBag)
 
 
-    def updateBag(self, bag):   ###NEED TO CHANGE
-        matchingBag = BagsInCartModel.objects.filter(cart=self.__model, storeID=bag.getStoreId())
-        if len(matchingBag) == 1:
+    def updateBag(self, bag):
+        if self.__bags.get(bag.getStoreId()) is not None:
+            self.__bags[bag.getStoreId()] = bag
             BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).bag = bag.getModel()
             BagsInCartModel.objects.get(cart=self.__model, storeID=bag.getStoreId()).save()
             return True
