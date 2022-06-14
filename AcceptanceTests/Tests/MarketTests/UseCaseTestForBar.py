@@ -60,7 +60,8 @@ class UseCaseForBar(unittest.TestCase):
         self.proxy_market.appoint_store_owner(s1_id, u2_id, "Bar")
         self.proxy_user.logout_member("Bar")
 
-        self.proxy_market.getUsersByDates("AdminUser", datetime.date(2022, 6, 14), datetime.date(2022, 6, 15))
+        record = self.proxy_market.getUsersByDates("AdminUser", datetime.date(2022, 6, 14),
+                                                   datetime.date(2022, 6, 15)).getData()
 
         storeDTO = self.proxy_market.get_store_by_ID(s1_id).getData()
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeDTO.getStoreOwners()]

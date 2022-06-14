@@ -1,5 +1,6 @@
 import os
 import threading
+
 import django
 
 from ModelsBackend.models import MemberModel, UserModel, LoginDateModel
@@ -144,7 +145,7 @@ class UserManagment(object):
                     self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
                     self.__guests.pop(oldUserId)  # we can delete the guest.
 
-                    LoginDateModel.objects.get_or_create(userID=member.getUserID(), username=userName)
+                    LoginDateModel.objects.get_or_create(userID=system_manager.getUserID(), username=userName)
                     return system_manager
             elif member is not None:
                 if (self.__activeUsers.get(member.getUserID())) is not None:

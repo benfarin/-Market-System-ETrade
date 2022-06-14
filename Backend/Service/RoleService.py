@@ -280,7 +280,7 @@ class RoleService:
             # users = []
             # for user in allUsersByDates:
             #     users.append(GuestDTO(user))
-            return Response(True)
+            return Response(allUsersByDates)
         except Exception as e:
             logging.error("Failed to get all user by dates")
             return Response(e.__str__())

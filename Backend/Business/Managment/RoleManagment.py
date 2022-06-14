@@ -560,6 +560,8 @@ class RoleManagment:
         for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,
                                                             date__gte=fromDate, date__lte=untilDate):
             member = self.__memberManagement.getMemberByName(userLogInModel.username)
+            if member is None:  # the member can be systemManger
+                member = self.__memberManagement.getSystemManagers().get(userLogInModel.username)
             members.append(member)
         return members
 
@@ -570,11 +572,35 @@ class RoleManagment:
             guests.append(userLogInModel.userID)
         return guests
 
-    def getUsersByDates(self, systemManger, fromDate, untilDate):
-        users = self.__getAllGuestByDates(fromDate, untilDate)
-        members = self.__getAllMembersByDates(fromDate, untilDate)
-        return True
+    def getUsersByDates(self, systemMangerName, fromDate, untilDate):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemMangerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
 
+            loginDateRecords = {}
+            guests = self.__getAllGuestByDates(fromDate, untilDate)
+            members = self.__getAllMembersByDates(fromDate, untilDate)
+
+            loginDateRecords[0] = guests  # guests
+            loginDateRecords[1] = []      # regular members
+            loginDateRecords[2] = []      # just managers
+            loginDateRecords[3] = []      # just owners
+            loginDateRecords[4] = []      # system managers
+
+            for member in members:
+                if self.__memberManagement.getSystemManagers().get(member.getMemberName()) is not None:
+                    loginDateRecords[4].append(member)
+                elif member.getCheckNoOwnerNoManage():
+                    loginDateRecords[1].append(member)
+                elif member.getCheckNoOwnerYesManage():
+                    loginDateRecords[2].append(member)
+                elif member.getCheckOwner():
+                    loginDateRecords[3].append(member)
+
+            return loginDateRecords
+        except Exception as e:
+            raise Exception(e)
 
     def __getProductId(self):
         if self.__productId is None:
