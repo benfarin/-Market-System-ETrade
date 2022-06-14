@@ -589,7 +589,7 @@ class Market:
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
             if not self.__stores.get(storeID).hasProduct(productID):
                 raise ProductException("The product id " + productID + " not in market!")
-            return self.__stores.get(storeID).openNewBidOffer(user , productID, newPrice)
+            return self.__stores.get(storeID).openNewBidOffer(user, productID, newPrice)
         except Exception as e:
             raise Exception(e)
 

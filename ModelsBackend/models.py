@@ -243,3 +243,13 @@ class LoginDateModel(models.Model):
     username = models.TextField(null=True)
     date = models.DateTimeField(auto_now=True)
 
+
+class BidOfferModel(models.Model):
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
+    productID = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+    newPrice = models.FloatField()
+    permissionsGuys = models.ManyToManyField(MemberModel, null=True)
+    accepted = models.IntegerField(default=0)
+    active = models.BooleanField(default=True)
+

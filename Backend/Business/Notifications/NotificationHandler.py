@@ -87,7 +87,7 @@ class NotificationHandler:
                     0]
             notification = self._buildNotification(model)
 
-    def notifyBidAccepted(self, receiver, storeID, bidID):
+    def notifyBidDeclined(self, receiver, storeID, bidID):
         activeUsers: Dict[str, User] = {}
         for member_model in MemberModel.objects.filter(isLoggedIn=True):
             member = self._buildMember(member_model)

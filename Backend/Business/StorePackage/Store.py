@@ -5,6 +5,7 @@ import os, django
 from Backend.Business.Discounts.CategoryDiscount import CategoryDiscount
 from Backend.Business.Discounts.ProductDiscount import ProductDiscount
 from Backend.Business.Discounts.StoreDiscount import StoreDiscount
+from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Business.Rules.RuleCreator import RuleCreator
 from Backend.Business.StorePackage.BidOffer import BidOffer
 from Backend.Business.StorePackage.Product import Product
@@ -135,8 +136,7 @@ class Store:
         self.__rolesLock = threading.Lock()
         self.__transactionLock = threading.Lock()
         self.__discountsLock = threading.Lock()
-
-
+        self.__notificationHandler : NotificationHandler = NotificationHandler.getInstance()
 
     def getStoreId(self):
         return self.__id
@@ -859,8 +859,13 @@ class Store:
                 rules.append(r)
         return rules
 
-    def openNewBidOffer(self, user , productID, newPrice):
-        newBid = BidOffer(user,self.__id,productID,newPrice,self.__owners)
+    def openNewBidOffer(self, user, productID, newPrice):
+        try:
+            newBid = BidOffer(user, self,productID,newPrice,self.__owners)
+            self.__notificationHandler.notifyForBidOffer(self.__owners, self.__id, user)
+            return newBid
+        except:
+            raise Exception("cannot open new bid for product " + str(productID))
         
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
