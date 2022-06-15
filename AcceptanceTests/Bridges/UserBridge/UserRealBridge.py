@@ -97,5 +97,8 @@ class UserRealBridge:
     def reset_management(self):
         return self._userService.resetManagement()
 
+    def openNewBidOffer(self,userID,storeID,productID,newPrice):
+        return self._userService.openNewBidOffer(userID,storeID,productID,newPrice)
+
 
 

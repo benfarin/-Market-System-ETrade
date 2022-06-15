@@ -873,7 +873,7 @@ class Store:
         try:
             newBid = BidOffer(user, self,productID,newPrice,self.__owners)
             self.__notificationHandler.notifyForBidOffer(self.__owners, self.__id, user)
-            self.__bids.update({newBid.get_bID(): newBid})
+            self.__bids[newBid.get_bID()] =newBid
             return newBid
         except:
             raise Exception("cannot open new bid for product " + str(productID))

@@ -211,7 +211,7 @@ class UserService:
     def openNewBidOffer(self, userID, storeID, productID, newPrice):
         try:
             bid = self.__userManagment.openNewBidOffer(userID, storeID, productID, newPrice)
-            logging.info("success to create new bid " + bid.get_bID())
+            logging.info("success to create new bid " + str(bid.get_bID()))
             return Response(BidDTO(bid))
         except Exception as e:
             logging.error("failed to create new bid")

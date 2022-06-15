@@ -142,4 +142,7 @@ class UserProxyBridge:
     def reset_management(self):
         return self._real_subject.reset_management()
 
+    def openNewBidOffer(self,userID,storeID,productID,newPrice):
+        return self._real_subject.openNewBidOffer(userID,storeID,productID,newPrice)
+
 

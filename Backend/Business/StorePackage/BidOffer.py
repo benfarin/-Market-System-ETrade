@@ -23,7 +23,7 @@ class BidOffer:
             self.__receivers: Dict[IMember: bool] = {}
             self.__active = True
             for receiver in receivers:
-                self.__receivers.update({receiver, False})
+                self.__receivers[receiver]=False
 
         else:
             self.__model = model
