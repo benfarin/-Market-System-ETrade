@@ -648,6 +648,25 @@ class RoleService:
             logging.error("failed to offer alternate price")
             return Response(e.__str__())
 
+    def changeExternalPayment(self, systemManagerName, paymentSystem):
+        try:
+            changed = self.__roleManagment.changeExternalPayment(systemManagerName, paymentSystem)
+            logging.info("success to change external payment system")
+            return Response(changed)
+        except Exception as e:
+            logging.error("failed to change external payment system")
+            return Response(e.__str__())
+
+
+    def changeExternalDelivery(self, systemManagerName ,deliverySystem):
+        try:
+            changed = self.__roleManagment.changeExternalDelivery(systemManagerName ,deliverySystem)
+            logging.info("success to change external delivery system")
+            return Response(changed)
+        except Exception as e:
+            logging.error("failed to change external delivery system")
+            return Response(e.__str__())
+
     def getAllCompositeDiscountOfStore(self, userId, storeId):
         try:
             discounts = self.__roleManagment.getAllDiscountOfStore(userId, storeId, True)

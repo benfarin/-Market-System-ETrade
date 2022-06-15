@@ -432,9 +432,11 @@ class Market:
 
     def changeExternalPayment(self, paymentSystem):
         self.__paymentSys.changeExternalPayment(paymentSystem)
+        return True
 
     def changeExternalDelivery(self, deliverySystem):
         self.__deliverySys.changeExternalDelivery(deliverySystem)
+        return True
 
     def getStores(self):
         self.__initializeStoresDict()
