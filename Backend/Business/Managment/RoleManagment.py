@@ -1,6 +1,6 @@
 import os, django
 import sys
-from datetime import datetime
+import datetime
 
 from django.db.models import Max
 
@@ -612,27 +612,31 @@ class RoleManagment:
             system_manager = self.__memberManagement.getSystemManagers().get(systemMangerName)
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
 
-            loginDateRecords = {}
-            guests = self.__getAllGuestByDates(fromDate, untilDate)
-            members = self.__getAllMembersByDates(fromDate, untilDate)
+            datesForGraph = {}
+            while fromDate <= untilDate:
+                loginDateRecords = {}
+                guests = self.__getAllGuestByDates(fromDate, fromDate + datetime.timedelta(days=1))
+                members = self.__getAllMembersByDates(fromDate, fromDate + datetime.timedelta(days=1))
 
-            loginDateRecords[0] = guests  # guests
-            loginDateRecords[1] = []      # regular members
-            loginDateRecords[2] = []      # just managers
-            loginDateRecords[3] = []      # just owners
-            loginDateRecords[4] = []      # system managers
+                loginDateRecords[0] = guests  # guests
+                loginDateRecords[1] = []      # regular members
+                loginDateRecords[2] = []      # just managers
+                loginDateRecords[3] = []      # just owners
+                loginDateRecords[4] = []      # system managers
 
-            for member in members:
-                if self.__memberManagement.getSystemManagers().get(member.getMemberName()) is not None:
-                    loginDateRecords[4].append(member.getMemberName())
-                elif member.getCheckNoOwnerNoManage():
-                    loginDateRecords[1].append(member.getMemberName())
-                elif member.getCheckNoOwnerYesManage():
-                    loginDateRecords[2].append(member.getMemberName())
-                elif member.getCheckOwner():
-                    loginDateRecords[3].append(member.getMemberName())
+                for member in members:
+                    if self.__memberManagement.getSystemManagers().get(member.getMemberName()) is not None:
+                        loginDateRecords[4].append(member.getMemberName())
+                    elif member.getCheckNoOwnerNoManage():
+                        loginDateRecords[1].append(member.getMemberName())
+                    elif member.getCheckNoOwnerYesManage():
+                        loginDateRecords[2].append(member.getMemberName())
+                    elif member.getCheckOwner():
+                        loginDateRecords[3].append(member.getMemberName())
 
-            return loginDateRecords
+                datesForGraph[fromDate] = loginDateRecords
+                fromDate += datetime.timedelta(days=1)
+            return datesForGraph
         except Exception as e:
             raise Exception(e)
 

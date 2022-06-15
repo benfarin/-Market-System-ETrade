@@ -1,5 +1,6 @@
 import unittest
 from collections import Counter
+import datetime
 
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
@@ -67,6 +68,9 @@ class UseCaseForBar(unittest.TestCase):
         products = [product.getProductId() for product in storeDTO.getProducts().values()]
         self.assertEqual(products, [p_id])
         self.assertTrue(self.proxy_user.logout_member("Bar").isError())
+
+        self.proxy_market.getUsersByDates("AdminUser",   datetime.datetime(2022, 6, 15),
+                                          datetime.datetime(2022, 6, 16)).getData().getDataAsGraph()
 
         self.proxy_user.exit_system(guestId1)
         self.proxy_user.exit_system(guestId2)
