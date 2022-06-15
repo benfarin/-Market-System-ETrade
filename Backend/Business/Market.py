@@ -4,15 +4,20 @@ import django, os
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
+from Backend.Business.Address import Address
 from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Delivery.DeliveryImpl import DeliveryImpl
 from Backend.Delivery.DeliveryDetails import DeliveryDetails
+from Backend.Delivery.ProxyDeliveryService import ProxyDeliveryService
+from Backend.Delivery.RealDeliveryService import RealDeliveryService
 from Backend.Exceptions.CustomExceptions import ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
 from Backend.Interfaces.IStore import IStore
 from Backend.Business.Transactions.TransactionHistory import TransactionHistory
 from Backend.Payment.PaymentDetails import PaymentDetails
+from Backend.Payment.ProxyPaymentService import ProxyPaymentService
+from Backend.Payment.RealPaymentSystem import RealPaymentService
 from Backend.Payment.paymentlmpl import Paymentlmpl
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Business.Transactions.UserTransaction import UserTransaction
@@ -53,6 +58,8 @@ class Market:
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
+        self.__paymentSys = ProxyPaymentService(RealPaymentService())
+        self.__deliverySys = ProxyDeliveryService(RealDeliveryService())
 
         if Market.__instance is None:
             Market.__instance = self
@@ -194,7 +201,7 @@ class Market:
                 return False
         return True
 
-    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address):  #TESTED - WORK ALONE
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address : Address):  #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
@@ -221,21 +228,20 @@ class Market:
                 discounts = self.__stores.get(storeId).getAllDiscounts()
                 storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
-                                                storeBank, storeAmount)
-                paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
-
-                if paymentStatus.getStatus() == "payment succeeded":
-                    deliveryDetails = DeliveryDetails(user.getUserID(), storeId, holderCardName, address)
-                    deliveryStatus = DeliveryImpl.getInstance().createDelivery(deliveryDetails)
-
-                    if deliveryStatus.getStatus() == "delivery succeeded":
+                # paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
+                #                                 storeBank, storeAmount)
+                # paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
+                paymentStatus = self.__paymentSys.makePayment(cardNumber, month, year, holderCardName, cvv, holderID)
+                if paymentStatus != -1:
+                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
+                                                            address.getCountry(), address.getZipCode())
+                    if deliveryStatus != -1:
                         productsInStore = cart.getAllProductsByStore()[storeId]
 
                         transactionId = self.__getStoreTransactionId()
                         storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
-                                                                              paymentStatus.getPaymentId(),
-                                                                              deliveryStatus.getDeliveryID(),
+                                                                              paymentStatus,
+                                                                              deliveryStatus,
                                                                               productsInStore, storeAmount)
                         self.__notificationHandler.notifyBoughtFromStore(self.__stores.get(storeId).getStoreOwners(),
                                                                          storeId, user)
@@ -247,12 +253,12 @@ class Market:
                         cart.cleanBag(storeId)
                     else:
                         isDeliveryGood = False
-                        self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                        # self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
                         break
 
                 else:
                     isPaymentGood = False
-                    self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                    # self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
                     break
 
             if isPaymentGood and isDeliveryGood:
@@ -423,6 +429,12 @@ class Market:
 
     def getUserByName(self, userName):
         return self.__activeUsers.get(userName)
+
+    def changeExternalPayment(self, paymentSystem):
+        self.__paymentSys.changeExternalPayment(paymentSystem)
+
+    def changeExternalDelivery(self, deliverySystem):
+        self.__deliverySys.changeExternalDelivery(deliverySystem)
 
     def getStores(self):
         self.__initializeStoresDict()

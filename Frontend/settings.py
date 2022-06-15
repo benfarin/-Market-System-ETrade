@@ -157,3 +157,5 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
+
+EXTERNAL_SYSTEM_URL = 'https://cs-bgu-wsep.herokuapp.com/'

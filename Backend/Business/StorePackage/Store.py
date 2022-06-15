@@ -50,7 +50,7 @@ class Store:
                                                                 appointOwner=True, closeStore=True,
                                                                 stockManagement=True,
                                                                 changePermission=True, rolesInformation=True,
-                                                                purchaseHistoryInformation=True, discount=True)[0]
+                                                                purchaseHistoryInformation=True, discount=True, bid=True)[0]
 
             self.__id = storeId
             self.__name = storeName
@@ -68,7 +68,7 @@ class Store:
             self.__bids: {int: BidOffer} = {}
 
             self.__permissions: Dict[IMember: StorePermission] = \
-                {founder: StorePermission(founder.getUserID())}  # member : storePermission
+                {founder: StorePermission(self.__model, founder.getUserID())}  # member : storePermission
             self.__permissions[founder].setPermission_AppointManager(True)
             self.__permissions[founder].setPermission_AppointOwner(True)
             self.__permissions[founder].setPermission_CloseStore(True)

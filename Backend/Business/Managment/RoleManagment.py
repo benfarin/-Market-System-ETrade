@@ -4,6 +4,8 @@ from datetime import datetime
 
 from django.db.models import Max
 
+from Backend.Business.Market import Market
+from Backend.Interfaces.IMarket import IMarket
 from ModelsBackend.models import ProductModel, DiscountModel, RuleModel, LoginDateModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
@@ -37,6 +39,7 @@ class RoleManagment:
     def __init__(self):
         """ Virtually private constructor. """
         super().__init__()
+        self.__market: IMarket = Market().getInstance()
         self.__memberManagement = MemberManagment.getInstance()
         self.__productId = None
         self.__discountId = None
@@ -589,6 +592,7 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+
     def __getAllMembersByDates(self, fromDate, untilDate):
         members = []
         for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,
@@ -633,6 +637,28 @@ class RoleManagment:
                     loginDateRecords[3].append(member.getMemberName())
 
             return loginDateRecords
+        except Exception as e:
+            raise Exception(e)
+
+    def changeExternalPayment(self, systemManagerName, paymentSystem):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return self.__market.changeExternalPayment(paymentSystem)
+        except Exception as e:
+            raise Exception(e)
+
+    def changeExternalDelivery(self,systemManagerName ,deliverySystem):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return self.__market.changeExternalDelivery(deliverySystem)
         except Exception as e:
             raise Exception(e)
 

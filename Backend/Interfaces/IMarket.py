@@ -192,3 +192,9 @@ class IMarket(Interface):
 
     def offerAlternatePrice(self,user,storeID, bID, new_price):
         pass
+
+    def changeExternalPayment(self, paymentSystem):
+        pass
+
+    def changeExternalDelivery(self, deliverySystem):
+        pass
