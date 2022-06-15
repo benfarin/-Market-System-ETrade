@@ -32,7 +32,7 @@ from asgiref.sync import async_to_sync
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
-    DiscountModel, RulesInStoreModel, RuleModel, DiscountRulesModel
+    DiscountModel, RulesInStoreModel, RuleModel, DiscountRulesModel, BidOfferModel
 
 
 @zope.interface.implementer(IStore)
@@ -64,8 +64,8 @@ class Store:
             self.__productsQuantity = {}  # productId : quantity
             self.__transactions: Dict[int: StoreTransaction] = {}
             self.__discounts: {int: IDiscount} = {}
-            self.__bids: {int: BidOffer} = {} #have to set model
             self.__rules: {int: IRule} = {}
+            self.__bids: {int: BidOffer} = {}
 
             self.__permissions: Dict[IMember: StorePermission] = \
                 {founder: StorePermission(founder.getUserID())}  # member : storePermission
@@ -130,6 +130,11 @@ class Store:
                 member = self._buildMember(permission_model.userID)
                 permission = self._buildPermission(permission_model)
                 self.__permissions.update({member: permission})
+            self.__bids: {int: BidOffer} = {}
+            bids_models = BidOfferModel.objects.filter(storeID=self.__model)
+            for bid_model in bids_models:
+                bid = self._buildBid(bid_model)
+                self.__bids.update({bid.get_bID(): bid})
 
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
@@ -966,6 +971,9 @@ class Store:
 
     def _buildStoreTransactions(self, model):
         return StoreTransaction(model=model)
+
+    def _buildBid(self, model):
+        return BidOffer(model=model)
 
     def _buildDiscount(self, model):
         if model.type == 'Product':
