@@ -8,7 +8,7 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UseCaseGetCartNEdit(unittest.TestCase):
-    # usecase 2.8
+    # use-case 2.8
     # get_cart functions has all products of a user from all the stores
     # also check changes in cart are working!
 

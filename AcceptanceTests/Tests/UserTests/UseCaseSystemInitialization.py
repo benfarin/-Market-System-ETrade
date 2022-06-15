@@ -18,7 +18,7 @@ class UseCaseSystemInitialization(unittest.TestCase):
         # login should succeed
         first_login = self.proxy.login_guest().getData()
         self.assertTrue(first_login)
-        self.proxy.exit_system(admin_id)
+        # user exits system
         self.proxy.exit_system(first_login.getUserID())
         # system manager exits system
         self.proxy.removeSystemManger_forTests("Rotem")
