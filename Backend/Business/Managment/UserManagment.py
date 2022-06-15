@@ -139,6 +139,9 @@ class UserManagment(object):
                     system_manager.setMemberCheck(True)
                     system_manager.loginUpdates()
                     system_manager.updateCart(self.__getUserCart(oldUserId))
+                    self._removeGuest(oldUserId)
+                    self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
+                    self.__guests.pop(oldUserId)  # we can delete the guest.
                     return system_manager
             elif member is not None:
                 if (self.__activeUsers.get(member.getUserID())) is not None:
@@ -150,10 +153,9 @@ class UserManagment(object):
                     member.loginUpdates()
 
                     member.updateCart(self.__getUserCart(oldUserId))
-
-                    # self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
-                    # self.__guests.pop(oldUserId)  # we can delete the guest.
-
+                    self._removeGuest(oldUserId)
+                    self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
+                    self.__guests.pop(oldUserId)  # we can delete the guest.
                     return member
                 else:
                     raise PasswordException("password not good!")
@@ -316,6 +318,13 @@ class UserManagment(object):
 
     def _buildSystemManager(self, model):
         return SystemManager(model=model)
+
+    def _removeGuest(self, userID):
+        self._initializeDict()
+        for guest in self.__guests.values():
+            if guest.getUserID() == userID:
+                guest.removeUser()
+
 
     def thereIsSystemManger(self):
         if self.__systemManager != {} and self.__systemManager is not None:

@@ -18,8 +18,8 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.proxy_user.login_member(self.admin_id, "Manager", "1234")
         # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
-        self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
-        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
+        self.__guestId2 = self.proxy_user.login_guest().getData().getUserID2()
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID3()
         self.proxy_user.register("Rotem", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                 "Rager", 1, 0)
         self.proxy_user.register("Ori", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",

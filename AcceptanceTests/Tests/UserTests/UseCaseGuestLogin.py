@@ -3,23 +3,21 @@ import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
-from Backend.Service.MemberService import MemberService
-from Backend.Service.UserService import UserService
 
 
 class UseCaseGuestLogin(unittest.TestCase):
-    # usecase 2.2
+    # use-case 2.2
     proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         self.proxy.removeSystemManger_forTests("Manager")
         self.proxy.reset_management()
 
-    def test_login(self):
+    def test_login_simple(self):
         guest = self.proxy.login_guest().getData().getUserID()
         self.assertIsNotNone(guest)
         self.proxy.exit_system(guest)
