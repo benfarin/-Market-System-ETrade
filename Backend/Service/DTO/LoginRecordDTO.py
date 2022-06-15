@@ -1,42 +1,19 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
 class LoginRecordDTO:
+
     def __init__(self, log):
-        self.__loginDateRecordGuest = log.get(0)
-        self.__loginDateRecordRegularMembers = log.get(1)
-        self.__loginDateRecordJustManagers = log.get(2)
-        self.__loginDateRecordJustOwners = log.get(3)
-        self.__loginDateRecordSystemManager = log.get(4)
+        self.__statsInDate = {}
+        for date in log.keys():
+            dateStat = []
+            for i in range(0, 5):
+                dateStat.append(len(log.get(date).get(i)))
+            self.__statsInDate[date.strftime('%Y-%m-%d')] = dateStat
 
-    def getAllGuest(self):
-        return self.__loginDateRecordGuest
-
-    def getAllRegularMembers(self):
-        return self.__loginDateRecordRegularMembers
-
-    def getAllOnlyManagers(self):
-        return self.__loginDateRecordJustManagers
-
-    def getAllOnlyOwners(self):
-        return self.__loginDateRecordJustOwners
-
-    def getAllSystemManagers(self):
-        return self.__loginDateRecordSystemManager
-
-    def __str__(self):
-        toReturn = "Guests:"
-        for guestId in self.__loginDateRecordGuest:
-            toReturn += "\n\t" + str(guestId)
-        toReturn += "\nOnly members:"
-        for memberName in self.__loginDateRecordRegularMembers:
-            toReturn += "\n\t" + memberName
-        toReturn += "\nOnly managers:"
-        for memberName in self.__loginDateRecordJustManagers:
-            toReturn += "\n\t" + memberName
-        toReturn += "\nOnly owners:"
-        for memberName in self.__loginDateRecordJustOwners:
-            toReturn += "\n\t" + memberName
-        toReturn += "\nsystem managers:"
-        for memberName in self.__loginDateRecordSystemManager:
-            toReturn += "\n\t" + memberName
-        return toReturn
-
-
+    def getDataAsGraph(self):
+        names = ['guests', 'regular\n members', 'only\n managers', 'only\n owners', 'system\n managers']
+        plotdata = pd.DataFrame(self.__statsInDate, index=names)
+        plotdata.plot(kind="bar", rot=0, title="Info of users")
+        plt.show()

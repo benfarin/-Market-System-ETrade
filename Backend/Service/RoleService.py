@@ -274,15 +274,6 @@ class RoleService:
             logging.error("Failed  to get all active users ")
             return Response(e.__str__())
 
-    def getNumberOfDailyUsers(self, systemManagerName, date):
-        try:
-            numberOfUsers = self.__roleManagment.getNumberOfDailyUsers(systemManagerName, date)
-            logging.info("success to get the number of users in date")
-            return Response(numberOfUsers)
-        except Exception as e:
-            logging.error("success to get the number of users in date")
-            return Response(e.__str__())
-
     def getUsersByDates(self, systemManagerName, fromDate, untilDate):
         try:
             allUsersByDates = self.__roleManagment.getUsersByDates(systemManagerName, fromDate, untilDate)
