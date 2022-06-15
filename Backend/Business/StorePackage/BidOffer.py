@@ -21,7 +21,6 @@ class BidOffer:
             self.__productID = productID
             self.__newPrice = newPrice
             self.__receivers: Dict[IMember: bool] = {}
-            self.__accepted = 0
             self.__active = True
             for receiver in receivers:
                 self.__receivers.update({receiver, False})
@@ -33,7 +32,6 @@ class BidOffer:
             self.__storeID = self.__model.storeID.storeID
             self.__productID = self.__model.productID.product_id
             self.__newPrice = self.__model.newPrice
-            self.__accepted = self.__model.accepted
             self.__active = self.__model.active
             self.__receivers: Dict[IMember: bool] = {}
             receivers_model = self.__model.permissionsGuys.through.objects.all()
@@ -57,13 +55,10 @@ class BidOffer:
     def get_newPrice(self):
         return self.__newPrice
 
-    def get_Accepted(self):
-        return self.__accepted
 
     def acceptOffer(self, userID):
         self.__receivers[userID] = True
-        self.__accepted += 1
-        if self.__accepted == len(self.__receivers):
+        if all(self.__receivers.values()):
             notification_handler: NotificationHandler = NotificationHandler.getInstance()
             notification_handler.notifyBidAccepted(self.__user.getUserID(), self.__storeID, self.__bID)
             self.__user.addBidProductToCart(self.__productID)
