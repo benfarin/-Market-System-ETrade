@@ -48,6 +48,21 @@ class MyTestCase(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id2, self.product_id_4, 150)
 
 
+    def tearDown(self):
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.product_id)
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.product_id_2)
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.product_id_3)
+        self.proxy_market.remove_product_from_store(self.store_id2, self.user_id2, self.product_id_4)
+        # remove stores
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
+        self.proxy_market.removeStoreForGood(self.user_id2, self.store_id2)
+        # remove users
+        self.proxy_user.removeMember("Manager", "testUser1")
+        self.proxy_user.removeMember("Manager", "testUser2")
+        self.proxy_user.removeMember("Manager", "user3")
+        self.proxy_user.removeSystemManger_forTests("Manager")
+
+
     def test_createBid(self):
         bid = self.proxy_user.openNewBidOffer(self.user_id2,self.store_id1,self.product_id,7).getData()
         self.assertEqual(7,bid.get_newPrice())
