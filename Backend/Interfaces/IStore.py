@@ -158,5 +158,5 @@ class IStore(Interface):
     def rejectOffer(self , bID):
         pass
 
-    def offerAlternatePrice(self , bID, new_price):
+    def offerAlternatePrice(self, user, bID, new_price):
         pass

@@ -894,10 +894,10 @@ class Store:
         except:
             raise Exception("cannot accept bid " + str(bID))
 
-    def offerAlternatePrice(self , bID, new_price):
+    def offerAlternatePrice(self ,user, bID, new_price):
         try:
             bid: BidOffer = self.__bids.get(bID)
-            bid.offerAlternatePrice(new_price)
+            bid.offerAlternatePrice(user,new_price)
             return True
         except:
             raise Exception("cannot accept bid " + str(bID))

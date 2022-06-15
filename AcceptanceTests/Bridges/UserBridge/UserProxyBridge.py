@@ -151,3 +151,6 @@ class UserProxyBridge:
     def rejectOffer(self, userID, storeID, bID):
         return self._real_subject.rejectOffer(userID, storeID, bID)
 
+    def offerAlternatePrice(self, userID, storeID, bID, new_price):
+        return self._real_subject.offerAlternatePrice(userID, storeID, bID, new_price)
+
