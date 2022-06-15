@@ -579,6 +579,16 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def getNumberOfDailyUsers(self, systemManagerName, date):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            users = LoginDateModel.objects.filter(date__year=date.year, date__month=date.month, date__day=date.day)
+            return len(users)
+        except Exception as e:
+            raise Exception(e)
+
     def __getAllMembersByDates(self, fromDate, untilDate):
         members = []
         for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,

@@ -249,7 +249,7 @@ class BidOfferModel(models.Model):
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     productID = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
     newPrice = models.FloatField()
-    permissionsGuys = models.ManyToManyField(MemberModel, null=True)
+    permissionsGuys = models.ManyToManyField(MemberModel, related_name="permissionsGuys")
     active = models.BooleanField(default=True)
     isAccepted = models.BooleanField(default=False)
 
