@@ -100,5 +100,8 @@ class UserRealBridge:
     def openNewBidOffer(self,userID,storeID,productID,newPrice):
         return self._userService.openNewBidOffer(userID,storeID,productID,newPrice)
 
+    def acceptBidOffer(self, userID, storeID, bID):
+        return self._roleService.acceptBidOffer(userID, storeID, bID)
+
 
 

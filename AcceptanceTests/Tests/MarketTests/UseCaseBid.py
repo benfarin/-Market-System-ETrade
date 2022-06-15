@@ -46,8 +46,20 @@ class MyTestCase(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_3, 100)
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id2, self.product_id_4, 150)
 
+
     def test_createBid(self):
         bid = self.proxy_user.openNewBidOffer(self.user_id2,self.store_id1,self.product_id,7).getData()
         self.assertEqual(7,bid.get_newPrice())
+        self.proxy_user.logout_member("testUser2")
+        self.proxy_user.acceptBidOffer(self.user_id1,self.store_id1,bid.get_bID())
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.__guestId3, "testUser2", "12345")
+
+        self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.product_id, 1)
+        userTransaction = self.proxy_user.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123")
+        self.assertEqual(7, userTransaction.getData().getTotalAmount())
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -881,9 +881,9 @@ class Store:
     def acceptBidOffer(self, user , bID):
         try:
             bid: BidOffer = self.__bids.get(bID)
-            bid.acceptOffer(user.getUserID())
+            bid.acceptOffer(user)
             return True
-        except:
+        except Exception as e:
             raise Exception("cannot accept bid " + str(bID))
 
     def rejectOffer(self, bID):

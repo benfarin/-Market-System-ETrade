@@ -559,7 +559,7 @@ class RoleManagment:
         self.__memberManagement.thereIsSystemManger()
         self.__memberManagement.checkOnlineUserFromUser(userID)
         try:
-            return self.__memberManagement.getActiveUsers().values().get(userID).acceptBidOffer(storeID, bID)
+            return self.__memberManagement.getMembersFromUser().get(userID).acceptBidOffer(storeID, bID)
         except Exception as e:
             raise Exception(e)
 
@@ -567,7 +567,7 @@ class RoleManagment:
         self.__memberManagement.thereIsSystemManger()
         self.__memberManagement.checkOnlineUserFromUser(userID)
         try:
-            return self.__memberManagement.getActiveUsers().values().get(userID).rejectOffer(storeID, bID)
+            return self.__memberManagement.getMembersFromUser().get(userID).rejectOffer(storeID, bID)
         except Exception as e:
             raise Exception(e)
 
@@ -575,7 +575,7 @@ class RoleManagment:
         self.__memberManagement.thereIsSystemManger()
         self.__memberManagement.checkOnlineUserFromUser(userID)
         try:
-            return self.__memberManagement.getActiveUsers().values().get(userID).offerAlternatePrice(storeID, bID, new_price)
+            return self.__memberManagement.getMembersFromUser().get(userID).offerAlternatePrice(storeID, bID, new_price)
         except Exception as e:
             raise Exception(e)
 

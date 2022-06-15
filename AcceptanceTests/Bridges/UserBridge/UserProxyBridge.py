@@ -145,4 +145,6 @@ class UserProxyBridge:
     def openNewBidOffer(self,userID,storeID,productID,newPrice):
         return self._real_subject.openNewBidOffer(userID,storeID,productID,newPrice)
 
+    def acceptBidOffer(self, userID, storeID, bID):
+        return self._real_subject.acceptBidOffer(userID, storeID, bID)
 

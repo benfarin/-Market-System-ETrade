@@ -633,7 +633,7 @@ class RoleService:
     def acceptBidOffer(self, userID, storeID, bID):
         try:
             bid = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
-            logging.info("success to create new bid " + bid.get_bID())
+            logging.info("success to create new bid " + str(bid.get_bID()))
             return Response(bid)
         except Exception as e:
             logging.error("failed to create new bid")
@@ -642,7 +642,7 @@ class RoleService:
     def rejectOffer(self, userID, storeID, bID):
         try:
             bid = self.__roleManagment.rejectOffer(userID, storeID, bID)
-            logging.info("success to reject bid " + bid.get_bID())
+            logging.info("success to reject bid " + str(bid.get_bID()))
             return Response(bid)
         except Exception as e:
             logging.error("failed to reject bid")
@@ -651,7 +651,7 @@ class RoleService:
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
         try:
             bid = self.__roleManagment.offerAlternatePrice(userID, storeID, bID, new_price)
-            logging.info("success to offer alternate price " + bid.get_bID())
+            logging.info("success to offer alternate price " + str(bid.get_bID()))
             return Response(bid)
         except Exception as e:
             logging.error("failed to offer alternate price")

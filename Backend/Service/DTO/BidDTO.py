@@ -8,6 +8,7 @@ class BidDTO:
         self.__storeID = bid.get_storeID()
         self.__productID = bid.get_productID()
         self.__newPrice = bid.get_newPrice()
+        self.__isAccepted = bid.get_Accepted()
 
     def get_bID(self):
         return self.__bID
@@ -24,6 +25,9 @@ class BidDTO:
     def get_newPrice(self):
         return self.__newPrice
 
+    def get_Accepted(self):
+        return self.__isAccepted
+
 
 
 
@@ -34,6 +38,7 @@ class BidDTO:
         toReturn += "\n\t\tstore id: " + str(self.__storeID)
         toReturn += "\n\t\tproduct id: " + str(self.__productID)
         toReturn += "\n\t\tnew price: " + str(self.__newPrice)
+        toReturn += "\n\t\tis accepted: " + str(self.__isAccepted)
         return toReturn
 
 
