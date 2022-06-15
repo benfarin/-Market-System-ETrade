@@ -146,6 +146,7 @@ class UserManagment(object):
                     self.__guests.pop(oldUserId)  # we can delete the guest.
 
                     LoginDateModel.objects.get_or_create(userID=system_manager.getUserID(), username=userName)
+                    LoginDateModel.objects.get(userID=oldUserId).delete()
                     return system_manager
             elif member is not None:
                 if (self.__activeUsers.get(member.getUserID())) is not None:
@@ -162,6 +163,7 @@ class UserManagment(object):
                     self.__guests.pop(oldUserId)  # we can delete the guest.
 
                     LoginDateModel.objects.get_or_create(userID=member.getUserID(), username=userName)
+                    LoginDateModel.objects.get(userID=oldUserId).delete()
                     return member
                 else:
                     raise PasswordException("password not good!")
@@ -198,8 +200,9 @@ class UserManagment(object):
         self.thereIsSystemManger()
         if self.__systemManager.get(systemMangerName) is None:
             raise Exception("user : " + systemMangerName + " is not a system manager")
-        systemManger = self.__systemManager.get(systemMangerName)
+        systemManger : SystemManager = self.__systemManager.get(systemMangerName)
         self.__systemManager.pop(systemMangerName)
+        LoginDateModel.objects.get(userID=systemManger.getUserID()).delete()
         systemManger.removeUser()
         return True
 

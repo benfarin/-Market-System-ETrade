@@ -22,6 +22,7 @@ class BidOffer:
             self.__newPrice = newPrice
             self.__receivers: Dict[IMember: bool] = {}
             self.__active = True
+            self.__isAccepted = False
             for receiver in receivers:
                 self.__receivers[receiver]=False
 
@@ -33,6 +34,7 @@ class BidOffer:
             self.__productID = self.__model.productID.product_id
             self.__newPrice = self.__model.newPrice
             self.__active = self.__model.active
+            self.__isAccepted = self.__model.isAccepted
             self.__receivers: Dict[IMember: bool] = {}
             receivers_model = self.__model.permissionsGuys.through.objects.all()
             for receiver_model in receivers_model:
@@ -55,13 +57,15 @@ class BidOffer:
     def get_newPrice(self):
         return self.__newPrice
 
-
     def acceptOffer(self, userID):
         self.__receivers[userID] = True
         if all(self.__receivers.values()):
             notification_handler: NotificationHandler = NotificationHandler.getInstance()
             notification_handler.notifyBidAccepted(self.__user.getUserID(), self.__storeID, self.__bID)
             self.__user.addBidProductToCart(self.__productID)
+            self.__model.isAccepted = True
+            self.__model.save()
+            self.__isAccepted = True
 
     def rejectOffer(self):
         self.__active = False
@@ -69,6 +73,7 @@ class BidOffer:
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
         notification_handler.notifyBidDeclined(self.__user.getUserID(), self.__storeID, self.__bID)
+        self.__model.delete()
 
     def offerAlternatePrice(self, new_price):
         self.__newPrice = new_price

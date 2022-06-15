@@ -225,6 +225,9 @@ class MarketRealBridge:
     def reset_management(self):
         return self._userService.resetManagement()
 
+    def getNumberOfDailyUsers(self, systemManagerName, date):
+        return self._roleService.getNumberOfDailyUsers(systemManagerName, date)
+
     def getUsersByDates(self, systemManagerName, fromDate, untilDate):
         return self._roleService.getUsersByDates(systemManagerName, fromDate, untilDate)
 
