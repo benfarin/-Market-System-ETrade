@@ -170,15 +170,15 @@ class Bag:
 
     def calc(self):
         s = 0.0
-        for product in ProductsInBagModel.objects.filter(bag_ID=self.__b):
-            productPrice = self.__getNewPrice(Product(model=product.product_ID))
+        for product, quantity in self.__products.items():
+            productPrice = self.__getNewPrice(Product(model=product.getModel()))
             if productPrice is None:
-                productPrice = product.product_ID.price
-            s += productPrice * product.quantity
+                productPrice = product.getProductPrice()
+            s += productPrice * quantity
         return s
 
     def __getNewPrice(self, product):
-        BIDModel = BidOfferModel.objects.filter(productID=product.getModel())
+        BIDModel = BidOfferModel.objects.filter(productID=product.getModel(), isAccepted=True)
         if not BIDModel.exists():
             return None
         return BIDModel[0].newPrice

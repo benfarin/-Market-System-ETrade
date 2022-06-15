@@ -251,4 +251,5 @@ class BidOfferModel(models.Model):
     newPrice = models.FloatField()
     permissionsGuys = models.ManyToManyField(MemberModel, null=True)
     active = models.BooleanField(default=True)
+    isAccepted = models.BooleanField(default=False)
 
