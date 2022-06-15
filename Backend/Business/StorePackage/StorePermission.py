@@ -14,6 +14,7 @@ class StorePermission:
             self.__rolesInformation = False
             self.__purchaseHistoryInformation = False
             self.__discountPermission = False
+            self.__bidPermission = False
         else:
             self.__model = model
             self.__userId = self.__model.userID.userid
@@ -25,6 +26,7 @@ class StorePermission:
             self.__rolesInformation = self.__model.rolesInformation
             self.__purchaseHistoryInformation = self.__model.purchaseHistoryInformation
             self.__discountPermission = self.__model.discount
+            self.__bidPermission = self.__model.bid
 
 
     def getUserId(self):
@@ -56,6 +58,9 @@ class StorePermission:
 
     def hasPermission_Discount(self):
         return self.__discountPermission
+
+    def hasPermission_Bid(self):
+        return self.__bidPermission
 
     def setPermission_StockManagement(self, stockManagement):
         self.__stockManagement = stockManagement
@@ -95,6 +100,11 @@ class StorePermission:
     def setPermission_Discount(self, discountPermission):
         self.__discountPermission = discountPermission
         self.__model.discount = discountPermission
+        self.__model.save()
+
+    def setPermission_Bid(self, bidPermission):
+        self.__bidPermission = bidPermission
+        self.__model.bid = bidPermission
         self.__model.save()
 
     def printPermission(self):

@@ -183,7 +183,7 @@ class User:
     @threaded
     def offerAlternatePrice(self, storeID, bID, new_price):
         try:
-            return self.__market.offerAlternatePrice(storeID, bID, new_price)
+            return self.__market.offerAlternatePrice(self,storeID, bID, new_price)
         except Exception as e:
             raise Exception(e)
 

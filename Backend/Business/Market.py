@@ -622,12 +622,12 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def offerAlternatePrice(self,storeID, bID, new_price):
+    def offerAlternatePrice(self,user,storeID, bID, new_price):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
-            return self.__stores.get(storeID).offerAlternatePrice(storeID, bID,new_price)
+            return self.__stores.get(storeID).offerAlternatePrice(user, bID,new_price)
         except Exception as e:
             raise Exception(e)
 

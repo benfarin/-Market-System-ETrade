@@ -78,10 +78,14 @@ class BidOffer:
         notification_handler.notifyBidDeclined(self.__user, self.__storeID, self.__bID)
         self.__model.delete()
 
-    def offerAlternatePrice(self, new_price):
+    def offerAlternatePrice(self,user, new_price):
+        if new_price < self.__newPrice:
+            raise Exception("cant give lower price then the first price!")
         self.__newPrice = new_price
         self.__model.newPrice = new_price
         self.__model.save()
+        self.__receivers[self.__user] = False
+        self.__receivers[user] = True
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
         notification_handler.notifyBidAlternateOffer(self.__user, self.__storeID, self.__bID)
 

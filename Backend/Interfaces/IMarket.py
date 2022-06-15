@@ -190,5 +190,5 @@ class IMarket(Interface):
     def rejectOffer(self,storeID, bID):
         pass
 
-    def offerAlternatePrice(self,storeID, bID, new_price):
+    def offerAlternatePrice(self,user,storeID, bID, new_price):
         pass

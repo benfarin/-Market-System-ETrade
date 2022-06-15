@@ -144,6 +144,7 @@ class StoreUserPermissionsModel(models.Model):
     rolesInformation = models.BooleanField(default=False)
     purchaseHistoryInformation = models.BooleanField(default=False)
     discount = models.BooleanField(default=False)
+    bid = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('userID', 'storeID',)

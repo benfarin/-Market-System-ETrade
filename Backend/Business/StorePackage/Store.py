@@ -80,6 +80,8 @@ class Store:
             self.__permissions[founder].setPermission_RolesInformation(True)
             self.__permissions[founder].setPermission_PurchaseHistoryInformation(True)
             self.__permissions[founder].setPermission_Discount(True)
+            self.__permissions[founder].setPermission_Bid(True)
+
         else:
             self.__model = model
             self.__permissions_model = \
@@ -298,6 +300,21 @@ class Store:
                                                                              storeID=self.__model)
                 self.__permissions[assignee].setPermission_Discount(True)
                 assignee_permissions.discount = True
+                assignee_permissions.save()
+
+    def setBidPermission(self, assigner, assignee):
+        try:
+            if assignee not in self.getStoreManagers() and assignee not in self.getStoreOwners():
+                raise PermissionException("cannot give a permission to member how is not manager or owner")
+            self.__haveAllPermissions(assigner, assignee)
+        except Exception as e:
+            raise Exception(e)
+        else:
+            with self.__permissionsLock:
+                assignee_permissions = StoreUserPermissionsModel.objects.get(userID=assignee.getModel(),
+                                                                             storeID=self.__model)
+                self.__permissions[assignee].setPermission_Bid(True)
+                assignee_permissions.bid = True
                 assignee_permissions.save()
 
     def __haveAllPermissions(self, assigner, assignee):
@@ -750,6 +767,12 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
         return permissions.hasPermission_Discount()
 
+    def hasBidPermission(self, user):
+        permissions = self.__permissions.get(user)
+        if permissions is None:
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store:", self.__name)
+        return permissions.hasPermission_Bid()
+
     def addSimpleRule(self, user, dId, rule):
         permissions = self.__permissions.get(user)
         if permissions is None:
@@ -871,8 +894,14 @@ class Store:
 
     def openNewBidOffer(self, user, productID, newPrice):
         try:
-            newBid = BidOffer(user, self,productID,newPrice,self.__owners)
-            self.__notificationHandler.notifyForBidOffer(self.__owners, self.__id, user)
+            receivers = []
+            receivers += self.__owners
+            for manager in self.__managers:
+                if self.hasBidPermission(manager):
+                    receivers.append(manager)
+
+            newBid = BidOffer(user, self,productID,newPrice,receivers)
+            self.__notificationHandler.notifyForBidOffer(receivers, self.__id, user)
             self.__bids[newBid.get_bID()] =newBid
             return newBid
         except:
@@ -894,10 +923,10 @@ class Store:
         except:
             raise Exception("cannot accept bid " + str(bID))
 
-    def offerAlternatePrice(self , bID, new_price):
+    def offerAlternatePrice(self ,user, bID, new_price):
         try:
             bid: BidOffer = self.__bids.get(bID)
-            bid.offerAlternatePrice(new_price)
+            bid.offerAlternatePrice(user,new_price)
             return True
         except:
             raise Exception("cannot accept bid " + str(bID))

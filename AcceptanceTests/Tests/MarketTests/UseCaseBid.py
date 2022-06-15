@@ -24,6 +24,7 @@ class MyTestCase(unittest.TestCase):
         self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("testUser2", "12345", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                  "Rager", 1, 0)
+
         self.user_id2 = self.proxy_user.login_member(self.__guestId2, "testUser2", "12345").getData().getUserID()
         self.store_id1 = self.proxy_user.open_store("testStore1", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                     "Rager", 1, 00000).getData().getStoreId()
@@ -45,6 +46,21 @@ class MyTestCase(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_2, 100)
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_3, 100)
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id2, self.product_id_4, 150)
+
+
+    def tearDown(self):
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.product_id)
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.product_id_2)
+        self.proxy_market.remove_product_from_store(self.store_id1, self.user_id1, self.product_id_3)
+        self.proxy_market.remove_product_from_store(self.store_id2, self.user_id2, self.product_id_4)
+        # remove stores
+        self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
+        self.proxy_market.removeStoreForGood(self.user_id2, self.store_id2)
+        # remove users
+        self.proxy_user.removeMember("Manager", "testUser1")
+        self.proxy_user.removeMember("Manager", "testUser2")
+        self.proxy_user.removeMember("Manager", "user3")
+        self.proxy_user.removeSystemManger_forTests("Manager")
 
 
     def test_createBid(self):
@@ -86,6 +102,26 @@ class MyTestCase(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123",
                                                            "123")
         self.assertEqual(9, userTransaction.getData().getTotalAmount())
+
+    def test_offerAlternateBid(self):
+        self.__guestId5 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.register("testUser5", "12345", "0540000000", 123, 1, "Israel", "Beer Sheva",
+                                 "Rager", 1, 0)
+        self.user_id5 = self.proxy_user.login_member(self.__guestId5, "testUser5", "12345").getData().getUserID()
+        self.proxy_market.appoint_store_owner(self.store_id1, self.user_id1, "testUser5").getData()
+
+        bid1 = self.proxy_user.openNewBidOffer(self.user_id2, self.store_id1, self.product_id, 7).getData()
+        self.assertEqual(7, bid1.get_newPrice())
+        self.proxy_user.logout_member("testUser2")
+        self.proxy_user.acceptBidOffer(self.user_id1, self.store_id1, bid1.get_bID())
+        self.proxy_user.offerAlternatePrice(self.user_id5, self.store_id1, bid1.get_bID(),8)
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.__guestId3, "testUser2", "12345")
+        self.proxy_user.acceptBidOffer(self.user_id2, self.store_id1, bid1.get_bID())
+        self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.product_id, 1)
+        userTransaction = self.proxy_user.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123")
+        self.assertEqual(8, userTransaction.getData().getTotalAmount())
 
 
 
