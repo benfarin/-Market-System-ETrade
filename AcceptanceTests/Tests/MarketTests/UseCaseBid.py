@@ -61,5 +61,33 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(7, userTransaction.getData().getTotalAmount())
 
 
+    def test_rejectBid(self):
+        bid1 = self.proxy_user.openNewBidOffer(self.user_id2, self.store_id1, self.product_id, 7).getData()
+        self.assertEqual(7, bid1.get_newPrice())
+        self.proxy_user.logout_member("testUser2")
+        self.proxy_user.acceptBidOffer(self.user_id1, self.store_id1, bid1.get_bID())
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.__guestId3, "testUser2", "12345")
+
+        self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.product_id, 1)
+        userTransaction = self.proxy_user.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123")
+        self.assertEqual(7, userTransaction.getData().getTotalAmount())
+
+        bid = self.proxy_user.openNewBidOffer(self.user_id2, self.store_id1, self.product_id, 7).getData()
+        self.assertEqual(7, bid.get_newPrice())
+        self.proxy_user.logout_member("testUser2")
+        self.proxy_user.rejectOffer(self.user_id1, self.store_id1, bid.get_bID())
+        self.__guestId4 = self.proxy_user.login_guest().getData().getUserID()
+        self.proxy_user.login_member(self.__guestId4, "testUser2", "12345")
+        dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1,
+                                                         0.1).getData().getDiscountId()  # 10 percent off to all store
+        self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.product_id, 1)
+        userTransaction = self.proxy_user.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123")
+        self.assertEqual(9, userTransaction.getData().getTotalAmount())
+
+
+
 if __name__ == '__main__':
     unittest.main()

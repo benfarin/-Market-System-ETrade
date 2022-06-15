@@ -103,5 +103,8 @@ class UserRealBridge:
     def acceptBidOffer(self, userID, storeID, bID):
         return self._roleService.acceptBidOffer(userID, storeID, bID)
 
+    def rejectOffer(self, userID, storeID, bID):
+        return self._roleService.rejectOffer(userID, storeID, bID)
+
 
 

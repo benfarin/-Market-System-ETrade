@@ -75,7 +75,7 @@ class BidOffer:
         self.__model.active = False
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
-        notification_handler.notifyBidDeclined(self.__user.getUserID(), self.__storeID, self.__bID)
+        notification_handler.notifyBidDeclined(self.__user, self.__storeID, self.__bID)
         self.__model.delete()
 
     def offerAlternatePrice(self, new_price):
@@ -83,7 +83,7 @@ class BidOffer:
         self.__model.newPrice = new_price
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
-        notification_handler.notifyBidAlternateOffer(self.__user.getUserID(), self.__storeID, self.__bID)
+        notification_handler.notifyBidAlternateOffer(self.__user, self.__storeID, self.__bID)
 
     def _buildReceiver(self, model):
         return Member(model)
