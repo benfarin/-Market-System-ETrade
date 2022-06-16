@@ -119,6 +119,57 @@ class NotificationHandler:
                                                              " got alternative offer")[0]
             notification = self._buildNotification(model)
 
+    def notifyForOwnerAgreement(self, assignee, receivers, storeID):
+        activeUsers: Dict[str, Member] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        for receiver in receivers:
+            if receiver in activeUsers.values():
+                self.__send_channel_message(receiver.getMemberName(),
+                                            "user " + str(assignee.getMemberName()) +
+                                            " is nominee to be a store owner at store:  " + str(storeID))
+            else:
+                model = NotificationModel.objects.get_or_create(userID=assignee.getModel(),
+                                                                text="user " + str(assignee.getMemberName()) +
+                                                                " is nominee to be a store owner at store: " +
+                                                                str(storeID))[0]
+                notification = self._buildNotification(model)
+
+    def notifyOwnerAgreementAccepted(self, receiver, storeID, oaId):
+        activeUsers: Dict[str, Member] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        if receiver in activeUsers.values():
+            self.__send_channel_message(receiver.getMemberName(),
+                                        "your agreement " + str(oaId) + " in store " + str(storeID) +
+                                        " has been accepted, the nominee is wating to the" +
+                                        " approvement of other store owners")
+        else:
+            model = NotificationModel.objects.get_or_create(userID=receiver.getModel(),
+                                                            text= "your agreement " + str(oaId) + " in store " + str(storeID) +
+                                                            " has been accepted, the nominee is wating to the" +
+                                                            " approvement of other store owners")[0]
+            notification = self._buildNotification(model)
+
+    def notifyOwnerAgreementDeclined(self, receiver, storeID, oaID):
+        activeUsers: Dict[str, Member] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        if receiver in activeUsers.values():
+            self.__send_channel_message(receiver.getMemberName(),
+                                        "your agreement " + str(oaID) + " in store " + str(storeID) +
+                                        " has been declined")
+        else:
+            model = \
+                NotificationModel.objects.get_or_create(userID=receiver.getModel(),
+                                                        text="your agreement " + str(oaID) +
+                                                             " in store " + str(storeID) +
+                                                             " has been declined")[0]
+            notification = self._buildNotification(model)
+
     def _buildMember(self, model):
         return Member(model=model)
 
