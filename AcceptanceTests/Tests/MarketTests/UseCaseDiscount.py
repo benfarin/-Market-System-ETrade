@@ -1,4 +1,3 @@
-import sys
 import unittest
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
@@ -63,19 +62,16 @@ class UseCaseDiscount(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id2, self.product_id_4, 150)
         self.proxy_market.add_quantity_to_store(self.store_id3, self.user_id3, self.product_id_5, 200)
 
-    def tearDown(self) -> None:
-        self.proxy_user.exit_system(self.admin_id)
-        self.proxy_user.exit_system(self.__guestId1)
-        self.proxy_user.exit_system(self.__guestId2)
-        self.proxy_user.exit_system(self.__guestId3)
-
-
+    def tearDown(self):
+        # remove store
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id2, self.store_id2)
         self.proxy_market.removeStoreForGood(self.user_id3, self.store_id3)
+        # remove users
         self.proxy_user.removeMember("Manager", "testUser1")
         self.proxy_user.removeMember("Manager", "testUser2")
         self.proxy_user.removeMember("Manager", "testUser3")
+        # remove use
         self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_armagdonCheckOfDiscounts(self):

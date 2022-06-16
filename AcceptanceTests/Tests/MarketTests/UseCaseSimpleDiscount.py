@@ -17,19 +17,21 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.admin_id = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.login_member(self.admin_id, "Manager", "1234")
 
-        # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
+        # create user
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("Kfir", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                 "Rager", 1, 0)
+        # login user
         self.user_id1 = self.proxy_user.login_member(self.__guestId1, "Kfir", "1234").getData().getUserID()
 
-        # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
+        # create 2 stores
         self.store_id1 = self.proxy_user.open_store("Tashmishey Kdusha", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
         self.store_id2 = self.proxy_user.open_store("Sandals", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
+        # add 4 products to store
         self.product_id = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "Tfilin", 10,
                                                                "testCategory", 20, ["test"]).getData().getProductId()
         self.product_id_2 = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "Passover Plate", 100,
@@ -39,14 +41,13 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         self.product_id_4 = self.proxy_market.add_product_to_store(self.store_id2, self.user_id1, "Shoresh", 10,
                                                                  "testCategory", 15, ["test"]).getData().getProductId()
 
+        # add products' quantity to the stores
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id, 100)
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_2, 100)
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_3, 100)
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id1, self.product_id_4, 100)
 
-    def tearDown(self) -> None:
-        self.proxy_user.exit_system(self.admin_id)
-        self.proxy_user.exit_system(self.__guestId1)
+    def tearDown(self):
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
         self.proxy_user.removeMember("Manager", "Kfir")

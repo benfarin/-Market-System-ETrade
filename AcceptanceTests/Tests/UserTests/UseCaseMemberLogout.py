@@ -20,8 +20,6 @@ class UseCaseMemberLogout(unittest.TestCase):
         self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva", "Ben Gurion", 0, 0)
 
     def tearDown(self) -> None:
-        self.user_proxy.exit_system(self.admin_id)
-        self.user_proxy.exit_system(self.__guestId1)
         self.user_proxy.removeMember("Manager", "user1")
         self.user_proxy.removeSystemManger_forTests("Manager")
         self.user_proxy.reset_management()
@@ -31,20 +29,19 @@ class UseCaseMemberLogout(unittest.TestCase):
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
 
     def test_logout_systemManger(self):
+        # system manager logout
         self.assertTrue(self.user_proxy.logout_member("Manager").getData())
+        # system manager can't logout twice
         self.assertTrue(self.user_proxy.logout_member("Manager").isError())
-        guestId = self.user_proxy.login_guest().getData().getUserID()
-        self.assertTrue(self.user_proxy.login_member(guestId, "Manager", "1234").getData())
-        self.user_proxy.exit_system(guestId)
 
     def test_logout_login_logout(self):
+        # user1 login and logout
         self.user_proxy.login_member(self.__guestId1, "user1", "1234")
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
-
+        # user2
         guestId2 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guestId2, "user1", "1234")
         self.assertTrue(self.user_proxy.logout_member("user1").getData())
-        self.user_proxy.exit_system(guestId2)
 
     def test_logout_FAIL(self):
         user_id = self.user_proxy.login_member(self.__guestId1, "user1", "1234").getData().getUserID()

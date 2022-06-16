@@ -16,21 +16,22 @@ class UseCaseSearchProduct(unittest.TestCase):
                                                "Ben Gurion", 1, 1)
         self.admin_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(self.admin_id, "Manager", "1234")
-
+        # create user
         self.__guestId1 = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("Rotem", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                 "Ben Gurion", 0, 0)
+        # login user
         self.user_id = self.user_proxy.login_member(self.__guestId1, "Rotem", "1234").getData().getUserID()
+        # create store
         self.store_id = self.user_proxy.open_store("store", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
                                                    0, 1).getData().getStoreId()
+        # add 2 products to store
         self.product1 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product", 500,
                                                              "Milk", 10, ["Test1", "Test2"]).getData()
         self.product2 = self.market_proxy.add_product_to_store(self.store_id, self.user_id, "Product2", 10,
                                                              "Meat", 10, ["Test3", "Test4"]).getData()
 
-    def tearDown(self) -> None:
-        self.user_proxy.exit_system(self.admin_id)
-        self.user_proxy.exit_system(self.__guestId1)
+    def tearDown(self):
         self.market_proxy.removeStoreForGood(self.user_id, self.store_id)
         self.user_proxy.removeMember("Manager", "Rotem")
         self.user_proxy.removeSystemManger_forTests("Manager")

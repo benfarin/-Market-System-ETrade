@@ -5,7 +5,7 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 
 class UseCaseGuestDisconnect(unittest.TestCase):
-    #usecase 2.2
+    # use-case 2.2
     proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self) -> None:
@@ -15,7 +15,7 @@ class UseCaseGuestDisconnect(unittest.TestCase):
         self.admin_id = self.proxy.login_guest().getData().getUserID()
         self.proxy.login_member(self.admin_id, "manager", "1234")
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         self.proxy.exit_system(self.admin_id)
         self.proxy.removeSystemManger_forTests("manager")
         self.proxy.reset_management()

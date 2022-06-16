@@ -1,6 +1,5 @@
 import unittest
 from collections import Counter
-import datetime
 
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
@@ -19,11 +18,21 @@ class UseCaseForBar(unittest.TestCase):
         self.admin_id = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.login_member(self.admin_id, "manager", "1234")
 
-    def tearDown(self) -> None:
-        self.proxy_user.exit_system(self.admin_id)
+        self.u2_id = -1
+        self.s1_id = -1
+
+    def tearDown(self):
+        self.proxy_market.removeStoreForGood(self.u2_id, self.s1_id)
+        self.proxy_user.removeMember("manager","Rotem")
+        self.proxy_user.removeMember("manager", "Kfir")
+        self.proxy_user.removeMember("manager", "Ori")
+        self.proxy_user.removeMember("manager", "Bar")
+        self.proxy_user.removeMember("manager", "Niv")
+        self.proxy_user.removeSystemManger_forTests("AdminUser")
         self.proxy_user.removeSystemManger_forTests("manager")
 
     def test_for_bar_6_users(self):
+        # create 6 user - one of them will be a system manager
         guestId1 = self.proxy_user.login_guest().getData().getUserID()
         guestId2 = self.proxy_user.login_guest().getData().getUserID()
         guestId3 = self.proxy_user.login_guest().getData().getUserID()
@@ -41,53 +50,48 @@ class UseCaseForBar(unittest.TestCase):
         self.proxy_user.appoint_system_manager("AdminUser", "1234", "0500000000", 123, 0, "Israel",
                                                "Beer Sheva", "Rager", 1, 0)
 
-        # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
+        # login 6 users
         u1_id = self.proxy_user.login_member(guestId1, "AdminUser", "1234").getData().getUserID()
-        u2_id = self.proxy_user.login_member(guestId2, "Rotem", "4321").getData().getUserID()
+        self.u2_id = self.proxy_user.login_member(guestId2, "Rotem", "4321").getData().getUserID()
         u3_id = self.proxy_user.login_member(guestId3, "Kfir", "4321").getData().getUserID()
         u4_id = self.proxy_user.login_member(guestId4, "Ori", "4321").getData().getUserID()
         u5_id = self.proxy_user.login_member(guestId5, "Bar", "4321").getData().getUserID()
         u6_id = self.proxy_user.login_member(guestId6, "Niv", "4321").getData().getUserID()
 
-        s1_id = self.proxy_user.open_store("Rotem's Store", u2_id, 123, 2, "Israel", "Beer Sheva", "Rager",
+        # Rotem open store
+        self.s1_id = self.proxy_user.open_store("Rotem's Store", self.u2_id, 123, 2, "Israel", "Beer Sheva", "Rager",
                                                    1, 00000).getData().getStoreId()
-        p_id = self.proxy_market.add_product_to_store(s1_id, u2_id, "Bamba", 30, "snacks",
+        # add products to store
+        p_id = self.proxy_market.add_product_to_store(self.s1_id, self.u2_id, "Bamba", 30, "snacks",
                                                       0.300, ["Osem"]).getData().getProductId()
-        self.proxy_market.add_quantity_to_store(s1_id, u2_id, p_id, 20)
-        self.proxy_market.appoint_store_manager(s1_id, u2_id, "Kfir")
-        self.proxy_market.set_stock_manager_perm(s1_id, u2_id, "Kfir")
-        self.proxy_market.appoint_store_owner(s1_id, u2_id, "Ori")
-        self.proxy_market.appoint_store_owner(s1_id, u2_id, "Bar")
+        # add product's quantity to store
+        self.proxy_market.add_quantity_to_store(self.s1_id, self.u2_id, p_id, 20)
+        # assign Kfir to be a store manager
+        self.proxy_market.appoint_store_manager(self.s1_id, self.u2_id, "Kfir")
+        # assign Kfir with stock permission
+        self.proxy_market.set_stock_manager_perm(self.s1_id, self.u2_id, "Kfir")
+        # assign Ori and Bar to be store's owners
+        self.proxy_market.appoint_store_owner(self.s1_id, self.u2_id, "Ori")
+        self.proxy_market.appoint_store_owner(self.s1_id, self.u2_id, "Bar")
+        # Bar logout
         self.proxy_user.logout_member("Bar")
 
-        storeDTO = self.proxy_market.get_store_by_ID(s1_id).getData()
+        storeDTO = self.proxy_market.get_store_by_ID(self.s1_id).getData()
+        # get store owners
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeDTO.getStoreOwners()]
-        self.assertEqual(Counter(storeOwnersIds), Counter([u2_id, u4_id, u5_id]))
+        # check the owners are Rotem , Ori and Bar
+        self.assertEqual(Counter(storeOwnersIds), Counter([self.u2_id, u4_id, u5_id]))
+        # check the store manager is Kfir
         storeMangersIds = [storeManger.getUserID() for storeManger in storeDTO.getStoreManagers()]
         self.assertEqual(Counter(storeMangersIds), Counter([u3_id]))
+        # check product1 is the only product in the store
         products = [product.getProductId() for product in storeDTO.getProducts().values()]
         self.assertEqual(products, [p_id])
+        # Bar is already loged-out
         self.assertTrue(self.proxy_user.logout_member("Bar").isError())
 
-        self.proxy_market.getUsersByDates("AdminUser",   datetime.datetime.today(),
-                                          datetime.datetime.today() + datetime.timedelta(days=1)).getData().getDataAsGraph()
-
-        self.proxy_user.exit_system(guestId1)
-        self.proxy_user.exit_system(guestId2)
-        self.proxy_user.exit_system(guestId3)
-        self.proxy_user.exit_system(guestId4)
-        self.proxy_user.exit_system(guestId5)
-        self.proxy_user.exit_system(guestId6)
-        self.proxy_market.removeStoreForGood(u2_id, s1_id)
-        self.proxy_user.removeMember("AdminUser", "Rotem")  #can be done only because the store has deleted!
-        self.proxy_user.removeMember("AdminUser", "Kfir")
-        self.proxy_user.removeMember("AdminUser", "Ori")
-        self.proxy_user.removeMember("AdminUser", "Niv")
-        self.proxy_user.removeMember("AdminUser", "Bar")
-        self.proxy_user.removeSystemManger_forTests("AdminUser")
-        self.proxy_user.removeSystemManger_forTests("manager")
-
     def test_for_bar_3_appoints(self):
+        # create 4 users
         guestId1 = self.proxy_user.login_guest().getData().getUserID()
         guestId2 = self.proxy_user.login_guest().getData().getUserID()
         guestId3 = self.proxy_user.login_guest().getData().getUserID()
@@ -100,37 +104,29 @@ class UseCaseForBar(unittest.TestCase):
         self.proxy_user.register("Kfir", "4321", "0540000003", 124, 2, "Israel", "Tel aviv",
                                  "Rager", 1, 0)
 
-        # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
-        user1_id = self.proxy_user.login_member(guestId1, "Ori", "1234").getData().getUserID()
+        # login 4 users
+        self.u2_id = self.proxy_user.login_member(guestId1, "Ori", "1234").getData().getUserID()
         user2_id = self.proxy_user.login_member(guestId2, "Bar", "4321").getData().getUserID()
         user3_id = self.proxy_user.login_member(guestId3, "Rotem", "4321").getData().getUserID()
         user4_id = self.proxy_user.login_member(guestId4, "Kfir", "4321").getData().getUserID()
-        store_id = self.proxy_user.open_store("Ori's Store", user1_id, 123, 2, "Israel", "Beer Sheva", "Rager",
+        # create a store
+        store_id = self.proxy_user.open_store("Ori's Store", self.u2_id, 123, 2, "Israel", "Beer Sheva", "Rager",
                                               1, 00000).getData().getStoreId()
-
-        self.proxy_market.appoint_store_owner(store_id, user1_id, "Bar")
+        # appoint Bar Rotem and Kfir to e store-owners
+        self.proxy_market.appoint_store_owner(store_id, self.u2_id, "Bar")
         self.proxy_market.appoint_store_owner(store_id, user2_id, "Rotem")
         self.proxy_market.appoint_store_owner(store_id, user3_id, "Kfir")
+        # check the owners are Ori, Rotem, Kfir and Bar
         storeOwnersDTOs = self.proxy_market.get_store_by_ID(store_id).getData().getStoreOwners()
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
-        self.assertEqual(Counter(storeOwnersIds), Counter([user1_id, user2_id, user3_id, user4_id]))
+        self.assertEqual(Counter(storeOwnersIds), Counter([self.u2_id, user2_id, user3_id, user4_id]))
 
-        self.proxy_market.removeStoreOwner(store_id, user1_id, "Bar")
+        # remove Bar as a store owner
+        self.proxy_market.removeStoreOwner(store_id, self.u2_id, "Bar")
+        # check the owners changed (only Ori - because Bar assigned Rotem and Rotem assigned Kfir the all should also be removed!)
         storeOwnersDTOs = self.proxy_market.get_store_by_ID(store_id).getData().getStoreOwners()
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
-        self.assertEqual(storeOwnersIds, [user1_id])
-
-        self.proxy_user.exit_system(guestId1)
-        self.proxy_user.exit_system(guestId2)
-        self.proxy_user.exit_system(guestId3)
-        self.proxy_user.exit_system(guestId4)
-        self.proxy_market.removeStoreForGood(user1_id, store_id)
-        self.proxy_user.removeMember("manager", "Ori")
-        self.proxy_user.removeMember("manager", "Bar")  #can be done only because the store has deleted!
-        self.proxy_user.removeMember("manager", "Rotem")
-        self.proxy_user.removeMember("manager", "Kfir")
-        self.proxy_user.removeSystemManger_forTests("managar")
-
+        self.assertEqual(storeOwnersIds, [self.u2_id])
 
 if __name__ == '__main__':
     unittest.main()

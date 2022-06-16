@@ -8,7 +8,7 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UseCaseGetCartNEdit(unittest.TestCase):
-    # usecase 2.8
+    # use-case 2.8
     # get_cart functions has all products of a user from all the stores
     # also check changes in cart are working!
 
@@ -85,16 +85,12 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.removeMember("Manager", "testUser3")
         self.proxy_user.removeMember("Manager", "testUser4")
         self.proxy_user.removeMember("Manager", "testUser5")
-        self.proxy_user.exit_system(self.admin_id)
-        self.proxy_user.exit_system(self.guest_id1)
-        self.proxy_user.exit_system(self.guest_id2)
-        self.proxy_user.exit_system(self.guest_id3)
-        self.proxy_user.exit_system(self.guest_id4)
-        self.proxy_user.exit_system(self.guest_id5)
         # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_cart_info_positive_simple(self):
+        bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
+        self.assertEqual(len(bags), 0, "There should be no bags!")
         # add product to user2's cart
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.p1_id, 1)
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
@@ -110,6 +106,8 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id1, self.p1_id)
 
     def test_cart_info_positive_sequence_complex(self):
+        bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
+        self.assertEqual(len(bags), 0, "There should be no bags!")
         # add products to cart
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.p1_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id1, self.p2_id, 10)
@@ -117,14 +115,14 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id2, self.p4_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id3, self.p5_id, 10)
         self.proxy_user.add_product_to_cart(self.user_id2, self.store_id3, self.p6_id, 10)
-        # get all the bags in the cart of  user2
+        # get all the bags in the cart of user2
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
         self.assertEqual(len(bags), 3, "There 3 different bags from 3 different stores.")
         # get all the products in the bags
         prods_all_bags = [bags[0].getAllProducts(), bags[1].getAllProducts(), bags[2].getAllProducts()]
         # 2 products in each bag
-        for prods in prods_all_bags:
-            self.assertEqual(len(prods), 2)
+        for bag in prods_all_bags:
+            self.assertEqual(len(bag), 2, "There should be 2 prods in each bag")
 
         # remove product1 from cart
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id1, self.p1_id)
@@ -140,7 +138,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id2, self.p4_id)
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id3, self.p5_id)
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id3, self.p6_id)
-        bags =  self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
+        bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
         self.assertFalse(bags, "We removed all the products, bags should be empty.")
 
     def test_cart_info_threads(self):
@@ -163,9 +161,9 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         # one buys product 5
         t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args=(self.user_id3, self.store_id3, self.p5_id, 100)))
         t.append(ThreadWithReturn(
-            target=self.proxy_user.add_product_to_cart, args = (self.user_id4, self.store_id3, self.p5_id, 100)))
-        t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args= (self.user_id5, self.store_id3, self.p5_id, 100)))
-        t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args = (self.user_id2, self.store_id3, self.p5_id, 100)))
+            target=self.proxy_user.add_product_to_cart, args = (self.user_id4, self.store_id3, self.p5_id, 90)))
+        t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args= (self.user_id5, self.store_id3, self.p5_id, 90)))
+        t.append(ThreadWithReturn(target=self.proxy_user.add_product_to_cart, args = (self.user_id2, self.store_id3, self.p5_id, 90)))
 
         for th in t:
             th.start()
@@ -173,16 +171,15 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         for th in t:
             th.join()
 
-        bags = []
-        bags.append(self.proxy_user.get_cart(self.user_id2).getData().getAllBags())
-        bags.append(self.proxy_user.get_cart(self.user_id3).getData().getAllBags())
-        bags.append(self.proxy_user.get_cart(self.user_id4).getData().getAllBags())
-        bags.append(self.proxy_user.get_cart(self.user_id5).getData().getAllBags())
+        bags= [self.proxy_user.get_cart(self.user_id2).getData().getAllBags(),
+               self.proxy_user.get_cart(self.user_id3).getData().getAllBags(),
+               self.proxy_user.get_cart(self.user_id4).getData().getAllBags(),
+               self.proxy_user.get_cart(self.user_id5).getData().getAllBags()]
 
         bags_len = 0
         for bag in bags:
             bags_len += len(bag)
-        self.assertEqual(bags_len, 3)
+        self.assertEqual(bags_len, 3, "only 3 should succeed adding to cart.")
 
     # def test_add_n_remove_products_from_cart_threads(self):
     #     t = []

@@ -10,7 +10,7 @@ from Backend.Service.UserService import UserService
 
 
 class UseCasePurchaseProduct(unittest.TestCase):
-    # usecase 2.9
+    # use-case 2.9
     market_proxy = MarketProxyBridge(MarketRealBridge())
     user_proxy = UserProxyBridge(UserRealBridge())
 
@@ -21,20 +21,13 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.admin_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(self.admin_id, "manager", "1234")
 
-        # create 3 users
+        # create user
         self.__guestId = self.user_proxy.login_guest().getData().getUserID()
-        self.__guestId2 = self.user_proxy.login_guest().getData().getUserID()
-        self.__guestId3 = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        self.user_proxy.register("Rotem", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        self.user_proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, 0)
-        self.user_proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                                 "Ben Gurion", 0, 0)
-        # login 3 users
-        self.user_id = self.user_proxy.login_member(self.__guestId, "user1", "1234").getData().getUserID()
-        self.user_id2 = self.user_proxy.login_member(self.__guestId2, "user2", "1234").getData().getUserID()
-        self.user_id3 = self.user_proxy.login_member(self.__guestId3, "user3", "1234").getData().getUserID()
+
+        # login user
+        self.user_id = self.user_proxy.login_member(self.__guestId, "Rotem", "1234").getData().getUserID()
 
         # create 3 stores
         self.store_0 = self.user_proxy.open_store("s0", self.user_id, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
@@ -57,104 +50,93 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.product2 = self.market_proxy.add_product_to_store(self.store_2, self.user_id, "Product-2", 10,
                                                                "Category", 11,
                                                                ["Test1", "Test2"]).getData().getProductId()
-
+        # add products' quantity to stores
         self.market_proxy.add_quantity_to_store(self.store_0, self.user_id, self.product01, 100)
         self.market_proxy.add_quantity_to_store(self.store_0, self.user_id, self.product02, 100)
         self.market_proxy.add_quantity_to_store(self.store_1, self.user_id, self.product1, 100)
         self.market_proxy.add_quantity_to_store(self.store_2, self.user_id, self.product2, 100)
 
-    def tearDown(self) -> None:
-        # self.user_proxy.exit_system(self.admin_id)
-        # self.user_proxy.exit_system(self.__guestId)
-        # self.user_proxy.exit_system(self.__guestId2)
-        # self.user_proxy.exit_system(self.__guestId3)
-        # remove products from stores
-        self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product01)
-        self.market_proxy.remove_product_from_store(self.store_0, self.user_id, self.product02)
-        self.market_proxy.remove_product_from_store(self.store_1, self.user_id, self.product1)
-        self.market_proxy.remove_product_from_store(self.store_2, self.user_id, self.product2)
+    def tearDown(self):
         # remove stores
         self.market_proxy.removeStoreForGood(self.user_id, self.store_0)
         self.market_proxy.removeStoreForGood(self.user_id, self.store_1)
         self.market_proxy.removeStoreForGood(self.user_id, self.store_2)
         # remove users
-        self.user_proxy.removeMember("manager", "user1")
-        self.user_proxy.removeMember("manager", "user2")
-        self.user_proxy.removeMember("manager", "user3")
+        self.user_proxy.removeMember("manager", "Rotem")
+        self.user_proxy.removeMember("manager", "Ori")
         self.user_proxy.removeSystemManger_forTests("manager")
         self.user_proxy.reset_management()
 
     def test_purchase_positive1(self):
+        # add products to user's cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 2)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 1)
-
-        # user_id, cardNumber, month, year, holderCardName, cvv, holderID
-        userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
-        self.assertEqual(3310, userTransaction.getData().getTotalAmount())
+        # purchase product in the cart
+        userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123").getData()
+        # check the right amount was spend
+        self.assertEqual(3310, userTransaction.getTotalAmount())
+        # check the transaction was for user1
+        self.assertEqual(self.user_id, userTransaction.getUserID())
 
     def test_guest_then_member_purchase(self):
-        guest2_id = self.user_proxy.login_guest().getData().getUserID()
-
-        self.user_proxy.add_product_to_cart(guest2_id, self.store_0, self.product01, 20)
-        self.user_proxy.add_product_to_cart(guest2_id, self.store_0, self.product02, 2)
-        self.user_proxy.add_product_to_cart(guest2_id, self.store_1, self.product1, 10)
-        self.user_proxy.add_product_to_cart(guest2_id, self.store_2, self.product2, 1)
-
-        self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        # guest adds products to cart
+        guest_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product01, 20)
+        self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product02, 2)
+        self.user_proxy.add_product_to_cart(guest_id, self.store_1, self.product1, 10)
+        self.user_proxy.add_product_to_cart(guest_id, self.store_2, self.product2, 1)
+        # the guest registers
+        self.user_proxy.register("Ori", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        member2_id = self.user_proxy.login_member(guest2_id, "user4", "1234").getData().getUserID()
-
-        userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
+        member2_id = self.user_proxy.login_member(guest_id, "Ori", "1234").getData().getUserID()
+        # purchase the products in the cart
+        userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Ori", "123", "123")
+        # check the cart was purchased even though the products were added when the member was a guest
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
-
-        # teardown stuff
-        self.user_proxy.removeMember("manager","user4")
-        self.user_proxy.exit_system(guest2_id)
-
+        self.assertEqual(member2_id, userTransaction.getData().getUserID())
 
     def test_login_logout_login_purchase(self):
-        guest4_id = self.user_proxy.login_guest().getData().getUserID()
-
-        self.user_proxy.add_product_to_cart(guest4_id, self.store_0, self.product01, 20)
-        self.user_proxy.add_product_to_cart(guest4_id, self.store_0, self.product02, 2)
-        self.user_proxy.add_product_to_cart(guest4_id, self.store_1, self.product1, 10)
-        self.user_proxy.add_product_to_cart(guest4_id, self.store_2, self.product2, 1)
-
+        # guest adds products to cart
+        guest_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product01, 20)
+        self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product02, 2)
+        self.user_proxy.add_product_to_cart(guest_id, self.store_1, self.product1, 10)
+        self.user_proxy.add_product_to_cart(guest_id, self.store_2, self.product2, 1)
+        # the guest registers as "Ori" and logs-in
         self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        member4_id = self.user_proxy.login_member(guest4_id, "user4", "1234").getData().getUserID()
-
-        self.user_proxy.logout_member("user4")
+        member4_id = self.user_proxy.login_member(guest_id, "user4", "1234").getData().getUserID()
+        # logout
+        self.user_proxy.logout_member("Ori")
         guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user4", "1234")
-
+        self.user_proxy.login_member(guest, "Ori", "1234")
+        # login
         userTransaction = self.user_proxy.purchase_product(member4_id,"1234123412341234", "2", "27", "Rotem", "123", "123")
+        # check every thing was still purchased from the cart!
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
-
-        # teardown stuff
-        self.user_proxy.removeMember("manager", "user4")
-        self.user_proxy.exit_system(guest4_id)
-        self.user_proxy.exit_system(guest)
+        self.assertEqual(member4_id, userTransaction.getData().getUserID())
 
     def test_two_user_buy_same_time(self):
-        guest4_id = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+        # guest registers and logs-in
+        guest_id = self.user_proxy.login_guest().getData().getUserID()
+        self.user_proxy.register("Ori", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        member4_id = self.user_proxy.login_member(guest4_id, "user4", "1234").getData().getUserID()
-
-        self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product01, 20)
-        self.user_proxy.add_product_to_cart(member4_id, self.store_0, self.product02, 2)
-        self.user_proxy.add_product_to_cart(member4_id, self.store_1, self.product1, 10)
-        self.user_proxy.add_product_to_cart(member4_id, self.store_2, self.product2, 1)
-
+        member_id = self.user_proxy.login_member(guest_id, "Ori", "1234").getData().getUserID()
+        # the member Ori adds products to his cart
+        self.user_proxy.add_product_to_cart(member_id, self.store_0, self.product01, 20)
+        self.user_proxy.add_product_to_cart(member_id, self.store_0, self.product02, 2)
+        self.user_proxy.add_product_to_cart(member_id, self.store_1, self.product1, 10)
+        self.user_proxy.add_product_to_cart(member_id, self.store_2, self.product2, 1)
+        # the guest user1 adds products to his cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
 
-        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(member4_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
+        # they purchase at the same time
+        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(member_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
         t2 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(self.user_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
 
         t1.start()
@@ -164,27 +146,30 @@ class UseCasePurchaseProduct(unittest.TestCase):
         ut_2 = t2.join()
 
         self.assertTrue(ut_1.getData().getTotalAmount() == 3310 and ut_2.getData().getTotalAmount() == 2240)
-        # teardown stuff
-        self.user_proxy.removeMember("manager", "user4")
-        self.user_proxy.exit_system(guest4_id)
+        self.assertEqual(member_id, ut_1.getData().getUserID())
+        self.assertEqual(self.user_id, ut_2.getData().getUserID())
 
     def test_cart_clean(self):
+        # Rotem  adds products to his cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
+        # first purchase should work! second purchase shouldn't (cart is empty)
         ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         ut_2 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertTrue(ut_1.getData().getTotalAmount() == 2240 and ut_2.isError())
+        self.assertEqual(self.user_id, ut_1.getData().getUserID())
 
     def test_purchases_empty_cart(self):
+        # the cart is empty - purchase should succeed
         ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertTrue(ut_1.isError())
 
     # there is problem with threads, sometimes doesn't work
 
     def test_purchase_with_threads(self):
+        # Rotem adds products to cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)

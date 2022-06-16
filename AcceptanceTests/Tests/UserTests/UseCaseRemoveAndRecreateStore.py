@@ -20,63 +20,50 @@ class RemoveAndRecreateStore(unittest.TestCase):
         self.admin_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(self.admin_id, "Manager", "1234")
 
+        # create user
         self.__guestId = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.register("user1", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
+        self.user_proxy.register("Kfir", "1234", "0500000000", "500", "20", "Israel", "Beer Sheva",
                                  "Ben Gurion", 0, 0)
-        self.founder = self.user_proxy.login_member(self.__guestId, "user1", "1234").getData().getUserID()
+        self.founder = self.user_proxy.login_member(self.__guestId, "Kfir", "1234").getData().getUserID()
+        self.storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion", 0, "000000").getData().getStoreId()
 
-    def tearDown(self) -> None:
-        self.user_proxy.exit_system(self.admin_id)
-        self.user_proxy.exit_system(self.__guestId)
-        self.user_proxy.removeMember("Manager", "user1")
+    def tearDown(self):
+        self.market_proxy.removeStoreForGood(self.founder, self.storeId)
+        self.user_proxy.removeMember("Manager", "Kfir")
         self.user_proxy.removeSystemManger_forTests("Manager")
 
     def test_removeStore(self):
-        try:
-            storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                             0, "000000").getData().getStoreId()
-            self.assertTrue(self.user_proxy.removeStore(storeId, self.founder).getData())
-        except:
-            pass
+        self.assertTrue(self.user_proxy.removeStore(self.storeId, self.founder))
 
-        # remove store!
-        self.market_proxy.removeStoreForGood(self.founder, storeId)
 
     def test_removeStore_negative(self):
         # store doesn't exist
-        self.assertTrue(self.user_proxy.removeStore(10, self.founder).isError())
-        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                             0, "000000").getData().getStoreId()
+        self.assertTrue(self.user_proxy.removeStore(-1, self.founder).isError())
         # founder doesn't exist
-        self.assertTrue(self.user_proxy.removeStore(storeId, 10).isError())
-
-        self.market_proxy.removeStoreForGood(self.founder, storeId)
-
+        self.assertTrue(self.user_proxy.removeStore(self.storeId, -1).isError())
+        # remove store twice
+        self.assertTrue(self.user_proxy.removeStore(self.storeId, self.founder))
+        self.assertTrue(self.user_proxy.removeStore(self.storeId, self.founder).isError())
 
     def test_recreate_store(self):
-        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                             0, "000000").getData().getStoreId()
-        self.user_proxy.removeStore(storeId, self.founder)
-        self.assertTrue(self.user_proxy.recreateStore(self.founder, storeId).getData())
-
-        # teardown stuff
-        self.market_proxy.removeStoreForGood(self.founder, storeId)
+        # remove store
+        self.user_proxy.removeStore(self.storeId, self.founder)
+        # recreate store
+        self.assertTrue(self.user_proxy.recreateStore(self.founder, self.storeId).getData())
+        # add product to store - should succeed!
+        self.assertTrue(self.market_proxy.add_product_to_store(self.storeId, self.founder, "the best product", 100,
+                                                                "Category", 8,
+                                                                ["Test1", "Test2"]).getData())
 
     def test_recreateStore_few_cases(self):
         # recreate store that doesn't exist
-        self.assertTrue(self.user_proxy.recreateStore(10, self.founder).isError())
-
-        storeId = self.user_proxy.open_store("store", self.founder, 0, 0, "israel", "Beer-Sheva", "Ben-Gurion",
-                                             0, "000000").getData().getStoreId()
+        self.assertTrue(self.user_proxy.recreateStore(-1, self.founder).isError())
         # recreate store that is open
-        self.assertTrue(self.user_proxy.recreateStore(storeId, self.founder).isError())
-
-        # should work
-        self.user_proxy.removeStore(storeId, self.founder)
-        self.assertFalse(self.user_proxy.recreateStore(self.founder, storeId).isError())
-
-        # remove for good :)
-        self.market_proxy.removeStoreForGood(self.founder, storeId)
+        self.assertTrue(self.user_proxy.recreateStore(self.storeId, self.founder).isError())
+        # remove the store
+        self.user_proxy.removeStore(self.storeId, self.founder)
+        # recreate that store
+        self.assertFalse(self.user_proxy.recreateStore(self.founder, self.storeId).isError())
 
 
 if __name__ == '__main__':

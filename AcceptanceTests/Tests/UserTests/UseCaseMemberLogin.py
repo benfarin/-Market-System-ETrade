@@ -6,29 +6,61 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 
 class UseCaseMemberLogin(unittest.TestCase):
-    #usecase 2.4
+    # use-case 2.4
     proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
+        # assign system manager
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                          "Ben Gurion", 1, 1)
         self.admin = self.proxy.login_guest().getData().getUserID()
         self.proxy.login_member(self.admin, "Manager", "1234")
+
+        # create 7 users
         self.__guestId1 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user1", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                            "Ben Gurion", 0, 1)
+        self.__guestId2 = self.proxy.login_guest().getData().getUserID()
+        self.__guestId2 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.__guestId3 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user3", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.__guestId4 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user4", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.__guestId5 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user5", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.__guestId6 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user6", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
+        self.__guestId7 = self.proxy.login_guest().getData().getUserID()
+        self.proxy.register("user7", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
+                            "Ben Gurion", 0, 1)
 
     def tearDown(self):
-        self.proxy.exit_system(self.admin)
-        self.proxy.exit_system(self.__guestId1)
+        # remove 7 users
         self.proxy.removeMember("Manager", "user1")
+        self.proxy.removeMember("Manager", "user2")
+        self.proxy.removeMember("Manager", "user3")
+        self.proxy.removeMember("Manager", "user4")
+        self.proxy.removeMember("Manager", "user5")
+        self.proxy.removeMember("Manager", "user6")
+        self.proxy.removeMember("Manager", "user7")
+        # remove system manager
         self.proxy.removeSystemManger_forTests("Manager")
+        # reset management
         self.proxy.reset_management()
 
     def test_login_positive(self):
         member = self.proxy.login_member(self.__guestId1, "user1", "1234")
-        self.assertTrue(member.getData())
-        print(member.__str__())
+        self.assertEqual(member.getData().getMemberName(), "user1")
+
+    def test_login_non_registered_user(self):
+        self.assertTrue(self.proxy.login_member(None, "free_user", "FREE").isError())
+        self.assertTrue(self.proxy.login_member(self.__guestId2, "free_user", "FREE").isError())
 
     def test_members_log_in_together(self):
         self.__guestId2 = self.proxy.login_guest().getData().getUserID()
@@ -72,20 +104,6 @@ class UseCaseMemberLogin(unittest.TestCase):
             for j in range(6):
                 if i != j:
                     self.assertNotEqual(Id_i, uIds[j])
-            print("id of user " + str(i + 2) + " is: " + str(uIds[i]))
-
-        self.proxy.exit_system(self.__guestId2)
-        self.proxy.exit_system(self.__guestId3)
-        self.proxy.exit_system(self.__guestId4)
-        self.proxy.exit_system(self.__guestId5)
-        self.proxy.exit_system(self.__guestId6)
-        self.proxy.exit_system(self.__guestId7)
-        self.proxy.removeMember("Manager", "user2")
-        self.proxy.removeMember("Manager", "user3")
-        self.proxy.removeMember("Manager", "user4")
-        self.proxy.removeMember("Manager", "user5")
-        self.proxy.removeMember("Manager", "user6")
-        self.proxy.removeMember("Manager", "user7")
 
 
     def test_login_twice(self):
@@ -94,10 +112,6 @@ class UseCaseMemberLogin(unittest.TestCase):
                             "Ben Gurion", 0, 1)
         self.assertTrue(self.proxy.login_member(guest2, "user2", "1234").getData())
         self.assertTrue(self.proxy.login_member(guest2, "user2", "1234").isError())
-
-
-        self.proxy.exit_system(guest2)
-        self.proxy.removeMember("Manager", "user2")
 
     # def test_threaded_login_twice(self):
     #     guest2 = self.proxy.login_guest().getData().getUserID()
