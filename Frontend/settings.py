@@ -159,3 +159,5 @@ CHANNEL_LAYERS = {
 }
 
 EXTERNAL_SYSTEM_URL = 'https://cs-bgu-wsep.herokuapp.com/'
+
+INIT_FILE = 'init.txt'

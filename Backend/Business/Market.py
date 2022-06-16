@@ -228,12 +228,9 @@ class Market:
                 discounts = self.__stores.get(storeId).getAllDiscounts()
                 storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
-                # paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
-                #                                 storeBank, storeAmount)
-                # paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 paymentStatus = self.__paymentSys.makePayment(cardNumber, month, year, holderCardName, cvv, holderID)
                 if paymentStatus != -1:
-                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
+                    deliveryStatus = self.__deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
                                                             address.getCountry(), address.getZipCode())
                     if deliveryStatus != -1:
                         productsInStore = cart.getAllProductsByStore()[storeId]
