@@ -2,7 +2,7 @@ from ModelsBackend.models import StoreUserPermissionsModel
 
 
 class StorePermission:
-    def __init__(self, storeID, userId=None, model=None):
+    def __init__(self, storeID=None, userId=None, model=None):
         if model is None:
             self.__model = StoreUserPermissionsModel.objects.get_or_create(storeID=storeID, userID=userId)[0]
             self.__userId = userId

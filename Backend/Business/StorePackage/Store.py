@@ -477,7 +477,7 @@ class Store:
 
         with self.__permissionsLock:
             if self.__permissions.get(assignee) is None:
-                self.__permissions[assignee] = StorePermission(assignee.getUserID())
+                self.__permissions[assignee] = StorePermission(self.__model, assignee.getUserID())
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
             permission = self.__permissions[assignee].getModel()
             permission.purchaseHistoryInformation = True
@@ -523,7 +523,7 @@ class Store:
 
         with self.__permissionsLock:
             if self.__permissions.get(assignee) is None:
-                self.__permissions[assignee] = StorePermission(assignee.getUserID())
+                self.__permissions[assignee] = StorePermission(self.__model, assignee.getUserID())
             self.__permissions[assignee].setPermission_StockManagement(True)
             self.__permissions[assignee].setPermission_AppointManager(True)
             self.__permissions[assignee].setPermission_AppointOwner(True)

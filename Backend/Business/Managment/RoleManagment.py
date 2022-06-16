@@ -606,6 +606,8 @@ class RoleManagment:
             self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
 
             datesForGraph = {}
+            fromDate = datetime.datetime(fromDate.year, fromDate.month, fromDate.day)
+            untilDate = datetime.datetime(untilDate.year, untilDate.month, untilDate.day)
             while fromDate <= untilDate:
                 loginDateRecords = {}
                 guests = self.__getAllGuestByDates(fromDate, fromDate + datetime.timedelta(days=1))

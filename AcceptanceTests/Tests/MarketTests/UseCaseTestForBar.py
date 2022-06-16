@@ -69,8 +69,8 @@ class UseCaseForBar(unittest.TestCase):
         self.assertEqual(products, [p_id])
         self.assertTrue(self.proxy_user.logout_member("Bar").isError())
 
-        self.proxy_market.getUsersByDates("AdminUser",   datetime.datetime(2022, 6, 15),
-                                          datetime.datetime(2022, 6, 16)).getData().getDataAsGraph()
+        self.proxy_market.getUsersByDates("AdminUser",   datetime.datetime.today(),
+                                          datetime.datetime.today() + datetime.timedelta(days=1)).getData().getDataAsGraph()
 
         self.proxy_user.exit_system(guestId1)
         self.proxy_user.exit_system(guestId2)
