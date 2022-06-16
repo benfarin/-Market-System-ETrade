@@ -647,6 +647,22 @@ class RoleService:
         except Exception as e:
             logging.error("failed to offer alternate price")
             return Response(e.__str__())
+    def acceptOwnerAgreement(self, assignerID, assigneID, storeID,ownerAcceptID):
+        try:
+            ownerAccept = self.__roleManagment.acceptOwnerAgreement(assignerID, assigneID, storeID,ownerAcceptID)
+            logging.info("success to create new bid " + str(ownerAccept.get_ownerAgreementID()))
+            return Response(ownerAccept)
+        except Exception as e:
+            logging.error("failed to create new bid")
+            return Response(e.__str__())
+    def rejectOwnerAgreement(self, assignerID, assigneID, storeID,ownerAcceptID):
+        try:
+            ownerAccept = self.__roleManagment.rejectOwnerAgreement(assignerID, assigneID, storeID,ownerAcceptID)
+            logging.info("success to create new bid " + str(ownerAccept.get_ownerAgreementID()))
+            return Response(ownerAccept)
+        except Exception as e:
+            logging.error("failed to create new bid")
+            return Response(e.__str__())
 
     def changeExternalPayment(self, systemManagerName, paymentSystem):
         try:

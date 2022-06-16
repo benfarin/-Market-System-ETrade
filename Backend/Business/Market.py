@@ -636,6 +636,26 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+
+    def acceptOwnerAgreement(self, user ,assignerID, assigneID, storeID, ownerAcceptID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).acceptOwnerAgreement(user ,assignerID, assigneID, storeID, ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
+
+    def rejectOwnerAgreement(self, user ,assignerID, assigneID, storeID, ownerAcceptID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).rejectOwnerAgreement(user ,assignerID, assigneID, storeID, ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
     def offerAlternatePrice(self,user,storeID, bID, new_price):
         self.__initializeStoresDict()
         try:
