@@ -332,7 +332,11 @@ class Store:
             raise PermissionException("User ", assigner, " doesn't have any permissions is store: ", self.__id)
         if not permissions.hasPermission_ChangePermission():
             raise PermissionException("User ", assigner, "cannot change permission in store: ", self.__id)
-        if assignee not in self.__appointers[assigner]:
+        if not StoreUserPermissionsModel.objects.filter(userID=assignee.getModel(), storeID=self.__model).exists():
+            raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
+                                      assignee.getUserID(), " because he didn't assign him")
+        if not StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assignee.getModel(),
+                                                   storeID=self.__model).exists():
             raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
                                       assignee.getUserID(), " because he didn't assign him")
 
