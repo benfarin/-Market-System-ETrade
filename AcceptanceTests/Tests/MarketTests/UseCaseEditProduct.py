@@ -27,7 +27,7 @@ class UseCaseEditProduct(unittest.TestCase):
         self.prod_id = self.proxy_market.add_product_to_store(self.store_id, self.user_id, "testProduct", 10,
                                                               "testCategory", 10,  ["testKeyWord"]).getData()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         self.proxy_user.exit_system(self.admin_id)
         self.proxy_user.exit_system(self.__guestId1)
         self.proxy_market.removeStoreForGood(self.user_id, self.store_id)

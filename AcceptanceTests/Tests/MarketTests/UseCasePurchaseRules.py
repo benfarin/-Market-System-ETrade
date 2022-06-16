@@ -16,27 +16,29 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                "Ben Gurion", 1, 1)
         self.admin_id = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.login_member(self.admin_id, "Manager", "1234")
-        # username, password, phone, account_number, branch, country, city, street, apartment_num, bank, ICart
+        # create 3 users
         self.__guestId1 = self.proxy_user.login_guest().getData().getUserID()
-        self.__guestId2 = self.proxy_user.login_guest().getData().getUserID2()
-        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID3()
+        self.__guestId2 = self.proxy_user.login_guest().getData().getUserID()
+        self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.register("Rotem", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                 "Rager", 1, 0)
         self.proxy_user.register("Ori", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                  "Rager", 1, 0)
         self.proxy_user.register("Kfir", "1234", "0540000000", 123, 1, "Israel", "Beer Sheva",
                                  "Rager", 1, 0)
+        # login 3 users
         self.user_id1 = self.proxy_user.login_member(self.__guestId1, "Rotem", "1234").getData().getUserID()
-        self.user_id2 = self.proxy_user.login_member(self.__guestId1, "Ori", "1234").getData().getUserID()
-        self.user_id3 = self.proxy_user.login_member(self.__guestId1, "Kfir", "1234").getData().getUserID()
+        self.user_id2 = self.proxy_user.login_member(self.__guestId2, "Ori", "1234").getData().getUserID()
+        self.user_id3 = self.proxy_user.login_member(self.__guestId3, "Kfir", "1234").getData().getUserID()
 
-        # store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code
+        # create 2 stores
         self.store_id1 = self.proxy_user.open_store("Rotem", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
         self.store_id2 = self.proxy_user.open_store("Ori", self.user_id1, 123, 1, "Israel", "Beer Sheva",
                                                   "Rager", 1, 00000).getData().getStoreId()
 
+        # add to stores 4 products
         self.product_id = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct1", 10,
                                                                "testCategory", 20, ["test"]).getData().getProductId()
         self.product_id_2 = self.proxy_market.add_product_to_store(self.store_id1, self.user_id1, "testProduct2", 100,
@@ -46,22 +48,21 @@ class UseCasePurchaseRules(unittest.TestCase):
         self.product_id_4 = self.proxy_market.add_product_to_store(self.store_id2, self.user_id1, "testProduct4", 10,
                                                                  "testCategory", 15, ["test"]).getData().getProductId()
 
+        # add quantity of products to store
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id, 100)
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_2, 100)
         self.proxy_market.add_quantity_to_store(self.store_id1, self.user_id1, self.product_id_3, 100)
         self.proxy_market.add_quantity_to_store(self.store_id2, self.user_id1, self.product_id_4, 100)
 
-    def tearDown(self) -> None:
-        self.proxy_user.exit_system(self.admin_id)
-        self.proxy_user.exit_system(self.__guestId1)
-        self.proxy_user.exit_system(self.__guestId2)
-        self.proxy_user.exit_system(self.__guestId3)
-
+    def tearDown(self):
+        # remove 2 stores
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
+        # remove 3 users
         self.proxy_user.removeMember("Manager", "Rotem")
         self.proxy_user.removeMember("Manager", "Ori")
         self.proxy_user.removeMember("Manager", "Kfir")
+        # remove system manager
         self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_addSimpleRuleStore(self):

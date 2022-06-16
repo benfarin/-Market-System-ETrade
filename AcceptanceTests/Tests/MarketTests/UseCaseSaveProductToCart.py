@@ -11,6 +11,7 @@ class UseCaseSaveProductToCart(unittest.TestCase):
     user_proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
+        # assign system manager
         self.user_proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1)
         self.admin_id = self.user_proxy.login_guest().getData().getUserID()
@@ -150,13 +151,7 @@ class UseCaseSaveProductToCart(unittest.TestCase):
         self.market_proxy.add_quantity_to_store(self.store_id8, self.user_id3, self.product1.getProductId(), 634)
 
 
-    def tearDown(self) -> None:
-        self.user_proxy.exit_system(self.admin_id)
-        self.user_proxy.exit_system(self.__guestId1)
-        self.user_proxy.exit_system(self.__guestId2)
-        self.user_proxy.exit_system(self.__guestId3)
-        self.user_proxy.exit_system(self.__guestId4)
-        self.user_proxy.exit_system(self.__guestId5)
+    def tearDown(self):
         self.market_proxy.removeStoreForGood(self.user_id3, self.store_id8)
         self.market_proxy.removeStoreForGood(self.user_id2, self.store_id7)
         self.market_proxy.removeStoreForGood(self.user_id1, self.store_id6)
@@ -197,7 +192,6 @@ class UseCaseSaveProductToCart(unittest.TestCase):
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id4, self.store_id2, self.product9.getProductId(),
                                                             30).getData())
 
-        self.user_proxy.exit_system(guest_id_2)
 
     def test_add_to_cart_negative1(self):
         self.assertTrue(self.user_proxy.add_product_to_cart(self.user_id1, self.store_id1, -50, 10).isError())
