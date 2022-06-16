@@ -230,7 +230,7 @@ class Market:
                 # paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 paymentStatus = self.__paymentSys.makePayment(cardNumber, month, year, holderCardName, cvv, holderID)
                 if paymentStatus != -1:
-                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
+                    deliveryStatus = self.__deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
                                                             address.getCountry(), address.getZipCode())
                     if deliveryStatus != -1:
                         productsInStore = cart.getAllProductsByStore()[storeId]
@@ -639,6 +639,24 @@ class Market:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
             return self.__stores.get(storeID).offerAlternatePrice(user, bID,new_price)
+        except Exception as e:
+            raise Exception(e)
+
+    def acceptOwnerAgreement(self, user, storeID, ownerAcceptID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).acceptOwnerAgreement(user, storeID, ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
+    def rejectOwnerAgreement(self, user, storeID, ownerAcceptID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).rejectOwnerAgreement(user, storeID, ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 
