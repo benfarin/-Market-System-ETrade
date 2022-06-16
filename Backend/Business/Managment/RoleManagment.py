@@ -582,6 +582,22 @@ class RoleManagment:
         except Exception as e:
             raise Exception(e)
 
+    def acceptOwnerAgreement(self, assignerID, assigneID, storeID,ownerAcceptID):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(assignerID)
+        try:
+            return self.__memberManagement.getMembersFromUser().get(assignerID).acceptOwnerAgreement(assignerID, assigneID, storeID,ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
+    def rejectOwnerAgreement(self, assignerID, assigneID, storeID,ownerAcceptID):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(assignerID)
+        try:
+            return self.__memberManagement.getMembersFromUser().get(assignerID).rejectOffer(assignerID, assigneID, storeID,ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
     def __getAllMembersByDates(self, fromDate, untilDate):
         members = []
         for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,
