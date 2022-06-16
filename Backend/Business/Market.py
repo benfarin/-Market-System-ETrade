@@ -1,6 +1,5 @@
 import django, os
 
-
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
@@ -27,8 +26,6 @@ import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-
-
 from ModelsBackend.models import StoreModel, StoreTransactionModel, UserTransactionModel
 
 
@@ -54,7 +51,7 @@ class Market:
         self.__userTransactionIdCounter = None
 
         self.__transactionHistory = TransactionHistory.getInstance()
-        self.__notificationHandler : NotificationHandler = NotificationHandler.getInstance()
+        self.__notificationHandler: NotificationHandler = NotificationHandler.getInstance()
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
@@ -64,18 +61,18 @@ class Market:
         if Market.__instance is None:
             Market.__instance = self
 
-    def createStore(self, storeName, user, bank, address):  #TESTED
+    def createStore(self, storeName, user, bank, address):  # TESTED
         self.__initializeStoresDict()
         storeID = self.__getGlobalStoreId()
         newStore = s.Store(storeID, storeName, user, bank, address)
         self.__stores[storeID] = newStore
         return newStore
 
-    def isStoreExists(self, storeId): #TESTED
+    def isStoreExists(self, storeId):  # TESTED
         self.__initializeStoresDict()
         return storeId in self.__stores.keys()
 
-    def getStore(self, storeId):   #TESTED
+    def getStore(self, storeId):  # TESTED
         self.__initializeStoresDict()
         if storeId in self.__stores.keys():
             return self.__stores.get(storeId)
@@ -175,7 +172,7 @@ class Market:
                 productsInStores += products_list_per_Store
         return productsInStores
 
-    def getProductByPriceRange(self, minPrice, highPrice):   # TESTED
+    def getProductByPriceRange(self, minPrice, highPrice):  # TESTED
         self.__initializeStoresDict()
         productsInStores = []
         keys = self.__stores.keys()
@@ -201,7 +198,8 @@ class Market:
                 return False
         return True
 
-    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address : Address):  #TESTED - WORK ALONE
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID,
+                     address: Address):  # TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
@@ -219,7 +217,7 @@ class Market:
             for storeId in cart.getAllProductsByStore().keys():  # pay for each store
                 bag = cart.getBag(storeId)
                 rules = self.__stores.get(storeId).getAllRules()
-                isValidPurchase = self.__checkRules(rules, bag)   # check that all the purchase rules are valid
+                isValidPurchase = self.__checkRules(rules, bag)  # check that all the purchase rules are valid
                 if not isValidPurchase:
                     break
 
@@ -233,8 +231,9 @@ class Market:
                 # paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 paymentStatus = self.__paymentSys.makePayment(cardNumber, month, year, holderCardName, cvv, holderID)
                 if paymentStatus != -1:
-                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
-                                                            address.getCountry(), address.getZipCode())
+                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(),
+                                                                 address.getCity(),
+                                                                 address.getCountry(), address.getZipCode())
                     if deliveryStatus != -1:
                         productsInStore = cart.getAllProductsByStore()[storeId]
 
@@ -354,25 +353,25 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addSimpleDiscount(self,user, storeId, discount):
+    def addSimpleDiscount(self, user, storeId, discount):
         self.__initializeStoresDict()
         try:
-            self.__stores.get(storeId).addSimpleDiscount(user,discount)
+            self.__stores.get(storeId).addSimpleDiscount(user, discount)
             return True
         except Exception as e:
             raise Exception(e)
 
-    def addCompositeDiscount(self, user,storeId, discountId, dId1, dId2, typeDiscount, decide):
+    def addCompositeDiscount(self, user, storeId, discountId, dId1, dId2, typeDiscount, decide):
         self.__initializeStoresDict()
         try:
-            return self.__stores.get(storeId).addCompositeDiscount(user,discountId, dId1, dId2, typeDiscount, decide)
+            return self.__stores.get(storeId).addCompositeDiscount(user, discountId, dId1, dId2, typeDiscount, decide)
         except Exception as e:
             raise Exception(e)
 
-    def removeDiscount(self,user,storeId, discountId):
+    def removeDiscount(self, user, storeId, discountId):
         self.__initializeStoresDict()
         try:
-            return self.__stores.get(storeId).removeDiscount(user,discountId)
+            return self.__stores.get(storeId).removeDiscount(user, discountId)
         except Exception as e:
             raise Exception(e)
 
@@ -384,7 +383,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def addProductQuantityToStore(self, storeID, user, productId, quantity):  #TESTED
+    def addProductQuantityToStore(self, storeID, user, productId, quantity):  # TESTED
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).addProductQuantityToStore(user, productId, quantity)
@@ -392,7 +391,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def removeProductFromStore(self, storeID, user, productId):  #TESTED
+    def removeProductFromStore(self, storeID, user, productId):  # TESTED
         self.__initializeStoresDict()
         try:
             self.__stores.get(storeID).removeProductFromStore(user, productId)
@@ -414,7 +413,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def getStoreByName(self, store_name):  #TESTED
+    def getStoreByName(self, store_name):  # TESTED
         self.__initializeStoresDict()
         store_collection = []
         store_names = self.__stores.keys()
@@ -423,7 +422,7 @@ class Market:
                 store_collection.append(self.__stores.get(s))
         return store_collection
 
-    def getStoreById(self, id_store):  #TESTED
+    def getStoreById(self, id_store):  # TESTED
         self.__initializeStoresDict()
         return self.__stores.get(id_store)
 
@@ -446,7 +445,7 @@ class Market:
         return stores
 
     # need to add to the service
-    def removeStore(self, storeID, user):  #TESTED
+    def removeStore(self, storeID, user):  # TESTED
         self.__initializeStoresDict()
         try:
             if self.__stores.get(storeID) is None:
@@ -461,7 +460,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def recreateStore(self, storeID, founder):  #TESTED
+    def recreateStore(self, storeID, founder):  # TESTED
         self.__initializeStoresDict()
         try:
             if self.__removedStores.get(storeID) is None:
@@ -477,7 +476,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def removeStoreForGood(self, storeID, user):  #TESTED
+    def removeStoreForGood(self, storeID, user):  # TESTED
         self.__initializeStoresDict()
         try:
             store = self.__stores.get(storeID)
@@ -487,13 +486,15 @@ class Market:
             elif store is not None:
                 founderId = store.getStoreFounderId()
                 if founderId != user.getUserID():
-                    raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+                    raise NotFounderException(
+                        "user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
                 store.removeStore()
                 self.__stores.pop(storeID)
             elif removed_store is not None:
                 founderId = removed_store.getStoreFounderId()
                 if founderId != user.getUserID():
-                    raise NotFounderException("user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
+                    raise NotFounderException(
+                        "user: " + user.getUserID() + "is not the founder of store: " + str(storeID))
                 removed_store.removeStore()
                 self.__removedStores.pop(storeID)
             return True
@@ -596,7 +597,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def openNewBidOffer(self, user ,storeID, productID, newPrice):
+    def openNewBidOffer(self, user, storeID, productID, newPrice):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
@@ -616,8 +617,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-
-    def acceptBidOffer(self, user,storeID, bID):
+    def acceptBidOffer(self, user, storeID, bID):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
@@ -626,8 +626,7 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-
-    def rejectOffer(self,storeID, bID):
+    def rejectOffer(self, storeID, bID):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
@@ -636,32 +635,30 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-
-    def acceptOwnerAgreement(self, user ,assignerID, assigneID, storeID, ownerAcceptID):
+    def offerAlternatePrice(self, user, storeID, bID, new_price):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
-            return self.__stores.get(storeID).acceptOwnerAgreement(user ,assignerID, assigneID, storeID, ownerAcceptID)
+            return self.__stores.get(storeID).offerAlternatePrice(user, bID, new_price)
         except Exception as e:
             raise Exception(e)
 
-
-    def rejectOwnerAgreement(self, user ,assignerID, assigneID, storeID, ownerAcceptID):
+    def acceptOwnerAgreement(self, user, storeID, ownerAcceptID):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
-            return self.__stores.get(storeID).rejectOwnerAgreement(user ,assignerID, assigneID, storeID, ownerAcceptID)
+            return self.__stores.get(storeID).acceptOwnerAgreement(user, ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 
-    def offerAlternatePrice(self,user,storeID, bID, new_price):
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
-            return self.__stores.get(storeID).offerAlternatePrice(user, bID,new_price)
+            return self.__stores.get(storeID).rejectOwnerAgreement(ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 
@@ -753,7 +750,6 @@ class Market:
                     return True
         return False
 
-
     def __getUserTransactionId(self):
         if self.__userTransactionIdCounter is None:
             self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))[
@@ -796,9 +792,3 @@ class Market:
                 'message': message
             }
         )
-
-
-
-
-
-

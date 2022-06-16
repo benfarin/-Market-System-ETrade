@@ -152,11 +152,14 @@ class IStore(Interface):
     def openNewBidOffer(self, user, productID, newPrice):
         pass
 
-    def acceptBidOffer(self, user , bID):
+    def acceptBidOffer(self, user, bID):
         pass
 
-    def rejectOffer(self , bID):
+    def rejectOffer(self, bID):
         pass
 
-    def offerAlternatePrice(self, user, bID, new_price):
+    def acceptOwnerAgreement(self, user, oaID):
+        pass
+
+    def rejectOwnerAgreement(self, oaID):
         pass

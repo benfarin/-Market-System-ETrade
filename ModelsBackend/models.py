@@ -256,8 +256,8 @@ class BidOfferModel(models.Model):
 
 
 class OwnerAgreementModel(models.Model):
-    assigner = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    assignee = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    assigner = models.ForeignKey(MemberModel, on_delete=models.CASCADE, related_name="Assigner")
+    assignee = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     permissionsOwners = models.ManyToManyField(MemberModel, related_name="permissionsOwners")
     active = models.BooleanField(default=True)

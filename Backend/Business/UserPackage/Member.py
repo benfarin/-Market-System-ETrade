@@ -339,16 +339,16 @@ class Member(User):
             raise Exception(e)
 
     @threaded
-    def acceptOwnerAgreement(self, assignerID, assigneID, storeID, ownerAcceptID):
+    def acceptOwnerAgreement(self, storeID, ownerAcceptID):
         try:
-            return self.__market.acceptOwnerAgreement(self, assignerID, assigneID, storeID, ownerAcceptID)
+            return self.__market.acceptOwnerAgreement(self, storeID, ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 
     @threaded
-    def rejectOwnerAgreement(self, assignerID, assigneID, storeID, ownerAcceptID):
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
         try:
-            return self.__market.rejectOwnerAgreement(self, assignerID, assigneID, storeID, ownerAcceptID)
+            return self.__market.rejectOwnerAgreement(storeID, ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 

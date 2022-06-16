@@ -154,11 +154,11 @@ class UserProxyBridge:
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
         return self._real_subject.offerAlternatePrice(userID, storeID, bID, new_price)
 
-    def acceptOwnerAgreement(self, assignerID, assigneID, storeID, ownerAcceptID):
-        return self._real_subject.acceptOwnerAgreement(assignerID, assigneID, storeID, ownerAcceptID)
+    def acceptOwnerAgreement(self, userId, storeID, ownerAcceptID):
+        return self._real_subject.acceptOwnerAgreement(userId, storeID, ownerAcceptID)
 
-    def rejectOwnerAgreement(self, assignerID, assigneID, storeID, ownerAcceptID):
-        return self._real_subject.rejectOwnerAgreement(assignerID, assigneID, storeID, ownerAcceptID)
+    def rejectOwnerAgreement(self, userId, storeID, ownerAcceptID):
+        return self._real_subject.rejectOwnerAgreement(userId, storeID, ownerAcceptID)
 
 
 

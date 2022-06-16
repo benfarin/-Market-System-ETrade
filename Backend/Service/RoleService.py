@@ -620,7 +620,6 @@ class RoleService:
             logging.info("failed to get all composite discounts of store: " + str(storeId))
             return Response(e.__str__())
 
-
     def acceptBidOffer(self, userID, storeID, bID):
         try:
             bid = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
@@ -647,21 +646,23 @@ class RoleService:
         except Exception as e:
             logging.error("failed to offer alternate price")
             return Response(e.__str__())
-    def acceptOwnerAgreement(self, assignerID, assigneID, storeID,ownerAcceptID):
+
+    def acceptOwnerAgreement(self, userId, storeID, ownerAcceptID):
         try:
-            ownerAccept = self.__roleManagment.acceptOwnerAgreement(assignerID, assigneID, storeID,ownerAcceptID)
-            logging.info("success to create new bid " + str(ownerAccept.get_ownerAgreementID()))
+            ownerAccept = self.__roleManagment.acceptOwnerAgreement(userId, storeID, ownerAcceptID)
+            logging.info("success to accept owner agreement " + str(ownerAccept.getOwnerAgreementId()))
             return Response(ownerAccept)
         except Exception as e:
-            logging.error("failed to create new bid")
+            logging.error("failed to accept owner agreement ")
             return Response(e.__str__())
-    def rejectOwnerAgreement(self, assignerID, assigneID, storeID,ownerAcceptID):
+
+    def rejectOwnerAgreement(self, userId, storeID, ownerAcceptID):
         try:
-            ownerAccept = self.__roleManagment.rejectOwnerAgreement(assignerID, assigneID, storeID,ownerAcceptID)
-            logging.info("success to create new bid " + str(ownerAccept.get_ownerAgreementID()))
+            ownerAccept = self.__roleManagment.rejectOwnerAgreement(userId, storeID, ownerAcceptID)
+            logging.info("success to reject owner agreement " + str(ownerAccept.getOwnerAgreementId()))
             return Response(ownerAccept)
         except Exception as e:
-            logging.error("failed to create new bid")
+            logging.error("failed to reject owner agreement")
             return Response(e.__str__())
 
     def changeExternalPayment(self, systemManagerName, paymentSystem):
