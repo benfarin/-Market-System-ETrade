@@ -131,7 +131,7 @@ class MemberManagment(UserManagment):
     def removeStoreForGood(self, userId, storeId):
         super().thereIsSystemManger()
         try:
-            self.checkOnlineUser(userId)
+            # self.checkOnlineUser(userId)
             member = self.getMembers().get(userId)
             if member is None:
                 raise NoSuchMemberException("user: " + str(userId) + "is not a member")
@@ -190,6 +190,8 @@ class MemberManagment(UserManagment):
     def thereIsSystemManger(self):
         return super().thereIsSystemManger()
 
+    def getGuest(self, uId):
+        return super().getGuest(uId)
 
 # NOT IMPORTANT FUNCTION ---
     def change_password(self,userID,old_password,new_password):

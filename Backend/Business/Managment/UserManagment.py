@@ -1,8 +1,9 @@
 import os
 import threading
+
 import django
 
-from ModelsBackend.models import MemberModel, UserModel
+from ModelsBackend.models import MemberModel, UserModel, LoginDateModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -94,6 +95,7 @@ class UserManagment(object):
             guest = Guest()
             self.__guests[guest.getUserID()] = guest
             self.__activeUsers[guest.getUserID()] = guest
+            LoginDateModel.objects.get_or_create(userID=guest.getUserID())
             # if User.get_user("Guest") is None:
             #     User.save(username="Guest", password="")
             return guest
@@ -142,6 +144,9 @@ class UserManagment(object):
                     self._removeGuest(oldUserId)
                     self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
                     self.__guests.pop(oldUserId)  # we can delete the guest.
+
+                    LoginDateModel.objects.get_or_create(userID=system_manager.getUserID(), username=userName)
+                    LoginDateModel.objects.get(userID=oldUserId).delete()
                     return system_manager
             elif member is not None:
                 if (self.__activeUsers.get(member.getUserID())) is not None:
@@ -156,6 +161,9 @@ class UserManagment(object):
                     self._removeGuest(oldUserId)
                     self.__activeUsers.pop(oldUserId)  # guest no longer active, deu to him be a member
                     self.__guests.pop(oldUserId)  # we can delete the guest.
+
+                    LoginDateModel.objects.get_or_create(userID=member.getUserID(), username=userName)
+                    LoginDateModel.objects.get(userID=oldUserId).delete()
                     return member
                 else:
                     raise PasswordException("password not good!")
@@ -192,8 +200,9 @@ class UserManagment(object):
         self.thereIsSystemManger()
         if self.__systemManager.get(systemMangerName) is None:
             raise Exception("user : " + systemMangerName + " is not a system manager")
-        systemManger = self.__systemManager.get(systemMangerName)
+        systemManger : SystemManager = self.__systemManager.get(systemMangerName)
         self.__systemManager.pop(systemMangerName)
+        LoginDateModel.objects.get(userID=systemManger.getUserID()).delete()
         systemManger.removeUser()
         return True
 
@@ -231,6 +240,14 @@ class UserManagment(object):
         try:
             self.checkOnlineUser(userID)
             return self.__activeUsers.get(userID).updateProductFromCart(storeID, productId, quantity)
+        except Exception as e:
+            raise Exception(e)
+
+    def removeCart(self, userId):
+        self._initializeDict()
+        self.thereIsSystemManger()
+        try:
+            self.getCart(userId).removeCart()
         except Exception as e:
             raise Exception(e)
 
@@ -297,6 +314,13 @@ class UserManagment(object):
             raise NoSuchUserException("user: " + str(uid) + "is not exists")
         return self.__activeUsers.get(uid)
 
+    def getGuest(self, uid):
+        self._initializeDict()
+        self.thereIsSystemManger()
+        if uid not in self.__activeUsers:
+            raise NoSuchUserException("user: " + str(uid) + "is not exists")
+        return self.__guests.get(uid)
+
     def getUserByUserName(self, username):
         self._initializeDict()
         for member in self.__members.values():
@@ -309,6 +333,16 @@ class UserManagment(object):
             lst = list(self.__guests.values())
             return lst[0]
         return None
+
+    def openNewBidOffer(self, userID, storeID, productID, newPrice):
+        self._initializeDict()
+        self.thereIsSystemManger()
+        try:
+            self.checkOnlineUser(userID)
+            return self.__activeUsers.get(userID).openNewBidOffer(storeID, productID, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
 
     def _buildMember(self, model):
         return Member(model=model)

@@ -82,6 +82,9 @@ class UserRealBridge:
     def get_cart(self, user_id):
         return self._userService.getCart(user_id)
 
+    def removeCart(self, userId):
+        return self._userService.removeCart(userId)
+
     def get_sum_after_discount(self, user_id):
         return self._userService.getSumAfterDiscount(user_id)
 
@@ -94,5 +97,16 @@ class UserRealBridge:
     def reset_management(self):
         return self._userService.resetManagement()
 
+    def openNewBidOffer(self,userID,storeID,productID,newPrice):
+        return self._userService.openNewBidOffer(userID,storeID,productID,newPrice)
+
+    def acceptBidOffer(self, userID, storeID, bID):
+        return self._roleService.acceptBidOffer(userID, storeID, bID)
+
+    def rejectOffer(self, userID, storeID, bID):
+        return self._roleService.rejectOffer(userID, storeID, bID)
+
+    def offerAlternatePrice(self, userID, storeID, bID, new_price):
+        return self._roleService.offerAlternatePrice(userID, storeID, bID, new_price)
 
 

@@ -3,6 +3,7 @@ from datetime import datetime
 import django, os
 
 from Backend.Service.DTO.GuestDTO import GuestDTO
+from Backend.Service.DTO.LoginRecordDTO import LoginRecordDTO
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -271,6 +272,15 @@ class RoleService:
             return Response(users)
         except Exception as e:
             logging.error("Failed  to get all active users ")
+            return Response(e.__str__())
+
+    def getUsersByDates(self, systemManagerName, fromDate, untilDate):
+        try:
+            allUsersByDates = self.__roleManagment.getUsersByDates(systemManagerName, fromDate, untilDate)
+            logging.info("success to get all user by dates")
+            return Response(LoginRecordDTO(allUsersByDates))
+        except Exception as e:
+            logging.error("Failed to get all user by dates")
             return Response(e.__str__())
 
     def getAllStoreTransactions(self, systemManagerName):
@@ -608,6 +618,53 @@ class RoleService:
             return Response(discountsDTOs)
         except Exception as e:
             logging.info("failed to get all composite discounts of store: " + str(storeId))
+            return Response(e.__str__())
+
+
+    def acceptBidOffer(self, userID, storeID, bID):
+        try:
+            bid = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
+            logging.info("success to create new bid " + str(bid.get_bID()))
+            return Response(bid)
+        except Exception as e:
+            logging.error("failed to create new bid")
+            return Response(e.__str__())
+
+    def rejectOffer(self, userID, storeID, bID):
+        try:
+            bid = self.__roleManagment.rejectOffer(userID, storeID, bID)
+            logging.info("success to reject bid " + str(bid.get_bID()))
+            return Response(bid)
+        except Exception as e:
+            logging.error("failed to reject bid")
+            return Response(e.__str__())
+
+    def offerAlternatePrice(self, userID, storeID, bID, new_price):
+        try:
+            bid = self.__roleManagment.offerAlternatePrice(userID, storeID, bID, new_price)
+            logging.info("success to offer alternate price " + str(bid.get_bID()))
+            return Response(bid)
+        except Exception as e:
+            logging.error("failed to offer alternate price")
+            return Response(e.__str__())
+
+    def changeExternalPayment(self, systemManagerName, paymentSystem):
+        try:
+            changed = self.__roleManagment.changeExternalPayment(systemManagerName, paymentSystem)
+            logging.info("success to change external payment system")
+            return Response(changed)
+        except Exception as e:
+            logging.error("failed to change external payment system")
+            return Response(e.__str__())
+
+
+    def changeExternalDelivery(self, systemManagerName ,deliverySystem):
+        try:
+            changed = self.__roleManagment.changeExternalDelivery(systemManagerName ,deliverySystem)
+            logging.info("success to change external delivery system")
+            return Response(changed)
+        except Exception as e:
+            logging.error("failed to change external delivery system")
             return Response(e.__str__())
 
     def getAllCompositeDiscountOfStore(self, userId, storeId):

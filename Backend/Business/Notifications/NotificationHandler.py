@@ -30,6 +30,9 @@ class NotificationHandler:
         if NotificationHandler.__instance is None:
             NotificationHandler.__instance = self
 
+    ###ownersDict - who to sent to the message
+    ###storeID - for information, so the member(owner) would know in what store the buyer bought
+    ###buyer - the user object who bought (for information sake)
     def notifyBoughtFromStore(self, ownersDict, storeID, buyer):
         activeUsers: Dict[str, User] = {}
         for member_model in MemberModel.objects.filter(isLoggedIn=True):
@@ -41,16 +44,86 @@ class NotificationHandler:
                 self.__send_channel_message(owner.getMemberName(),
                                             "user " + str(buyer.getUserID()) + " bought from store " + str(storeID))
             else:
-                model = NotificationModel.objects.get_or_create(userID=owner.getModel(), text="user " + str(buyer.getUserID()) +
-                                                                                   " bought from store " + str(storeID))[0]
+                model = \
+                    NotificationModel.objects.get_or_create(userID=owner.getModel(),
+                                                            text="user " + str(buyer.getUserID()) +
+                                                                 " bought from store " + str(
+                                                                storeID))[0]
                 notification = self._buildNotification(model)
+
+    def notifyForBidOffer(self, receivers, storeID, buyer):
+        activeUsers: Dict[str, User] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        for receiver in receivers:
+            if receiver in activeUsers.values():
+                self.__send_channel_message(receiver.getMemberName(),
+                                            "user " + str(
+                                                buyer.getUserID()) + " has made new bidding offer for store  " + str(
+                                                storeID))
+            else:
+                model = \
+                    NotificationModel.objects.get_or_create(userID=receiver.getModel(),
+                                                            text="user " + str(buyer.getUserID()) +
+                                                                 " has made new bidding offer for store  " +
+                                                                 str(storeID))[0]
+                notification = self._buildNotification(model)
+
+    def notifyBidAccepted(self, receiver, storeID, bidID):
+        activeUsers: Dict[str, User] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        if receiver in activeUsers.values():
+            self.__send_channel_message(receiver.getMemberName(),
+                                        "your offer " + str(bidID) + " in store " + str(storeID) +
+                                        " has been accepted, the product has been added to your cart")
+        else:
+            model = \
+                NotificationModel.objects.get_or_create(userID=receiver.getModel(),
+                                                        text="your offer " + str(bidID) + " in store " + str(storeID) +
+                                                             " has been accepted, the product has been added to your cart")[
+                    0]
+            notification = self._buildNotification(model)
+
+    def notifyBidDeclined(self, receiver, storeID, bidID):
+        activeUsers: Dict[str, User] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        if receiver in activeUsers.values():
+            self.__send_channel_message(receiver.getMemberName(),
+                                        "your offer " + str(bidID) + " in store " + str(storeID) +
+                                        " has been declined")
+        else:
+            model = \
+                NotificationModel.objects.get_or_create(userID=receiver.getModel(),
+                                                        text="your offer " + str(bidID) + " in store " +
+                                                             str(storeID) + " has been declined")[0]
+            notification = self._buildNotification(model)
+
+    def notifyBidAlternateOffer(self, receiver, storeID, bidID):
+        activeUsers: Dict[str, User] = {}
+        for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            member = self._buildMember(member_model)
+            activeUsers.update({member.getUserID(): member})
+        if receiver in activeUsers.values():
+            self.__send_channel_message(receiver.getMemberName(),
+                                        "your offer " + str(bidID) + " in store " + str(storeID) +
+                                        " got alternative offer")
+        else:
+            model = \
+                NotificationModel.objects.get_or_create(userID=receiver.getModel(),
+                                                        text="your offer " + str(bidID) + " in store " + str(storeID) +
+                                                             " got alternative offer")[0]
+            notification = self._buildNotification(model)
 
     def _buildMember(self, model):
         return Member(model=model)
 
     def _buildNotification(self, model):
         return Notification(model)
-
 
     def __send_channel_message(self, group_name, message):
         channel_layer = get_channel_layer()

@@ -1,5 +1,6 @@
 from Backend.Business.Address import Address
 from Backend.Business.Bank import Bank
+from Backend.Business.Notifications.Notification import Notification
 from Backend.Business.StorePackage.Cart import Cart
 from Backend.Business.UserPackage.User import User
 import bcrypt
@@ -113,11 +114,14 @@ class Member(User):
         return self._m
 
     def getAndReadNotification(self):
+        notifications_list = []
         notifications = NotificationModel.objects.filter(userID=self._m, read=False)
         for notification in notifications:
+            notification_obj = self._buildNotification(notification)
+            notifications_list.append(notification_obj)
             notification.read = True
             notification.save()
-        return notifications
+        return notifications_list
     @threaded
     def createStore(self, storeName, bank, address):
         try:
@@ -352,12 +356,33 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
+    def getCheckNoOwnerYesManage(self):
+        try:
+            return self.__market.getCheckNoOwnerYesManage(self)
+        except Exception as e:
+            raise Exception(e)
+
+    def getCheckOwner(self):
+        try:
+            return self.__market.getCheckOwner(self)
+        except Exception as e:
+            raise Exception(e)
+
+    def getCheckNoOwnerNoManage(self):
+        try:
+            return self.__market.getCheckNoOwnerNoManage(self)
+        except Exception as e:
+            raise Exception(e)
+
     def removeUser(self):
         super().removeUser()
         self._m.delete()
 
     def _buildCart(self, model):
         return Cart(model=model)
+
+    def _buildNotification(self, model):
+        return Notification(model=model)
 
     def __eq__(self, other):
         return isinstance(other, Member) and self._m == other.getModel()

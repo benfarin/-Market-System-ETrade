@@ -108,4 +108,11 @@ class IMember(Interface):
     def getAllRulesOfDiscount(self, storeId, discountId, isComp):
         pass
 
+    def getCheckNoOwnerYesManage(self):
+        pass
 
+    def getCheckOwner(self):
+        pass
+
+    def getCheckNoOwnerNoManage(self):
+        pass

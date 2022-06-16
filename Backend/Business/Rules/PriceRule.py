@@ -24,34 +24,52 @@ class PriceRule:
         if model is None:
             self.__model = RuleModel.objects.get_or_create(ruleID=ruleId, simple_rule_type=ruleType, rule_kind=ruleKind, filter_type=filterType,
                                                            at_least=atLeast, at_most=atMost, rule_class='Price')[0]
+            self.__ruleId = ruleId
+            self.__ruleKind = ruleKind
+            self.__ruleType = ruleType
+            self.__filter = filterType
+            self.__atLeast = atLeast
+            self.__atMost = atMost
         else:
             self.__model = model
+            self.__ruleId = model.ruleID
+            self.__ruleKind = model.rule_kind
+            self.__ruleType = model.simple_rule_type
+            self.__filter = model.filter_type
+            self.__atLeast = model.at_least
+            self.__atMost = model.at_most
 
     def check(self, bag):
-        if self.__model.simple_rule_type != 'Store':
+        if self.__ruleType != 'Store':
             raise Exception("price rule can only be for stores")
         s = 0.0
         for prod, quantity in bag.getProducts().items():
             s += prod.getProductPrice() * quantity
-        return self.__model.at_least <= s <= self.__model.at_most
+        return self.__atLeast <= s <= self.__atMost
 
     def getRuleId(self):
-        return self.__model.ruleID
+        return self.__ruleId
+        # return self.__model.ruleID
 
     def getRuleKind(self):
-        return self.__model.rule_kind
+        return self.__ruleKind
+        # return self.__model.rule_kind
 
     def getRuleType(self):
-        return self.__model.simple_rule_type
+        return self.__ruleType
+        # return self.__model.simple_rule_type
 
     def getRuleFilter(self):
-        return self.__model.filter_type
+        return self.__filter
+        # return self.__model.filter_type
 
     def getAtLeast(self):
-        return self.__model.simple_rule_type
+        return self.__atLeast
+        # return self.__model.simple_rule_type
 
     def getAtMost(self):
-        return self.__model.at_most
+        return self.__atMost
+        # return self.__model.at_most
 
     def removeRule(self):
         self.__model.delete()

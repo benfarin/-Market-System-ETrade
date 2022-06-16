@@ -4,15 +4,20 @@ import django, os
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
+from Backend.Business.Address import Address
 from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Delivery.DeliveryImpl import DeliveryImpl
 from Backend.Delivery.DeliveryDetails import DeliveryDetails
+from Backend.Delivery.ProxyDeliveryService import ProxyDeliveryService
+from Backend.Delivery.RealDeliveryService import RealDeliveryService
 from Backend.Exceptions.CustomExceptions import ProductException, QuantityException, \
     EmptyCartException, PaymentException, NoSuchStoreException, NotFounderException
 from Backend.Interfaces.IMarket import IMarket
 from Backend.Interfaces.IStore import IStore
 from Backend.Business.Transactions.TransactionHistory import TransactionHistory
 from Backend.Payment.PaymentDetails import PaymentDetails
+from Backend.Payment.ProxyPaymentService import ProxyPaymentService
+from Backend.Payment.RealPaymentSystem import RealPaymentService
 from Backend.Payment.paymentlmpl import Paymentlmpl
 from Backend.Business.Transactions.StoreTransaction import StoreTransaction
 from Backend.Business.Transactions.UserTransaction import UserTransaction
@@ -53,6 +58,8 @@ class Market:
         self.__storeId_lock = threading.Lock()
         self.__StoreTransactionId_lock = threading.Lock()
         self.__UserTransactionId_lock = threading.Lock()
+        self.__paymentSys = ProxyPaymentService(RealPaymentService())
+        self.__deliverySys = ProxyDeliveryService(RealDeliveryService())
 
         if Market.__instance is None:
             Market.__instance = self
@@ -194,7 +201,7 @@ class Market:
                 return False
         return True
 
-    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address):  #TESTED - WORK ALONE
+    def purchaseCart(self, user, cardNumber, month, year, holderCardName, cvv, holderID, address : Address):  #TESTED - WORK ALONE
         self.__initializeStoresDict()
         try:
             cart = user.getCart()
@@ -221,21 +228,20 @@ class Market:
                 discounts = self.__stores.get(storeId).getAllDiscounts()
                 storeAmount = cart.calcSumOfBag(storeId, discounts)
                 totalAmount += storeAmount
-                paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
-                                                storeBank, storeAmount)
-                paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
-
-                if paymentStatus.getStatus() == "payment succeeded":
-                    deliveryDetails = DeliveryDetails(user.getUserID(), storeId, holderCardName, address)
-                    deliveryStatus = DeliveryImpl.getInstance().createDelivery(deliveryDetails)
-
-                    if deliveryStatus.getStatus() == "delivery succeeded":
+                # paymentDetails = PaymentDetails(user.getUserID(), cardNumber, month, year, holderCardName, cvv, holderID,
+                #                                 storeBank, storeAmount)
+                # paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
+                paymentStatus = self.__paymentSys.makePayment(cardNumber, month, year, holderCardName, cvv, holderID)
+                if paymentStatus != -1:
+                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
+                                                            address.getCountry(), address.getZipCode())
+                    if deliveryStatus != -1:
                         productsInStore = cart.getAllProductsByStore()[storeId]
 
                         transactionId = self.__getStoreTransactionId()
                         storeTransaction: StoreTransaction = StoreTransaction(storeId, storeName, transactionId,
-                                                                              paymentStatus.getPaymentId(),
-                                                                              deliveryStatus.getDeliveryID(),
+                                                                              paymentStatus,
+                                                                              deliveryStatus,
                                                                               productsInStore, storeAmount)
                         self.__notificationHandler.notifyBoughtFromStore(self.__stores.get(storeId).getStoreOwners(),
                                                                          storeId, user)
@@ -247,12 +253,12 @@ class Market:
                         cart.cleanBag(storeId)
                     else:
                         isDeliveryGood = False
-                        self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                        # self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
                         break
 
                 else:
                     isPaymentGood = False
-                    self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
+                    # self.__removedStores(storeId, paymentStatuses, deliveryStatuses)
                     break
 
             if isPaymentGood and isDeliveryGood:
@@ -424,6 +430,14 @@ class Market:
     def getUserByName(self, userName):
         return self.__activeUsers.get(userName)
 
+    def changeExternalPayment(self, paymentSystem):
+        self.__paymentSys.changeExternalPayment(paymentSystem)
+        return True
+
+    def changeExternalDelivery(self, deliverySystem):
+        self.__deliverySys.changeExternalDelivery(deliverySystem)
+        return True
+
     def getStores(self):
         self.__initializeStoresDict()
         stores = []
@@ -582,12 +596,52 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def openNewBidOffer(self, user ,storeID, productID, newPrice):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            if not self.__stores.get(storeID).hasProduct(productID):
+                raise ProductException("The product id " + productID + " not in market!")
+            return self.__stores.get(storeID).openNewBidOffer(user, productID, newPrice)
+        except Exception as e:
+            raise Exception(e)
+
     def addCompositeRule(self, user, storeId, dId, ruleId, rId1, rId2, ruleType, ruleKind):
         self.__initializeStoresDict()
         try:
             if storeId not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
             return self.__stores.get(storeId).addCompositeRule(user, dId, ruleId, rId1, rId2, ruleType, ruleKind)
+        except Exception as e:
+            raise Exception(e)
+
+
+    def acceptBidOffer(self, user,storeID, bID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).acceptBidOffer(user, bID)
+        except Exception as e:
+            raise Exception(e)
+
+
+    def rejectOffer(self,storeID, bID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).rejectOffer(bID)
+        except Exception as e:
+            raise Exception(e)
+
+    def offerAlternatePrice(self,user,storeID, bID, new_price):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).offerAlternatePrice(user, bID,new_price)
         except Exception as e:
             raise Exception(e)
 
@@ -649,6 +703,36 @@ class Market:
             stId = self.__storeTransactionIdCounter
             self.__storeTransactionIdCounter += 1
             return stId
+
+    def getCheckNoOwnerNoManage(self, user):
+        for store in self.__stores.values():
+            if store.hasPermissions(user):
+                return False
+        return True
+
+    def getCheckNoOwnerYesManage(self, user):
+        check = False
+        for store in self.__stores.values():
+            managers = store.getStoreManagers()
+            if check == False:
+                for manage in managers:
+                    if manage.getUserID() == user.getUserID():
+                        check = True
+                        break
+            owners = store.getStoreOwners()
+            for owner in owners:
+                if owner.getUserID() == user.getUserID():
+                    return False
+        return check
+
+    def getCheckOwner(self, user):
+        for store in self.__stores.values():
+            owners = store.getStoreOwners()
+            for owner in owners:
+                if owner.getUserID() == user.getUserID():
+                    return True
+        return False
+
 
     def __getUserTransactionId(self):
         if self.__userTransactionIdCounter is None:

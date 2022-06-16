@@ -171,3 +171,30 @@ class IMarket(Interface):
 
     def getAllRulesOfDiscount(self, user, storeId, discountId, isComp):
         pass
+
+    def getCheckNoOwnerYesManage(self, user):
+        pass
+
+    def getCheckNoOwnerNoManage(self, user):
+        pass
+
+    def getCheckOwner(self, user):
+        pass
+
+    def openNewBidOffer(self, user, storeID, productID, newPrice):
+        pass
+
+    def acceptBidOffer(self, user,storeID, bID):
+        pass
+
+    def rejectOffer(self,storeID, bID):
+        pass
+
+    def offerAlternatePrice(self,user,storeID, bID, new_price):
+        pass
+
+    def changeExternalPayment(self, paymentSystem):
+        pass
+
+    def changeExternalDelivery(self, deliverySystem):
+        pass

@@ -26,30 +26,42 @@ class Product:
                                                               category=category
                                                               , weight=weight)[0]
 
+            self.__id = Id
+            self.__storeId = storeId
+            self.__name = name
+            self.__price = price
+            self.__category = category
+            self.__weight = weight
             for k in keyword:
                 lowerKeyword = k.lower()
                 ProductKeyword.objects.get_or_create(product_id=self.__model, keyword=lowerKeyword)
 
         else:
             self.__model = model
+            self.__id = self.__model.product_id
+            self.__storeId = self.__model.storeId
+            self.__name = self.__model.name
+            self.__price = self.__model.price
+            self.__category = self.__model.category
+            self.__weight = self.__model.weight
 
     def getProductId(self):
-        return self.__model.product_id
+        return self.__id
 
     def getProductStoreId(self):
-        return self.__model.storeId
+        return self.__storeId
 
     def getProductName(self):
-        return self.__model.name
+        return self.__name
 
     def getProductPrice(self):
-        return self.__model.price
+        return self.__price
 
     def getProductCategory(self):
-        return self.__model.category
+        return self.__category
 
     def getProductWeight(self):
-        return self.__model.weight
+        return self.__weight
 
     def getModel(self):
         return self.__model
@@ -66,24 +78,28 @@ class Product:
             raise ProductException("name of a product cannot be None")
         self.__model.name = name
         self.__model.save()
+        self.__name = name
 
     def setProductPrice(self, price):
         if price <= 0:
             raise ProductException("price of a product cannot be non-positive")
         self.__model.price = price
         self.__model.save()
+        self.__price = price
 
     def setProductCategory(self, category):
         if category is None:
             raise ProductException("category of a product cannot be None")
         self.__model.category = category
         self.__model.save()
+        self.__category = category
 
     def setProductWeight(self, weight):
         if weight <= 0:
             raise ProductException("weight of a product cannot be non-positive")
         self.__model.weight = weight
         self.__model.save()
+        self.__weight = weight
 
     def addKeyWord(self, keyword):
         if not ProductKeyword.objects.filter(product_id=self.__model, keyword=keyword).exists():

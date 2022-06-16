@@ -1,5 +1,7 @@
 import django, os
 
+from Backend.Service.DTO.BidDTO import BidDTO
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
 
@@ -133,6 +135,15 @@ class UserService:
             logging.error("Failed updating product in cart")
             return Response(e.__str__())
 
+    def removeCart(self, userId):
+        try:
+            isRemoved = self.__userManagment.removeCart(userId)
+            logging.info("removed cart of user: " + str(userId))
+            return Response(isRemoved)
+        except Exception as e:
+            logging.error("Failed to removed cart of user:")
+            return Response(e.__str__())
+
     def getProductByCategory(self, category):
         try:
             products = self.__getterManagment.getProductByCategory(category)
@@ -195,6 +206,15 @@ class UserService:
             return Response(userTransactionDTO(userTransaction))
         except Exception as e:
             logging.error("Failed to purchase cart for user" + str(userID))
+            return Response(e.__str__())
+
+    def openNewBidOffer(self, userID, storeID, productID, newPrice):
+        try:
+            bid = self.__userManagment.openNewBidOffer(userID, storeID, productID, newPrice)
+            logging.info("success to create new bid " + str(bid.get_bID()))
+            return Response(BidDTO(bid))
+        except Exception as e:
+            logging.error("failed to create new bid")
             return Response(e.__str__())
 
     # here we assume that the user is a member!!

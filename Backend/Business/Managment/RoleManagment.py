@@ -1,10 +1,12 @@
-import os , django
+import os, django
 import sys
-from datetime import datetime
+import datetime
 
 from django.db.models import Max
+from Backend.Business.Market import Market
+from Backend.Interfaces.IMarket import IMarket
 
-from ModelsBackend.models import ProductModel, DiscountModel, RuleModel
+from ModelsBackend.models import ProductModel, DiscountModel, RuleModel, LoginDateModel
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Frontend.settings')
 django.setup()
@@ -24,8 +26,6 @@ from Backend.Business.Rules.QuantityRule import quantityRule
 import threading
 
 
-
-
 class RoleManagment:
     __instance = None
 
@@ -39,6 +39,7 @@ class RoleManagment:
     def __init__(self):
         """ Virtually private constructor. """
         super().__init__()
+        self.__market: IMarket = Market().getInstance()
         self.__memberManagement = MemberManagment.getInstance()
         self.__productId = None
         self.__discountId = None
@@ -306,6 +307,8 @@ class RoleManagment:
             if self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID()):
                 self.__memberManagement.removeFromMembers(member.getUserID())
                 member.removeUser()
+                for memberLogIn in LoginDateModel.objects.filter(username=memberName):
+                    memberLogIn.delete()
             return True
         except Exception as e:
             raise Exception(e)
@@ -555,6 +558,104 @@ class RoleManagment:
             raise Exception("member does not have the permission to add discounts")
         return member.getAllRulesOfDiscount(storeId, discountId, isComp)
 
+    def acceptBidOffer(self, userID, storeID, bID):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userID)
+        try:
+            return self.__memberManagement.getMembersFromUser().get(userID).acceptBidOffer(storeID, bID)
+        except Exception as e:
+            raise Exception(e)
+
+    def rejectOffer(self, userID, storeID, bID):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userID)
+        try:
+            return self.__memberManagement.getMembersFromUser().get(userID).rejectOffer(storeID, bID)
+        except Exception as e:
+            raise Exception(e)
+
+    def offerAlternatePrice(self, userID, storeID, bID, new_price):
+        self.__memberManagement.thereIsSystemManger()
+        self.__memberManagement.checkOnlineUserFromUser(userID)
+        try:
+            return self.__memberManagement.getMembersFromUser().get(userID).offerAlternatePrice(storeID, bID, new_price)
+        except Exception as e:
+            raise Exception(e)
+
+    def __getAllMembersByDates(self, fromDate, untilDate):
+        members = []
+        for userLogInModel in LoginDateModel.objects.filter(username__isnull=False,
+                                                            date__gte=fromDate, date__lte=untilDate):
+            member = self.__memberManagement.getMemberByName(userLogInModel.username)
+            if member is None:  # the member can be system managers
+                member = self.__memberManagement.getSystemManagers().get(userLogInModel.username)
+            members.append(member)
+        return members
+
+    def __getAllGuestByDates(self, fromDate, untilDate):
+        guests = []
+        for userLogInModel in LoginDateModel.objects.filter(username=None,
+                                                            date__gte=fromDate, date__lte=untilDate):
+            guests.append(userLogInModel.userID)
+        return guests
+
+    def getUsersByDates(self, systemMangerName, fromDate, untilDate):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemMangerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+
+            datesForGraph = {}
+            fromDate = datetime.datetime(fromDate.year, fromDate.month, fromDate.day)
+            untilDate = datetime.datetime(untilDate.year, untilDate.month, untilDate.day)
+            while fromDate <= untilDate:
+                loginDateRecords = {}
+                guests = self.__getAllGuestByDates(fromDate, fromDate + datetime.timedelta(days=1))
+                members = self.__getAllMembersByDates(fromDate, fromDate + datetime.timedelta(days=1))
+
+                loginDateRecords[0] = guests  # guests
+                loginDateRecords[1] = []      # regular members
+                loginDateRecords[2] = []      # just managers
+                loginDateRecords[3] = []      # just owners
+                loginDateRecords[4] = []      # system managers
+
+                for member in members:
+                    if self.__memberManagement.getSystemManagers().get(member.getMemberName()) is not None:
+                        loginDateRecords[4].append(member.getMemberName())
+                    elif member.getCheckNoOwnerNoManage():
+                        loginDateRecords[1].append(member.getMemberName())
+                    elif member.getCheckNoOwnerYesManage():
+                        loginDateRecords[2].append(member.getMemberName())
+                    elif member.getCheckOwner():
+                        loginDateRecords[3].append(member.getMemberName())
+
+                datesForGraph[fromDate] = loginDateRecords
+                fromDate += datetime.timedelta(days=1)
+            return datesForGraph
+        except Exception as e:
+            raise Exception(e)
+
+    def changeExternalPayment(self, systemManagerName, paymentSystem):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return self.__market.changeExternalPayment(paymentSystem)
+        except Exception as e:
+            raise Exception(e)
+
+    def changeExternalDelivery(self,systemManagerName ,deliverySystem):
+        self.__memberManagement.thereIsSystemManger()
+        try:
+            system_manager = self.__memberManagement.getSystemManagers().get(systemManagerName)
+            self.__memberManagement.checkOnlineUserFromUser(system_manager.getUserID())
+            if system_manager is None:
+                raise Exception("user: " + str(systemManagerName) + " is not a system manager")
+            return self.__market.changeExternalDelivery(deliverySystem)
+        except Exception as e:
+            raise Exception(e)
 
     def __getProductId(self):
         if self.__productId is None:
@@ -590,4 +691,3 @@ class RoleManagment:
         rId = self.__ruleId
         self.__ruleId += 1
         return rId
-

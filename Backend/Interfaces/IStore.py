@@ -148,3 +148,15 @@ class IStore(Interface):
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
         pass
+
+    def openNewBidOffer(self, user, productID, newPrice):
+        pass
+
+    def acceptBidOffer(self, user , bID):
+        pass
+
+    def rejectOffer(self , bID):
+        pass
+
+    def offerAlternatePrice(self, user, bID, new_price):
+        pass
