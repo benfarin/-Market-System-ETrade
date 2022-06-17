@@ -40,7 +40,7 @@ class OwnerAgreement:
                 self.__receivers[receiver] = False
             self.__receivers[self._buildMember(self.__assigner)] = True
             if len(self.__receivers) == 1:
-                self.__isAccepted = True    
+                self.__isAccepted = True
 
     def getOwnerAgreementId(self):
         return self.__OA_ID
@@ -79,3 +79,6 @@ class OwnerAgreement:
 
     def _buildMember(self, model):
         return Member(model=model)
+
+    def removeOwnerAgreement(self):
+        self.__model.delete()

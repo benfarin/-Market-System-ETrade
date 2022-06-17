@@ -623,27 +623,27 @@ class RoleService:
 
     def acceptBidOffer(self, userID, storeID, bID):
         try:
-            bid = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
-            logging.info("success to create new bid " + str(bid.get_bID()))
-            return Response(bid)
+            isAccepted = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
+            logging.info("success to create new bid ")
+            return Response(isAccepted)
         except Exception as e:
             logging.error("failed to create new bid")
             return Response(e.__str__())
 
     def rejectOffer(self, userID, storeID, bID):
         try:
-            bid = self.__roleManagment.rejectOffer(userID, storeID, bID)
-            logging.info("success to reject bid " + str(bid.get_bID()))
-            return Response(bid)
+            isRejected = self.__roleManagment.rejectOffer(userID, storeID, bID)
+            logging.info("success to reject bid ")
+            return Response(isRejected)
         except Exception as e:
             logging.error("failed to reject bid")
             return Response(e.__str__())
 
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
         try:
-            bid = self.__roleManagment.offerAlternatePrice(userID, storeID, bID, new_price)
-            logging.info("success to offer alternate price " + str(bid.get_bID()))
-            return Response(bid)
+            isOfferedAlternativePrice = self.__roleManagment.offerAlternatePrice(userID, storeID, bID, new_price)
+            logging.info("success to offer alternate price ")
+            return Response(isOfferedAlternativePrice)
         except Exception as e:
             logging.error("failed to offer alternate price")
             return Response(e.__str__())

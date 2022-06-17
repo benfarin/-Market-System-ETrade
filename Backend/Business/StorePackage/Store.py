@@ -985,8 +985,9 @@ class Store:
                 ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
                 isAccepted = ownerAgreement.acceptOffer(user)
                 if isAccepted:
-                    return self.appointOwnerToStore(ownerAgreement.getAssigner(),
+                    self.appointOwnerToStore(ownerAgreement.getAssigner(),
                                                     ownerAgreement.getAssignee(), oaID=oaID)
+                    ownerAgreement.removeOwnerAgreement()
                 return True
         except Exception as e:
             raise Exception("cannot accept owner agreement " + str(oaID))
