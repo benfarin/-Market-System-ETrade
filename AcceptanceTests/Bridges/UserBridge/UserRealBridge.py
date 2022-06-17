@@ -115,4 +115,16 @@ class UserRealBridge:
     def rejectOwnerAgreement(self, userId, storeID,ownerAcceptID):
         return self._roleService.rejectOwnerAgreement(userId, storeID,ownerAcceptID)
 
+    def getBid(self, storeId, bid):
+        return self._roleService.getBid(storeId, bid)
+
+    def getAllStoreBids(self, storeId):
+        return self._roleService.getAllStoreBids(storeId)
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        return self._roleService.getOwnerAgreementById(storeId, oaId)
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        return self._roleService.getAllStoreOwnerAgreements(storeId)
+
 

@@ -42,11 +42,12 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(ownerAgreement.getIsAccepted())
         self.assertEqual(Counter(self.__getAllStoreOwnersIds()), Counter([self.user_id1, self.user_id2]))
 
-        ownerAgreement1 = self.proxy_market.appoint_store_owner(self.store_id1, self.user_id2, "testUser3").getData()
-        self.assertFalse(ownerAgreement1.getIsAccepted())
+        ownerAgreement1_id = self.proxy_market.appoint_store_owner(self.store_id1, self.user_id2,
+                                                                   "testUser3").getData().getOwnerAgreementId()
+        self.assertFalse(self.proxy_user.getOwnerAgreementById(self.store_id1,
+                                                               ownerAgreement1_id).getData().getIsAccepted())
         self.assertEqual(Counter(self.__getAllStoreOwnersIds()), Counter([self.user_id1, self.user_id2]))
-        self.assertTrue(self.proxy_user.acceptOwnerAgreement(self.user_id1, self.store_id1,
-                                                             ownerAgreement1.getOwnerAgreementId()).getData())
+        self.assertTrue(self.proxy_user.acceptOwnerAgreement(self.user_id1, self.store_id1,ownerAgreement1_id).getData())
         self.assertEqual(Counter(self.__getAllStoreOwnersIds()), Counter([self.user_id1, self.user_id2, self.user_id3]))
 
     def test_ownerAgreement_reject(self):
@@ -95,6 +96,29 @@ class MyTestCase(unittest.TestCase):
         # can't appoint owner twice
         self.assertTrue(self.proxy_market.appoint_store_owner(self.store_id1, self.user_id1, "testUser2").isError())
         self.assertEqual(Counter(self.__getAllStoreOwnersIds()), Counter([self.user_id1, self.user_id2]))
+
+    def test_towAppoints(self):
+        self.proxy_market.appoint_store_owner(self.store_id1, self.user_id1, "testUser2").getData()
+
+        ownerAgreement1 = self.proxy_market.appoint_store_owner(self.store_id1, self.user_id1, "testUser3").getData()
+        ownerAgreement2 = self.proxy_market.appoint_store_owner(self.store_id1, self.user_id1, "testUser4").getData()
+        self.assertEqual(Counter(self.__getAllStoreOwnersIds()), Counter([self.user_id1, self.user_id2]))
+
+        assigneesIds = [ownerAgreement.getAssignee().getUserID()
+                        for ownerAgreement in self.proxy_user.getAllStoreOwnerAgreements(self.store_id1).getData()]
+        isAceppteds = [ownerAgreement.getIsAccepted()
+                        for ownerAgreement in self.proxy_user.getAllStoreOwnerAgreements(self.store_id1).getData()]
+        self.assertEqual(Counter(assigneesIds), Counter([self.user_id3, self.user_id4]))
+        self.assertEqual(isAceppteds, [False, False])
+
+        self.proxy_user.acceptOwnerAgreement(self.user_id2, self.store_id1, ownerAgreement2.getOwnerAgreementId())
+        assigneesIds = [ownerAgreement.getAssignee().getUserID()
+                        for ownerAgreement in self.proxy_user.getAllStoreOwnerAgreements(self.store_id1).getData()]
+        self.assertEqual(assigneesIds, [self.user_id3])
+
+        self.proxy_user.acceptOwnerAgreement(self.user_id2, self.store_id1, ownerAgreement1.getOwnerAgreementId())
+        self.assertEqual(Counter(self.__getAllStoreOwnersIds()),
+                         Counter([self.user_id1, self.user_id2, self.user_id3, self.user_id4]))
 
     def tearDown(self):
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)

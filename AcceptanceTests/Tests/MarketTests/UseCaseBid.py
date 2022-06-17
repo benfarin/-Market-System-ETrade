@@ -65,6 +65,7 @@ class MyTestCase(unittest.TestCase):
         bid = self.proxy_user.openNewBidOffer(self.user_id2, self.store_id1, self.product_id, 7).getData()
         self.assertEqual(7, bid.get_newPrice())
         self.proxy_user.logout_member("testUser2")
+        self.assertFalse(self.proxy_user.getBid(self.store_id1, bid.get_bID()).getData().get_Accepted())
         self.assertTrue(self.proxy_user.acceptBidOffer(self.user_id1, self.store_id1, bid.get_bID()).getData())
         self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
         self.proxy_user.login_member(self.__guestId3, "testUser2", "12345")
@@ -110,6 +111,10 @@ class MyTestCase(unittest.TestCase):
         bid1 = self.proxy_user.openNewBidOffer(self.user_id2, self.store_id1, self.product_id, 7).getData()
         self.assertEqual(7, bid1.get_newPrice())
         self.proxy_user.logout_member("testUser2")
+
+        bIds = [Bid.get_bID() for Bid in self.proxy_user.getAllStoreBids(self.store_id1).getData()]
+        self.assertEqual(bIds, [bid1.get_bID()])
+
         self.assertTrue(self.proxy_user.acceptBidOffer(self.user_id1, self.store_id1, bid1.get_bID()).getData())
         self.assertTrue(self.proxy_user.offerAlternatePrice(self.user_id5, self.store_id1, bid1.get_bID(), 8).getData())
         self.__guestId3 = self.proxy_user.login_guest().getData().getUserID()
@@ -119,6 +124,7 @@ class MyTestCase(unittest.TestCase):
         userTransaction = self.proxy_user.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123",
                                                            "123")
         self.assertEqual(8, userTransaction.getData().getTotalAmount())
+
 
 
 if __name__ == '__main__':

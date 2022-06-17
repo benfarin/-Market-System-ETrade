@@ -163,3 +163,15 @@ class IStore(Interface):
 
     def rejectOwnerAgreement(self, oaID):
         pass
+
+    def getBid(self, bid):
+        pass
+
+    def getAllStoreBids(self):
+        pass
+
+    def getOwnerAgreementById(self, oaId):
+        pass
+
+    def getAllStoreOwnerAgreements(self):
+        pass

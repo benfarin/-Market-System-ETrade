@@ -539,6 +539,10 @@ class Store:
             if len(self.__owners) > 1:
                 return ownerAgreement
 
+            # there is only one owner, so he assign and approved, so we can delete.
+            ownerAgreement.removeOwnerAgreement()
+            self.__ownerAgreements.pop(ownerAgreement.getOwnerAgreementId())
+
         with self.__rolesLock:  # if we got to here, then it's mean thar the agreement is approved
             self.__owners.append(assignee)
             self.__model.owners.add(assignee.getModel())
@@ -986,8 +990,9 @@ class Store:
                 isAccepted = ownerAgreement.acceptOffer(user)
                 if isAccepted:
                     self.appointOwnerToStore(ownerAgreement.getAssigner(),
-                                                    ownerAgreement.getAssignee(), oaID=oaID)
+                                             ownerAgreement.getAssignee(), oaID=oaID)
                     ownerAgreement.removeOwnerAgreement()
+                    self.__ownerAgreements.pop(oaID)
                 return True
         except Exception as e:
             raise Exception("cannot accept owner agreement " + str(oaID))
@@ -1001,6 +1006,24 @@ class Store:
                 return True
         except:
             raise Exception("cannot accept owner agreement " + str(oaID))
+
+    def getBid(self, bid):
+        b = self.__bids.get(bid)
+        if b is None:
+            raise Exception("there is no bid with id: " + str(bid))
+        return b
+
+    def getAllStoreBids(self):
+        return self.__bids.values()
+
+    def getOwnerAgreementById(self, oaId):
+        ownerAgreement = self.__ownerAgreements.get(oaId)
+        if ownerAgreement is None:
+            raise Exception("there is no owner agreement with id: " + str(oaId))
+        return ownerAgreement
+
+    def getAllStoreOwnerAgreements(self):
+        return self.__ownerAgreements.values()
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
         permissions = self.__permissions.get(user)

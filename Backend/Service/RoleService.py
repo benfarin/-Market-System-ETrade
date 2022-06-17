@@ -21,6 +21,7 @@ from Backend.Service.DTO.UserTransactionDTO import userTransactionDTO
 from Backend.Service.DTO.StoreDTO import StoreDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
 from Backend.Service.DTO.RuleDTO import RuleDTO
+from Backend.Service.DTO.BidDTO import BidDTO
 from Backend.Service.DTO.OwnerAgreementDTO import OwnerAgreementDTO
 import logging
 
@@ -743,4 +744,46 @@ class RoleService:
             return Response(rulesDTOs)
         except Exception as e:
             logging.info("failed to get all simple discount rules of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getBid(self, storeId, bid):
+        try:
+            bidOfStore = self.__getterManagment.getBid(storeId, bid)
+            logging.info("success to get bid: " + str(bid))
+            return Response(BidDTO(bidOfStore))
+        except Exception as e:
+            logging.info("failed to get bid: " + str(bid))
+            return Response(e.__str__())
+
+    def getAllStoreBids(self, storeId):
+        try:
+            bids = self.__getterManagment.getAllStoreBids(storeId)
+            bidsDTOs = []
+            for bid in bids:
+                bidsDTOs.append(BidDTO(bid))
+            logging.info("success to get all bid's of store: " + str(storeId))
+            return Response(bidsDTOs)
+        except Exception as e:
+            logging.info("failed to get all bid's of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        try:
+            ownerAgreement = self.__getterManagment.getOwnerAgreementById(storeId, oaId)
+            logging.info("success to get owner agreement: " + str(oaId))
+            return Response(OwnerAgreementDTO(ownerAgreement))
+        except Exception as e:
+            logging.info("failed to get owner agreement: " + str(oaId))
+            return Response(e.__str__())
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        try:
+            ownerAgreements = self.__getterManagment.getAllStoreOwnerAgreements(storeId)
+            ownerAgreementDTOs = []
+            for ownerAgreement in ownerAgreements:
+                ownerAgreementDTOs.append(OwnerAgreementDTO(ownerAgreement))
+            logging.info("success to get all owner agreements of store: " + str(storeId))
+            return Response(ownerAgreementDTOs)
+        except Exception as e:
+            logging.info("failed to get all owner agreements of store: " + str(storeId))
             return Response(e.__str__())

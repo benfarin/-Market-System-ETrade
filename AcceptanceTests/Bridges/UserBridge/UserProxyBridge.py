@@ -129,9 +129,13 @@ class UserProxyBridge:
         return self._real_subject.removeCart(userId)
 
     def get_sum_after_discount(self, user_id):
+        if self.check_access():
+            return True
         return self._real_subject.get_sum_after_discount(user_id)
 
     def get_member_transaction(self, user_id):
+        if self.check_access():
+            return True
         return self._real_subject.get_member_transaction(user_id)
 
     def get_member_notifications(self, user_id):
@@ -140,25 +144,59 @@ class UserProxyBridge:
         return self._real_subject.get_member_notifications(user_id)
 
     def reset_management(self):
+        if self.check_access():
+            return True
         return self._real_subject.reset_management()
 
     def openNewBidOffer(self,userID,storeID,productID,newPrice):
+        if self.check_access():
+            return True
         return self._real_subject.openNewBidOffer(userID,storeID,productID,newPrice)
 
     def acceptBidOffer(self, userID, storeID, bID):
+        if self.check_access():
+            return True
         return self._real_subject.acceptBidOffer(userID, storeID, bID)
 
     def rejectOffer(self, userID, storeID, bID):
+        if self.check_access():
+            return True
         return self._real_subject.rejectOffer(userID, storeID, bID)
 
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
+        if self.check_access():
+            return True
         return self._real_subject.offerAlternatePrice(userID, storeID, bID, new_price)
 
     def acceptOwnerAgreement(self, userId, storeID, ownerAcceptID):
+        if self.check_access():
+            return True
         return self._real_subject.acceptOwnerAgreement(userId, storeID, ownerAcceptID)
 
     def rejectOwnerAgreement(self, userId, storeID, ownerAcceptID):
+        if self.check_access():
+            return True
         return self._real_subject.rejectOwnerAgreement(userId, storeID, ownerAcceptID)
+
+    def getBid(self, storeId, bid):
+        if self.check_access():
+            return True
+        return self._real_subject.getBid(storeId, bid)
+
+    def getAllStoreBids(self, storeId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllStoreBids(storeId)
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        if self.check_access():
+            return True
+        return self._real_subject.getOwnerAgreementById(storeId, oaId)
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        if self.check_access():
+            return True
+        return self._real_subject.getAllStoreOwnerAgreements(storeId)
 
 
 

@@ -204,3 +204,15 @@ class IMarket(Interface):
 
     def rejectOwnerAgreement(self, storeID, ownerAcceptID):
         pass
+
+    def getBid(self, storeId, bid):
+        pass
+
+    def getAllStoreBids(self, storeId):
+        pass
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        pass
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        pass
