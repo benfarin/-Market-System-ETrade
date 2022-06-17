@@ -21,6 +21,7 @@ from Backend.Service.DTO.UserTransactionDTO import userTransactionDTO
 from Backend.Service.DTO.StoreDTO import StoreDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
 from Backend.Service.DTO.RuleDTO import RuleDTO
+from Backend.Service.DTO.OwnerAgreementDTO import OwnerAgreementDTO
 import logging
 
 logging.basicConfig(
@@ -50,9 +51,9 @@ class RoleService:
     def appointOwnerToStore(self, storeID, assignerID,
                             assigneeName):  # check if the asssigne he member and assignerID!!
         try:
-            isAppointed = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeName)
+            ownerAgreement = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeName)
             logging.info("success to appoint owner to store " + str(storeID))
-            return Response(isAppointed)
+            return Response(OwnerAgreementDTO(ownerAgreement))
         except Exception as e:
             logging.error("Failed to appoint " + str(assigneeName) + " as owner")
             return Response(e.__str__())
@@ -649,18 +650,18 @@ class RoleService:
 
     def acceptOwnerAgreement(self, userId, storeID, ownerAcceptID):
         try:
-            ownerAccept = self.__roleManagment.acceptOwnerAgreement(userId, storeID, ownerAcceptID)
-            logging.info("success to accept owner agreement " + str(ownerAccept.getOwnerAgreementId()))
-            return Response(ownerAccept)
+            isAccept = self.__roleManagment.acceptOwnerAgreement(userId, storeID, ownerAcceptID)
+            logging.info("success to accept owner agreement ")
+            return Response(isAccept)
         except Exception as e:
             logging.error("failed to accept owner agreement ")
             return Response(e.__str__())
 
     def rejectOwnerAgreement(self, userId, storeID, ownerAcceptID):
         try:
-            ownerAccept = self.__roleManagment.rejectOwnerAgreement(userId, storeID, ownerAcceptID)
-            logging.info("success to reject owner agreement " + str(ownerAccept.getOwnerAgreementId()))
-            return Response(ownerAccept)
+            isRejected = self.__roleManagment.rejectOwnerAgreement(userId, storeID, ownerAcceptID)
+            logging.info("success to reject owner agreement")
+            return Response(isRejected)
         except Exception as e:
             logging.error("failed to reject owner agreement")
             return Response(e.__str__())

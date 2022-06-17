@@ -29,7 +29,7 @@ def web_run():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-    initialize_system()
+    # initialize_system()
 
 
 def initialize_system():

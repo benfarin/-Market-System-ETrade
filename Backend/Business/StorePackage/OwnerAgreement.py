@@ -10,7 +10,8 @@ class OwnerAgreement:
 
     def __init__(self, assigner=None, assignee=None, storeId=None, receivers=None, model=None):
         if model is None:
-            self.__model = OwnerAgreementModel.objects.get_or_create(assigner=assigner, assignee=assignee,
+            self.__model = OwnerAgreementModel.objects.get_or_create(assigner=assigner.getModel(),
+                                                                     assignee=assignee.getModel(),
                                                                      storeID=storeId.getModel())[0]
             for receiver in receivers:
                 self.__model.permissionsOwners.add(receiver.getModel())
@@ -23,17 +24,23 @@ class OwnerAgreement:
             self.__receivers: Dict[IMember: bool] = {}
             for receiver in receivers:
                 self.__receivers[receiver] = False
+            self.__receivers[assigner] = True
+            if len(self.__receivers) == 1:
+                self.__isAccepted = True
         else:
             self.__OA_ID = self.__model.id
-            self.__assigner = self.__model.assigner
-            self.__assignee = self.__model.assignee
+            self.__assigner = self._buildMember(self.__model.assigner)
+            self.__assignee = self._buildMember(self.__model.assignee)
             self.__storeID = self.__model.storeID.storeID
             self.__active = self.__model.active
             self.__isAccepted = self.__model.isAccepted
             receivers_model = self.__model.permissionsOwners.through.objects.all()
             for receiver_model in receivers_model:
-                receiver = self._buildReceiver(receiver_model)
+                receiver = self._buildMember(receiver_model)
                 self.__receivers[receiver] = False
+            self.__receivers[self._buildMember(self.__assigner)] = True
+            if len(self.__receivers) == 1:
+                self.__isAccepted = True    
 
     def getOwnerAgreementId(self):
         return self.__OA_ID
@@ -55,7 +62,7 @@ class OwnerAgreement:
         check = self.__receivers.values()
         if all(check):
             notification_handler: NotificationHandler = NotificationHandler.getInstance()
-            notification_handler.notifyBidAccepted(self.__assignee, self.__storeID, self.__OA_ID)
+            notification_handler.notifyOwnerAgreementAccepted(self.__assignee, self.__storeID, self.__OA_ID)
             self.__model.isAccepted = True
             self.__model.save()
             self.__isAccepted = True
@@ -67,8 +74,8 @@ class OwnerAgreement:
         self.__model.active = False
         self.__model.save()
         notification_handler: NotificationHandler = NotificationHandler.getInstance()
-        notification_handler.notifyBidDeclined(self.__assignee, self.__storeID, self.__OA_ID)
+        notification_handler.notifyOwnerAgreementDeclined(self.__assignee, self.__storeID, self.__OA_ID)
         self.__model.delete()
 
-    def _buildReceiver(self, model):
-        return Member(model)
+    def _buildMember(self, model):
+        return Member(model=model)

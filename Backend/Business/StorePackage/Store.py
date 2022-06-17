@@ -154,6 +154,8 @@ class Store:
         self.__rolesLock = threading.Lock()
         self.__transactionLock = threading.Lock()
         self.__discountsLock = threading.Lock()
+        self.__bidLock = threading.Lock()
+        self.__oaLock = threading.Lock()
         self.__notificationHandler: NotificationHandler = NotificationHandler.getInstance()
 
     def getStoreId(self):
@@ -524,6 +526,7 @@ class Store:
             raise PermissionException("User ", assignee.getUserID(),
                                       "cannot assign owner to the one how made him an owner in the store: ",
                                       self.__name)
+        ownerAgreement = None
         if oaID is None:
 
             for oa in self.__ownerAgreements.values():
@@ -532,7 +535,9 @@ class Store:
                                     "agreement")
 
             # create a new owner agreement
-            return self.__openOwnerAgreement(assigner, assignee)
+            ownerAgreement = self.__openOwnerAgreement(assigner, assignee)
+            if len(self.__owners) > 1:
+                return ownerAgreement
 
         with self.__rolesLock:  # if we got to here, then it's mean thar the agreement is approved
             self.__owners.append(assignee)
@@ -553,6 +558,12 @@ class Store:
             self.__permissions[assignee].setPermission_RolesInformation(True)
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
             self.__permissions[assignee].setPermission_Discount(True)
+
+            # if the action is from appointOwner return ownerAgreement
+            # if the action is from acceptOwnerAgreement return True
+            if oaID is None:
+                return ownerAgreement
+            return True
 
     # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):
@@ -921,34 +932,38 @@ class Store:
                 if self.hasBidPermission(manager):
                     receivers.append(manager)
 
-            newBid = BidOffer(user, self, productID, newPrice, receivers)
-            self.__notificationHandler.notifyForBidOffer(receivers, self.__id, user)
-            self.__bids[newBid.get_bID()] = newBid
-            return newBid
+            with self.__bidLock:
+                newBid = BidOffer(user, self, productID, newPrice, receivers)
+                self.__notificationHandler.notifyForBidOffer(receivers, self.__id, user)
+                self.__bids[newBid.get_bID()] = newBid
+                return newBid
         except:
             raise Exception("cannot open new bid for product " + str(productID))
 
     def acceptBidOffer(self, user, bID):
         try:
-            bid: BidOffer = self.__bids.get(bID)
-            bid.acceptOffer(user)
-            return True
+            with self.__bidLock:
+                bid: BidOffer = self.__bids.get(bID)
+                bid.acceptOffer(user)
+                return True
         except Exception as e:
             raise Exception("cannot accept bid " + str(bID))
 
     def rejectOffer(self, bID):
         try:
-            bid: BidOffer = self.__bids.get(bID)
-            bid.rejectOffer()
-            return True
+            with self.__bidLock:
+                bid: BidOffer = self.__bids.get(bID)
+                bid.rejectOffer()
+                return True
         except:
             raise Exception("cannot accept bid " + str(bID))
 
     def offerAlternatePrice(self, user, bID, new_price):
         try:
-            bid: BidOffer = self.__bids.get(bID)
-            bid.offerAlternatePrice(user, new_price)
-            return True
+            with self.__bidLock:
+                bid: BidOffer = self.__bids.get(bID)
+                bid.offerAlternatePrice(user, new_price)
+                return True
         except:
             raise Exception("cannot accept bid " + str(bID))
 
@@ -956,29 +971,33 @@ class Store:
         try:
             receivers = []
             receivers += self.__owners
-            newOwnerAgreement = OwnerAgreement(assigner, assignee, self, receivers)
-            self.__notificationHandler.notifyForBidOffer(receivers, self.__id, assignee)
-            self.__bids[newOwnerAgreement.getOwnerAgreementId()] = newOwnerAgreement
-            return newOwnerAgreement
-        except:
+            with self.__oaLock:
+                newOwnerAgreement = OwnerAgreement(assigner, assignee, self, receivers)
+                self.__notificationHandler.notifyForOwnerAgreement(assignee, receivers, self.__id)
+                self.__ownerAgreements[newOwnerAgreement.getOwnerAgreementId()] = newOwnerAgreement
+                return newOwnerAgreement
+        except Exception as e:
             raise Exception("cannot open new owner agreement for member " + str(assignee.getMemberName()))
 
     def acceptOwnerAgreement(self, user, oaID):
         try:
-            ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
-            isAccepted = ownerAgreement.acceptOffer(user)
-            if isAccepted:
-                self.appointOwnerToStore(self._buildMember(model=ownerAgreement.getAssigner()),
-                                         self._buildMember(model=ownerAgreement.getAssignee()), oaID=oaID)
+            with self.__oaLock:
+                ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
+                isAccepted = ownerAgreement.acceptOffer(user)
+                if isAccepted:
+                    return self.appointOwnerToStore(ownerAgreement.getAssigner(),
+                                                    ownerAgreement.getAssignee(), oaID=oaID)
+                return True
         except Exception as e:
             raise Exception("cannot accept owner agreement " + str(oaID))
 
     def rejectOwnerAgreement(self, oaID):
         try:
-            ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
-            ownerAgreement.rejectOffer()
-            self.__ownerAgreements.pop(oaID)
-            return True
+            with self.__oaLock:
+                ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
+                ownerAgreement.rejectOffer()
+                self.__ownerAgreements.pop(oaID)
+                return True
         except:
             raise Exception("cannot accept owner agreement " + str(oaID))
 

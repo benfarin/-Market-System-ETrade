@@ -289,8 +289,7 @@ class Market:
     def appointOwnerToStore(self, storeID, assigner, assignee):  # TESTED
         self.__initializeStoresDict()
         try:
-            self.__stores.get(storeID).appointOwnerToStore(assigner, assignee)
-            return True
+            return self.__stores.get(storeID).appointOwnerToStore(assigner, assignee)
         except Exception as e:
             raise Exception(e)
 
@@ -647,16 +646,16 @@ class Market:
         try:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
-            return self.__stores.get(storeID).acceptOwnerAgreement(user, storeID, ownerAcceptID)
+            return self.__stores.get(storeID).acceptOwnerAgreement(user, ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 
-    def rejectOwnerAgreement(self, user, storeID, ownerAcceptID):
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
         self.__initializeStoresDict()
         try:
             if storeID not in self.__stores.keys():
                 raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
-            return self.__stores.get(storeID).rejectOwnerAgreement(user, storeID, ownerAcceptID)
+            return self.__stores.get(storeID).rejectOwnerAgreement(ownerAcceptID)
         except Exception as e:
             raise Exception(e)
 
@@ -697,26 +696,24 @@ class Market:
             raise Exception(e)
 
     def __getGlobalStoreId(self):
-        if self.__globalStore is None:
-            self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))['storeID__max']
-            if self.__globalStore is None:
-                self.__globalStore = 0
         with self.__storeId_lock:
-            storeId = self.__globalStore
+            if self.__globalStore is None:
+                self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))['storeID__max']
+                if self.__globalStore is None:
+                    self.__globalStore = 0
             self.__globalStore += 1
+            storeId = self.__globalStore
             return storeId
 
     def __getStoreTransactionId(self):
-        if self.__storeTransactionIdCounter is None:
-            self.__storeTransactionIdCounter = StoreTransactionModel.objects.aggregate(Max('transactionId'))[
-                'transactionId__max']
-            if self.__storeTransactionIdCounter is None:
-                self.__storeTransactionIdCounter = 0
-            else:
-                self.__storeTransactionIdCounter += 1
         with self.__StoreTransactionId_lock:
-            stId = self.__storeTransactionIdCounter
+            if self.__storeTransactionIdCounter is None:
+                self.__storeTransactionIdCounter = StoreTransactionModel.objects.aggregate(Max('transactionId'))[
+                    'transactionId__max']
+                if self.__storeTransactionIdCounter is None:
+                    self.__storeTransactionIdCounter = 0
             self.__storeTransactionIdCounter += 1
+            stId = self.__storeTransactionIdCounter
             return stId
 
     def getCheckNoOwnerNoManage(self, user):
@@ -748,18 +745,15 @@ class Market:
                     return True
         return False
 
-
     def __getUserTransactionId(self):
-        if self.__userTransactionIdCounter is None:
-            self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))[
-                'transactionId__max']
-            if self.__userTransactionIdCounter is None:
-                self.__userTransactionIdCounter = 0
-            else:
-                self.__userTransactionIdCounter += 1
         with self.__UserTransactionId_lock:
-            utId = self.__userTransactionIdCounter
+            if self.__userTransactionIdCounter is None:
+                self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))[
+                    'transactionId__max']
+                if self.__userTransactionIdCounter is None:
+                    self.__userTransactionIdCounter = 0
             self.__userTransactionIdCounter += 1
+            utId = self.__userTransactionIdCounter
             return utId
 
     def __buildStore(self, model):
