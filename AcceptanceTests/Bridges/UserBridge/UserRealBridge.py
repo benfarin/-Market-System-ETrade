@@ -109,4 +109,22 @@ class UserRealBridge:
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
         return self._roleService.offerAlternatePrice(userID, storeID, bID, new_price)
 
+    def acceptOwnerAgreement(self, userId, storeID,ownerAcceptID):
+        return self._roleService.acceptOwnerAgreement(userId, storeID,ownerAcceptID)
+
+    def rejectOwnerAgreement(self, userId, storeID,ownerAcceptID):
+        return self._roleService.rejectOwnerAgreement(userId, storeID,ownerAcceptID)
+
+    def getBid(self, storeId, bid):
+        return self._roleService.getBid(storeId, bid)
+
+    def getAllStoreBids(self, storeId):
+        return self._roleService.getAllStoreBids(storeId)
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        return self._roleService.getOwnerAgreementById(storeId, oaId)
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        return self._roleService.getAllStoreOwnerAgreements(storeId)
+
 

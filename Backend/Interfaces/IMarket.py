@@ -142,10 +142,10 @@ class IMarket(Interface):
     def updateCart(self, cart1, cart2):
         pass
 
-    def addSimpleDiscount(self, user,storeId, discount):
+    def addSimpleDiscount(self, user, storeId, discount):
         pass
 
-    def addCompositeDiscount(self, user ,storeId, discountId, dId1, dId2, typeDiscount, decide):
+    def addCompositeDiscount(self, user, storeId, discountId, dId1, dId2, typeDiscount, decide):
         pass
 
     def removeDiscount(self, user, storeId, discountId):
@@ -184,17 +184,35 @@ class IMarket(Interface):
     def openNewBidOffer(self, user, storeID, productID, newPrice):
         pass
 
-    def acceptBidOffer(self, user,storeID, bID):
+    def acceptBidOffer(self, user, storeID, bID):
         pass
 
-    def rejectOffer(self,storeID, bID):
+    def rejectOffer(self, storeID, bID):
         pass
 
-    def offerAlternatePrice(self,user,storeID, bID, new_price):
+    def offerAlternatePrice(self, user, storeID, bID, new_price):
         pass
 
     def changeExternalPayment(self, paymentSystem):
         pass
 
     def changeExternalDelivery(self, deliverySystem):
+        pass
+
+    def acceptOwnerAgreement(self, user, storeID, ownerAcceptID):
+        pass
+
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
+        pass
+
+    def getBid(self, storeId, bid):
+        pass
+
+    def getAllStoreBids(self, storeId):
+        pass
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        pass
+
+    def getAllStoreOwnerAgreements(self, storeId):
         pass

@@ -56,4 +56,28 @@ class GetterManagment:
     def getAllStores(self):
         return self.__market.getStores()
 
+    def getBid(self, storeId, bid):
+        try:
+            return self.__market.getBid(storeId, bid)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllStoreBids(self, storeId):
+        try:
+            return self.__market.getAllStoreBids(storeId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        try:
+            return self.__market.getOwnerAgreementById(storeId, oaId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        try:
+            return self.__market.getAllStoreOwnerAgreements(storeId)
+        except Exception as e:
+            raise Exception(e)
+
 
