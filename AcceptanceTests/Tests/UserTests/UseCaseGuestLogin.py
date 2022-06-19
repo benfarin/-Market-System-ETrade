@@ -4,14 +4,17 @@ from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
-
 class UseCaseGuestLogin(unittest.TestCase):
     # use-case 2.2
+    databases = {'testing'}
     proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
+        # assign system manager
         self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                           "Ben Gurion", 1, 1)
+        self.admin = self.proxy.login_guest().getData().getUserID()
+        self.proxy.login_member(self.admin, "Manager", "1234")
 
     def tearDown(self):
         self.proxy.removeSystemManger_forTests("Manager")
@@ -53,20 +56,6 @@ class UseCaseGuestLogin(unittest.TestCase):
                     self.assertNotEqual(Id_i, uIds[j])
         for id in uIds:
             self.proxy.exit_system(id)
-
-    def test_check_withAndWithoutSystemManager(self):
-        self.proxy.removeSystemManger_forTests("Manager")
-        guest2 = self.proxy.login_guest().getData()
-        self.assertIsNone(guest2)
-        check_reg = self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
-                            "Ben Gurion", 0, 1)
-        self.assertTrue(check_reg.isError())
-        self.proxy.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
-                                          "Ben Gurion", 1, 1)
-        self.proxy.exit_system(guest2)
-        guest3 = self.proxy.login_guest().getData().getUserID()
-        self.assertIsNotNone(guest3)
-        self.proxy.exit_system(guest3)
 
 
 

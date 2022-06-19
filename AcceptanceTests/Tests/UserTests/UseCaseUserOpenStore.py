@@ -10,8 +10,8 @@ from Backend.Service.UserService import UserService
 
 
 class UseCaseUserOpenStore(unittest.TestCase):
-
-    #usecase 3.2
+    # usecase 3.2
+    databases = {'testing'}
     user_proxy = UserProxyBridge(UserRealBridge())
     market_proxy = MarketProxyBridge(MarketRealBridge())
 
