@@ -1,22 +1,21 @@
 import unittest
-
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
-
 class UseCaseGetCartNEdit(unittest.TestCase):
     # use-case 2.8
     # get_cart functions has all products of a user from all the stores
     # also check changes in cart are working!
-
+    databases = {'testing'}
     # Proxies initialized
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
+        print("set-up")
         # assign system manager & login system manager
         self.proxy_user.appoint_system_manager("Manager", "1234", "0500000000", 1, 1, "Israel", "Beer Sheva",
                                                "Ben Gurion", 1, 1).getData()
@@ -75,6 +74,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_market.add_quantity_to_store(self.store_id3, self.user_id1, self.p6_id, 100)
 
     def tearDown(self):
+        print("tear-down")
         # delete stores
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id1)
         self.proxy_market.removeStoreForGood(self.user_id1, self.store_id2)
@@ -89,6 +89,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.removeSystemManger_forTests("Manager")
 
     def test_cart_info_positive_simple(self):
+        print("test_cart_info_positive_simple")
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
         self.assertEqual(len(bags), 0, "There should be no bags!")
         # add product to user2's cart
@@ -106,6 +107,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id1, self.p1_id)
 
     def test_cart_info_positive_sequence_complex(self):
+        print("test_cart_info_positive_sequence_complex")
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
         self.assertEqual(len(bags), 0, "There should be no bags!")
         # add products to cart
@@ -142,6 +144,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         self.assertFalse(bags, "We removed all the products, bags should be empty.")
 
     def test_cart_info_threads(self):
+        print("test_cart_info_threads")
         # only one buys each time!
         t = []
         # one buys product1
@@ -209,8 +212,6 @@ class UseCaseGetCartNEdit(unittest.TestCase):
     #     print(ans1.getData())
     #     print(ans2.getData())
     #     self.assertTrue(ans1.isError() or ans2.isError(), "you can only delete product from cart once!")
-
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,17 +3,11 @@ import unittest
 from AcceptanceTests.Bridges.UserBridge.UserProxyBridge import UserProxyBridge
 from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
-import logging
-
 
 class UseCaseGuestLogin(unittest.TestCase):
-    # console = logging.StreamHandler()
-    # console.setLevel(logging.INFO)
-    # # add the handler to the root logger
-    # logging.getLogger('').addHandler(console)
     # use-case 2.2
+    databases = {'testing'}
     proxy = UserProxyBridge(UserRealBridge())
-    logging.getLogger().setLevel(logging.INFO)
 
     def setUp(self):
         # assign system manager

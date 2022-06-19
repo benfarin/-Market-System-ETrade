@@ -7,7 +7,7 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 class UseCaseEditProduct(unittest.TestCase):
     # use-case 4.1.3
-
+    databases = {'testing'}
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())
 

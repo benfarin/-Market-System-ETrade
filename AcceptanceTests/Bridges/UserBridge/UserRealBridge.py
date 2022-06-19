@@ -22,91 +22,91 @@ class UserRealBridge:
             return True
 
     def login_guest(self):
-        return self._userService.enterSystem()
+        return self._userService.enterSystem(True)
 
     def register(self,username, password, phone, account_number, branch, country,
                  city, street, apartment_num, zip_code):
         return self._userService.memberSignUp(username, password, phone, account_number, branch,
-                                               country, city, street, apartment_num, zip_code)
+                                               country, city, street, apartment_num, zip_code, True)
 
     def login_member(self, oldUserId, user_name, password):
-        return self._userService.memberLogin(oldUserId, user_name, password)
+        return self._userService.memberLogin(oldUserId, user_name, password, True)
 
     def add_product_to_cart(self, user_id, store_id, product_id, quantity):
-        return self._userService.addProductToCart(user_id, store_id, product_id, quantity)
+        return self._userService.addProductToCart(user_id, store_id, product_id, quantity, True)
 
     def purchaseProductWithoutAddress(self, userID, cardNumber, month, year, holderCardName, cvv, holderID,
                                       country, city, street, apartmentNum, zipCode):
         return self._userService.purchaseCartWithoutAddress(userID, cardNumber, month, year, holderCardName, cvv, holderID,
-                                                            country, city, street, apartmentNum, zipCode)
+                                                            country, city, street, apartmentNum, zipCode, True)
 
     def purchase_product(self, user_id, cardNumber, month, year, holderCardName, cvv, holderID):
-        return self._userService.purchaseCart(user_id, cardNumber, month, year, holderCardName, cvv, holderID)
+        return self._userService.purchaseCart(user_id, cardNumber, month, year, holderCardName, cvv, holderID, True)
 
     def logout_member(self, userName):
-        return self._memberService.logoutMember(userName)
+        return self._memberService.logoutMember(userName, True)
 
     def removeSystemManger_forTests(self, systemMangerName):
-        return self._userService.removeSystemManger_forTests(systemMangerName)
+        return self._userService.removeSystemManger_forTests(systemMangerName, True)
 
     def removeMember(self, systemManagerName, memberName):
-        return self._roleService.removeMember(systemManagerName, memberName)
+        return self._roleService.removeMember(systemManagerName, memberName, True)
 
     def getAllActiveUsers(self, systemManagerName):
-        return self._roleService.getAllActiveUsers(systemManagerName)
+        return self._roleService.getAllActiveUsers(systemManagerName, True)
 
     def open_store(self, store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code):
-        return self._memberService.createStore(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code)
+        return self._memberService.createStore(store_name, founder_id, account_num, branch, country, city, street, apartment_num, zip_code, True)
 
     def removeStore(self,store_id, user_id):
-        return self._memberService.removeStore(store_id,user_id)
+        return self._memberService.removeStore(store_id,user_id, True)
 
     def recreateStore(self,user_id, store_id):
-        return self._memberService.recreateStore(user_id,store_id)
+        return self._memberService.recreateStore(user_id,store_id, True)
 
     def appoint_system_manager(self, userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode):
-        return self._userService.systemManagerSignUp(userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode)
+        return self._userService.systemManagerSignUp(userName, password, phone, accountNumber, brunch, country, city, street, apartmentNum, zipCode, True)
 
     def enter_system(self):
-        return self._userService.enterSystem()
+        return self._userService.enterSystem(True)
 
     def exit_system(self, guest_id):
-        return self._userService.exitSystem(guest_id)
+        return self._userService.exitSystem(guest_id, True)
 
     def remove_product_from_cart(self, user_id, store_id, prod_id):
-        return self._userService.removeProductFromCart(user_id, store_id, prod_id)
+        return self._userService.removeProductFromCart(user_id, store_id, prod_id, True)
 
     def update_prod_from_cart(self, user_id, store_id, prod_id, quantity):
-        return self._userService.updateProductFromCart(user_id, store_id, prod_id, quantity)
+        return self._userService.updateProductFromCart(user_id, store_id, prod_id, quantity, True)
 
     def get_cart(self, user_id):
-        return self._userService.getCart(user_id)
+        return self._userService.getCart(user_id, True)
 
     def removeCart(self, userId):
-        return self._userService.removeCart(userId)
+        return self._userService.removeCart(userId, True)
 
     def get_sum_after_discount(self, user_id):
-        return self._userService.getSumAfterDiscount(user_id)
+        return self._userService.getSumAfterDiscount(user_id, True)
 
     def get_member_transaction(self, user_id):
-        return self._memberService.getMemberTransactions(user_id)
+        return self._memberService.getMemberTransactions(user_id, True)
 
     def get_member_notifications(self, user_id):
-        return self._memberService.getAllNotificationsOfUser(user_id)
+        return self._memberService.getAllNotificationsOfUser(user_id, True)
 
     def reset_management(self):
         return self._userService.resetManagement()
 
     def openNewBidOffer(self,userID,storeID,productID,newPrice):
-        return self._userService.openNewBidOffer(userID,storeID,productID,newPrice)
+        return self._userService.openNewBidOffer(userID,storeID,productID,newPrice, True)
 
     def acceptBidOffer(self, userID, storeID, bID):
-        return self._roleService.acceptBidOffer(userID, storeID, bID)
+        return self._roleService.acceptBidOffer(userID, storeID, bID, True)
 
     def rejectOffer(self, userID, storeID, bID):
-        return self._roleService.rejectOffer(userID, storeID, bID)
+        return self._roleService.rejectOffer(userID, storeID, bID, True)
 
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
-        return self._roleService.offerAlternatePrice(userID, storeID, bID, new_price)
+        return self._roleService.offerAlternatePrice(userID, storeID, bID, new_price, True)
 
 

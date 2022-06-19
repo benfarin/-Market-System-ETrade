@@ -10,6 +10,7 @@ from Backend.Service.UserService import UserService
 
 
 class RemoveAndRecreateStore(unittest.TestCase):
+    databases = {'testing'}
     user_proxy = UserProxyBridge(UserRealBridge())
     market_proxy = MarketProxyBridge(MarketRealBridge())
 

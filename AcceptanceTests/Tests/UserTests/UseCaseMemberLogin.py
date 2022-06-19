@@ -7,6 +7,7 @@ from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 
 class UseCaseMemberLogin(unittest.TestCase):
     # use-case 2.4
+    databases = {'testing'}
     proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self):
