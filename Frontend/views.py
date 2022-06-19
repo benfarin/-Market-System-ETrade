@@ -11,6 +11,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.User import User
@@ -60,7 +61,7 @@ def home_page(request):  #FIXED
                'room_name': request.user.username, "saved_notifications" : notifications, "actives" : active_users}
     return render(request, "home.html", context)
 
-
+@csrf_exempt
 def signup_page(request):   #FIXED
     global user_service
     global member_service
@@ -89,7 +90,7 @@ def signup_page(request):   #FIXED
         messages.warning(request, answer.getError())
     return render(request, "form.html", context)
 
-
+@csrf_exempt
 def login_page(request):  #FIXED
     form = LoginForm(request.POST or None)
     if form.is_valid():
