@@ -338,6 +338,20 @@ class Member(User):
         except Exception as e:
             raise Exception(e)
 
+    @threaded
+    def acceptOwnerAgreement(self, storeID, ownerAcceptID):
+        try:
+            return self.__market.acceptOwnerAgreement(self, storeID, ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
+    @threaded
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
+        try:
+            return self.__market.rejectOwnerAgreement(storeID, ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
     def getAllDiscountOfStore(self, storeId, isComp):
         try:
             return self.__market.getAllDiscountOfStore(self, storeId, isComp)

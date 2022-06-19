@@ -116,3 +116,9 @@ class IMember(Interface):
 
     def getCheckNoOwnerNoManage(self):
         pass
+
+    def acceptOwnerAgreement(self, storeID, ownerAcceptID):
+        pass
+
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
+        pass

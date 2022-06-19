@@ -8,6 +8,7 @@ from Backend.Business.Discounts.StoreDiscount import StoreDiscount
 from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Business.Rules.RuleCreator import RuleCreator
 from Backend.Business.StorePackage.BidOffer import BidOffer
+from Backend.Business.StorePackage.OwnerAgreement import OwnerAgreement
 from Backend.Business.StorePackage.Product import Product
 import Backend.Business.UserPackage.Member as m
 from Backend.Interfaces.IDiscount import IDiscount
@@ -32,7 +33,7 @@ from asgiref.sync import async_to_sync
 
 from ModelsBackend.models import StoreModel, StoreUserPermissionsModel, ProductModel, \
     ProductsInStoreModel, StoreAppointersModel, TransactionsInStoreModel, StoreTransactionModel, DiscountsInStoreModel, \
-    DiscountModel, RulesInStoreModel, RuleModel, DiscountRulesModel, BidOfferModel
+    DiscountModel, RulesInStoreModel, RuleModel, DiscountRulesModel, BidOfferModel, OwnerAgreementModel
 
 
 @zope.interface.implementer(IStore)
@@ -40,8 +41,8 @@ class Store:
     def __init__(self, storeId=None, storeName=None, founder=None, bankAccount=None, address=None, model=None):
         if model is None:
             self.__model = \
-            StoreModel.objects.get_or_create(storeID=storeId, name=storeName, founderId=founder.getModel(),
-                                             bankAccount=bankAccount.getModel(), address=address.getModel())[0]
+                StoreModel.objects.get_or_create(storeID=storeId, name=storeName, founderId=founder.getModel(),
+                                                 bankAccount=bankAccount.getModel(), address=address.getModel())[0]
             self.__model.owners.add(founder.getModel())
 
             self.__permissions_model = \
@@ -50,7 +51,8 @@ class Store:
                                                                 appointOwner=True, closeStore=True,
                                                                 stockManagement=True,
                                                                 changePermission=True, rolesInformation=True,
-                                                                purchaseHistoryInformation=True, discount=True, bid=True)[0]
+                                                                purchaseHistoryInformation=True, discount=True,
+                                                                bid=True)[0]
 
             self.__id = storeId
             self.__name = storeName
@@ -66,6 +68,7 @@ class Store:
             self.__discounts: {int: IDiscount} = {}
             self.__rules: {int: IRule} = {}
             self.__bids: {int: BidOffer} = {}
+            self.__ownerAgreements: {int: OwnerAgreement} = {}
 
             self.__permissions: Dict[IMember: StorePermission] = \
                 {founder: StorePermission(self.__model, founder.getUserID())}  # member : storePermission
@@ -106,7 +109,8 @@ class Store:
                 manager = self._buildMember(manager_model)
                 self.__managers.append(manager)
             self.__products: Dict[int: IProduct] = {}
-            for prod in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):  ####MAYBE NEED TO SAVE BEFORE
+            for prod in ProductsInStoreModel.objects.filter(
+                    storeID=self.__model.storeID):  ####MAYBE NEED TO SAVE BEFORE
                 product = self._buildProduct(prod.productID)
                 self.__products.update({product.getProductId(): product})
             self.__productsQuantity = {}  # productId : quantity
@@ -138,17 +142,24 @@ class Store:
                 bid = self._buildBid(bid_model)
                 self.__bids.update({bid.get_bID(): bid})
 
+            self.__ownerAgreements: {int: OwnerAgreement} = {}
+            oa_models = OwnerAgreementModel.objects.filter(storeID=self.__model)
+            for oa_model in oa_models:
+                ownerAgreement = self._buildOwId(oa_model)
+                self.__ownerAgreements.update({ownerAgreement.getOwnerAgreementId(): ownerAgreement})
+
         self.__permissionsLock = threading.Lock()
         self.__stockLock = threading.Lock()
         self.__productsLock = threading.Lock()
         self.__rolesLock = threading.Lock()
         self.__transactionLock = threading.Lock()
         self.__discountsLock = threading.Lock()
-        self.__notificationHandler : NotificationHandler = NotificationHandler.getInstance()
+        self.__bidLock = threading.Lock()
+        self.__oaLock = threading.Lock()
+        self.__notificationHandler: NotificationHandler = NotificationHandler.getInstance()
 
     def getStoreId(self):
         return self.__id
-
 
     def getStoreName(self):
         return self.__name
@@ -171,6 +182,9 @@ class Store:
     def getBids(self):
         return self.__bids
 
+    def getOwnerAgreements(self):
+        return self.__ownerAgreements
+
     def getStoreManagers(self):
         return self.__managers
 
@@ -185,7 +199,6 @@ class Store:
 
     def getPermissionForDto(self):
         return self.__permissions
-
 
     def getProduct(self, productId):
         if productId in self.__products:
@@ -207,7 +220,6 @@ class Store:
                 assignee_permissions.stockManagement = True
                 assignee_permissions.save()
 
-
     def setAppointManagerPermission(self, assigner, assignee):
         try:
             if assignee not in self.getStoreManagers() and assignee not in self.getStoreOwners():
@@ -222,7 +234,6 @@ class Store:
                 self.__permissions[assignee].setPermission_AppointManager(True)
                 assignee_permissions.appointManager = True
                 assignee_permissions.save()
-
 
     def setAppointOwnerPermission(self, assigner, assignee):
         try:
@@ -240,7 +251,6 @@ class Store:
                 self.__permissions[assignee].setPermission_AppointOwner(True)
                 assignee_permissions.appointOwner = True
                 assignee_permissions.save()
-
 
     def setChangePermission(self, assigner, assignee):
         try:
@@ -324,7 +334,11 @@ class Store:
             raise PermissionException("User ", assigner, " doesn't have any permissions is store: ", self.__id)
         if not permissions.hasPermission_ChangePermission():
             raise PermissionException("User ", assigner, "cannot change permission in store: ", self.__id)
-        if assignee not in self.__appointers[assigner]:
+        if not StoreUserPermissionsModel.objects.filter(userID=assignee.getModel(), storeID=self.__model).exists():
+            raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
+                                      assignee.getUserID(), " because he didn't assign him")
+        if not StoreAppointersModel.objects.filter(assigner=assigner.getModel(), assingee=assignee.getModel(),
+                                                   storeID=self.__model).exists():
             raise PermissionException("User ", assigner.getUserID(), "cannot change the permissions of user: ",
                                       assignee.getUserID(), " because he didn't assign him")
 
@@ -377,7 +391,6 @@ class Store:
             product_model = ProductModel.objects.get_or_create(product_id=productId)[0]
             product = self._buildProduct(model=product_model)
             product.removeProduct()
-
 
     def updateProductPrice(self, user, productId, newPrice):
         try:
@@ -434,9 +447,11 @@ class Store:
     def __checkPermissions_ChangeStock(self, user):
         permissions = self.__permissions.get(user)
         if permissions is None:
-            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ", self.__name)
+            raise PermissionException("User ", user.getUserID(), " doesn't have any permissions is store: ",
+                                      self.__name)
         if not permissions.hasPermission_StockManagement():
-            raise PermissionException("User ", user.getUserID(), " doesn't have the permission to change the stock in store: ",
+            raise PermissionException("User ", user.getUserID(),
+                                      " doesn't have the permission to change the stock in store: ",
                                       self.__name)
 
     def appointManagerToStore(self, assigner, assignee):
@@ -483,7 +498,7 @@ class Store:
             permission.purchaseHistoryInformation = True
             permission.save()
 
-    def appointOwnerToStore(self, assigner, assignee):
+    def appointOwnerToStore(self, assigner, assignee, oaID=None):
         permissions = StoreUserPermissionsModel.objects.filter(userID=assigner.getModel(), storeID=self.__model)
         if assigner == assignee:
             raise PermissionException("User: ", assignee.getUserID(), " cannot assign himself to manager")
@@ -509,10 +524,26 @@ class Store:
                 and StoreAppointersModel.objects.filter(assigner=assigner.getModel(),
                                                         assingee=assigner.getModel()).exists():
             raise PermissionException("User ", assignee.getUserID(),
-                                      "cannot assign manager to hwo made him owner in store: ",
+                                      "cannot assign owner to the one how made him an owner in the store: ",
                                       self.__name)
+        ownerAgreement = None
+        if oaID is None:
 
-        with self.__rolesLock:
+            for oa in self.__ownerAgreements.values():
+                if oa.getAssignee().getMemberName() == assignee.getMemberName():
+                    raise Exception("cannot start an owner agreement to a member how is waiting for another owner "
+                                    "agreement")
+
+            # create a new owner agreement
+            ownerAgreement = self.__openOwnerAgreement(assigner, assignee)
+            if len(self.__owners) > 1:
+                return ownerAgreement
+
+            # there is only one owner, so he assign and approved, so we can delete.
+            ownerAgreement.removeOwnerAgreement()
+            self.__ownerAgreements.pop(ownerAgreement.getOwnerAgreementId())
+
+        with self.__rolesLock:  # if we got to here, then it's mean thar the agreement is approved
             self.__owners.append(assignee)
             self.__model.owners.add(assignee.getModel())
             StoreAppointersModel.objects.get_or_create(storeID=self.__model, assigner=assigner.getModel(),
@@ -532,6 +563,12 @@ class Store:
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
             self.__permissions[assignee].setPermission_Discount(True)
 
+            # if the action is from appointOwner return ownerAgreement
+            # if the action is from acceptOwnerAgreement return True
+            if oaID is None:
+                return ownerAgreement
+            return True
+
     # if the owner was also a manager, need to give the assignee all his permission from the start.
     def removeStoreOwner(self, assigner, assignee):
         if assigner not in self.getStoreOwners():
@@ -548,8 +585,6 @@ class Store:
         assignees_of_assignee = StoreAppointersModel.objects.filter(storeID=self.__model, assigner=assignee.getModel())
         if assignees_of_assignee.exists():
             for toRemoveOwner in assignees_of_assignee:
-                # in the future we need here to split to remove owner/manager - 4.8
-                # they didn't asked us yet to implement.
                 to_remove = self._buildMember(toRemoveOwner.assingee)
                 self.removeStoreOwner(assignee, to_remove)
         self.__owners.remove(assignee)
@@ -559,6 +594,8 @@ class Store:
                 model.delete()
         StoreAppointersModel.objects.get(storeID=self.__model, assigner=assigner.getModel(),
                                          assingee=assignee.getModel()).delete()
+        for ownerAgreement in OwnerAgreementModel.objects.filter(storeID=self.__model, assigner=assigner.getModel()):
+            ownerAgreement.delete()
 
     # print all permission in store - will be deleted this version
     def PrintRolesInformation(self, user):  ####NEED TO CHANGE THIS + NO USE OF THIS FUNCTION - MAYBE DELETE IT?
@@ -607,7 +644,6 @@ class Store:
         if transactionId not in self.__transactions.keys():
             raise TransactionException("in store: ", self.__id, "there is not transaction with Id: ", transactionId)
         self.__transactions.get(transactionId)
-
 
     # print all transactions in store - will be deleted in this version
     def printPurchaseHistoryInformation(self, user):  ###NEED TO CHANGE THIS
@@ -900,36 +936,94 @@ class Store:
                 if self.hasBidPermission(manager):
                     receivers.append(manager)
 
-            newBid = BidOffer(user, self,productID,newPrice,receivers)
-            self.__notificationHandler.notifyForBidOffer(receivers, self.__id, user)
-            self.__bids[newBid.get_bID()] =newBid
-            return newBid
+            with self.__bidLock:
+                newBid = BidOffer(user, self, productID, newPrice, receivers)
+                self.__notificationHandler.notifyForBidOffer(receivers, self.__id, user)
+                self.__bids[newBid.get_bID()] = newBid
+                return newBid
         except:
             raise Exception("cannot open new bid for product " + str(productID))
 
-    def acceptBidOffer(self, user , bID):
+    def acceptBidOffer(self, user, bID):
         try:
-            bid: BidOffer = self.__bids.get(bID)
-            bid.acceptOffer(user)
-            return True
+            with self.__bidLock:
+                bid: BidOffer = self.__bids.get(bID)
+                bid.acceptOffer(user)
+                return True
         except Exception as e:
             raise Exception("cannot accept bid " + str(bID))
 
     def rejectOffer(self, bID):
         try:
-            bid: BidOffer = self.__bids.get(bID)
-            bid.rejectOffer()
-            return True
+            with self.__bidLock:
+                bid: BidOffer = self.__bids.get(bID)
+                bid.rejectOffer()
+                return True
         except:
             raise Exception("cannot accept bid " + str(bID))
 
-    def offerAlternatePrice(self ,user, bID, new_price):
+    def offerAlternatePrice(self, user, bID, new_price):
         try:
-            bid: BidOffer = self.__bids.get(bID)
-            bid.offerAlternatePrice(user,new_price)
-            return True
+            with self.__bidLock:
+                bid: BidOffer = self.__bids.get(bID)
+                bid.offerAlternatePrice(user, new_price)
+                return True
         except:
             raise Exception("cannot accept bid " + str(bID))
+
+    def __openOwnerAgreement(self, assigner, assignee):
+        try:
+            receivers = []
+            receivers += self.__owners
+            with self.__oaLock:
+                newOwnerAgreement = OwnerAgreement(assigner, assignee, self, receivers)
+                self.__notificationHandler.notifyForOwnerAgreement(assignee, receivers, self.__id)
+                self.__ownerAgreements[newOwnerAgreement.getOwnerAgreementId()] = newOwnerAgreement
+                return newOwnerAgreement
+        except Exception as e:
+            raise Exception("cannot open new owner agreement for member " + str(assignee.getMemberName()))
+
+    def acceptOwnerAgreement(self, user, oaID):
+        try:
+            with self.__oaLock:
+                ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
+                isAccepted = ownerAgreement.acceptOffer(user)
+                if isAccepted:
+                    self.appointOwnerToStore(ownerAgreement.getAssigner(),
+                                             ownerAgreement.getAssignee(), oaID=oaID)
+                    ownerAgreement.removeOwnerAgreement()
+                    self.__ownerAgreements.pop(oaID)
+                return True
+        except Exception as e:
+            raise Exception("cannot accept owner agreement " + str(oaID))
+
+    def rejectOwnerAgreement(self, oaID):
+        try:
+            with self.__oaLock:
+                ownerAgreement: OwnerAgreement = self.__ownerAgreements.get(oaID)
+                ownerAgreement.rejectOffer()
+                self.__ownerAgreements.pop(oaID)
+                return True
+        except:
+            raise Exception("cannot accept owner agreement " + str(oaID))
+
+    def getBid(self, bid):
+        b = self.__bids.get(bid)
+        if b is None:
+            raise Exception("there is no bid with id: " + str(bid))
+        return b
+
+    def getAllStoreBids(self):
+        return self.__bids.values()
+
+    def getOwnerAgreementById(self, oaId):
+        ownerAgreement = self.__ownerAgreements.get(oaId)
+        if ownerAgreement is None:
+            raise Exception("there is no owner agreement with id: " + str(oaId))
+        return ownerAgreement
+
+    def getAllStoreOwnerAgreements(self):
+        return self.__ownerAgreements.values()
 
     def getAllRulesOfDiscount(self, user, discountId, isComp):
         permissions = self.__permissions.get(user)
@@ -958,7 +1052,7 @@ class Store:
         self.__model.save()
 
     def removeStore(self):
-        for prod_model in ProductsInStoreModel.objects.filter(storeID= self.__model.storeID):
+        for prod_model in ProductsInStoreModel.objects.filter(storeID=self.__model.storeID):
             model = prod_model.productID
             model.delete()
         StoreTransactionModel.objects.filter(storeId=self.__model.storeID).delete()
@@ -1003,6 +1097,9 @@ class Store:
 
     def _buildBid(self, model):
         return BidOffer(model=model)
+
+    def _buildOwId(self, model):
+        return OwnerAgreement(model=model)
 
     def _buildDiscount(self, model):
         if model.type == 'Product':

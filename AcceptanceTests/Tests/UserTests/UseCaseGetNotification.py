@@ -7,6 +7,9 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 from Backend.Service.MemberService import MemberService
 from Backend.Service.UserService import UserService
+from channels.testing import WebsocketCommunicator
+
+from notificationsApp.consumers import NotificationConsumer
 
 
 class UseCasePurchaseProduct(unittest.TestCase):
@@ -81,10 +84,11 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.removeMember("manager", "user4")
         self.user_proxy.removeSystemManger_forTests("manager")
 
-    def test_purchase_founder_not_logged_in(self):
+     def test_purchase_founder_not_logged_in(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product02, 2)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_1, self.product1, 10)
+
 
         self.user_proxy.logout_member("user1")
         # user_id, cardNumber, month, year, holderCardName, cvv, holderID

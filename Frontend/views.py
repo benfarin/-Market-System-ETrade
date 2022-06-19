@@ -57,7 +57,7 @@ def home_page(request):  #FIXED
     else:
         active_users = []
     context = {"title": title, "user": request.user, "stores": all_stores, "is_admin": is_admin,
-               'room_name': "broadcast", "saved_notifications" : notifications, "actives" : active_users}
+               'room_name': request.user.username, "saved_notifications" : notifications, "actives" : active_users}
     return render(request, "home.html", context)
 
 

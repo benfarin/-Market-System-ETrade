@@ -21,6 +21,8 @@ from Backend.Service.DTO.UserTransactionDTO import userTransactionDTO
 from Backend.Service.DTO.StoreDTO import StoreDTO
 from Backend.Service.DTO.ProductDTO import ProductDTO
 from Backend.Service.DTO.RuleDTO import RuleDTO
+from Backend.Service.DTO.BidDTO import BidDTO
+from Backend.Service.DTO.OwnerAgreementDTO import OwnerAgreementDTO
 import logging
 
 logging.basicConfig(
@@ -50,9 +52,9 @@ class RoleService:
     def appointOwnerToStore(self, storeID, assignerID,
                             assigneeName):  # check if the asssigne he member and assignerID!!
         try:
-            isAppointed = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeName)
+            ownerAgreement = self.__roleManagment.appointOwnerToStore(storeID, assignerID, assigneeName)
             logging.info("success to appoint owner to store " + str(storeID))
-            return Response(isAppointed)
+            return Response(OwnerAgreementDTO(ownerAgreement))
         except Exception as e:
             logging.error("Failed to appoint " + str(assigneeName) + " as owner")
             return Response(e.__str__())
@@ -620,32 +622,49 @@ class RoleService:
             logging.info("failed to get all composite discounts of store: " + str(storeId))
             return Response(e.__str__())
 
-
     def acceptBidOffer(self, userID, storeID, bID):
         try:
-            bid = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
-            logging.info("success to create new bid " + str(bid.get_bID()))
-            return Response(bid)
+            isAccepted = self.__roleManagment.acceptBidOffer(userID, storeID, bID)
+            logging.info("success to create new bid ")
+            return Response(isAccepted)
         except Exception as e:
             logging.error("failed to create new bid")
             return Response(e.__str__())
 
     def rejectOffer(self, userID, storeID, bID):
         try:
-            bid = self.__roleManagment.rejectOffer(userID, storeID, bID)
-            logging.info("success to reject bid " + str(bid.get_bID()))
-            return Response(bid)
+            isRejected = self.__roleManagment.rejectOffer(userID, storeID, bID)
+            logging.info("success to reject bid ")
+            return Response(isRejected)
         except Exception as e:
             logging.error("failed to reject bid")
             return Response(e.__str__())
 
     def offerAlternatePrice(self, userID, storeID, bID, new_price):
         try:
-            bid = self.__roleManagment.offerAlternatePrice(userID, storeID, bID, new_price)
-            logging.info("success to offer alternate price " + str(bid.get_bID()))
-            return Response(bid)
+            isOfferedAlternativePrice = self.__roleManagment.offerAlternatePrice(userID, storeID, bID, new_price)
+            logging.info("success to offer alternate price ")
+            return Response(isOfferedAlternativePrice)
         except Exception as e:
             logging.error("failed to offer alternate price")
+            return Response(e.__str__())
+
+    def acceptOwnerAgreement(self, userId, storeID, ownerAcceptID):
+        try:
+            isAccept = self.__roleManagment.acceptOwnerAgreement(userId, storeID, ownerAcceptID)
+            logging.info("success to accept owner agreement ")
+            return Response(isAccept)
+        except Exception as e:
+            logging.error("failed to accept owner agreement ")
+            return Response(e.__str__())
+
+    def rejectOwnerAgreement(self, userId, storeID, ownerAcceptID):
+        try:
+            isRejected = self.__roleManagment.rejectOwnerAgreement(userId, storeID, ownerAcceptID)
+            logging.info("success to reject owner agreement")
+            return Response(isRejected)
+        except Exception as e:
+            logging.error("failed to reject owner agreement")
             return Response(e.__str__())
 
     def changeExternalPayment(self, systemManagerName, paymentSystem):
@@ -725,4 +744,46 @@ class RoleService:
             return Response(rulesDTOs)
         except Exception as e:
             logging.info("failed to get all simple discount rules of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getBid(self, storeId, bid):
+        try:
+            bidOfStore = self.__getterManagment.getBid(storeId, bid)
+            logging.info("success to get bid: " + str(bid))
+            return Response(BidDTO(bidOfStore))
+        except Exception as e:
+            logging.info("failed to get bid: " + str(bid))
+            return Response(e.__str__())
+
+    def getAllStoreBids(self, storeId):
+        try:
+            bids = self.__getterManagment.getAllStoreBids(storeId)
+            bidsDTOs = []
+            for bid in bids:
+                bidsDTOs.append(BidDTO(bid))
+            logging.info("success to get all bid's of store: " + str(storeId))
+            return Response(bidsDTOs)
+        except Exception as e:
+            logging.info("failed to get all bid's of store: " + str(storeId))
+            return Response(e.__str__())
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        try:
+            ownerAgreement = self.__getterManagment.getOwnerAgreementById(storeId, oaId)
+            logging.info("success to get owner agreement: " + str(oaId))
+            return Response(OwnerAgreementDTO(ownerAgreement))
+        except Exception as e:
+            logging.info("failed to get owner agreement: " + str(oaId))
+            return Response(e.__str__())
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        try:
+            ownerAgreements = self.__getterManagment.getAllStoreOwnerAgreements(storeId)
+            ownerAgreementDTOs = []
+            for ownerAgreement in ownerAgreements:
+                ownerAgreementDTOs.append(OwnerAgreementDTO(ownerAgreement))
+            logging.info("success to get all owner agreements of store: " + str(storeId))
+            return Response(ownerAgreementDTOs)
+        except Exception as e:
+            logging.info("failed to get all owner agreements of store: " + str(storeId))
             return Response(e.__str__())

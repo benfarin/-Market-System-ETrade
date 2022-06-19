@@ -1,6 +1,5 @@
 import django, os
 
-
 from django.db.models import Max
 import zope
 import Backend.Business.StorePackage.Store as s
@@ -26,8 +25,6 @@ from typing import Dict
 import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
-
 
 from ModelsBackend.models import StoreModel, StoreTransactionModel, UserTransactionModel
 
@@ -233,7 +230,7 @@ class Market:
                 # paymentStatus = Paymentlmpl.getInstance().createPayment(paymentDetails)
                 paymentStatus = self.__paymentSys.makePayment(cardNumber, month, year, holderCardName, cvv, holderID)
                 if paymentStatus != -1:
-                    deliveryStatus = self.deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
+                    deliveryStatus = self.__deliverySys.makeSupply(user.getUserID(), address.getStreet(), address.getCity(),
                                                             address.getCountry(), address.getZipCode())
                     if deliveryStatus != -1:
                         productsInStore = cart.getAllProductsByStore()[storeId]
@@ -292,8 +289,7 @@ class Market:
     def appointOwnerToStore(self, storeID, assigner, assignee):  # TESTED
         self.__initializeStoresDict()
         try:
-            self.__stores.get(storeID).appointOwnerToStore(assigner, assignee)
-            return True
+            return self.__stores.get(storeID).appointOwnerToStore(assigner, assignee)
         except Exception as e:
             raise Exception(e)
 
@@ -645,6 +641,24 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def acceptOwnerAgreement(self, user, storeID, ownerAcceptID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).acceptOwnerAgreement(user, ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
+    def rejectOwnerAgreement(self, storeID, ownerAcceptID):
+        self.__initializeStoresDict()
+        try:
+            if storeID not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeID) + "does not exists")
+            return self.__stores.get(storeID).rejectOwnerAgreement(ownerAcceptID)
+        except Exception as e:
+            raise Exception(e)
+
     def removeRule(self, user, storeId, dId, rId, ruleKind):
         self.__initializeStoresDict()
         try:
@@ -681,29 +695,6 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
-    def __getGlobalStoreId(self):
-        if self.__globalStore is None:
-            self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))['storeID__max']
-            if self.__globalStore is None:
-                self.__globalStore = 0
-        with self.__storeId_lock:
-            storeId = self.__globalStore
-            self.__globalStore += 1
-            return storeId
-
-    def __getStoreTransactionId(self):
-        if self.__storeTransactionIdCounter is None:
-            self.__storeTransactionIdCounter = StoreTransactionModel.objects.aggregate(Max('transactionId'))[
-                'transactionId__max']
-            if self.__storeTransactionIdCounter is None:
-                self.__storeTransactionIdCounter = 0
-            else:
-                self.__storeTransactionIdCounter += 1
-        with self.__StoreTransactionId_lock:
-            stId = self.__storeTransactionIdCounter
-            self.__storeTransactionIdCounter += 1
-            return stId
-
     def getCheckNoOwnerNoManage(self, user):
         for store in self.__stores.values():
             if store.hasPermissions(user):
@@ -733,18 +724,72 @@ class Market:
                     return True
         return False
 
+    def getBid(self, storeId, bid):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getBid(bid)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllStoreBids(self, storeId):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllStoreBids()
+        except Exception as e:
+            raise Exception(e)
+
+    def getOwnerAgreementById(self, storeId, oaId):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getOwnerAgreementById(oaId)
+        except Exception as e:
+            raise Exception(e)
+
+    def getAllStoreOwnerAgreements(self, storeId):
+        self.__initializeStoresDict()
+        try:
+            if storeId not in self.__stores.keys():
+                raise NoSuchStoreException("store: " + str(storeId) + "does not exists")
+            return self.__stores.get(storeId).getAllStoreOwnerAgreements()
+        except Exception as e:
+            raise Exception(e)
+
+    def __getGlobalStoreId(self):
+        with self.__storeId_lock:
+            if self.__globalStore is None:
+                self.__globalStore = StoreModel.objects.aggregate(Max('storeID'))['storeID__max']
+                if self.__globalStore is None:
+                    self.__globalStore = 0
+            self.__globalStore += 1
+            storeId = self.__globalStore
+            return storeId
+
+    def __getStoreTransactionId(self):
+        with self.__StoreTransactionId_lock:
+            if self.__storeTransactionIdCounter is None:
+                self.__storeTransactionIdCounter = StoreTransactionModel.objects.aggregate(Max('transactionId'))[
+                    'transactionId__max']
+                if self.__storeTransactionIdCounter is None:
+                    self.__storeTransactionIdCounter = 0
+            self.__storeTransactionIdCounter += 1
+            stId = self.__storeTransactionIdCounter
+            return stId
 
     def __getUserTransactionId(self):
-        if self.__userTransactionIdCounter is None:
-            self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))[
-                'transactionId__max']
-            if self.__userTransactionIdCounter is None:
-                self.__userTransactionIdCounter = 0
-            else:
-                self.__userTransactionIdCounter += 1
         with self.__UserTransactionId_lock:
-            utId = self.__userTransactionIdCounter
+            if self.__userTransactionIdCounter is None:
+                self.__userTransactionIdCounter = UserTransactionModel.objects.aggregate(Max('transactionId'))[
+                    'transactionId__max']
+                if self.__userTransactionIdCounter is None:
+                    self.__userTransactionIdCounter = 0
             self.__userTransactionIdCounter += 1
+            utId = self.__userTransactionIdCounter
             return utId
 
     def __buildStore(self, model):
