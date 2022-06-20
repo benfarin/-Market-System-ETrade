@@ -138,7 +138,7 @@ def my_stores_page(request):  #FIXED
     context = {"title": title, "usertype": usertype, "user": user, "stores": stores}
     return render(request, "my_stores.html", context)
 
-
+@csrf_exempt
 def create_store_page(request): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = CreateStoreForm(request.POST or None)
