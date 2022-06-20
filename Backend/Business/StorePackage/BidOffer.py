@@ -29,7 +29,7 @@ class BidOffer:
         else:
             self.__model = model
             self.__bID = self.__model.id
-            self.__userID = self.__model.user.userid
+            self.__user = self.__model.user
             self.__storeID = self.__model.storeID.storeID
             self.__productID = self.__model.productID.product_id
             self.__newPrice = self.__model.newPrice
@@ -38,7 +38,8 @@ class BidOffer:
             self.__receivers: Dict[IMember: bool] = {}
             receivers_model = self.__model.permissionsGuys.through.objects.all()
             for receiver_model in receivers_model:
-                receiver = self._buildReceiver(receiver_model)
+                receive = receiver_model.membermodel
+                receiver = self._buildReceiver(receive)
                 self.__receivers[receiver]= False
 
 
@@ -90,4 +91,4 @@ class BidOffer:
         notification_handler.notifyBidAlternateOffer(self.__user, self.__storeID, self.__bID)
 
     def _buildReceiver(self, model):
-        return Member(model)
+        return Member(model=model)

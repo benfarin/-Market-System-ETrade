@@ -30,7 +30,7 @@ from .views import (
     add_product_simple_discount, add_product_simple_condition_discount, remove_condition, remove_Owner, remove_member,
     all_stores_transactions, all_user_transactions, store_transactions, user_transactions, store_transactions_ID,
     show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
-    add_condition_or, add_condition_xor, add_condition_and, logout_page, add_purchase_rule,
+    add_condition_or, add_condition_xor, add_condition_and, logout_page, add_purchase_rule, getStoreBids, bid_page,
 )
 
 urlpatterns = [
@@ -71,6 +71,8 @@ urlpatterns = [
     path('store/<str:slug>/discounts/remove_discount/', remove_condition),
     path('store/<str:slug>/discounts/add_rule/', add_rule),
     path('store/<str:slug>/purchase_rules/', add_purchase_rule),
+    path('store/<str:slug>/bids/', getStoreBids),
+    path('store/<str:slug>/bids/<str:slug2>', bid_page),
     # path('store/<str:slug>/stuff/', show_stuff),
     path('store/<str:slug>/history/', show_history),
     path('addstore/', create_store_page),

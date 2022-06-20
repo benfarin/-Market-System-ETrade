@@ -4,7 +4,7 @@ from Backend.Business.StorePackage.BidOffer import BidOffer
 class BidDTO:
     def __init__(self, bid: BidOffer):
         self.__bID = bid.get_bID()
-        self.__userID = bid.get_user().getUserID()
+        self.__userID = bid.get_user().userid
         self.__storeID = bid.get_storeID()
         self.__productID = bid.get_productID()
         self.__newPrice = bid.get_newPrice()

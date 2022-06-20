@@ -46,10 +46,12 @@
                 <a class="btn btn-primary" href="discounts/" role="button">Discounts</a>
                 <a class="btn btn-primary" href="purchase_rules/" role="button">Add Purchase Rules</a>
         {% endif %}
+        {% if permissions.hasPermission_Bid %}
+                <a class="btn btn-primary" href="bids/" role="button">Store's Bids</a>
+        {% endif %}
         {% if permissions.hasPermission_CloseStore %}
                 <a class="btn btn-danger" href="close/" role="button">Close Store</a>
         {% endif %}
-
 </div>
 
 {% endblock %}

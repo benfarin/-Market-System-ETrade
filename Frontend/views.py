@@ -984,3 +984,21 @@ def getDiscountsDTO(request, storeID):
     # role_service.getAllCompositeRulesOfDiscount()
 
     return info
+
+def getStoreBids(request, slug):
+    bids  = []
+    store_bids = role_service.getAllStoreBids(int(slug))
+    if not store_bids.isError():
+        bids += store_bids.getData()
+    context = {"bids": bids}
+    return render(request, "bids.html", context)
+
+
+def bid_page(request, slug, slug2):
+    bid = role_service.getBid(int(slug), int(slug2))
+    if bid.isError():
+        check = None
+    context = {"bid": bid}
+    return render(request, "bid_page.html", context)
+
+
