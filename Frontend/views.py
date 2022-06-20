@@ -998,7 +998,7 @@ def bid_page(request, slug, slug2):
     bid = role_service.getBid(int(slug), int(slug2))
     if bid.isError():
         check = None
-    context = {"bid": bid}
+    context = {"bid": bid.getData()}
     return render(request, "bid_page.html", context)
 
 

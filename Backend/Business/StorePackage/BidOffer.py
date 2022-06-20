@@ -3,7 +3,7 @@ from typing import Dict
 from Backend.Business.Notifications.NotificationHandler import NotificationHandler
 from Backend.Business.UserPackage.Member import Member
 from Backend.Interfaces.IMember import IMember
-from ModelsBackend.models import BidOfferModel, ProductModel
+from ModelsBackend.models import BidOfferModel, ProductModel, ReceiversOfBid, MemberModel
 
 
 class BidOffer:
@@ -13,8 +13,6 @@ class BidOffer:
             self.__model = BidOfferModel.objects.get_or_create(user=user.getModel(), storeID=storeID.getModel(),
                                                                productID=ProductModel.objects.get(product_id=productID),
                                                                newPrice=newPrice)[0]
-            for receiver in receivers:
-                self.__model.permissionsGuys.add(receiver.getModel())
             self.__bID = self.__model.id
             self.__user = user
             self.__storeID = storeID.getStoreId()
@@ -24,6 +22,7 @@ class BidOffer:
             self.__active = True
             self.__isAccepted = False
             for receiver in receivers:
+                ReceiversOfBid.objects.get_or_create(bid=self.__model, receiver=receiver.getModel())
                 self.__receivers[receiver]=False
 
         else:
@@ -36,11 +35,10 @@ class BidOffer:
             self.__active = self.__model.active
             self.__isAccepted = self.__model.isAccepted
             self.__receivers: Dict[IMember: bool] = {}
-            receivers_model = self.__model.permissionsGuys.through.objects.all()
+            receivers_model = ReceiversOfBid.objects.filter(bid=self.__model)
             for receiver_model in receivers_model:
-                receive = receiver_model.membermodel
-                receiver = self._buildReceiver(receive)
-                self.__receivers[receiver]= False
+                receiver = self._buildReceiver(receiver_model.receiver)
+                self.__receivers[receiver]= receiver_model.accepted
 
 
     def get_bID(self):
@@ -63,6 +61,9 @@ class BidOffer:
 
     def acceptOffer(self, userID):
         self.__receivers[userID] = True
+        reciever_model = ReceiversOfBid.objects.get_or_create(bid=self.__model, receiver=MemberModel.objects.get_or_create(userid=userID)[0])[0]
+        reciever_model.accepted = True
+        reciever_model.save()
         check = self.__receivers.values()
         if all(check):
             notification_handler: NotificationHandler = NotificationHandler.getInstance()

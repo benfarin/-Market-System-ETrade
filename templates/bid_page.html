@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        <div class="row">
+            <h2>Bid Number: {{ bid.get_bID }}</h2>
+            <h3>User: {{ bid.get_userID }}</h3>
+            <h3>Product: {{ bid.get_productID }}</h3>
+            <h3>Price Offered: {{ bid.get_newPrice }}</h3>
+            <a class="btn btn-primary" href="accept/" role="button">Accept Bid</a>
+            <a class="btn btn-primary" href="reject/" role="button">Reject Bid</a>
+            <a class="btn btn-primary" href="offeralternate/" role="button">Offer Alternate Bid</a>
+        </div>
+</div>
+
+{% endblock %}

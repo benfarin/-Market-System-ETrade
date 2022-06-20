@@ -3,7 +3,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_group_name = self.scope["user"].username
+        if self.scope["user"].username is None:
+            self.room_group_name = "Broadcast"
+        else:
+            self.room_group_name = self.scope["user"].username
 
         if self.scope["user"].username is None:
             # Reject the connection
