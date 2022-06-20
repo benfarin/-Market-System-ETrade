@@ -1,4 +1,5 @@
 from Backend.Business.StorePackage.BidOffer import BidOffer
+from Backend.Service.DTO.MemberDTO import MemberDTO
 
 
 class BidDTO:
@@ -9,6 +10,9 @@ class BidDTO:
         self.__productID = bid.get_productID()
         self.__newPrice = bid.get_newPrice()
         self.__isAccepted = bid.get_Accepted()
+        self.__receivers = {}
+        for receiver in bid.getReceivers().keys():
+            self.__receivers[MemberDTO(receiver)] = bid.getReceivers().get(receiver)
 
     def get_bID(self):
         return self.__bID
@@ -28,7 +32,8 @@ class BidDTO:
     def get_Accepted(self):
         return self.__isAccepted
 
-
+    def get_receivers(self):
+        return self.__receivers
 
 
     def __str__(self):

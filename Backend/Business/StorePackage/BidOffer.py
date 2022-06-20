@@ -59,6 +59,9 @@ class BidOffer:
     def get_Accepted(self):
         return self.__isAccepted
 
+    def getReceivers(self):
+        return self.__receivers
+
     def acceptOffer(self, userID):
         self.__receivers[userID] = True
         reciever_model = ReceiversOfBid.objects.get_or_create(bid=self.__model, receiver=MemberModel.objects.get_or_create(userid=userID)[0])[0]

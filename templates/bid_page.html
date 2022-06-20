@@ -3,14 +3,22 @@
 {% block content%}
 <div style="text-align: center;">
         <div class="row">
-            <h2>Bid Number: {{ bid.get_bID }}</h2>
-            <h3>User: {{ bid.get_userID }}</h3>
-            <h3>Product: {{ bid.get_productID }}</h3>
-            <h3>Price Offered: {{ bid.get_newPrice }}</h3>
-            <a class="btn btn-primary" href="accept/" role="button">Accept Bid</a>
-            <a class="btn btn-primary" href="reject/" role="button">Reject Bid</a>
-            <a class="btn btn-primary" href="offeralternate/" role="button">Offer Alternate Bid</a>
+            <div class="card">
+                <div class="card-header">
+                    Bid Number: {{ bid.get_bID }}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">User: {{ bid.get_userID }}</h5>
+                    <h5 class="card-title">Product: {{ bid.get_productID }}</h5>
+                    <h5 class="card-title">Price Offered: {{ bid.get_newPrice }}</h5>
+                    {% for key, value in bid.get_receivers.items %}
+                        <p class="card-text">{{ key.getMemberName }}'s Status: {{ value }}</p>
+                    {% endfor %}
+                    <a href="accept/" class="btn btn-primary">Accept Bid</a>
+                    <a href="reject/" class="btn btn-primary">Reject Bid</a>
+                    <a href="offeralternate/" class="btn btn-primary">Offer Alternate Bid</a>
+                </div>
+            </div>
         </div>
 </div>
-
 {% endblock %}

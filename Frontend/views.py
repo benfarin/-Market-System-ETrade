@@ -1001,4 +1001,7 @@ def bid_page(request, slug, slug2):
     context = {"bid": bid.getData()}
     return render(request, "bid_page.html", context)
 
+# def accept_bid(request, slug, slug2):
+
+
 
