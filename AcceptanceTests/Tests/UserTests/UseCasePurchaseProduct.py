@@ -1,4 +1,6 @@
 import unittest
+from unittest.mock import patch, MagicMock
+from Backend.Payment.RealPaymentSystem import RealPaymentService
 
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
@@ -80,7 +82,12 @@ class UseCasePurchaseProduct(unittest.TestCase):
         # check the transaction was for user1
         self.assertEqual(self.user_id, userTransaction.getUserID())
 
-    def test_guest_then_member_purchase(self):
+    @patch ('RealPaymentService.makePayment')
+    def test_mock_make_payment(self, mock_make_payment):
+        mock_make_payment.return_value = 1
+
+    @patch('RealPaymentService.requests')
+    def test_guest_then_member_purchase(self,mock_requests):
         # guest adds products to cart
         guest_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product01, 20)
@@ -92,6 +99,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                  "Ben Gurion", 0, 0)
         member2_id = self.user_proxy.login_member(guest_id, "Ori", "1234").getData().getUserID()
         # purchase the products in the cart
+        mock_response = MagicMock()
+
+        mock_requests.get.return_value = mock_response
         userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Ori", "123", "123")
         # check the cart was purchased even though the products were added when the member was a guest
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
