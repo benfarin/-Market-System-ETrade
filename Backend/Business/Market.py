@@ -742,6 +742,16 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def getAllUserBids(self, userID):
+        self.__initializeStoresDict()
+        try:
+            userBids = []
+            for store in self.__stores.keys():
+                userBids += self.__stores.get(store).getAllUserBidsOfStore(userID)
+            return userBids
+        except Exception as e:
+            raise Exception(e)
+
     def getOwnerAgreementById(self, storeId, oaId):
         self.__initializeStoresDict()
         try:

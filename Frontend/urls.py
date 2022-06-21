@@ -31,7 +31,8 @@ from .views import (
     all_stores_transactions, all_user_transactions, store_transactions, user_transactions, store_transactions_ID,
     show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
     add_condition_or, add_condition_xor, add_condition_and, logout_page, add_purchase_rule, getStoreBids, bid_page,
-    accept_bid, getOwnerAgreement, oa_page, reject_bid, accept_oa, reject_oa, offer_alternate_bid,
+    accept_bid, getOwnerAgreement, oa_page, reject_bid, accept_oa, reject_oa, offer_alternate_bid, get_user_bids,
+    open_bid,
 )
 
 urlpatterns = [
@@ -88,10 +89,12 @@ urlpatterns = [
     path('login/', login_page),
     path('logout/', logout_page),
     path('cart/', get_cart),
+    path('my_bids/', get_user_bids),
     path('cart/<str:slug>/remove_product/', remove_product_from_cart),
     path('cart/<str:slug>/<str:slug2>/remove_product/', remove_product_from_cart_with_store),
     path('cart/purchase_cart/', purchase_cart),
     path('store/<str:slug>/add_to_cart/<str:slug2>/', add_to_cart_page),
+    path('store/<str:slug>/open_bid/<str:slug2>/', open_bid),
     path('search/', search_view),
     path('search/add_to_cart/<str:slug>/<str:slug2>/', add_to_cart_page),
     path('purchases/', purchases_page),

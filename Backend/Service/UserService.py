@@ -268,6 +268,18 @@ class UserService:
             logging.error("Failed to get user" + str(userID))
             return Response(e.__str__())
 
+    def getAllUserBids(self, userID):
+        try:
+            bids = self.__getterManagment.getAllUserBids(userID)
+            bidsDTOs = []
+            for bid in bids:
+                bidsDTOs.append(BidDTO(bid))
+            logging.info("success to get all bid's of user: " + str(userID))
+            return Response(bidsDTOs)
+        except Exception as e:
+            logging.info("failed to get all bid's of user: " + str(userID))
+            return Response(e.__str__())
+
     def resetManagement(self):
         self.__userManagment.resetManagement()
 

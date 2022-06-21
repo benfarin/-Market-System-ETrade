@@ -32,7 +32,7 @@ from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdatePr
     AddSimpleDiscount_Store, AddSimpleConditionDiscount_Store, AddConditionDiscountXor, AddConditionDiscountAndOr, \
     AddSimpleDiscount_Category, AddSimpleConditionDiscount_Category, AddSimpleDiscount_Product, \
     AddSimpleConditionDiscount_Product, RemoveDiscount, RemoveForm, RemoveMemberForm, StoreTransactions, \
-    UserTransactions, StoreTransactionsByID, AddPurchaseRule
+    UserTransactions, StoreTransactionsByID, AddPurchaseRule, OpenBidForm
 
 
 def home_page(request):  #FIXED
@@ -1037,6 +1037,32 @@ def accept_oa(request, slug, slug2):
 def reject_oa(request, slug, slug2):
     role_service.rejectOwnerAgreement(request.user.userid, int(slug), int(slug2))
     return HttpResponseRedirect('/store/' + slug + '/owner_agreements/' + slug2 + '/')
+
+def get_user_bids(request):
+    bids = []
+    user_bids = user_service.getAllUserBids(request.user.userid)
+    if not user_bids.isError():
+        bids += user_bids.getData()
+    context = {"bids": bids}
+    return render(request, "my_bids.html", context)
+
+
+def open_bid(request, slug, slug2): #FIXED
+    user = user_service.getUser(request.user.userid).getData()
+    form = OpenBidForm(request.POST or None)
+    if form.is_valid():
+        form = OpenBidForm()
+    quantity = request.POST.get("new_price")
+    if quantity is not None:
+        answer = user_service.openNewBidOffer(user.getUserID(), int(slug), int(slug2), int(quantity))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Open New Bid",
+        "form": form
+    }
+    return render(request, "form.html", context)
 
 
 

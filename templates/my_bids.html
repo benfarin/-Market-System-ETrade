@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        <div class="row">
+        {% for bid in bids %}
+            <div class="card" style="width: 18rem;">
+                <h5 class="card-header">Bid Number: {{ bid.get_bID }}</h5>
+                <div class="card-body">
+                    <h5 class="card-title">Requested Product: {{ bid.get_productID }}</h5>
+                    <p class="card-text">Requested Price: {{ bid.get_newPrice }}₪</p>
+                    {% if bid.get_Accepted is True %}
+                        <p class="card-text">Status: Accepted</p>
+                    {% endif %}
+                    {% if bid.get_Accepted is False %}
+                        <p class="card-text">Status: Not Accepted Yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+</div>
+
+{% endblock %}

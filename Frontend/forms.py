@@ -74,6 +74,10 @@ class AddProductForm(forms.Form):
 class AddProductToCartForm(forms.Form):
     quantity = forms.IntegerField()
 
+class OpenBidForm(forms.Form):
+    new_price = forms.FloatField()
+
+
 
 class PurchaseProductForm(forms.Form):
     card_number = forms.IntegerField()
