@@ -85,7 +85,8 @@ def signup_page(request):   #FIXED
         answer = user_service.memberSignUp(username, password, phone, account_num, branch_num, country, city, street,
                                            apartment_num, zip_code)
         if not answer.isError():
-            return HttpResponseRedirect("/")
+            messages.success(request, 'Registration Succeeded!')
+            return HttpResponseRedirect("/signup/")
         messages.warning(request, answer.getError())
     return render(request, "form.html", context)
 
@@ -106,9 +107,7 @@ def login_page(request):  #FIXED
         user_service.exitSystem(guestID)
         django_user = MemberModel.objects.get(username=username)
         login(request, django_user)
-        # print(user.getUserID())
         return HttpResponseRedirect("/")
-        # messages.warning(request, answer.getError())
     context = {
         "title": "Login",
         "form": form
@@ -156,8 +155,8 @@ def create_store_page(request): #FIXED
                                             street,
                                             apartment_num, zip_code)
         if not answer.isError():
-            # stores.append(answer.getData())
-            return HttpResponseRedirect("/my_stores")
+            messages.success(request, 'Succeeded creating new store!')
+            return HttpResponseRedirect("/addstore/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Create New Store",
@@ -195,7 +194,8 @@ def appoint_manager(request, slug):  #FIXED
         answer = role_service.appointManagerToStore(int(slug), user.getUserID(), assignee_id)
         if not answer.isError():
             role_service.setRolesInformationPermission(int(slug), user.getUserID(), assignee_id)
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded appoint ' + assignee_id + ' as manager!')
+            return HttpResponseRedirect("/store/" + slug + "/appoint_manager/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Appoint Store Manager",
@@ -214,7 +214,8 @@ def appoint_Owner(request, slug):   #FIXED
         answer = role_service.appointOwnerToStore(int(slug), user.getUserID(), assingeeID)
         if not answer.isError():
             role_service.setRolesInformationPermission(int(slug), user.getUserID(), assingeeID)
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded opening new owner appointment agreement request for ' + assingeeID)
+            return HttpResponseRedirect("/store/" + slug + "/appoint_owner/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Appoint Store Owner",
@@ -236,7 +237,8 @@ def add_product(request, slug):  #FIXED
     if name is not None:
         answer = role_service.addProductToStore(int(slug), user.getUserID(), name, int(price), category,int(weight), keywords)
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding new product to store number' + str(slug))
+            return HttpResponseRedirect("/store/" + slug + "/addproduct/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Product",
@@ -259,7 +261,7 @@ def get_cart(request):  #FIXED
     return render(request, "cart.html", context)
 
 
-def add_to_cart_page(request, slug, slug2): #FIXED
+def add_to_cart_page(request, slug, slug2): #FIXED  ########STOPPED HERE
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductToCartForm(request.POST or None)
     if form.is_valid():
