@@ -135,13 +135,18 @@ class user_class5(HttpUser):
         "zip_code" : 11,
         })
         store_num += 1
-        self.client.post("/store/"+str(store_num)+"/addproduct/",{
-            "name" : random_name(),
-            "category" : "category",
-            "price" : 20,
-            "weight" : 1,
-            "keywords" : "juice",
-        })
+        this_store = store_num
+        for i in range(10):
+            self.client.post("/store/"+str(this_store)+"/addproduct/",{
+                "name" : "product_"+random_name(),
+                "category" : "category",
+                "price" : 20,
+                "weight" : 1,
+                "keywords" : "juice",
+            })
+        # self.client.post("/store/"+str(this_store)+"/products_manage/quantity/", {
+        #     "quantity" : 30
+        # })
 
 class User(HttpUser):
     tasks = [user_class1, user_class2, user_class3, user_class4, user_class5]
