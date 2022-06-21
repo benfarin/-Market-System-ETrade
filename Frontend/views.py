@@ -125,7 +125,7 @@ def logout_page(request):  #FIXED
     login(request, django_user)
     return HttpResponseRedirect("/")
 
-
+@csrf_exempt
 def my_stores_page(request):  #FIXED
     if request.user.is_anonymous:
         usertype = True
