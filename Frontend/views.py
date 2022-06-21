@@ -223,7 +223,7 @@ def appoint_Owner(request, slug):   #FIXED
     }
     return render(request, "form.html", context)
 
-
+@csrf_exempt
 def add_product(request, slug):  #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductForm(request.POST or None)
