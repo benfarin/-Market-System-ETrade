@@ -119,9 +119,11 @@ class Member(User):
         for notification in notifications:
             notification_obj = self._buildNotification(notification)
             notifications_list.append(notification_obj)
-            notification.read = True
-            notification.save()
+            # notification.read = True
+            # notification.save()
         return notifications_list
+
+
     @threaded
     def createStore(self, storeName, bank, address):
         try:
