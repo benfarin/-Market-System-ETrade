@@ -28,7 +28,7 @@ class BidOffer:
         else:
             self.__model = model
             self.__bID = self.__model.id
-            self.__user = self.__model.user
+            self.__user = self._buildReceiver(self.__model.user)
             self.__storeID = self.__model.storeID.storeID
             self.__productID = self.__model.productID.product_id
             self.__newPrice = self.__model.newPrice
@@ -62,9 +62,9 @@ class BidOffer:
     def getReceivers(self):
         return self.__receivers
 
-    def acceptOffer(self, userID):
-        self.__receivers[userID] = True
-        reciever_model = ReceiversOfBid.objects.get_or_create(bid=self.__model, receiver=MemberModel.objects.get_or_create(userid=userID)[0])[0]
+    def acceptOffer(self, user):
+        self.__receivers[user] = True
+        reciever_model = ReceiversOfBid.objects.get(bid=self.__model, receiver=user.getModel())
         reciever_model.accepted = True
         reciever_model.save()
         check = self.__receivers.values()

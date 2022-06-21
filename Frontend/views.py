@@ -1001,7 +1001,10 @@ def bid_page(request, slug, slug2):
     context = {"bid": bid.getData()}
     return render(request, "bid_page.html", context)
 
-# def accept_bid(request, slug, slug2):
+def accept_bid(request, slug, slug2):
+    role_service.acceptBidOffer(request.user.userid, int(slug), int(slug2))
+    return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
+
 
 
 

@@ -74,17 +74,18 @@ class NotificationHandler:
         activeUsers: Dict[str, User] = {}
         for member_model in MemberModel.objects.filter(isLoggedIn=True):
             member = self._buildMember(member_model)
-            activeUsers.update({member.getUserID(): member})
+            activeUsers.update({str(member.getUserID()): member})
         if receiver in activeUsers.values():
             self.__send_channel_message(receiver.getMemberName(),
                                         "your offer " + str(bidID) + " in store " + str(storeID) +
                                         " has been accepted, the product has been added to your cart")
         else:
+            send_model = receiver.getModel()
             model = \
-                NotificationModel.objects.get_or_create(userID=receiver.getModel(),
-                                                        text="your offer " + str(bidID) + " in store " + str(storeID) +
-                                                             " has been accepted, the product has been added to your cart")[
-                    0]
+                NotificationModel.objects.get_or_create(userID=send_model,
+                                                        text="your offer " + str(bidID) +
+                                                             " in store " + str(storeID) +
+                                                             " has been accepted, the product has been added to your cart")[0]
             notification = self._buildNotification(model)
 
     def notifyBidDeclined(self, receiver, storeID, bidID):
