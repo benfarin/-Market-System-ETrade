@@ -10,6 +10,9 @@ class OwnerAgreementDTO:
         self.__assignee = MemberDTO(ownerAgreement.getAssignee())
         self.__storeId = ownerAgreement.get_storeID()
         self.__isAccepted = ownerAgreement.get_Accepted()
+        self.__receivers = {}
+        for receiver in ownerAgreement.getReceivers().keys():
+            self.__receivers[MemberDTO(receiver)] = ownerAgreement.getReceivers().get(receiver)
 
     def getOwnerAgreementId(self):
         return self.__oaId
@@ -25,6 +28,9 @@ class OwnerAgreementDTO:
 
     def getIsAccepted(self):
         return self.__isAccepted
+
+    def get_receivers(self):
+        return self.__receivers
 
     def __str__(self):
         toReturn = "Owner Agreement " + str(self.__oaId)

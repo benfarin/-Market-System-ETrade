@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        <div class="row">
+        {% for oa in oas %}
+            <div class="card" style="width: 18rem;">
+                <h5 class="card-header">Owner Agreement Number: {{ oa.getOwnerAgreementId }}</h5>
+                <div class="card-body">
+                    <h5 class="card-title">New Owner: {{ oa.getAssignee.getMemberName }}</h5>
+{#                    <p class="card-text">Requested Price: {{ oa.get_newPrice }}₪</p>#}
+                    <a href="{{ oa.getOwnerAgreementId }}" class="btn btn-primary">Owner Agreement's page</a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+</div>
+
+{% endblock %}

@@ -31,7 +31,7 @@ from .views import (
     all_stores_transactions, all_user_transactions, store_transactions, user_transactions, store_transactions_ID,
     show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
     add_condition_or, add_condition_xor, add_condition_and, logout_page, add_purchase_rule, getStoreBids, bid_page,
-    accept_bid,
+    accept_bid, getOwnerAgreement, oa_page, reject_bid, accept_oa, reject_oa, offer_alternate_bid,
 )
 
 urlpatterns = [
@@ -46,6 +46,10 @@ urlpatterns = [
     path('store/<str:slug>/close/', close_store),
     path('store/<str:slug>/appoint_manager/', appoint_manager),
     path('store/<str:slug>/appoint_owner/', appoint_Owner),
+    path('store/<str:slug>/owner_agreements/', getOwnerAgreement),
+    path('store/<str:slug>/owner_agreements/<str:slug2>/', oa_page),
+    path('store/<str:slug>/owner_agreements/<str:slug2>/accept/', accept_oa),
+    path('store/<str:slug>/owner_agreements/<str:slug2>/reject/', reject_oa),
     path('store/<str:slug>/remove_owner/', remove_Owner),
     path('store/<str:slug>/stuff_permissions/', permissions_page),
     path('store/<str:slug>/discounts/', discounts_page),
@@ -75,8 +79,8 @@ urlpatterns = [
     path('store/<str:slug>/bids/', getStoreBids),
     path('store/<str:slug>/bids/<str:slug2>/', bid_page),
     path('store/<str:slug>/bids/<str:slug2>/accept/', accept_bid),
-    path('store/<str:slug>/bids/<str:slug2>/reject/', bid_page),
-    path('store/<str:slug>/bids/<str:slug2>/offeralternate/', bid_page),
+    path('store/<str:slug>/bids/<str:slug2>/reject/', reject_bid),
+    path('store/<str:slug>/bids/<str:slug2>/offeralternate/', offer_alternate_bid),
     # path('store/<str:slug>/stuff/', show_stuff),
     path('store/<str:slug>/history/', show_history),
     path('addstore/', create_store_page),

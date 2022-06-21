@@ -26,6 +26,7 @@ cases: ProductDTO = role_service.addProductToStore(store1.getStoreId(), user1.ge
 role_service.addProductQuantityToStore(store1.getStoreId(), user1.getUserID(), cases.getProductId(), 3000)
 role_service.addProductToStore(store2.getStoreId(), user1.getUserID(), "Bed Sheets", 200, "Sheets", 8, [])
 role_service.addProductToStore(store2.getStoreId(), user1.getUserID(), "Pillow", 100, "Pillows", 5, [])
+role_service.appointOwnerToStore(store1.getStoreId(), user1Id, "bar")
 member_service.logoutMember("ori")
 user: MemberDTO = user_service.memberLogin(guest2.getUserID(), "bar", "1234").getData()
 store3: StoreDTO = member_service.createStore("b1", user.getUserID(), 1, 1, "Israel", "Beer Sheva", "Kadesh", 1, 1).getData()

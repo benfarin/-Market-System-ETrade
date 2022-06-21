@@ -5,13 +5,12 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    Bid Number: {{ bid.get_bID }}
+                    Owner Agreement Number: {{ oa.getOwnerAgreementId }}
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">User: {{ bid.get_userID }}</h5>
-                    <h5 class="card-title">Product: {{ bid.get_productID }}</h5>
-                    <h5 class="card-title">Price Offered: {{ bid.get_newPrice }}</h5>
-                    {% for key, value in bid.get_receivers.items %}
+                    <h5 class="card-title">Assigner: {{ oa.getAssigner.getMemberName }}</h5>
+                    <h5 class="card-title">Assignee: {{ oa.getAssignee.getMemberName }}</h5>
+                    {% for key, value in oa.get_receivers.items %}
                         {% if value is True %}
                             <p class="card-text">{{ key.getMemberName }}'s Status: Accepted</p>
                         {% endif %}
@@ -19,9 +18,8 @@
                             <p class="card-text">{{ key.getMemberName }}'s Status: Not Accepted Yet</p>
                         {% endif %}
                     {% endfor %}
-                    <a href="accept/" class="btn btn-primary">Accept Bid</a>
-                    <a href="reject/" class="btn btn-primary">Reject Bid</a>
-                    <a href="offeralternate/" class="btn btn-primary">Offer Alternate Bid</a>
+                    <a href="accept/" class="btn btn-primary">Accept Owner Agreement</a>
+                    <a href="reject/" class="btn btn-primary">Reject Owner Agreement</a>
                 </div>
             </div>
         </div>

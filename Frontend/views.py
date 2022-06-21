@@ -986,12 +986,28 @@ def getDiscountsDTO(request, storeID):
     return info
 
 def getStoreBids(request, slug):
-    bids  = []
+    bids = []
     store_bids = role_service.getAllStoreBids(int(slug))
     if not store_bids.isError():
         bids += store_bids.getData()
     context = {"bids": bids}
     return render(request, "bids.html", context)
+
+def getOwnerAgreement(request, slug):
+    oas  = []
+    store_oa = role_service.getAllStoreOwnerAgreements(int(slug))
+    if not store_oa.isError():
+        oas += store_oa.getData()
+    context = {"oas": oas}
+    return render(request, "owner_agreements.html", context)
+
+
+def oa_page(request, slug, slug2):
+    oa = role_service.getOwnerAgreementById(int(slug), int(slug2))
+    if oa.isError():
+        check = None
+    context = {"oa": oa.getData()}
+    return render(request, "oa_page.html", context)
 
 
 def bid_page(request, slug, slug2):
@@ -1004,6 +1020,29 @@ def bid_page(request, slug, slug2):
 def accept_bid(request, slug, slug2):
     role_service.acceptBidOffer(request.user.userid, int(slug), int(slug2))
     return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
+
+def reject_bid(request, slug, slug2):
+    role_service.rejectOffer(request.user.userid, int(slug), int(slug2))
+    return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
+
+def offer_alternate_bid(request, slug, slug2):
+    role_service.offerAlternatePrice(request.user.userid, int(slug), int(slug2), 50)
+    return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
+
+
+def accept_oa(request, slug, slug2):
+    role_service.acceptOwnerAgreement(request.user.userid, int(slug), int(slug2))
+    return HttpResponseRedirect('/store/' + slug + '/owner_agreements/' + slug2 + '/')
+
+def reject_oa(request, slug, slug2):
+    role_service.rejectOwnerAgreement(request.user.userid, int(slug), int(slug2))
+    return HttpResponseRedirect('/store/' + slug + '/owner_agreements/' + slug2 + '/')
+
+
+
+
+
+
 
 
 
