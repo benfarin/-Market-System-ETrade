@@ -103,11 +103,6 @@ class user_class4(HttpUser):
         "apartment_num" : 1,
         "zip_code" : 11,
         })
-        this_store = store_num
-        # appoint another store owner
-        self.client.post("/store/"+str(this_store)+"/appoint_owner/",{
-            "assignee_name" : user_names[random.randint(0,len(user_names))]
-        })
         store_num += 1
         user_names.append(username)
 
@@ -150,7 +145,7 @@ class user_class5(HttpUser):
         })
         store_num += 1
         this_store = store_num
-        for i in range(3):
+        for i in range(10):
             self.client.post("/store/"+str(this_store)+"/addproduct/",{
                 "name" : "product_"+random_name(),
                 "category" : "category",
@@ -162,9 +157,66 @@ class user_class5(HttpUser):
                 "quantity": 30,
             })
             prod_num += 1
-
         user_names.append(username)
 
+class user_class6(HttpUser):
+    @task
+    def purchase(self):
+        global store_num, prod_num, user_names
+        # home-page
+        self.client.get("/")
+        # random user name
+        username = "user_" + random_name()
+        # register
+        self.client.post("/signup/", {
+            "username": username,
+            "password": "1234",
+            "phone": "05400000",
+            "account_num": 1,
+            "branch_num": 1,
+            "country": "Israel",
+            "city": "Mitzpe Ramon",
+            "street": "A",
+            "apartment_num": 1,
+            "zip_code": 1,
+        })
+
+        # login
+        self.client.post("/login/", {
+            "username": username,
+            "password": "1234",
+        })
+        self.client.post("/addstore/", {
+            "storeName": "store_" + random_name(),
+            "accountNumber": 1,
+            "brunch": 1,
+            "country": "Israel",
+            "city": "Ashkelon",
+            "street": "Ashkeluna",
+            "apartment_num": 1,
+            "zip_code": 11,
+        })
+        store_num += 1
+        this_store = store_num
+        for i in range(10):
+            self.client.post("/store/" + str(this_store) + "/addproduct/", {
+                "name": "product_" + random_name(),
+                "category": "category",
+                "price": 20,
+                "weight": 1,
+                "keywords": "juice",
+            })
+            this_prod = prod_num
+            self.client.post("/store/" + str(this_store) + "/" + str(this_prod) + "/products_manage/quantity/", {
+                "quantity": 30,
+            })
+            user_names.append(username)
+            self.client.post("/store/"+str(this_store)+"/add_to_cart/"+str(this_prod)+"/", {
+                "quantity": 2,
+            })
+            prod_num += 1
+        # self.client.get("/cart/purchase_cart/")
+
 class User(HttpUser):
-    tasks = [user_class1, user_class2, user_class3, user_class4, user_class5]
+    tasks = [user_class1, user_class2, user_class3, user_class4, user_class5, user_class6]
     wait_time = between(0.5, 2.5)
