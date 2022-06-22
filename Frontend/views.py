@@ -185,7 +185,7 @@ def store_page(request, slug):  #FIXED
 def store_products_management(request, slug, slug2):  #FIXED
     return render(request, "products_manage.html", {})
 
-
+@csrf_exempt
 def appoint_manager(request, slug):  #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
@@ -204,7 +204,7 @@ def appoint_manager(request, slug):  #FIXED
     }
     return render(request, "form.html", context)
 
-
+@csrf_exempt
 def appoint_Owner(request, slug):   #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
