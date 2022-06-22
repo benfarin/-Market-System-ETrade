@@ -259,7 +259,7 @@ def get_cart(request):  #FIXED
     context = {"title": "Cart", "bags": bags, "cart": cart, "sum": cart_sum}
     return render(request, "cart.html", context)
 
-
+@csrf_exempt
 def add_to_cart_page(request, slug, slug2): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductToCartForm(request.POST or None)
@@ -374,7 +374,7 @@ def remove_product(request, slug, slug2):  #FIXED
         return HttpResponseRedirect("/store/" + slug + "/")
     messages.warning(request, answer.getError())
 
-
+@csrf_exempt
 def add_quantity(request, slug, slug2): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductQuantity(request.POST or None)
