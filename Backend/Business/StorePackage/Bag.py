@@ -94,9 +94,9 @@ class Bag:
             else:
                 self.__products[product] = bag.getProducts()[product]
 
-                p = ProductModel.objects.get(product_id=product.product_ID.product_id)
+                p = ProductModel.objects.get(product_id=product.getProductId())
                 newProduct = ProductsInBagModel.objects.get_or_create(bag_ID=self.__b, product_ID=p,
-                                                                      quantity=product.quantity)
+                                                                      quantity=bag.getProducts()[product])
                 newProduct[0].save()
         return True
 
