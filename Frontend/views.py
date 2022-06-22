@@ -261,7 +261,7 @@ def get_cart(request):  #FIXED
     return render(request, "cart.html", context)
 
 
-def add_to_cart_page(request, slug, slug2): #FIXED  ########STOPPED HERE
+def add_to_cart_page(request, slug, slug2): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductToCartForm(request.POST or None)
     if form.is_valid():
@@ -270,7 +270,8 @@ def add_to_cart_page(request, slug, slug2): #FIXED  ########STOPPED HERE
     if quantity is not None:
         answer = user_service.addProductToCart(user.getUserID(), int(slug), int(slug2), int(quantity))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding  product to cart!')
+            return HttpResponseRedirect("store/" + slug + "/open_bid/" + slug2 + "/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Product",
@@ -353,7 +354,8 @@ def product_update(request, slug, slug2):  #FIXED
         answer2 = role_service.updateProductCategory(user.getUserID(), int(slug), int(slug2), category)
         answer3 = role_service.updateProductPrice(user.getUserID(), int(slug), int(slug2), int(price))
         if not answer1.isError() and not answer2.isError() and not answer3.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded updating product!')
+            return HttpResponseRedirect("store/" + slug + "/" + slug2 + "/products_manage/product_update/")
         if answer1.isError():
             messages.warning(request, answer1.getError())
         if answer1.isError():
@@ -385,7 +387,9 @@ def add_quantity(request, slug, slug2): #FIXED
     if quantity is not None:
         answer = role_service.addProductQuantityToStore(int(slug), user.getUserID(), int(slug2), int(quantity))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding ' + quantity + ' units of product number ' + slug2 +
+                             ' to store number ' + str(slug))
+            return HttpResponseRedirect("store/" + slug + "/" + slug2 + "/products_manage/quantity/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Product Quantity",
@@ -407,7 +411,7 @@ def purchases_page(request):
     return render(request, "my_purchases.html", context)
 
 
-def permissions_page(request, slug):  #FIXED
+def permissions_page(request, slug):  #FIXED  ################################
     user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
     if form.is_valid():
@@ -417,22 +421,26 @@ def permissions_page(request, slug):  #FIXED
         if request.method == 'POST' and 'btn1' in request.POST:
             answer = role_service.setStockManagerPermission(int(slug), user.getUserID(), assingeeID)
             if not answer.isError():
-                return HttpResponseRedirect("/store/" + slug + "/")
+                messages.success(request, 'Succeeded appointing ' + assingeeID + ' as Stock Manager!')
+                return HttpResponseRedirect("/store/" + slug + "/stuff_permissions/")
             messages.warning(request, answer.getError())
         if request.method == 'POST' and 'btn2' in request.POST:
             answer = role_service.setAppointOwnerPermission(int(slug), user.getUserID(), assingeeID)
             if not answer.isError():
-                return HttpResponseRedirect("/store/" + slug + "/")
+                messages.success(request, 'Succeeded appointing ' + assingeeID + ' as Owner Appointer!')
+                return HttpResponseRedirect("/store/" + slug + "/stuff_permissions/")
             messages.warning(request, answer.getError())
         if request.method == 'POST' and 'btn4' in request.POST:
             answer = role_service.setChangePermission(int(slug), user.getUserID(), assingeeID)
             if not answer.isError():
-                return HttpResponseRedirect("/store/" + slug + "/")
+                messages.success(request, 'Succeeded giving ' + assingeeID + ' Permission to change others permissions!')
+                return HttpResponseRedirect("/store/" + slug + "/stuff_permissions/")
             messages.warning(request, answer.getError())
         if request.method == 'POST' and 'btn5' in request.POST:
             answer = role_service.setPurchaseHistoryInformationPermission(int(slug), user.getUserID(), assingeeID)
             if not answer.isError():
-                return HttpResponseRedirect("/store/" + slug + "/")
+                messages.success(request, 'Succeeded giving ' + assingeeID + ' Permission to see purchase history')
+                return HttpResponseRedirect("/store/" + slug + "/stuff_permissions/")
             messages.warning(request, answer.getError())
     context = {
         "title": "Set Permissions",
@@ -478,7 +486,8 @@ def add_condition_add(request, slug):
     if ID_1 is not None:
         answer = role_service.addCompositeDiscountAdd(user.getUserID(), int(slug), int(ID_1), int(ID_2))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding new composite discount!')
+            return HttpResponseRedirect("/store/" + slug + "/discounts/add_condition_add/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Condition ADD",
@@ -497,7 +506,8 @@ def add_condition_max(request, slug):
     if ID_1 is not None:
         answer = role_service.addCompositeDiscountMax(user.getUserID(), int(slug), int(ID_1), int(ID_2))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding new composite discount!')
+            return HttpResponseRedirect("/store/" + slug + "/discounts/add_condition_max/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Condition MAX",
@@ -632,7 +642,8 @@ def add_store_simple_discount(request, slug):
     if percent is not None:
         answer = role_service.addStoreDiscount(user.getUserID(), int(slug), float(percent))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding new store discount!')
+            return HttpResponseRedirect("/store/" + slug + "/discounts/add_store_simple_discount/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Simple Store Discount",
@@ -673,7 +684,8 @@ def add_category_simple_discount(request, slug):
     if percent is not None:
         answer = role_service.addCategoryDiscount(user.getUserID(), int(slug), category, float(percent))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding new category discount!')
+            return HttpResponseRedirect("/store/" + slug + "/discounts/add_category_simple_discount/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Simple Category Discount",
@@ -716,7 +728,8 @@ def add_product_simple_discount(request, slug):
     if percent is not None:
         answer = role_service.addProductDiscount(user.getUserID(), int(slug), int(product_id), float(percent))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded adding new product discount!')
+            return HttpResponseRedirect("/store/" + slug + "/discounts/add_product_simple_discount/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Simple Product Discount",
@@ -819,7 +832,8 @@ def remove_condition(request, slug):
     if discount_ID is not None:
         answer = role_service.removeDiscount(user.getUserID(), int(slug), int(discount_ID))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded removing discount!')
+            return HttpResponseRedirect("/store/" + slug + "/discounts/remove_discount/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Remove Discount",
@@ -837,7 +851,8 @@ def remove_Owner(request, slug):
     if owner_name is not None:
         answer = role_service.removeStoreOwner(int(slug), user.getUserID(), owner_name)
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            messages.success(request, 'Succeeded to remove owenr ' + owner_name + '!')
+            return HttpResponseRedirect("/store/" + slug + "/remove_owner/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Remove Store Owner",
@@ -855,7 +870,8 @@ def remove_member(request):
     if member_name is not None:
         answer = role_service.removeMember(user.getMemberName(), member_name)
         if not answer.isError():
-            return HttpResponseRedirect("/")
+            messages.success(request, 'Succeeded to remove member ' + member_name + '!')
+            return HttpResponseRedirect("/remove_member/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Remove Member Owner",
@@ -1058,7 +1074,7 @@ def open_bid(request, slug, slug2): #FIXED
     if quantity is not None:
         answer = user_service.openNewBidOffer(user.getUserID(), int(slug), int(slug2), int(quantity))
         if not answer.isError():
-            return HttpResponseRedirect("/store/" + slug + "/")
+            return HttpResponseRedirect("/store/" + slug + "/open_bid/" + slug2 +'/')
         messages.warning(request, answer.getError())
     context = {
         "title": "Open New Bid",
