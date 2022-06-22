@@ -3,6 +3,7 @@ import random
 
 from locust import HttpUser, task, between
 
+user_names = []
 store_num = 6
 prod_num = 9
 
@@ -19,11 +20,13 @@ class user_class1(HttpUser):
 class user_class2(HttpUser):
     @task
     def register(self):
+        global user_names
         # home
         self.client.get("/")
         # register
+        username = "user_"+random_name()
         self.client.post("/signup/", {
-            "username" : "user_"+random_name(),
+            "username" : username,
             "password" : "1234" ,
             "phone" : "05400000",
             "account_num" : 1,
@@ -34,17 +37,19 @@ class user_class2(HttpUser):
             "apartment_num" : 1,
             "zip_code" : 1,
         })
+        user_names.append(username)
 
 class user_class3(HttpUser):
 
     @task
     def login(self):
+        global user_names
         # home-page
         self.client.get("/")
         # register
-        username = random_name()
+        username = "user_"+random_name()
         self.client.post("/signup/", {
-            "username" : "user_"+username,
+            "username" : username,
             "password" : "1234" ,
             "phone" : "05400000",
             "account_num" : 1,
@@ -57,20 +62,21 @@ class user_class3(HttpUser):
         })
         # login
         self.client.post("/login/", {
-            "username": "user_"+username,
+            "username": username,
             "password": "1234",
         })
+        user_names.append(username)
 
 class user_class4(HttpUser):
     @task
     def open_store(self):
-        global store_num
+        global store_num, user_names
         # home-page
         self.client.get("/")
-        username = random_name()
+        username = "user_"+random_name()
         # register
         self.client.post("/signup/", {
-            "username" : "user_"+username,
+            "username" : username,
             "password" : "1234" ,
             "phone" : "05400000",
             "account_num" : 1,
@@ -81,12 +87,12 @@ class user_class4(HttpUser):
             "apartment_num" : 1,
             "zip_code" : 1,
         })
+
         # login
         self.client.post("/login/", {
-            "username": "user_"+username,
+            "username": username,
             "password": "1234",
         })
-
         self.client.post("/addstore/", {
         "storeName": "store_"+random_name(),
         "accountNumber" : 1,
@@ -98,18 +104,19 @@ class user_class4(HttpUser):
         "zip_code" : 11,
         })
         store_num += 1
+        user_names.append(username)
 
 class user_class5(HttpUser):
     @task
     def open_store_and_add_products(self):
-        global store_num, prod_num
+        global store_num, prod_num, user_names
         # home-page
         self.client.get("/")
         # random user name
-        username = random_name()
+        username = "user_"+random_name()
         # register
         self.client.post("/signup/", {
-            "username" : "user_"+username,
+            "username" : username,
             "password" : "1234" ,
             "phone" : "05400000",
             "account_num" : 1,
@@ -120,9 +127,10 @@ class user_class5(HttpUser):
             "apartment_num" : 1,
             "zip_code" : 1,
         })
+
         # login
         self.client.post("/login/", {
-            "username": "user_"+username,
+            "username": username,
             "password": "1234",
         })
         self.client.post("/addstore/", {
@@ -149,6 +157,7 @@ class user_class5(HttpUser):
                 "quantity": 30,
             })
             prod_num += 1
+        user_names.append(username)
 
 class User(HttpUser):
     tasks = [user_class1, user_class2, user_class3, user_class4, user_class5]
