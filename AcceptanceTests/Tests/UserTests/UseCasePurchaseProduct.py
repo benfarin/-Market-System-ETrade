@@ -78,14 +78,20 @@ class UseCasePurchaseProduct(TransactionTestCase):
         self.user_proxy.removeMember("manager", "Ori")
         self.user_proxy.removeSystemManger_forTests("manager")
         self.user_proxy.reset_management()
-
-    def test_purchase_positive1(self):
+        
+        
+    @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
+    @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
+    def test_purchase_positive1(self, delivery_respond ,payment_respond):
         # add products to user's cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 2)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 1)
         # purchase product in the cart
+        payment_respond.return_value = 1
+        delivery_respond.return_value = -1
+
         userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123",
                                                            "123").getData()
         # check the right amount was spend
@@ -110,7 +116,8 @@ class UseCasePurchaseProduct(TransactionTestCase):
 
         payment_respond.return_value = 1
         delivery_respond.return_value = -1
-        userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Ori", "123",
+        userTransaction = self.user_proxy.
+        (member2_id, "1234123412341234", "2", "27", "Ori", "123",
                                                            "123")
         # check the cart was purchased even though the products were added when the member was a guest
         self.assertTrue(userTransaction.isError())
@@ -123,7 +130,10 @@ class UseCasePurchaseProduct(TransactionTestCase):
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
         self.assertEqual(member2_id, userTransaction.getData().getUserID())
 
-    def test_login_logout_login_purchase(self):
+        
+    @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
+    @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
+    def test_login_logout_login_purchase(self, delivery_respond ,payment_respond):
         # guest adds products to cart
         guest_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product01, 20)
@@ -139,13 +149,19 @@ class UseCasePurchaseProduct(TransactionTestCase):
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "Ori", "1234")
         # login
+        
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
+
         userTransaction = self.user_proxy.purchase_product(member4_id, "1234123412341234", "2", "27", "Rotem", "123",
                                                            "123")
         # check every thing was still purchased from the cart!
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
         self.assertEqual(member4_id, userTransaction.getData().getUserID())
 
-    def test_two_user_buy_same_time(self):
+    @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
+    @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
+    def test_two_user_buy_same_time(self, delivery_respond ,payment_respond):   
         # guest registers and logs-in
         guest_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("Ori", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
@@ -163,8 +179,14 @@ class UseCasePurchaseProduct(TransactionTestCase):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
 
         # they purchase at the same time
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
+
         t1 = ThreadWithReturn(target=self.user_proxy.purchase_product,
                               args=(member_id, "1234123412341234", "2", "27", "Rotem", "123", "123"))
+        
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
         t2 = ThreadWithReturn(target=self.user_proxy.purchase_product,
                               args=(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123"))
 
@@ -178,32 +200,44 @@ class UseCasePurchaseProduct(TransactionTestCase):
         self.assertEqual(member_id, ut_1.getData().getUserID())
         self.assertEqual(self.user_id, ut_2.getData().getUserID())
 
-    def test_cart_clean(self):
+    @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
+    @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
+    def test_cart_clean(self, delivery_respond ,payment_respond):
         # Rotem  adds products to his cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
         # first purchase should work! second purchase shouldn't (cart is empty)
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
         ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
         ut_2 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertTrue(ut_1.getData().getTotalAmount() == 2240 and ut_2.isError())
         self.assertEqual(self.user_id, ut_1.getData().getUserID())
 
-    def test_purchases_empty_cart(self):
+    def test_purchases_empty_cart(self, delivery_respond ,payment_respond):
         # the cart is empty - purchase should succeed
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
         ut_1 = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123")
         self.assertTrue(ut_1.isError())
 
     # there is problem with threads, sometimes doesn't work
-
+    
+    @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
+    @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
     def test_purchase_with_threads(self):
         # Rotem adds products to cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 7)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
-
+        
+        payment_respond.return_value = 1
+        delivery_respond.return_value = 1
         t1 = ThreadWithReturn(target=self.user_proxy.purchase_product,
                               args=(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123",))
         t2 = ThreadWithReturn(target=self.user_proxy.purchase_product,
