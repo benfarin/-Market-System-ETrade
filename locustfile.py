@@ -103,6 +103,11 @@ class user_class4(HttpUser):
         "apartment_num" : 1,
         "zip_code" : 11,
         })
+        this_store = store_num
+        # appoint another store owner
+        self.client.post("/store/"+str(this_store)+"/appoint_owner/",{
+            "assignee_name" : user_names[random.randint(0,len(user_names))]
+        })
         store_num += 1
         user_names.append(username)
 
@@ -145,7 +150,7 @@ class user_class5(HttpUser):
         })
         store_num += 1
         this_store = store_num
-        for i in range(10):
+        for i in range(3):
             self.client.post("/store/"+str(this_store)+"/addproduct/",{
                 "name" : "product_"+random_name(),
                 "category" : "category",
@@ -157,6 +162,7 @@ class user_class5(HttpUser):
                 "quantity": 30,
             })
             prod_num += 1
+
         user_names.append(username)
 
 class User(HttpUser):
