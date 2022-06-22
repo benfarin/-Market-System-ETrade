@@ -1,6 +1,13 @@
+import os.path
 import unittest
+from pathlib import Path
 from unittest.mock import patch, MagicMock
+from unittest_mocker import activate_mocker, Mocker
+import pytest
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 from Backend.Payment.RealPaymentSystem import RealPaymentService
+from Backend.Delivery.RealDeliveryService import RealDeliveryService
 
 from AcceptanceTests.Bridges.MarketBridge.MarketProxyBridge import MarketProxyBridge
 from AcceptanceTests.Bridges.MarketBridge.MarketRealBridge import MarketRealBridge
@@ -76,19 +83,23 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 1)
         # purchase product in the cart
-        userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123").getData()
+        userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123").getData()
         # check the right amount was spend
         self.assertEqual(3310, userTransaction.getTotalAmount())
         # check the transaction was for user1
         self.assertEqual(self.user_id, userTransaction.getUserID())
 
-    @patch ('RealPaymentService.makePayment')
-    def test_mock_make_payment(self, mock_make_payment):
-        mock_make_payment.return_value = 1
-
-    @patch('RealPaymentService.requests')
-    def test_guest_then_member_purchase(self,mock_requests):
+    def test_guest_then_member_purchase(self):
         # guest adds products to cart
+        def mock_request():
+            return 1
+
+        mocker = Mocker()
+        print(BASE_DIR)
+        mocker.patch(os.path.join(BASE_DIR, "Backend\Payment\RealPaymentSystem.makePayment"), mock_request)
+        mocker.patch(os.path.join(BASE_DIR, "Backend\Delivery\RealDeliveryService.makeSupply"), mock_request)
+
         guest_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(guest_id, self.store_0, self.product02, 2)
@@ -99,10 +110,9 @@ class UseCasePurchaseProduct(unittest.TestCase):
                                  "Ben Gurion", 0, 0)
         member2_id = self.user_proxy.login_member(guest_id, "Ori", "1234").getData().getUserID()
         # purchase the products in the cart
-        mock_response = MagicMock()
 
-        mock_requests.get.return_value = mock_response
-        userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Ori", "123", "123")
+        userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Ori", "123",
+                                                           "123")
         # check the cart was purchased even though the products were added when the member was a guest
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
         self.assertEqual(member2_id, userTransaction.getData().getUserID())
@@ -123,7 +133,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
         guest = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.login_member(guest, "Ori", "1234")
         # login
-        userTransaction = self.user_proxy.purchase_product(member4_id,"1234123412341234", "2", "27", "Rotem", "123", "123")
+        userTransaction = self.user_proxy.purchase_product(member4_id, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123")
         # check every thing was still purchased from the cart!
         self.assertEqual(3310, userTransaction.getData().getTotalAmount())
         self.assertEqual(member4_id, userTransaction.getData().getUserID())
@@ -146,8 +157,10 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 9)
 
         # they purchase at the same time
-        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(member_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
-        t2 = ThreadWithReturn(target=self.user_proxy.purchase_product, args=(self.user_id,"1234123412341234", "2", "27", "Rotem", "123", "123"))
+        t1 = ThreadWithReturn(target=self.user_proxy.purchase_product,
+                              args=(member_id, "1234123412341234", "2", "27", "Rotem", "123", "123"))
+        t2 = ThreadWithReturn(target=self.user_proxy.purchase_product,
+                              args=(self.user_id, "1234123412341234", "2", "27", "Rotem", "123", "123"))
 
         t1.start()
         t2.start()
@@ -200,10 +213,8 @@ class UseCasePurchaseProduct(unittest.TestCase):
         elif tran2.isError():
             self.assertEqual(tran1.getData().getTotalAmount(), 2240)
 
-
     ### payment details are wrong tests
     # doesn't really work because the external system doesn't check all of that
-
 
     # def test_fail_purchase_cart_cvvNotGood(self):
     #     self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
