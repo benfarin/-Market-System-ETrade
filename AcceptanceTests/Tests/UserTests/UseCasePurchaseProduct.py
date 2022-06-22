@@ -90,7 +90,7 @@ class UseCasePurchaseProduct(TransactionTestCase):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 1)
         # purchase product in the cart
         payment_respond.return_value = 1
-        delivery_respond.return_value = -1
+        delivery_respond.return_value = 1
 
         userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123",
                                                            "123").getData()
@@ -116,9 +116,7 @@ class UseCasePurchaseProduct(TransactionTestCase):
 
         payment_respond.return_value = 1
         delivery_respond.return_value = -1
-        userTransaction = self.user_proxy.
-        (member2_id, "1234123412341234", "2", "27", "Ori", "123",
-                                                           "123")
+        userTransaction = self.user_proxy.purchase_product(member2_id, "1234123412341234", "2", "27", "Ori", "123","123")
         # check the cart was purchased even though the products were added when the member was a guest
         self.assertTrue(userTransaction.isError())
 
@@ -218,6 +216,8 @@ class UseCasePurchaseProduct(TransactionTestCase):
         self.assertTrue(ut_1.getData().getTotalAmount() == 2240 and ut_2.isError())
         self.assertEqual(self.user_id, ut_1.getData().getUserID())
 
+    @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
+    @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
     def test_purchases_empty_cart(self, delivery_respond ,payment_respond):
         # the cart is empty - purchase should succeed
         payment_respond.return_value = 1
@@ -229,7 +229,7 @@ class UseCasePurchaseProduct(TransactionTestCase):
     
     @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
     @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
-    def test_purchase_with_threads(self):
+    def test_purchase_with_threads(self,payment_respond,delivery_respond):
         # Rotem adds products to cart
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product01, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 3)
