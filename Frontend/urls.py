@@ -32,7 +32,7 @@ from .views import (
     show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
     add_condition_or, add_condition_xor, add_condition_and, logout_page, add_purchase_rule, getStoreBids, bid_page,
     accept_bid, getOwnerAgreement, oa_page, reject_bid, accept_oa, reject_oa, offer_alternate_bid, get_user_bids,
-    open_bid,
+    open_bid, get_users_analysis,
 )
 
 urlpatterns = [
@@ -60,6 +60,7 @@ urlpatterns = [
     path('store_transactions/', store_transactions),
     path('user_transactions/', user_transactions),
     path('store_transactions_ID/', store_transactions_ID),
+    path('analysis/', get_users_analysis),
     path('<str:slug>/storesTransactions/', show_store_transactions),
     path('<str:slug>/userTransactions/', show_user_transactions),
     path('<str:slug>/storesTransactionsID/', show_store_transactions_ID),

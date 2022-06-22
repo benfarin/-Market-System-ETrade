@@ -3,6 +3,8 @@ import sys, os.path
 import uuid
 import threading
 from concurrent.futures import Future
+from datetime import datetime
+from dateutil import parser
 
 from celery import shared_task
 from django.contrib.auth import authenticate, login, logout
@@ -32,7 +34,7 @@ from .forms import SignupForm, LoginForm, CreateStoreForm, AppointForm, UpdatePr
     AddSimpleDiscount_Store, AddSimpleConditionDiscount_Store, AddConditionDiscountXor, AddConditionDiscountAndOr, \
     AddSimpleDiscount_Category, AddSimpleConditionDiscount_Category, AddSimpleDiscount_Product, \
     AddSimpleConditionDiscount_Product, RemoveDiscount, RemoveForm, RemoveMemberForm, StoreTransactions, \
-    UserTransactions, StoreTransactionsByID, AddPurchaseRule, OpenBidForm
+    UserTransactions, StoreTransactionsByID, AddPurchaseRule, OpenBidForm, UserAnalysisForm
 
 
 def home_page(request):  #FIXED
@@ -1078,6 +1080,27 @@ def open_bid(request, slug, slug2): #FIXED
         messages.warning(request, answer.getError())
     context = {
         "title": "Open New Bid",
+        "form": form
+    }
+    return render(request, "form.html", context)
+
+
+def get_users_analysis(request):
+    form = UserAnalysisForm(request.POST or None)
+    if form.is_valid():
+        form = UserAnalysisForm()
+    from_date = request.POST.get("from_date")
+    to_date = request.POST.get("to_date")
+    if from_date is not None:
+        fixed_from_date = parser.parse(from_date)
+        fixed_to_date = parser.parse(to_date)
+        answer = role_service.getUsersByDates(request.user.username, fixed_from_date, fixed_to_date)
+        if not answer.isError():
+            answer.getData().getDataAsGraph()
+            return HttpResponseRedirect("/analysis/")
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Users Analysis",
         "form": form
     }
     return render(request, "form.html", context)

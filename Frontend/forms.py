@@ -77,6 +77,9 @@ class AddProductToCartForm(forms.Form):
 class OpenBidForm(forms.Form):
     new_price = forms.FloatField()
 
+class UserAnalysisForm(forms.Form):
+    from_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
 
 
 class PurchaseProductForm(forms.Form):
