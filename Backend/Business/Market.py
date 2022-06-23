@@ -742,6 +742,16 @@ class Market:
         except Exception as e:
             raise Exception(e)
 
+    def getAllUserBids(self, userID):
+        self.__initializeStoresDict()
+        try:
+            userBids = []
+            for store in self.__stores.keys():
+                userBids += self.__stores.get(store).getAllUserBidsOfStore(userID)
+            return userBids
+        except Exception as e:
+            raise Exception(e)
+
     def getOwnerAgreementById(self, storeId, oaId):
         self.__initializeStoresDict()
         try:
@@ -796,7 +806,7 @@ class Market:
         return s.Store(model=model)
 
     def __initializeStoresDict(self):
-        if self.__stores is None:
+        if self.__stores is None or self.__stores == {}:
             self.__stores: Dict[str: IStore] = {}
             if StoreModel.objects.all().exists():
                 for store_model in StoreModel.objects.filter(is_active=True):

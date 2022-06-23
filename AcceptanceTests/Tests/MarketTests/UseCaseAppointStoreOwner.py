@@ -10,7 +10,6 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 class UseCaseAppointStoreOwner(unittest.TestCase):
     # use-case 4.4
-    databases = {'testing'}
     # initialize proxies
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())

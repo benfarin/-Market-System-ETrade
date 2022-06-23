@@ -12,6 +12,7 @@ class StorePermissionDTO:
         self.__rolesInformation = storePermission.hasPermission_RolesInformation()
         self.__purchaseHistoryInformation = storePermission.hasPermission_PurchaseHistoryInformation()
         self.__discountPermissions = storePermission.hasPermission_Discount()
+        self.__bid = storePermission.hasPermission_Bid()
 
     def getUserId(self):
         return self.__userId
@@ -36,6 +37,9 @@ class StorePermissionDTO:
 
     def hasPermission_PurchaseHistoryInformation(self):
         return self.__purchaseHistoryInformation
+
+    def hasPermission_Bid(self):
+        return self.__bid
 
     def hasPermission_Discount(self):
         return self.__discountPermissions

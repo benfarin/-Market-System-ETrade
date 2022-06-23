@@ -68,6 +68,12 @@ class GetterManagment:
         except Exception as e:
             raise Exception(e)
 
+    def getAllUserBids(self, userID):
+        try:
+            return self.__market.getAllUserBids(userID)
+        except Exception as e:
+            raise Exception(e)
+
     def getOwnerAgreementById(self, storeId, oaId):
         try:
             return self.__market.getOwnerAgreementById(storeId, oaId)

@@ -14,20 +14,22 @@
               <li><a class="dropdown-item" href="/cart">My Cart</a></li>
               <li><a class="dropdown-item" href="/my_stores">My Stores</a></li>
               <li><a class="dropdown-item" href="/purchases">My Purchases</a></li>
+                <li><a class="dropdown-item" href="/my_bids">My Bids</a></li>
             </ul>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a class="nav-link" href="/my_stores">Stores</a>-->
-<!--          </li>-->
+        {% if request.user.username is None %}
             <li class="nav-item">
             <a class="nav-link" href="/login">Login</a>
           </li>
             <li class="nav-item">
             <a class="nav-link" href="/signup">Signup</a>
           </li>
+        {% endif %}
+        {% if request.user.username is not None %}
           <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
           </li>
+        {% endif %}
           {% if request.user.is_authenticated %}
             {% if request.user.is_staff %}
               <li class="nav-item">
@@ -53,12 +55,9 @@
                         <hr class="dropdown-divider">
                         {% endfor %}
                         {% for n in saved_notifications %}
-                        <li class="dropdown-item">{{ n.text }}</li>
+                        <li class="dropdown-item">{{ n.getNotificationText }}</li>
                         <hr class="dropdown-divider">
                         {% endfor %}
-
-
-
                     </ul>
                 </li>
 

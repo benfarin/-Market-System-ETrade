@@ -8,7 +8,6 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 
 class UseCaseForBar(unittest.TestCase):
-    databases = {'testing'}
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())
 
@@ -24,7 +23,7 @@ class UseCaseForBar(unittest.TestCase):
 
     def tearDown(self):
         self.proxy_market.removeStoreForGood(self.u2_id, self.s1_id)
-        self.proxy_user.removeMember("manager","Rotem")
+        self.proxy_user.removeMember("manager", "Rotem")
         self.proxy_user.removeMember("manager", "Kfir")
         self.proxy_user.removeMember("manager", "Ori")
         self.proxy_user.removeMember("manager", "Bar")
@@ -73,7 +72,8 @@ class UseCaseForBar(unittest.TestCase):
         self.proxy_market.set_stock_manager_perm(self.s1_id, self.u2_id, "Kfir")
         # assign Ori and Bar to be store's owners
         self.proxy_market.appoint_store_owner(self.s1_id, self.u2_id, "Ori")
-        self.proxy_market.appoint_store_owner(self.s1_id, self.u2_id, "Bar")
+        ownerAgreement = self.proxy_market.appoint_store_owner(self.s1_id, self.u2_id, "Bar").getData()
+        self.proxy_user.acceptOwnerAgreement(u4_id, self.s1_id, ownerAgreement.getOwnerAgreementId())
         # Bar logout
         self.proxy_user.logout_member("Bar")
 
@@ -111,23 +111,29 @@ class UseCaseForBar(unittest.TestCase):
         user3_id = self.proxy_user.login_member(guestId3, "Rotem", "4321").getData().getUserID()
         user4_id = self.proxy_user.login_member(guestId4, "Kfir", "4321").getData().getUserID()
         # create a store
-        store_id = self.proxy_user.open_store("Ori's Store", self.u2_id, 123, 2, "Israel", "Beer Sheva", "Rager",
+        self.s1_id = self.proxy_user.open_store("Ori's Store", self.u2_id, 123, 2, "Israel", "Beer Sheva", "Rager",
                                               1, 00000).getData().getStoreId()
         # appoint Bar Rotem and Kfir to e store-owners
-        self.proxy_market.appoint_store_owner(store_id, self.u2_id, "Bar")
-        self.proxy_market.appoint_store_owner(store_id, user2_id, "Rotem")
-        self.proxy_market.appoint_store_owner(store_id, user3_id, "Kfir")
+        self.proxy_market.appoint_store_owner(self.s1_id, self.u2_id, "Bar")
+        ownerAgreement1 = self.proxy_market.appoint_store_owner(self.s1_id, user2_id, "Rotem").getData()
+        self.proxy_user.acceptOwnerAgreement(self.u2_id, self.s1_id, ownerAgreement1.getOwnerAgreementId())
+
+        ownerAgreement2 = self.proxy_market.appoint_store_owner(self.s1_id, user3_id, "Kfir").getData()
+        self.proxy_user.acceptOwnerAgreement(self.u2_id, self.s1_id, ownerAgreement2.getOwnerAgreementId())
+        self.proxy_user.acceptOwnerAgreement(user2_id, self.s1_id, ownerAgreement2.getOwnerAgreementId())
+
         # check the owners are Ori, Rotem, Kfir and Bar
-        storeOwnersDTOs = self.proxy_market.get_store_by_ID(store_id).getData().getStoreOwners()
+        storeOwnersDTOs = self.proxy_market.get_store_by_ID(self.s1_id).getData().getStoreOwners()
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
         self.assertEqual(Counter(storeOwnersIds), Counter([self.u2_id, user2_id, user3_id, user4_id]))
 
         # remove Bar as a store owner
-        self.proxy_market.removeStoreOwner(store_id, self.u2_id, "Bar")
+        self.proxy_market.removeStoreOwner(self.s1_id, self.u2_id, "Bar")
         # check the owners changed (only Ori - because Bar assigned Rotem and Rotem assigned Kfir the all should also be removed!)
-        storeOwnersDTOs = self.proxy_market.get_store_by_ID(store_id).getData().getStoreOwners()
+        storeOwnersDTOs = self.proxy_market.get_store_by_ID(self.s1_id).getData().getStoreOwners()
         storeOwnersIds = [storeOwner.getUserID() for storeOwner in storeOwnersDTOs]
         self.assertEqual(storeOwnersIds, [self.u2_id])
+
 
 if __name__ == '__main__':
     unittest.main()

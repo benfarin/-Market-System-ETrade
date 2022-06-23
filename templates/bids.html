@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        <div class="row">
+        {% for bid in bids %}
+            <div class="card" style="width: 18rem;">
+                <h5 class="card-header">Bid Number: {{ bid.get_bID }}</h5>
+                <div class="card-body">
+                    <h5 class="card-title">Requested Product: {{ bid.get_productID }}</h5>
+                    <p class="card-text">Requested Price: {{ bid.get_newPrice }}₪</p>
+{#                    {% if permissions.hasPermission_StockManagement %}#}
+{#                    <a class="btn btn-primary" href="{{ bid.getProductId }}/products_manage/" role="button">Product Management</a>#}
+{#                    <br>#}
+{#                    <br>#}
+{#                    {% endif %}#}
+                    <a href="{{ bid.get_bID }}" class="btn btn-primary">Bid's Page</a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+</div>
+
+{% endblock %}

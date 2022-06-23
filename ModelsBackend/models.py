@@ -234,7 +234,7 @@ class RulesInStoreModel(models.Model):
 
 
 class NotificationModel(models.Model):
-    userID = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
+    userID = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     text = models.TextField()
     read = models.BooleanField(default=False)
 
@@ -250,16 +250,36 @@ class BidOfferModel(models.Model):
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
     productID = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
     newPrice = models.FloatField()
-    permissionsGuys = models.ManyToManyField(MemberModel, related_name="permissionsGuys")
     active = models.BooleanField(default=True)
     isAccepted = models.BooleanField(default=False)
+
+class ReceiversOfBid(models.Model):
+    bid = models.ForeignKey(BidOfferModel, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(MemberModel, on_delete=models.SET_NULL, null=True)
+    accepted = models.BooleanField(default=False)
+
+class SendersOfBid(models.Model):
+    bid = models.ForeignKey(BidOfferModel, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(UserModel, on_delete=models.SET_NULL, null=True)
+    accepted = models.BooleanField(default=True)
 
 
 class OwnerAgreementModel(models.Model):
     assigner = models.ForeignKey(MemberModel, on_delete=models.CASCADE, related_name="Assigner")
     assignee = models.ForeignKey(MemberModel, on_delete=models.CASCADE)
     storeID = models.ForeignKey(StoreModel, on_delete=models.CASCADE)
-    permissionsOwners = models.ManyToManyField(MemberModel, related_name="permissionsOwners")
+    # permissionsOwners = models.ManyToManyField(MemberModel, related_name="permissionsOwners")
     active = models.BooleanField(default=True)
     isAccepted = models.BooleanField(default=False)
+
+
+class ReceiversOfOwnerAgreement(models.Model):
+    owner_agreement = models.ForeignKey(OwnerAgreementModel, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(MemberModel, on_delete=models.SET_NULL, null=True)
+    accepted = models.BooleanField(default=False)
+
+
+
+
+
 

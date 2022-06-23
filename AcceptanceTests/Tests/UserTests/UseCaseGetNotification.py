@@ -14,7 +14,6 @@ from notificationsApp.consumers import NotificationConsumer
 
 class UseCasePurchaseProduct(unittest.TestCase):
     # usecase 2.9
-    databases = {'testing'}
     market_proxy = MarketProxyBridge(MarketRealBridge())
     user_proxy = UserProxyBridge(UserRealBridge())
 
@@ -73,7 +72,6 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.market_proxy.add_quantity_to_store(self.store_2, self.user_id4, self.product2, 100)
 
     def tearDown(self) -> None:
-        # remove stores
         self.market_proxy.removeStoreForGood(self.user_id, self.store_0)
         self.market_proxy.removeStoreForGood(self.user_id, self.store_1)
         self.market_proxy.removeStoreForGood(self.user_id4, self.store_2)
@@ -84,7 +82,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.removeMember("manager", "user4")
         self.user_proxy.removeSystemManger_forTests("manager")
 
-     def test_purchase_founder_not_logged_in(self):
+    def test_purchase_founder_not_logged_in(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product02, 2)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_1, self.product1, 10)

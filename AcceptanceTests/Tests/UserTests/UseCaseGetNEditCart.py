@@ -9,7 +9,6 @@ class UseCaseGetCartNEdit(unittest.TestCase):
     # use-case 2.8
     # get_cart functions has all products of a user from all the stores
     # also check changes in cart are working!
-    databases = {'testing'}
     # Proxies initialized
     proxy_market = MarketProxyBridge(MarketRealBridge())
     proxy_user = UserProxyBridge(UserRealBridge())

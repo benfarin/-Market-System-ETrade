@@ -562,7 +562,7 @@ class Store:
             self.__permissions[assignee].setPermission_RolesInformation(True)
             self.__permissions[assignee].setPermission_PurchaseHistoryInformation(True)
             self.__permissions[assignee].setPermission_Discount(True)
-
+            self.__permissions[assignee].setPermission_Bid(True)
             # if the action is from appointOwner return ownerAgreement
             # if the action is from acceptOwnerAgreement return True
             if oaID is None:
@@ -1015,6 +1015,13 @@ class Store:
 
     def getAllStoreBids(self):
         return self.__bids.values()
+
+    def getAllUserBidsOfStore(self, userID):
+        userBids = []
+        for bid in self.__bids.values():
+            if bid.get_user().getUserID() == userID:
+                userBids.append(bid)
+        return userBids
 
     def getOwnerAgreementById(self, oaId):
         ownerAgreement = self.__ownerAgreements.get(oaId)

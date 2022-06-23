@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content%}
+<div style="text-align: center;">
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    Owner Agreement Number: {{ oa.getOwnerAgreementId }}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Assigner: {{ oa.getAssigner.getMemberName }}</h5>
+                    <h5 class="card-title">Assignee: {{ oa.getAssignee.getMemberName }}</h5>
+                    {% for key, value in oa.get_receivers.items %}
+                        {% if value is True %}
+                            <p class="card-text">{{ key.getMemberName }}'s Status: Accepted</p>
+                        {% endif %}
+                        {% if value is False %}
+                            <p class="card-text">{{ key.getMemberName }}'s Status: Not Accepted Yet</p>
+                        {% endif %}
+                    {% endfor %}
+                    <a href="accept/" class="btn btn-primary">Accept Owner Agreement</a>
+                    <a href="reject/" class="btn btn-primary">Reject Owner Agreement</a>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}
