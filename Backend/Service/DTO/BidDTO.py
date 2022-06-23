@@ -1,11 +1,12 @@
 from Backend.Business.StorePackage.BidOffer import BidOffer
+from Backend.Service.DTO.GuestDTO import GuestDTO
 from Backend.Service.DTO.MemberDTO import MemberDTO
 
 
 class BidDTO:
     def __init__(self, bid: BidOffer):
         self.__bID = bid.get_bID()
-        self.__userID = bid.get_user().userid
+        self.__userID = { bid.get_user().userid: bid.get_user_value() }
         self.__storeID = bid.get_storeID()
         self.__productID = bid.get_productID()
         self.__newPrice = bid.get_newPrice()
@@ -18,7 +19,7 @@ class BidDTO:
         return self.__bID
 
     def get_userID(self):
-        return self.__userID
+        return list(self.__userID.keys())[0]
 
     def get_storeID(self):
         return self.__storeID
@@ -34,6 +35,13 @@ class BidDTO:
 
     def get_receivers(self):
         return self.__receivers
+
+    def getUserStatus(self):
+        return self.__userID
+
+    def isOfferedAlternatePrice(self):
+        user_obj  = list(self.__userID.keys())[0]
+        return not self.__userID[user_obj]
 
 
     def __str__(self):

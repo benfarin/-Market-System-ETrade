@@ -1041,13 +1041,29 @@ def accept_bid(request, slug, slug2):
     role_service.acceptBidOffer(request.user.userid, int(slug), int(slug2))
     return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
 
+def accept_bid_user(request, slug, slug2):
+    role_service.acceptBidOffer(request.user.userid, int(slug), int(slug2))
+    return HttpResponseRedirect('/my_bids/')
+
 def reject_bid(request, slug, slug2):
     role_service.rejectOffer(request.user.userid, int(slug), int(slug2))
     return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
 
 def offer_alternate_bid(request, slug, slug2):
-    role_service.offerAlternatePrice(request.user.userid, int(slug), int(slug2), 50)
-    return HttpResponseRedirect('/store/' + slug + '/bids/' + slug2 + '/')
+    form = OpenBidForm(request.POST or None)
+    if form.is_valid():
+        form = OpenBidForm()
+    quantity = request.POST.get("new_price")
+    if quantity is not None:
+        answer = role_service.offerAlternatePrice(request.user.userid, int(slug), int(slug2), int(quantity))
+        if not answer.isError():
+            return HttpResponseRedirect("/store/" + slug + "/bids/" + slug2 +'/')
+        messages.warning(request, answer.getError())
+    context = {
+        "title": "Offer Alternate Price For Bid",
+        "form": form
+    }
+    return render(request, "form.html", context)
 
 
 def accept_oa(request, slug, slug2):

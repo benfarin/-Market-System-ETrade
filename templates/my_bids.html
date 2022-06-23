@@ -15,6 +15,9 @@
                     {% if bid.get_Accepted is False %}
                         <p class="card-text">Status: Not Accepted Yet</p>
                     {% endif %}
+                    {% if bid.isOfferedAlternatePrice %}
+                        <a href="accept/{{ bid.get_storeID }}/{{ bid.get_bID }}" class="btn btn-primary">Accept Bid</a>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

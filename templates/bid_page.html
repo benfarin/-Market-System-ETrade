@@ -11,6 +11,14 @@
                     <h5 class="card-title">User: {{ bid.get_userID }}</h5>
                     <h5 class="card-title">Product: {{ bid.get_productID }}</h5>
                     <h5 class="card-title">Price Offered: {{ bid.get_newPrice }}</h5>
+                    {% for key, value in bid.getUserStatus.items %}
+                        {% if value is True %}
+                            <p class="card-text">Costumer's Status: Accepted</p>
+                        {% endif %}
+                        {% if value is False %}
+                            <p class="card-text">Costumer's Status: Not Accepted Yet</p>
+                        {% endif %}
+                    {% endfor %}
                     {% for key, value in bid.get_receivers.items %}
                         {% if value is True %}
                             <p class="card-text">{{ key.getMemberName }}'s Status: Accepted</p>

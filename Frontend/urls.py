@@ -32,7 +32,7 @@ from .views import (
     show_store_transactions_ID, show_user_transactions, show_store_transactions, remove_product_from_cart_with_store,
     add_condition_or, add_condition_xor, add_condition_and, logout_page, add_purchase_rule, getStoreBids, bid_page,
     accept_bid, getOwnerAgreement, oa_page, reject_bid, accept_oa, reject_oa, offer_alternate_bid, get_user_bids,
-    open_bid, get_users_analysis,
+    open_bid, get_users_analysis, accept_bid_user,
 )
 
 urlpatterns = [
@@ -91,6 +91,7 @@ urlpatterns = [
     path('logout/', logout_page),
     path('cart/', get_cart),
     path('my_bids/', get_user_bids),
+    path('my_bids/accept/<str:slug>/<str:slug2>/', accept_bid_user),
     path('cart/<str:slug>/remove_product/', remove_product_from_cart),
     path('cart/<str:slug>/<str:slug2>/remove_product/', remove_product_from_cart_with_store),
     path('cart/purchase_cart/', purchase_cart),

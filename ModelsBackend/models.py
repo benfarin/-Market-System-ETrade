@@ -258,6 +258,11 @@ class ReceiversOfBid(models.Model):
     receiver = models.ForeignKey(MemberModel, on_delete=models.SET_NULL, null=True)
     accepted = models.BooleanField(default=False)
 
+class SendersOfBid(models.Model):
+    bid = models.ForeignKey(BidOfferModel, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(UserModel, on_delete=models.SET_NULL, null=True)
+    accepted = models.BooleanField(default=True)
+
 
 class OwnerAgreementModel(models.Model):
     assigner = models.ForeignKey(MemberModel, on_delete=models.CASCADE, related_name="Assigner")
