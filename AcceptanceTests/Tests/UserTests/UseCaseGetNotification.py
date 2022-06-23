@@ -14,7 +14,6 @@ from notificationsApp.consumers import NotificationConsumer
 
 class UseCasePurchaseProduct(unittest.TestCase):
     # usecase 2.9
-    databases = {'testing'}
     market_proxy = MarketProxyBridge(MarketRealBridge())
     user_proxy = UserProxyBridge(UserRealBridge())
 

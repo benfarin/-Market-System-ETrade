@@ -13,6 +13,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 from Backend.Business.UserPackage.Member import Member
 from Backend.Business.UserPackage.User import User
@@ -62,7 +63,7 @@ def home_page(request):  #FIXED
                'room_name': request.user.username, "saved_notifications" : notifications, "actives" : active_users}
     return render(request, "home.html", context)
 
-
+@csrf_exempt
 def signup_page(request):   #FIXED
     global user_service
     global member_service
@@ -92,7 +93,7 @@ def signup_page(request):   #FIXED
         messages.warning(request, answer.getError())
     return render(request, "form.html", context)
 
-
+@csrf_exempt
 def login_page(request):  #FIXED
     form = LoginForm(request.POST or None)
     if form.is_valid():
@@ -125,7 +126,7 @@ def logout_page(request):  #FIXED
     login(request, django_user)
     return HttpResponseRedirect("/")
 
-
+@csrf_exempt
 def my_stores_page(request):  #FIXED
     if request.user.is_anonymous:
         usertype = True
@@ -138,7 +139,7 @@ def my_stores_page(request):  #FIXED
     context = {"title": title, "usertype": usertype, "user": user, "stores": stores}
     return render(request, "my_stores.html", context)
 
-
+@csrf_exempt
 def create_store_page(request): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = CreateStoreForm(request.POST or None)
@@ -185,7 +186,7 @@ def store_page(request, slug):  #FIXED
 def store_products_management(request, slug, slug2):  #FIXED
     return render(request, "products_manage.html", {})
 
-
+@csrf_exempt
 def appoint_manager(request, slug):  #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
@@ -205,7 +206,7 @@ def appoint_manager(request, slug):  #FIXED
     }
     return render(request, "form.html", context)
 
-
+@csrf_exempt
 def appoint_Owner(request, slug):   #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AppointForm(request.POST or None)
@@ -225,7 +226,7 @@ def appoint_Owner(request, slug):   #FIXED
     }
     return render(request, "form.html", context)
 
-
+@csrf_exempt
 def add_product(request, slug):  #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductForm(request.POST or None)
@@ -262,7 +263,7 @@ def get_cart(request):  #FIXED
     context = {"title": "Cart", "bags": bags, "cart": cart, "sum": cart_sum}
     return render(request, "cart.html", context)
 
-
+@csrf_exempt
 def add_to_cart_page(request, slug, slug2): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductToCartForm(request.POST or None)
@@ -379,7 +380,7 @@ def remove_product(request, slug, slug2):  #FIXED
         return HttpResponseRedirect("/store/" + slug + "/")
     messages.warning(request, answer.getError())
 
-
+@csrf_exempt
 def add_quantity(request, slug, slug2): #FIXED
     user = user_service.getUser(request.user.userid).getData()
     form = AddProductQuantity(request.POST or None)

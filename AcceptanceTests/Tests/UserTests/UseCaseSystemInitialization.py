@@ -7,7 +7,6 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 class UseCaseSystemInitialization(unittest.TestCase):
     #usecase 1.1
     # check there is always a system manager in the system
-    databases = {'testing'}
     proxy = UserProxyBridge(UserRealBridge())
 
     def test_remove_system_manager(self):

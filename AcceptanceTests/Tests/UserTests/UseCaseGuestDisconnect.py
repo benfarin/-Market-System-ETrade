@@ -6,7 +6,6 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 
 class UseCaseGuestDisconnect(unittest.TestCase):
     # use-case 2.2
-    databases = {'testing'}
     proxy = UserProxyBridge(UserRealBridge())
 
     def setUp(self) -> None:
