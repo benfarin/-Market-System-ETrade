@@ -33,27 +33,27 @@ class UseCaseEditProduct(unittest.TestCase):
         self.proxy_user.removeMember("Manager", "Bar")
         self.proxy_user.removeSystemManger_forTests("Manager")
 
-    def test_editProductPricePositive(self):   ######FAILING
+    def test_editProductPricePositive(self):
         # store_id, user_id, prod_id, new_price
         product = self.proxy_market.edit_product_price(self.user_id, self.store_id, self.prod_id.getProductId(), 20).getData()
         p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
         self.assertEqual(20, product.getProductPrice())
         self.assertEqual(20, p.getProductPrice())
 
-    def test_editProductNamePositive(self):   ######FAILING
+    def test_editProductNamePositive(self):
         product = self.proxy_market.edit_product_name(self.user_id, self.store_id, self.prod_id.getProductId(), "newName").getData()
         p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
         self.assertEqual("newName", product.getProductName())
         self.assertEqual("newName", p.getProductName())
 
-    def test_editProductCategoryPositive(self):  ######FAILING
+    def test_editProductCategoryPositive(self):
         product = self.proxy_market.edit_product_category(self.user_id, self.store_id, self.prod_id.getProductId(),
                                                           "newCategory").getData()
         p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
         self.assertEqual("newCategory", product.getProductCategory())
         self.assertEqual("newCategory", p.getProductCategory())
 
-    def test_editProductWeightPositive(self):    ######FAILING
+    def test_editProductWeightPositive(self):
         product = self.proxy_market.edit_product_Weight(self.user_id, self.store_id, self.prod_id.getProductId(), 20).getData()
         p = self.proxy_market.get_store_by_ID(self.store_id).getData().getProducts().get(self.prod_id.getProductId())
         self.assertEqual(20, product.getProductWeight())

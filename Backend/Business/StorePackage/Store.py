@@ -401,9 +401,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            product = self._buildProduct(product_model)
-            product.setProductPrice(newPrice)
-            return product
+            self.__products[productId].setProductPrice(newPrice)
+            return self.__products[productId]
 
     def updateProductName(self, user, productId, newName):
         try:
@@ -414,9 +413,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            product = self._buildProduct(product_model)
-            product.setProductName(newName)
-            return product
+            self.__products[productId].setProductName(newName)
+            return self.__products[productId]
 
     def updateProductCategory(self, user, productId, newCategory):
         try:
@@ -427,9 +425,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            product = self._buildProduct(product_model)
-            product.setProductCategory(newCategory)
-            return product
+            self.__products[productId].setProductCategory(newCategory)
+            return self.__products[productId]
 
     def updateProductWeight(self, user, productID, newWeight):
         try:
@@ -440,9 +437,8 @@ class Store:
         except Exception as e:
             raise Exception(e)
         else:
-            product = self._buildProduct(product_model)
-            product.setProductWeight(newWeight)
-            return product
+            self.__products[productID].setProductWeight(newWeight)
+            return self.__products[productID]
 
     def __checkPermissions_ChangeStock(self, user):
         permissions = self.__permissions.get(user)
