@@ -13,6 +13,7 @@ from channels.routing import ProtocolTypeRouter
 import Backend
 import environ
 
+import Frontend.DbRouter
 
 env = environ.Env()
 environ.Env.read_env()
@@ -47,7 +48,9 @@ INSTALLED_APPS = [
     'notifications',
     'channels',
     'ModelsBackend',
+    'AcceptanceTests',
 ]
+
 
 AUTH_USER_MODEL = 'ModelsBackend.UserModel'
 
@@ -92,14 +95,16 @@ WSGI_APPLICATION = 'Frontend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env('ENGINE'),
+        'NAME': BASE_DIR / env('NAME'),
     },
     'testing': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'testing_db.sqlite3',
     }
 }
+
+# DATABASE_ROUTERS = ['Frontend.DbRouter.DbRouter', ]
 
 # DATABASES = {
 #     'default': {
