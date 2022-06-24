@@ -105,7 +105,7 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         # teardown stuff - remove the prod from the cart
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id1, self.p1_id)
 
-    def test_cart_info_positive_sequence_complex(self):
+    def test_cart_info_positive_sequence_complex(self):   ########FAILING
         print("test_cart_info_positive_sequence_complex")
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
         self.assertEqual(len(bags), 0, "There should be no bags!")

@@ -62,7 +62,7 @@ class UseCaseMemberLogin(unittest.TestCase):
         self.assertTrue(self.proxy.login_member(None, "free_user", "FREE").isError())
         self.assertTrue(self.proxy.login_member(self.__guestId2, "free_user", "FREE").isError())
 
-    def test_members_log_in_together(self):
+    def test_members_log_in_together(self):   #########FAILING
         self.__guestId2 = self.proxy.login_guest().getData().getUserID()
         self.proxy.register("user2", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 1)

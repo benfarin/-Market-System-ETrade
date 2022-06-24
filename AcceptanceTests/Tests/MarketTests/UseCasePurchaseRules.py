@@ -93,7 +93,7 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                                                  self.store_id1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondPurchaseRule_AND(self):
+    def test_addCondPurchaseRule_AND(self):   ######FAILING
         rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityPurchaseRule(self.user_id1, self.store_id1, "testCategory", 0, 5).getData().getRuleId()
         r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
@@ -112,7 +112,7 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                                                     self.store_id1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_OR(self):
+    def test_addCondDiscountRule_OR(self):  ######FAILING
         rId1 = self.proxy_market.addProductQuantityPurchaseRule(self.user_id1, self.store_id1, self.product_id, 5, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addStoreQuantityPurchaseRule(self.user_id1, self.store_id1, 0, 30).getData().getRuleId()
         r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
@@ -131,7 +131,7 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                                                     self.store_id1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_OR_AND_with_discount(self):
+    def test_addCondDiscountRule_OR_AND_with_discount(self):   ######FAILING
         self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
 
         rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()
