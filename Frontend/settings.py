@@ -11,6 +11,11 @@ from pathlib import Path
 import sys
 from channels.routing import ProtocolTypeRouter
 import Backend
+import environ
+
+
+env = environ.Env()
+environ.Env.read_env()
 
 # sys.path.append('....')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -96,6 +101,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': env('ENGINE'),
+#         'NAME': env('NAME'),
+#     },
+#     'testing': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'testing_db.sqlite3',
+#     }
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -154,6 +170,10 @@ CHANNEL_LAYERS = {
     }
 }
 
-EXTERNAL_SYSTEM_URL = 'https://cs-bgu-wsep.herokuapp.com/'
+EXTERNAL_SYSTEM_URL = env('EXTERNAL_SYSTEM_URL')
 
-INIT_FILE = 'init.txt'
+INIT_FILE = env('INIT')
+
+ADMIN_USERNAME = env('ADMIN_USERNAME')
+
+ADMIN_PASSWORD = env('ADMIN_PASSWORD')

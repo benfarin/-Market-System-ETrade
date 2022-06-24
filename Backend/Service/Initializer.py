@@ -6,6 +6,7 @@ django.setup()
 from Backend.Service.MemberService import MemberService
 from Backend.Service.RoleService import RoleService
 from Backend.Service.UserService import UserService
+from django.conf import settings
 
 
 class Initializer:
@@ -13,7 +14,7 @@ class Initializer:
         self.__roleService = RoleService()
         self.__memberService = MemberService()
         self.__userService = UserService()
-        self.__userService.systemManagerSignUp("admin", "admin", "0500000000", 999, 0, "Israel", "Be'er Sheva",
+        self.__userService.systemManagerSignUp(settings.ADMIN_USERNAME, settings.ADMIN_PASSWORD, "0500000000", 999, 0, "Israel", "Be'er Sheva",
                                                "Ben-Gurion", 0, 999999)
 
     def getRoleService(self):
