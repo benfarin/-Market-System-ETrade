@@ -93,13 +93,13 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                                                  self.store_id1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondPurchaseRule_AND(self):   ######FAILING
-        rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()
-        rId2 = self.proxy_market.addCategoryQuantityPurchaseRule(self.user_id1, self.store_id1, "testCategory", 0, 5).getData().getRuleId()
+    def test_addCondPurchaseRule_AND(self):
+        rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 300, 100000).getData().getRuleId()
+        rId2 = self.proxy_market.addCategoryQuantityPurchaseRule(self.user_id1, self.store_id1, "testCategory1", 0, 5).getData().getRuleId()
         r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()
 
-        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
-        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)  ### Price: 10 * 10 = 100, Weight: 10 * 20 = 200
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10) ### Price 10 * 100 = 1000
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(0, userTransaction.getData().getTotalAmount())
@@ -112,7 +112,7 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                                                     self.store_id1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_OR(self):  ######FAILING
+    def test_addCondDiscountRule_OR(self):
         rId1 = self.proxy_market.addProductQuantityPurchaseRule(self.user_id1, self.store_id1, self.product_id, 5, 100000).getData().getRuleId()
         rId2 = self.proxy_market.addStoreQuantityPurchaseRule(self.user_id1, self.store_id1, 0, 30).getData().getRuleId()
         r_id = self.proxy_market.addCompositeRulePurchaseAnd(self.user_id1, self.store_id1, rId1, rId2).getData().getRuleId()

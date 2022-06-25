@@ -813,8 +813,7 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
         if rule.getRuleKind() == 'Discount':
-            discount_model = DiscountModel.objects.get(discountID=dId)
-            discount = self._buildDiscount(discount_model)
+            discount = self.__discounts[dId]
             if discount is None:
                 raise Exception("discount does not exists")
             discount.addSimpleRuleDiscount(rule)
@@ -832,37 +831,29 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
 
-        rule1model = RuleModel.objects.filter(ruleID=rId1)
-        rule2model = RuleModel.objects.filter(ruleID=rId2)
-        rule1 = RuleCreator.getInstance().buildRule(rule1model.first())
-        rule2 = RuleCreator.getInstance().buildRule(rule2model.first())
+        rule1 = self.__rules[rId1]
+        rule2 = self.__rules[rId2]
 
         if ruleKind == 'Discount':
-            discount_model = DiscountModel.objects.filter(discountID=dId)
-            if not discount_model.exists():
+            discount = self.__discounts[dId]
+            if discount is None:
                 raise Exception("discount does not exists")
-            discount = self._buildDiscount(discount_model.first())
-            toReturnDiscount = discount.addCompositeRuleDiscount(ruleId, rule1.getRuleId(), rule2.getRuleId(), ruleType,
+            toReturnRule = discount.addCompositeRuleDiscount(ruleId, rule1.getRuleId(), rule2.getRuleId(), ruleType,
                                                                  ruleKind)
             with self.__discountsLock:
-                toReturnDiscount.getModel().rule_class = 'DiscountComposite'
-                toReturnDiscount.getModel().save()
+                toReturnRule.getModel().rule_class = 'DiscountComposite'
+                toReturnRule.getModel().save()
         elif ruleKind == 'Purchase':
-            if not rule1model.exists():
-                raise Exception("rule1 is not an existing discount")
-            if not rule2model.exists():
-                raise Exception("rule2 is not an existing discount")
-            toReturnDiscount = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
-            RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=toReturnDiscount.getModel())
-            self.__rules[toReturnDiscount.getRuleId()] = toReturnDiscount
-            with self.__discountsLock:
-                toReturnDiscount.getModel().rule_class = 'PurchaseComposite'
-                toReturnDiscount.getModel().save()
+            if rule1 is None:
+                raise Exception("rule1 does not exist ")
+            if rule2 is None:
+                raise Exception("rule2 does not exist")
+            toReturnRule = PurchaseRuleComposite(ruleId, rule1, rule2, ruleType, ruleKind)
+            RulesInStoreModel.objects.get_or_create(storeID=self.__model, ruleID=toReturnRule.getModel())
+            self.__rules[toReturnRule.getRuleId()] = toReturnRule
 
-            RulesInStoreModel.objects.get(ruleID=rule1model.first()).delete()
-            self.__rules.pop(rule1)
-            RulesInStoreModel.objects.get(ruleID=rule2model.first()).delete()
-            self.__rules.pop(rule2)
+            self.__rules.pop(rId1)
+            self.__rules.pop(rId2)
         else:
             raise Exception("rule kind is illegal")
 
@@ -870,7 +861,7 @@ class Store:
         # self.__rules.pop(rId2)
         # self.__rules[ruleId] = newRule
 
-        return toReturnDiscount
+        return toReturnRule
 
     def removeRule(self, user, dId, rId, ruleKind):
         permissions = self.__permissions.get(user)

@@ -235,7 +235,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                        self.proxy_market.getAllSimpleDiscountOfStore(self.user_id1, self.store_id1).getData()]
         self.assertEqual(discountIds, [])
 
-    def test_addSimpleDiscountRule_1(self):   ######FAILING
+    def test_addSimpleDiscountRule_1(self):
         dId1 = self.proxy_market.addSimpleDiscount_Store(self.user_id1, self.store_id1, 0.1).getData().getDiscountId()
         r_id = self.proxy_market.addStoreQuantityDiscountRule(self.user_id1, self.store_id1, dId1,
                                                               200, 1000000).getData().getRuleId()
@@ -253,13 +253,13 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                                                             self.store_id1, dId1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addSimpleDiscountRule_2(self):   ######FAILING
+    def test_addSimpleDiscountRule_2(self):
         dId1 = self.proxy_market.addSimpleDiscount_Category(self.user_id1, self.store_id1, "testCategory", 0.1).getData().getDiscountId()
         r_id = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id,
                                                               0, 10000000).getData().getRuleId()
 
-        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
-        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)  ### 10 * 10 = 100
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10) ### 10 * 100 = 1000
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(1090, userTransaction.getData().getTotalAmount())
@@ -272,7 +272,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                                                             self.store_id1, dId1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_AND(self):   ######FAILING
+    def test_addCondDiscountRule_AND(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
         rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 100, 1000000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityDiscountRule(self.user_id1, self.store_id1, dId1, "testCategory", 0, 5).getData().getRuleId()
@@ -296,7 +296,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                                                                self.store_id1, dId1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_OR(self):   ######FAILING
+    def test_addCondDiscountRule_OR(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
         rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 1000, 1000000).getData().getRuleId()
         rId2 = self.proxy_market.addCategoryQuantityDiscountRule(self.user_id1, self.store_id1, dId1,
@@ -321,7 +321,7 @@ class UseCaseSimpleDiscount(unittest.TestCase):
                                                                                self.store_id1, dId1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_OR_AND(self):   ######FAILING
+    def test_addCondDiscountRule_OR_AND(self):
         dId1 = self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
 
         rId1 = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id, 1000, 1000000).getData().getRuleId()
