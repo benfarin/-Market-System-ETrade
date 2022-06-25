@@ -85,19 +85,15 @@ class UseCasePurchaseProduct(unittest.TestCase):
     def test_purchase_founder_not_logged_in(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product02, 2)
-        self.user_proxy.add_product_to_cart(self.user_id2, self.store_1, self.product1, 10)
 
 
         self.user_proxy.logout_member("user1")
         # user_id, cardNumber, month, year, holderCardName, cvv, holderID
         self.user_proxy.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123", "123")
         notifications = self.user_proxy.get_member_notifications(self.user_id).getData()
-        self.assertTrue(notifications.exists())
-
-        guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
-        self.user_proxy.exit_system(guest)
-
+        for notification in notifications:
+            self.assertEqual(notification.getNotificationText(),
+                             "user " + str(self.user_id2) + " bought from store " + str(self.store_0))
 
     def test_purchase_founder_logged_in(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
@@ -107,7 +103,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         # user_id, cardNumber, month, year, holderCardName, cvv, holderID
         self.user_proxy.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123", "123")
         notifications = self.user_proxy.get_member_notifications(self.user_id).getData()
-        self.assertFalse(notifications.exists())
+        self.assertTrue(len(notifications) == 0)
 
 
     def test_purchase_several_founders_not_logged_in(self):
@@ -122,12 +118,12 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123", "123")
         notifications_user_1 = self.user_proxy.get_member_notifications(self.user_id).getData()
         notifications_user_2 = self.user_proxy.get_member_notifications(self.user_id3).getData()
-        self.assertTrue(notifications_user_1.exists())
-        self.assertTrue(notifications_user_2.exists())
-        guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
-        self.user_proxy.login_member(guest, "user3", "1234").getData().getUserID()
-        self.user_proxy.exit_system(guest)
+        for notification in notifications_user_1:
+            self.assertEqual(notification.getNotificationUser().userid, self.user_id)
+
+        for notification in notifications_user_2:
+            self.assertEqual(notification.getNotificationUser().userid, self.user_id3)
+
 
     def test_purchase_several_founders_not_logged_in_and_logged_in(self):
         self.market_proxy.appoint_store_owner(self.store_0, self.user_id, "user3")
@@ -140,13 +136,14 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.purchase_product(self.user_id2, "1234123412341234", "2", "27", "Rotem", "123", "123")
         notifications_user_1 = self.user_proxy.get_member_notifications(self.user_id).getData()
         notifications_user_2 = self.user_proxy.get_member_notifications(self.user_id3).getData()
-        self.assertFalse(notifications_user_1.exists())
-        self.assertTrue(notifications_user_2.exists())
-        guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user3", "1234").getData().getUserID()
-        self.user_proxy.exit_system(guest)
 
-    def test_purchase_only_owner_get_notifications(self):
+
+        self.assertTrue(len(notifications_user_1) == 0)
+        self.assertTrue(len(notifications_user_2) > 0)
+        for notification in notifications_user_2:
+            self.assertEqual(notification.getNotificationUser().userid, self.user_id3)
+
+    def test_purchase_only_owner_get_notifications(self): ###################
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product02, 2)
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_1, self.product1, 10)
@@ -161,9 +158,7 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.assertTrue(notifications_user_1.exists())
         self.assertFalse(notifications_user_2.exists())
         self.assertFalse(notifications_user_3.exists())
-        guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
-        self.user_proxy.exit_system(guest)
+
 
     def test_purchase_buy_from_several_stores(self):
         self.user_proxy.add_product_to_cart(self.user_id2, self.store_0, self.product01, 20)
@@ -179,11 +174,6 @@ class UseCasePurchaseProduct(unittest.TestCase):
         notifications_user_4 = self.user_proxy.get_member_notifications(self.user_id4).getData()
         self.assertTrue(notifications_user_1.exists())
         self.assertTrue(notifications_user_4.exists())
-
-        guest = self.user_proxy.login_guest().getData().getUserID()
-        self.user_proxy.login_member(guest, "user1", "1234").getData().getUserID()
-        self.user_proxy.login_member(guest, "user4", "1234").getData().getUserID()
-        self.user_proxy.exit_system(guest)
 
 
 
