@@ -82,12 +82,12 @@ class UseCaseMemberLogin(unittest.TestCase):
         self.proxy.register("user7", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
                             "Ben Gurion", 0, 1)
 
-        t2 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId2, "user2", "1234"))
-        t3 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId3, "user3", "1234"))
-        t4 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId4, "user4", "1234"))
-        t5 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId5, "user5", "1234"))
-        t6 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId6, "user6", "1234"))
-        t7 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId7, "user7", "1234"))
+        t2 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId2, "user2", "1234",))
+        t3 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId3, "user3", "1234",))
+        t4 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId4, "user4", "1234",))
+        t5 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId5, "user5", "1234",))
+        t6 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId6, "user6", "1234",))
+        t7 = ThreadWithReturn(target=self.proxy.login_member, args=(self.__guestId7, "user7", "1234",))
 
         t2.start()
         t3.start()
