@@ -175,7 +175,8 @@ class UserManagment(object):
     def __isMemberExists(self, userName):
         self._initializeDict()
         self.thereIsSystemManger()
-        for member in self.__members.values():
+        members = self.__members.values()
+        for member in members:
             if member.getMemberName() == userName:
                 return member
         return None
@@ -355,7 +356,8 @@ class UserManagment(object):
 
     def _removeGuest(self, userID):
         self._initializeDict()
-        for guest in self.__guests.values():
+        guests = self.__guests.values()
+        for guest in guests:
             if guest.getUserID() == userID:
                 guest.removeUser()
 
@@ -368,22 +370,26 @@ class UserManagment(object):
     def _initializeDict(self):
         if self.__guests is None:
             self.__guests: Dict[str: User] = {}
-            for guest_model in UserModel.objects.all():
+            guests = UserModel.objects.all()
+            for guest_model in guests:
                 guest = self._buildGuest(guest_model)
                 self.__guests.update({guest.getUserID() : guest})
         if self.__activeUsers is None:
             self.__activeUsers: Dict[str, User] = {}  # <userId,User> should check how to initial all the activeStores into dictionary
-            for member_model in MemberModel.objects.filter(isLoggedIn=True):
+            activeUsers = MemberModel.objects.filter(isLoggedIn=True)
+            for member_model in activeUsers:
                 member = self._buildMember(member_model)
                 self.__activeUsers.update({member.getUserID() : member})
         if self.__members is None:
             self.__members: Dict[str, Member] = {}
-            for member_model in MemberModel.objects.all():
+            members = MemberModel.objects.all()
+            for member_model in members:
                 member = self._buildMember(member_model)
                 self.__members.update({member.getUserID() : member})
         if self.__systemManager is None:
             self.__systemManager: Dict[str, SystemManager] = {}
-            for member_model in MemberModel.objects.filter(is_admin=True):
+            admins = MemberModel.objects.filter(is_admin=True)
+            for member_model in admins:
                 member = self._buildSystemManager(member_model)
                 self.__systemManager.update({member.getMemberName() : member})
 
