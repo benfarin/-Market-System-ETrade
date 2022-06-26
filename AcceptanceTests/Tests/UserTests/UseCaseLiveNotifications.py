@@ -84,6 +84,17 @@ class UseCaseLiveNotifications(TransactionTestCase):
         self.market_proxy.add_quantity_to_store(self.store_1, self.user_id, self.product1, 100)
         self.market_proxy.add_quantity_to_store(self.store_2, self.user_id4, self.product2, 100)
 
+    def tearDown(self) -> None:
+        self.market_proxy.removeStoreForGood(self.user_id, self.store_0)
+        self.market_proxy.removeStoreForGood(self.user_id, self.store_1)
+        self.market_proxy.removeStoreForGood(self.user_id4, self.store_2)
+        # remove users
+        self.user_proxy.removeMember("manager", "user1")
+        self.user_proxy.removeMember("manager", "user2")
+        self.user_proxy.removeMember("manager", "user3")
+        self.user_proxy.removeMember("manager", "user4")
+        self.user_proxy.removeSystemManger_forTests("manager")
+
     @pytest.mark.asyncio
     async def test_one_costumer_purchase(self):
         # --------------- Open WebSocket and Send Notification ---------------------------------
