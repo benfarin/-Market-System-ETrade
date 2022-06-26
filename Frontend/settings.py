@@ -13,8 +13,6 @@ from channels.routing import ProtocolTypeRouter
 import Backend
 import environ
 
-import Frontend.DbRouter
-
 env = environ.Env()
 environ.Env.read_env()
 

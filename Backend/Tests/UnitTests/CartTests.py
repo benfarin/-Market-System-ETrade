@@ -1,4 +1,7 @@
+import random
 import unittest
+import uuid
+from collections import Counter
 from unittest.mock import patch, MagicMock
 
 from Backend.Business.Discounts.DiscountComposite import DiscountComposite
@@ -13,19 +16,33 @@ from Backend.Exceptions.CustomExceptions import NoSuchStoreException
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.cart = Cart(0)
-        self.cart2 = Cart(1)
-        self.bag = Bag(0, 0)
-        self.bag_2 = Bag(1, 0)
-        self.p1 = Product(0, 0, "Test", 50, "Category", 5, [])
-        self.p2 = Product(1, 1, "Test1", 100, "Category", 5, [])
+        self.u1 = uuid.uuid4()
+        self.u2 = uuid.uuid4()
+        self.s1 = random.randint(300,1000)
+        self.s2 = random.randint(300, 1000)
+        self.cart = Cart(self.u1)
+        self.cart2 = Cart(self.u2)
+        self.bag = Bag(self.s1, self.u1)
+        self.bag_2 = Bag(self.s2, self.u2)
+        self.p1_id = random.randint(300, 1000)
+        self.p2_id = random.randint(300, 1000)
+        self.p1 = Product(self.p1_id, self.s1, "Test", 50, "Category", 5, [])
+        self.p2 = Product(self.p2_id, self.s2, "Test1", 100, "Category", 5, [])
 
     def testSimple(self):
-        self.assertEqual(0, self.cart.getUserId())
+        a = self.u1
+        b = self.cart.getUserId()
+        self.assertEqual(self.u1, self.cart.getUserId())
 
-        self.cart.addProduct(0, self.p1, 1)
-        self.cart.addProduct(1, self.p2, 2)
-        self.assertEqual(self.cart.getAllBags(), {0: self.bag, 1: self.bag_2})
+        self.cart.addProduct(self.s1, self.p1, 1)
+        self.cart.addProduct(self.s2, self.p2, 2)
+        a = self.cart.getAllBags()
+        b = {self.s1 : self.bag, self.s2: self.bag_2}
+        # self.assertEqual(a,b)
+        self.assertEqual(Counter(self.cart.getAllBags()), Counter({self.s1 : self.bag, self.s2: self.bag_2}))
+        for bag in a.values():
+            self.assertTrue(bag==self.bag or bag == self.bag_2)
+
         self.assertEqual(self.cart.getBag(1), self.bag_2)
 
         self.cart.cleanBag(1)
