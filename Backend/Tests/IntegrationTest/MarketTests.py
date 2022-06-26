@@ -5,7 +5,6 @@ from Backend.Business.Address import Address
 from Backend.Business.Bank import Bank
 from Backend.Business.Market import Market
 from Backend.Business.StorePackage.Product import Product
-from Backend.Business.StorePackage.Store import Store
 from Backend.Business.UserPackage.Member import Member
 from Backend.Interfaces.IMarket import IMarket
 import threading
@@ -92,7 +91,7 @@ class MarketTests(unittest.TestCase):
 
             t1.join()
             t2.join()
-            store0: Store = self.__market.getStoreById(self.__storeId1)
+            store0 = self.__market.getStoreById(self.__storeId1)
             self.assertTrue(130, store0.getProductQuantity()[self.__product1.getProductId()])
 
         except:

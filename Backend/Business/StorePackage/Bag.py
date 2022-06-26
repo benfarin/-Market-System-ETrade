@@ -118,6 +118,7 @@ class Bag:
         return self.applyDiscount(discounts)
 
     def cleanBag(self):
+        self.__products = {}
         ProductsInBagModel.objects.filter(bag_ID=self.__b).delete()
 
     def printProducts(self):
