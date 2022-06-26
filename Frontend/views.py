@@ -274,7 +274,7 @@ def add_to_cart_page(request, slug, slug2): #FIXED
         answer = user_service.addProductToCart(user.getUserID(), int(slug), int(slug2), int(quantity))
         if not answer.isError():
             messages.success(request, 'Succeeded adding  product to cart!')
-            return HttpResponseRedirect("store/" + slug + "/open_bid/" + slug2 + "/")
+            return HttpResponseRedirect("store/" + slug + "/add_to_cart/" + slug2 + "/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Product",
