@@ -65,7 +65,7 @@ class OwnerAgreement:
 
     def acceptOffer(self, userID):
         self.__receivers[userID] = True
-        reciever_model = ReceiversOfOwnerAgreement.objects.get(bid=self.__model, receiver=self.__receivers[userID].getModel())
+        reciever_model = ReceiversOfOwnerAgreement.objects.get(owner_agreement=self.__model, receiver=userID.getModel())
         reciever_model.accepted = True
         reciever_model.save()
         check = self.__receivers.values()

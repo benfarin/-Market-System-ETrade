@@ -49,7 +49,7 @@ class quantityRule:
                 s += quantity
             elif self.__ruleType == 'Category' and prod.getProductCategory() == self.__filter:
                 s += quantity
-            elif self.__ruleType == 'Product' and '' + str(prod.getProductId()) == self.__filter:
+            elif self.__ruleType == 'Product' and '' + str(prod.getProductId()) == str(self.__filter):
                 s += quantity
         return self.__atLeast <= s <= self.__atMost
 

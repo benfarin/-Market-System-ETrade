@@ -18,10 +18,10 @@ from AcceptanceTests.Bridges.UserBridge.UserRealBridge import UserRealBridge
 from AcceptanceTests.Tests.ThreadWithReturn import ThreadWithReturn
 from Backend.Service.MemberService import MemberService
 from Backend.Service.UserService import UserService
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, SimpleTestCase
 
 
-class UseCasePurchaseProduct(TransactionTestCase):
+class UseCasePurchaseProduct(unittest.TestCase):
     # use-case 2.9
     market_proxy = MarketProxyBridge(MarketRealBridge())
     user_proxy = UserProxyBridge(UserRealBridge())
@@ -159,7 +159,7 @@ class UseCasePurchaseProduct(TransactionTestCase):
 
     @patch('Backend.Payment.RealPaymentSystem.RealPaymentService.makePayment')
     @patch('Backend.Delivery.RealDeliveryService.RealDeliveryService.makeSupply')
-    def test_two_user_buy_same_time(self, delivery_respond ,payment_respond):   
+    def test_two_user_buy_same_time(self, delivery_respond ,payment_respond):
         # guest registers and logs-in
         guest_id = self.user_proxy.login_guest().getData().getUserID()
         self.user_proxy.register("Ori", "1234", "0500000000", 500, 20, "Israel", "Beer Sheva",
@@ -193,6 +193,7 @@ class UseCasePurchaseProduct(TransactionTestCase):
 
         ut_1 = t1.join()
         ut_2 = t2.join()
+
 
         self.assertTrue(ut_1.getData().getTotalAmount() == 3310 and ut_2.getData().getTotalAmount() == 2240)
         self.assertEqual(member_id, ut_1.getData().getUserID())

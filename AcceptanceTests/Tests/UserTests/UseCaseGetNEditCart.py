@@ -120,17 +120,17 @@ class UseCaseGetCartNEdit(unittest.TestCase):
         bags = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()
         self.assertEqual(len(bags), 3, "There 3 different bags from 3 different stores.")
         # get all the products in the bags
-        prods_all_bags = [bags[0].getAllProducts(), bags[1].getAllProducts(), bags[2].getAllProducts()]
+        prods_all_bags = [list(bags.values())[0].getAllProducts(), list(bags.values())[1].getAllProducts(), list(bags.values())[2].getAllProducts()]
         # 2 products in each bag
         for bag in prods_all_bags:
             self.assertEqual(len(bag), 2, "There should be 2 prods in each bag")
 
         # remove product1 from cart
         self.proxy_user.remove_prod_from_cart(self.user_id2, self.store_id1, self.p1_id)
-        prods1 = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()[0].getAllProducts()
+        prods1 = list(self.proxy_user.get_cart(self.user_id2).getData().getAllBags().values())[0].getAllProducts()
         self.assertEqual(len(prods1), 1, "We removed product1 from cart!")
         self.proxy_user.update_prod_from_cart(self.user_id2, self.store_id2, self.p3_id, 30)
-        prods2 = self.proxy_user.get_cart(self.user_id2).getData().getAllBags()[1].getAllProducts()
+        prods2 = list(self.proxy_user.get_cart(self.user_id2).getData().getAllBags().values())[1].getAllProducts()
         self.assertEqual(list(prods2.values())[0], 40, "We added 30 more pieces to product3!")
 
         # remove the rest of the products

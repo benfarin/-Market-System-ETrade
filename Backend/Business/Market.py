@@ -499,7 +499,8 @@ class Market:
     def loginUpdates(self, user):  # we need to check if all the store exist if not we remove all the products from
         self.__initializeStoresDict()
         # the user that get in the system!
-        for storeID in user.getCart().getAllBags().keys():
+        bags = user.getCart().getAllBags().keys()
+        for storeID in bags:
             if self.__stores.get(storeID) is None:
                 user.getCart().removeBag(storeID)
 

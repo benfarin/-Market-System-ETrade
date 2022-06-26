@@ -49,7 +49,7 @@ class weightRule:
                 s += quantity * prod.getProductWeight()
             elif self.__ruleType == 'Category' and prod.getProductCategory() == self.__filter:
                 s += quantity * prod.getProductWeight()
-            elif self.__ruleType == 'Product' and '' + str(prod.getProductId()) == self.__filter:
+            elif self.__ruleType == 'Product' and '' + str(prod.getProductId()) == str(self.__filter):
                 s += quantity * prod.getProductWeight()
         return self.__atLeast <= s <= self.__atMost
 

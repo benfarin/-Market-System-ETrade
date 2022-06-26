@@ -258,8 +258,8 @@ class UseCaseSimpleDiscount(unittest.TestCase):
         r_id = self.proxy_market.addProductWeightDiscountRule(self.user_id1, self.store_id1, dId1, self.product_id,
                                                               0, 10000000).getData().getRuleId()
 
-        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)
-        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10)
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id, 10)  ### 10 * 10 = 100
+        self.proxy_user.add_product_to_cart(self.user_id1, self.store_id1, self.product_id_2, 10) ### 10 * 100 = 1000
         userTransaction = self.proxy_user.purchase_product(self.user_id1, "1234123412341234", "2", "27", "Rotem", "123", "123")
 
         self.assertEqual(1090, userTransaction.getData().getTotalAmount())
