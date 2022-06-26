@@ -274,7 +274,7 @@ def add_to_cart_page(request, slug, slug2): #FIXED
         answer = user_service.addProductToCart(user.getUserID(), int(slug), int(slug2), int(quantity))
         if not answer.isError():
             messages.success(request, 'Succeeded adding  product to cart!')
-            return HttpResponseRedirect("store/" + slug + "/add_to_cart/" + slug2 + "/")
+            return HttpResponseRedirect("/store/" + slug + "/add_to_cart/" + slug2 + "/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Product",
@@ -358,7 +358,7 @@ def product_update(request, slug, slug2):  #FIXED
         answer3 = role_service.updateProductPrice(user.getUserID(), int(slug), int(slug2), int(price))
         if not answer1.isError() and not answer2.isError() and not answer3.isError():
             messages.success(request, 'Succeeded updating product!')
-            return HttpResponseRedirect("store/" + slug + "/" + slug2 + "/products_manage/product_update/")
+            return HttpResponseRedirect("/store/" + slug + "/" + slug2 + "/products_manage/product_update/")
         if answer1.isError():
             messages.warning(request, answer1.getError())
         if answer1.isError():
@@ -392,7 +392,7 @@ def add_quantity(request, slug, slug2): #FIXED
         if not answer.isError():
             messages.success(request, 'Succeeded adding ' + quantity + ' units of product number ' + slug2 +
                              ' to store number ' + str(slug))
-            return HttpResponseRedirect("store/" + slug + "/" + slug2 + "/products_manage/quantity/")
+            return HttpResponseRedirect("/store/" + slug + "/" + slug2 + "/products_manage/quantity/")
         messages.warning(request, answer.getError())
     context = {
         "title": "Add Product Quantity",
