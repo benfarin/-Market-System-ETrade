@@ -131,7 +131,7 @@ class UseCasePurchaseRules(unittest.TestCase):
                                                                                     self.store_id1).getData()]
         self.assertEqual(rulesInDiscountIds, [r_id])
 
-    def test_addCondDiscountRule_OR_AND_with_discount(self):   ######FAILING
+    def test_addCondDiscountRule_OR_AND_with_discount(self):
         self.proxy_market.addSimpleDiscount_Product(self.user_id1, self.store_id1, self.product_id_2, 0.1).getData().getDiscountId()
 
         rId1 = self.proxy_market.addProductWeightPurchaseRule(self.user_id1, self.store_id1, self.product_id, 100, 100000).getData().getRuleId()

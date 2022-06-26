@@ -831,19 +831,18 @@ class Store:
             raise PermissionException("User ", user.getUserID(), " doesn't have the discount permission in store: ",
                                       self.__name)
 
-        rule1 = self.__rules[rId1]
-        rule2 = self.__rules[rId2]
-
         if ruleKind == 'Discount':
             discount = self.__discounts[dId]
             if discount is None:
                 raise Exception("discount does not exists")
-            toReturnRule = discount.addCompositeRuleDiscount(ruleId, rule1.getRuleId(), rule2.getRuleId(), ruleType,
+            toReturnRule = discount.addCompositeRuleDiscount(ruleId, rId1, rId2, ruleType,
                                                                  ruleKind)
             with self.__discountsLock:
                 toReturnRule.getModel().rule_class = 'DiscountComposite'
                 toReturnRule.getModel().save()
         elif ruleKind == 'Purchase':
+            rule1 = self.__rules[rId1]
+            rule2 = self.__rules[rId2]
             if rule1 is None:
                 raise Exception("rule1 does not exist ")
             if rule2 is None:
