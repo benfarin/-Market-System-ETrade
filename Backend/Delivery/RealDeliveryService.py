@@ -44,6 +44,8 @@ class RealDeliveryService:
             supplyId = int.from_bytes(request.content, "little")
             if supplyId == -1:
                 raise Exception("the transaction has failed")
+            if supplyId < 10000 or supplyId > 100000:
+                raise Exception("the transaction has failed")
             return supplyId
         except:
             raise Exception("the transaction has failed")

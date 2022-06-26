@@ -46,16 +46,18 @@ class RealPaymentService:
             request = requests.post(self.external_system, data=params, timeout=15)
             paymentId = int.from_bytes(request.content, "little")
             if paymentId == -1:
-                raise Exception("the transaction has failed")
+                raise Exception("The transaction has failed")
+            if paymentId < 10000 or paymentId > 100000:
+                raise Exception("The transaction has failed")
             return paymentId
         except requests.exceptions.Timeout:
             raise PaymentException("The payment took too long")
         except:
-            raise PaymentException("the transaction has failed")
+            raise PaymentException("The transaction has failed")
 
     def cancelPayment(self, transaction_id):
         if not self.isSystemExists():
-            raise Exception("the external system is not available right now, please try later")
+            raise Exception("The external system is not available right now, please try later")
         try:
             params = {"action_type": "cancel_pay",
                       "transaction_id": transaction_id,
@@ -63,7 +65,7 @@ class RealPaymentService:
             request = requests.post(self.external_system, data=params, timeout=15)
             paymentId = int.from_bytes(request.content, "little")
             if paymentId == -1:
-                raise Exception("the transaction has failed")
+                raise Exception("The transaction has failed")
             return paymentId
         except:
-            raise Exception("the transaction has failed")
+            raise Exception("The transaction has failed")
