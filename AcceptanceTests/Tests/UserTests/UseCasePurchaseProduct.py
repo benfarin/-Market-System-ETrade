@@ -88,6 +88,14 @@ class UseCasePurchaseProduct(unittest.TestCase):
         self.user_proxy.add_product_to_cart(self.user_id, self.store_0, self.product02, 2)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_1, self.product1, 10)
         self.user_proxy.add_product_to_cart(self.user_id, self.store_2, self.product2, 1)
+        payment_respond.return_value = 1
+        delivery_respond.return_value = -1
+        userTransaction = self.user_proxy.purchase_product(self.user_id, "1234123412341234", "2", "27", "Rotem", "123",
+                                                           "123")
+        # check the cart was purchased even though the products were added when the member was a guest
+        self.assertTrue(userTransaction.isError())
+
+
         # purchase product in the cart
         payment_respond.return_value = 1
         delivery_respond.return_value = 1
